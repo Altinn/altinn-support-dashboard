@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34902.65
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "altinn-support-dashboard", "frontend\altinn-support-dashboard.client\altinn-support-dashboard.esproj", "{B7906099-7F1F-4BFD-A152-B2F335349654}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "altinn-support-dashboard.backend", "backend\src\altinn-support-dashboard.backend\altinn-support-dashboard.backend.csproj", "{620C589D-A026-4AD4-B865-0BD8B1E8ADBD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7906099-7F1F-4BFD-A152-B2F335349654}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7906099-7F1F-4BFD-A152-B2F335349654}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7906099-7F1F-4BFD-A152-B2F335349654}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B7906099-7F1F-4BFD-A152-B2F335349654}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7906099-7F1F-4BFD-A152-B2F335349654}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7906099-7F1F-4BFD-A152-B2F335349654}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{620C589D-A026-4AD4-B865-0BD8B1E8ADBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{620C589D-A026-4AD4-B865-0BD8B1E8ADBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{620C589D-A026-4AD4-B865-0BD8B1E8ADBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{620C589D-A026-4AD4-B865-0BD8B1E8ADBD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {36F27FF6-20AF-48D1-B0CD-7BF215DF2366}
+	EndGlobalSection
+EndGlobal

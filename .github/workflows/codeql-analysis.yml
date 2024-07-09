@@ -1,0 +1,48 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js and .NET
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22.0.0'
+
+      - name: Install npm dependencies
+        run: |
+          cd frontend/altinn-support-dashboard.client
+          npm install
+
+      - name: Run dev server
+        run: |
+          cd frontend/altinn-support-dashboard.client
+          npm run dev
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0.0'
+
+      - name: Build and test backend
+        run: |
+          cd backend/src/altinn-support-dashboard.backend
+          dotnet build
+          dotnet test --no-restore --verbosity normal
+
+      - name: CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+        with:
+          languages: csharp
