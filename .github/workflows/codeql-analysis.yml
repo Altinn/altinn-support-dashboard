@@ -2,39 +2,59 @@
 
 on:
   push:
-    branches: [ "30-implementering-av-oppslag-for-enhetsregisterroller-er-roller" ]
+    branches: [ 30-implementering-av-oppslag-for-enhetsregisterroller-er-roller ]
+    paths:
+    - 'backend/src/altinn-support-dashboard.backend/**'
   pull_request:
-    branches: [ "30-implementering-av-oppslag-for-enhetsregisterroller-er-roller" ]
+    # The branches below must be a subset of the branches above
+    branches: [ 30-implementering-av-oppslag-for-enhetsregisterroller-er-roller ]
+    paths:
+    - 'backend/src/altinn-support-dashboard.backend/**'
   schedule:
-    - cron: '35 18 * * 3'
+    - cron: '18 22 * * 3'
 
 jobs:
   analyze:
-    name: Analyze (${{ matrix.language }})
+    name: Analyze
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
-      security-events: write
-      packages: read
       actions: read
       contents: read
+      security-events: write
 
     strategy:
       fail-fast: false
       matrix:
-            language: [ 'csharp' ]
+        language: [ 'csharp' ]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    # Initializes the CodeQL tools for scanning.
+    - name: Setup .NET 8.0.* SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: |
+          8.0.x
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
-        # Removed build-mode as it might be causing the issue with no source code seen
+        # If you wish to specify custom queries, you can do so here or in a config file.
+        # By default, queries listed here will override any specified in a config file.
+        # Prefix the list here with "+" to use these queries and those in the config file.
+        # queries: ./path/to/local/query, your-org/your-repo/queries@main
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+    # - name: Build notifications core
+    #   run: 'dotnet build src/Altinn.Notifications.Core'
+    # - name: Build notifications functions
+    #   run: 'dotnet build src/Altinn.Notifications.Functions'
+    # - name: Build notifications integrations
+    #   run: 'dotnet build src/Altinn.Notifications.Integrations'
+    # - name: Build notifications interfaces
+    #   run: 'dotnet build src/Altinn.Notifications.Interfaces'
+    # - name: Build notifications persistence
+    #   run: 'dotnet build src/Altinn.Notifications.Persistence'
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{matrix.language}}"
