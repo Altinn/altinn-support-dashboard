@@ -3,43 +3,44 @@ name: "CodeQL"
 on:
   push:
     branches:
-      - 30-implementering-av-oppslag-for-enhetsregisterroller-er-roller
+      - "30-implementering-av-oppslag-for-enhetsregisterroller-er-roller"
   pull_request:
     branches:
-      - 30-implementering-av-oppslag-for-enhetsregisterroller-er-roller
+      - "30-implementering-av-oppslag-for-enhetsregisterroller-er-roller"
+  schedule:
+    - cron: '35 18 * * 3'
 
 jobs:
-  build-and-test:
+  analyze:
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
+    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - 'csharp'
+          - 'javascript'
+          - 'typescript'
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Setup Node.js and .NET
-        uses: actions/setup-node@v2
+      # Initialize CodeQL for the specified language
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
         with:
-          node-version: '22.0.0'
+          languages: ${{ matrix.language }}
 
-      - name: Install npm dependencies
-        run: |
-          cd frontend/altinn-support-dashboard.client
-          npm install
-      - name: Run dev server
-        run: |
-          cd frontend/altinn-support-dashboard.client
-          npm run dev
-      - name: Install .NET SDK
-        uses: actions/setup-dotnet@v1
+      # Build and analyze code with CodeQL
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
         with:
-          dotnet-version: '8.0.x'
-
-      - name: Build and test backend
-        run: |
-          cd backend/src/altinn-support-dashboard.backend
-          dotnet build
-          dotnet test --no-restore --verbosity normal
-      - name: CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
-        with:
-          languages: csharp
+          category: "/language:${{ matrix.language }}"
