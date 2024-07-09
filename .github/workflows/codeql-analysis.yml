@@ -2,49 +2,44 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "30-implementering-av-oppslag-for-enhetsregisterroller-er-roller" ]
+    branches:
+      - 30-implementering-av-oppslag-for-enhetsregisterroller-er-roller
   pull_request:
-    branches: [ "30-implementering-av-oppslag-for-enhetsregisterroller-er-roller" ]
-  schedule:
-    - cron: '35 18 * * 3'
+    branches:
+      - 30-implementering-av-oppslag-for-enhetsregisterroller-er-roller
 
 jobs:
-  analyze:
-    name: Analyze (${{ matrix.language }})
-    # Runner size impacts CodeQL analysis time. To learn more, please see:
-    #   - https://gh.io/recommended-hardware-resources-for-running-codeql
-    #   - https://gh.io/supported-runners-and-hardware-resources
-    #   - https://gh.io/using-larger-runners (GitHub.com only)
-    # Consider using larger runners or machines with greater resources for possible analysis time improvements.
+  build-and-test:
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
-    permissions:
-      # required for all workflows
-      security-events: write
 
-      # required to fetch internal or private CodeQL packs
-      packages: read
-
-      # only required for workflows in private repositories
-      actions: read
-      contents: read
-
-    strategy:
-      fail-fast: false
-      matrix:
-            language: [ 'csharp', 'javascript-typescript']
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
+      - name: Setup Node.js and .NET
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22.0.0'
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Install npm dependencies
+        run: |
+          cd frontend/altinn-support-dashboard.client
+          npm install
+      - name: Run dev server
+        run: |
+          cd frontend/altinn-support-dashboard.client
+          npm run dev
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build and test backend
+        run: |
+          cd backend/src/altinn-support-dashboard.backend
+          dotnet build
+          dotnet test --no-restore --verbosity normal
+      - name: CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+        with:
+          languages: csharp
