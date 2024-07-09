@@ -4,12 +4,12 @@ on:
   push:
     branches: [ 30-implementering-av-oppslag-for-enhetsregisterroller-er-roller ]
     paths:
-    - 'backend/src/altinn-support-dashboard.backend/**'
+    - 'backend/src/**'
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ 30-implementering-av-oppslag-for-enhetsregisterroller-er-roller ]
     paths:
-    - 'backend/src/altinn-support-dashboard.backend/**'
+    - 'backend/src/**'
   schedule:
     - cron: '18 22 * * 3'
 
