@@ -1,8 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace altinn_support_dashboard.Server.Services
+﻿namespace altinn_support_dashboard.Server.Services
 {
     public class DataBrregClient
     {

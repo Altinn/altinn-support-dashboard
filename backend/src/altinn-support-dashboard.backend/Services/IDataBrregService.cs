@@ -1,5 +1,4 @@
 ﻿using altinn_support_dashboard.Server.Models;
-using System.Threading.Tasks;
 
 namespace altinn_support_dashboard.Server.Services
 {

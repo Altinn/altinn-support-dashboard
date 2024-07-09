@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
-using System;
-using System.Threading.Tasks;
 
 namespace altinn_support_dashboard.Server.Controllers
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace altinn_support_dashboard.Server.Models
+﻿namespace altinn_support_dashboard.Server.Models
 {
     public class RollerMain
     {

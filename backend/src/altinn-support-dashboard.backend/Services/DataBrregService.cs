@@ -1,8 +1,5 @@
 ﻿using altinn_support_dashboard.Server.Models;
-using System;
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace altinn_support_dashboard.Server.Services
 {
