@@ -13,9 +13,9 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "30-implementering-av-oppslag-for-enhetsregisterroller-er-roller" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "30-implementering-av-oppslag-for-enhetsregisterroller-er-roller" ]
   schedule:
     - cron: '29 2 * * 4'
 
