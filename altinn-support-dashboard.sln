@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "altinn-support-dashboard.ba
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "altinn-support-dashboard", "frontend\altinn-support-dashboard.client\altinn-support-dashboard.esproj", "{A247A42D-E011-4EAD-BE2F-ED984B196F37}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "altinn-support-dashboard.backend.Tests", "backend\test\altinn-support-dashboard.backend.Tests\altinn-support-dashboard.backend.Tests.csproj", "{8EE96BEB-14CD-4D80-9891-6AAEEE1C04B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{A247A42D-E011-4EAD-BE2F-ED984B196F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A247A42D-E011-4EAD-BE2F-ED984B196F37}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A247A42D-E011-4EAD-BE2F-ED984B196F37}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{8EE96BEB-14CD-4D80-9891-6AAEEE1C04B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EE96BEB-14CD-4D80-9891-6AAEEE1C04B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EE96BEB-14CD-4D80-9891-6AAEEE1C04B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EE96BEB-14CD-4D80-9891-6AAEEE1C04B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

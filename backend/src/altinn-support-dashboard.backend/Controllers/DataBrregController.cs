@@ -18,6 +18,11 @@ namespace altinn_support_dashboard.Server.Controllers
         [HttpGet("{orgNumber}")]
         public async Task<IActionResult> GetRoles(string orgNumber)
         {
+            if (string.IsNullOrWhiteSpace(orgNumber) || orgNumber.Length != 9 || !long.TryParse(orgNumber, out _))
+            {
+                return BadRequest("ID must be exactly 9 digits.");
+            }
+
             try
             {
                 var result = await _dataBrregService.GetRolesAsync(orgNumber);
