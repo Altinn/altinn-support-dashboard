@@ -39,8 +39,8 @@ jobs:
       with:
         languages: ${{ matrix.language }}
 
-    - name: Build Backend Project
-      run: dotnet build backend/src/altinn-support-dashboard.backend
+    - name: Build Solution
+      run: dotnet build ./altinn-support-dashboard.sln
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
