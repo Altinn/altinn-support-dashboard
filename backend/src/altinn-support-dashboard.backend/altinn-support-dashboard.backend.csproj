@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="C:\apps\altinn-support-dashboard\frontend\altinn-support-dashboard.client\altinn-support-dashboard.esproj">
+    <ProjectReference Include="..\..\..\frontend\altinn-support-dashboard.client\altinn-support-dashboard.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
