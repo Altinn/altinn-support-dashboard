@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AltinnSupportDashboard.Controllers
@@ -17,9 +18,9 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("{orgNumber}")]
         public async Task<IActionResult> GetOrganizationInfo(string orgNumber)
         {
-            if (string.IsNullOrEmpty(orgNumber))
+            if (string.IsNullOrEmpty(orgNumber) || !IsValidOrgNumber(orgNumber))
             {
-                return BadRequest("Organization number cannot be null or empty.");
+                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
 
             try
@@ -29,8 +30,19 @@ namespace AltinnSupportDashboard.Controllers
             }
             catch (System.Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                if (ex.Message.Contains("BadRequest"))
+                {
+                    return BadRequest("Feil ved forespørsel: Organisasjonsnummeret er ugyldig eller forespørselen er feil formatert.");
+                }
+                return StatusCode(500, $"Intern serverfeil: {ex.Message}");
             }
+        }
+
+        // Helper method to validate the organization number format
+        private bool IsValidOrgNumber(string orgNumber)
+        {
+            // Norwegian organization numbers are typically 9 digits
+            return Regex.IsMatch(orgNumber, @"^\d{9}$");
         }
     }
 }
