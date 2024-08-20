@@ -73,6 +73,54 @@ public class AltinnApiClient
         }
     }
 
+    public async Task<string> GetOrganizationsByPhoneNumber(string phoneNumber)
+    {
+        try
+        {
+            var requestUrl = $"organizations?phoneNumber={phoneNumber}&?ForceEIAuthentication";
+            Console.WriteLine($"Requesting URL: {_client.BaseAddress}{requestUrl}");
+
+            var response = await _client.GetAsync(requestUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+        }
+    }
+
+    public async Task<string> GetOrganizationsByEmail(string email)
+    {
+        try
+        {
+            var requestUrl = $"organizations?email={email}&?ForceEIAuthentication";
+            Console.WriteLine($"Requesting URL: {_client.BaseAddress}{requestUrl}");
+
+            var response = await _client.GetAsync(requestUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+        }
+    }
+
     private X509Certificate2 GetCertificateFromStore(string thumbprint)
     {
         // Clean the thumbprint by removing any potential spaces or hidden characters

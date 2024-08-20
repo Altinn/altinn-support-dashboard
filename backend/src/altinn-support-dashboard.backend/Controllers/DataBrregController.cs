@@ -5,11 +5,11 @@ namespace altinn_support_dashboard.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class DataBrregController : ControllerBase
+    public class ER_Roller_APIController : ControllerBase
     {
         private readonly IDataBrregService _dataBrregService;
 
-        public DataBrregController(IDataBrregService dataBrregService)
+        public ER_Roller_APIController(IDataBrregService dataBrregService)
         {
             _dataBrregService = dataBrregService;
         }
@@ -20,7 +20,7 @@ namespace altinn_support_dashboard.Server.Controllers
         {
             if (string.IsNullOrWhiteSpace(orgNumber) || orgNumber.Length != 9 || !long.TryParse(orgNumber, out _))
             {
-                return BadRequest("ID must be exactly 9 digits.");
+                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
 
             try

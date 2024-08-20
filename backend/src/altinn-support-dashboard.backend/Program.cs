@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using altinn_support_dashboard.Server.Services;
 
 namespace AltinnSupportDashboard
 {
@@ -32,6 +34,11 @@ namespace AltinnSupportDashboard
                 {
                     logging.ClearProviders();
                     logging.AddConsole();
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddScoped<DataBrregClient>();
+                    services.AddScoped<IDataBrregService, DataBrregService>();
                 });
     }
 }
