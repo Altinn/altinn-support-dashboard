@@ -15,6 +15,32 @@ namespace AltinnSupportDashboard.Controllers
             _altinnApiClient = altinnApiClient;
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return BadRequest("Søketerm kan ikke være tom.");
+            }
+
+            if (IsValidOrgNumber(query))
+            {
+                return await GetOrganizationInfo(query);
+            }
+            else if (IsValidPhoneNumber(query))
+            {
+                return await GetOrganizationsByPhoneNumber(query);
+            }
+            else if (IsValidEmail(query))
+            {
+                return await GetOrganizationsByEmail(query);
+            }
+            else
+            {
+                return BadRequest("Ugyldig søketerm. Angi et gyldig organisasjonsnummer, telefonnummer eller e-postadresse.");
+            }
+        }
+
         [HttpGet("{orgNumber}")]
         public async Task<IActionResult> GetOrganizationInfo(string orgNumber)
         {
@@ -81,6 +107,13 @@ namespace AltinnSupportDashboard.Controllers
         {
             // Norwegian organization numbers are typically 9 digits
             return Regex.IsMatch(orgNumber, @"^\d{9}$");
+        }
+
+        // Helper method to validate phone number format
+        private bool IsValidPhoneNumber(string phoneNumber)
+        {
+            // Simple validation for Norwegian phone numbers
+            return Regex.IsMatch(phoneNumber, @"^\d{8}$");
         }
 
         // Helper method to validate email format

@@ -77,7 +77,7 @@ public class AltinnApiClient
     {
         try
         {
-            var requestUrl = $"organizations?phoneNumber={phoneNumber}&?ForceEIAuthentication";
+            var requestUrl = $"organizations?phoneNumber={phoneNumber}&ForceEIAuthentication";
             Console.WriteLine($"Requesting URL: {_client.BaseAddress}{requestUrl}");
 
             var response = await _client.GetAsync(requestUrl);
@@ -101,7 +101,7 @@ public class AltinnApiClient
     {
         try
         {
-            var requestUrl = $"organizations?email={email}&?ForceEIAuthentication";
+            var requestUrl = $"organizations?email={email}&ForceEIAuthentication";
             Console.WriteLine($"Requesting URL: {_client.BaseAddress}{requestUrl}");
 
             var response = await _client.GetAsync(requestUrl);
