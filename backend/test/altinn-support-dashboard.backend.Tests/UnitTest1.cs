@@ -44,12 +44,15 @@ namespace altinn_support_dashboard.Tests
             _mockService.Setup(service => service.GetRolesAsync(validOrgNumber))
                         .ReturnsAsync(new ErRollerModel());
 
+
             // Act
             var result = await _controller.GetRoles(validOrgNumber);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
+
             Assert.IsType<ErRollerModel>(okResult.Value);
+
         }
     }
 }

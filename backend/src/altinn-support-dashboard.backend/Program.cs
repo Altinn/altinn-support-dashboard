@@ -1,37 +1,37 @@
-using altinn_support_dashboard.Server.Services;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-builder.Services.AddHttpClient();
-builder.Services.AddScoped<DataBrregClient>();
-builder.Services.AddScoped<IDataBrregService, DataBrregService>();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-app.UseDefaultFiles();
-app.UseStaticFiles();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+namespace AltinnSupportDashboard
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    // Load additional configuration files if needed
+                    var env = hostingContext.HostingEnvironment;
+
+                    // Load the environmentConfigurations.xml file
+                    config.AddXmlFile("environmentConfigurations.xml", optional: false, reloadOnChange: true);
+
+                    // Load other configurations if necessary
+                })
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole();
+                });
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.UseCors(c=>c.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
-
-app.MapControllers();
-
-app.MapFallbackToFile("/index.html");
-
-app.Run();
