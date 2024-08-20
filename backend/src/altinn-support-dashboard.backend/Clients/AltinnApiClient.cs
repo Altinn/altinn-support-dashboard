@@ -48,12 +48,12 @@ public class AltinnApiClient
         Console.WriteLine($"API Key {_config.ApiKey} added to request headers.");
     }
 
-    public async Task<string> GetOrganizationInfo(string orgNumber)
+    public async Task<string> GetOrganizationInfoByPhonenumber(string phoneNumber)
     {
         try
         {
             // Construct the full request URL
-            var requestUrl = $"organizations/{orgNumber}?ForceEIAuthentication";
+            var requestUrl = $"organizations?email=&phoneNumber={phoneNumber}&?ForceEIAuthentication";
             Console.WriteLine($"Requesting URL: {_client.BaseAddress}{requestUrl}");
 
             var response = await _client.GetAsync(requestUrl);
