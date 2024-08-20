@@ -15,25 +15,25 @@ namespace AltinnSupportDashboard.Controllers
             _altinnApiClient = altinnApiClient;
         }
 
-        [HttpGet("{orgNumber}")]
-        public async Task<IActionResult> GetOrganizationInfo(string orgNumber)
+
+
+
+
+        [HttpGet("emails/{email}")]
+        public async Task<IActionResult> GetOrganizationsByEmail(string email)
         {
-            if (string.IsNullOrEmpty(orgNumber) || !IsValidOrgNumber(orgNumber))
+            if (string.IsNullOrEmpty(email) || !IsValidEmail(email))
             {
-                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+                return BadRequest("E-postadressen er ugyldig.");
             }
 
             try
             {
-                var organizationInfo = await _altinnApiClient.GetOrganizationInfo(orgNumber);
-                return Ok(organizationInfo);
+                var organizations = await _altinnApiClient.GetOrganizationsByEmail(email);
+                return Ok(organizations);
             }
             catch (System.Exception ex)
             {
-                if (ex.Message.Contains("BadRequest"))
-                {
-                    return BadRequest("Feil ved forespørsel: Organisasjonsnummeret er ugyldig eller forespørselen er feil formatert.");
-                }
                 return StatusCode(500, $"Intern serverfeil: {ex.Message}");
             }
         }
@@ -43,6 +43,12 @@ namespace AltinnSupportDashboard.Controllers
         {
             // Norwegian organization numbers are typically 9 digits
             return Regex.IsMatch(orgNumber, @"^\d{9}$");
+        }
+
+        // Helper method to validate email format
+        private bool IsValidEmail(string email)
+        {
+            return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
     }
 }
