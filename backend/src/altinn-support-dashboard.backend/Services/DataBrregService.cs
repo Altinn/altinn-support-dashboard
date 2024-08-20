@@ -12,7 +12,7 @@ namespace altinn_support_dashboard.Server.Services
             _client = client;
         }
 
-        public async Task<RollerMain> GetRolesAsync(string orgNumber)
+        public async Task<ErRollerModel> GetRolesAsync(string orgNumber)
         {
             if (string.IsNullOrWhiteSpace(orgNumber) || orgNumber.Length != 9 || !long.TryParse(orgNumber, out _))
             {
@@ -20,7 +20,7 @@ namespace altinn_support_dashboard.Server.Services
             }
 
             var result = await _client.GetRolesAsync(orgNumber);
-            var rollerMain = JsonSerializer.Deserialize<RollerMain>(result, new JsonSerializerOptions
+            var rollerMain = JsonSerializer.Deserialize<ErRollerModel>(result, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true

@@ -4,6 +4,6 @@ namespace altinn_support_dashboard.Server.Services
 {
     public interface IDataBrregService
     {
-        Task<RollerMain> GetRolesAsync(string orgNumber);
+        Task<ErRollerModel> GetRolesAsync(string orgNumber);
     }
 }

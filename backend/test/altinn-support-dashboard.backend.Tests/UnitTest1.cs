@@ -42,14 +42,14 @@ namespace altinn_support_dashboard.Tests
             // Arrange
             string validOrgNumber = "123456789";
             _mockService.Setup(service => service.GetRolesAsync(validOrgNumber))
-                        .ReturnsAsync(new RollerMain());
+                        .ReturnsAsync(new ErRollerModel());
 
             // Act
             var result = await _controller.GetRoles(validOrgNumber);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.IsType<RollerMain>(okResult.Value);
+            Assert.IsType<ErRollerModel>(okResult.Value);
         }
     }
 }

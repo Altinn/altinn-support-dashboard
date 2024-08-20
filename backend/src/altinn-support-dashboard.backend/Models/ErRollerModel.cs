@@ -1,6 +1,6 @@
 ﻿namespace altinn_support_dashboard.Server.Models
 {
-    public class RollerMain
+    public class ErRollerModel
     {
         public List<Rollegrupper>? Rollegrupper { get; set; }
         public Links? Links { get; set; }
