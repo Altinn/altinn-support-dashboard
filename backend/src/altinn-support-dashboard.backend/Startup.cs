@@ -45,6 +45,11 @@ namespace AltinnSupportDashboard
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Altinn Support Dashboard API V1");
             });
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
+
+            app.UseCors(c => c.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 
             app.UseEndpoints(endpoints =>
             {

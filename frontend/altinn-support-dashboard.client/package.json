@@ -10,10 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@digdir/designsystemet-css": "^0.10.0",
+    "@digdir/designsystemet-react": "^0.63.0",
+    "@digdir/designsystemet-theme": "^0.15.3",
+    "@navikt/aksel-icons": "^6.16.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.13.1",
@@ -23,7 +28,6 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "typescript": "^5.2.2",
-    "vite": "^5.3.1",
-    "@types/node": "^20.14.10"
+    "vite": "^5.3.1"
   }
 }

@@ -40,5 +40,6 @@ namespace AltinnSupportDashboard
                     services.AddScoped<DataBrregClient>();
                     services.AddScoped<IDataBrregService, DataBrregService>();
                 });
+
     }
 }

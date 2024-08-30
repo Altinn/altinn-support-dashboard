@@ -102,6 +102,25 @@ namespace AltinnSupportDashboard.Controllers
             }
         }
 
+        [HttpGet("{orgNumber}/personalcontacts")]
+        public async Task<IActionResult> GetPersonalContacts(string orgNumber)
+        {
+            if (string.IsNullOrEmpty(orgNumber) || !IsValidOrgNumber(orgNumber))
+            {
+                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+            }
+
+            try
+            {
+                var personalContacts = await _altinnApiClient.GetPersonalContacts(orgNumber);
+                return Ok(personalContacts);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"Intern serverfeil: {ex.Message}");
+            }
+        }
+
         // Helper method to validate the organization number format
         private bool IsValidOrgNumber(string orgNumber)
         {

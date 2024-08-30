@@ -4,7 +4,7 @@ using altinn_support_dashboard.Server.Services;
 namespace altinn_support_dashboard.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/brreg")]
     public class ER_Roller_APIController : ControllerBase
     {
         private readonly IDataBrregService _dataBrregService;

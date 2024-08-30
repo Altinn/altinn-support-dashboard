@@ -1,8 +1,5 @@
-﻿using System;
-using System.Net.Http;
+﻿using AltinnDesktopTool.Configuration;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using AltinnDesktopTool.Configuration;
 
 public class AltinnApiClient
 {
@@ -102,6 +99,31 @@ public class AltinnApiClient
         try
         {
             var requestUrl = $"organizations?email={email}&ForceEIAuthentication";
+            Console.WriteLine($"Requesting URL: {_client.BaseAddress}{requestUrl}");
+
+            var response = await _client.GetAsync(requestUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+        }
+    }
+
+    public async Task<string> GetPersonalContacts(string orgNumber)
+    {
+        try
+        {
+            // Construct the full request URL
+            var requestUrl = $"organizations/{orgNumber}/personalcontacts?ForceEIAuthentication";
             Console.WriteLine($"Requesting URL: {_client.BaseAddress}{requestUrl}");
 
             var response = await _client.GetAsync(requestUrl);

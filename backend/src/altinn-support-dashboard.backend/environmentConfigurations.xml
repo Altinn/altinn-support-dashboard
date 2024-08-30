@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<EnvironmentConfigurations>
+	<EnvironmentConfiguration>
+		<name>PROD</name>
+		<themeName>Blue</themeName>
+		<apiKey>7B645E0F-D283-49A8-B9D2-F98D20CEF862</apiKey>
+		<baseAddress>https://www.altinn.no/api/serviceowner/</baseAddress>
+		<thumbprint>46af11d1eef1fbcf9b5031bfc236e0a015b9d95b</thumbprint>
+		<ignoreSslErrors>false</ignoreSslErrors>
+		<timeout>30</timeout>
+	</EnvironmentConfiguration>
+	<EnvironmentConfiguration>
+		<name>TT02</name>
+		<themeName>Orange</themeName>
+		<apiKey>75835190-AE5D-4695-B6C4-FFB5A72DAA7F</apiKey>
+		<baseAddress>https://tt02.altinn.no/api/serviceowner/</baseAddress>
+		<thumbprint>a895f9a4430b64068aa3ddba00f7a30a58c4b59b</thumbprint>
+		<ignoreSslErrors>false</ignoreSslErrors>
+		<timeout>30</timeout>
+	</EnvironmentConfiguration>
+</EnvironmentConfigurations>
