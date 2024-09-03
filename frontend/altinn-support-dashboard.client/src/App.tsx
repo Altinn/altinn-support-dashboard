@@ -74,11 +74,14 @@ const App: React.FC = () => {
 
     const baseUrl = 'https://localhost:7174/api';
     
+    const removewhitespacequery = query.replace(/\s/g, "");
+    // removes +47 removewhitespacequery.startsWith("+47") ? removewhitespacequery.slice(3) : removewhitespacequery;
+
 
     const handleSearch = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch(`${baseUrl}/serviceowner/organizations/search?query=${encodeURIComponent(query)}`);
+            const res = await fetch(`${baseUrl}/serviceowner/organizations/search?query=${encodeURIComponent(removewhitespacequery)}`);
             if (!res.ok) {
                 throw new Error(`Feil ${res.status}: ${res.statusText}`);
             }
@@ -183,7 +186,6 @@ const App: React.FC = () => {
                     <label htmlFor="query" className="search-label">Mobilnummer / E-post / Organisasjonsnummer:</label>
                     <form onSubmit={e => {
                         e.preventDefault();
-                        setQuery(query);
                     }}>
                         <Search
                         id="searchbar"

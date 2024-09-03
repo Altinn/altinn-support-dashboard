@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
-    <ProjectReference Include="..\..\src\altinn-support-dashboard.backend\altinn-support-dashboard.backend.csproj" />
+    <ProjectReference Include="..\..\src\altinn-support-dashboard.backend\backend.csproj" />
   </ItemGroup>
 
 </Project>

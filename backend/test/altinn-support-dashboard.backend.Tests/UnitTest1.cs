@@ -10,13 +10,13 @@ namespace altinn_support_dashboard.Tests
 {
     public class DataBrregControllerTests
     {
-        private readonly DataBrregController _controller;
+        private readonly ER_Roller_APIController _controller;
         private readonly Mock<IDataBrregService> _mockService;
 
         public DataBrregControllerTests()
         {
             _mockService = new Mock<IDataBrregService>();
-            _controller = new DataBrregController(_mockService.Object);
+            _controller = new ER_Roller_APIController(_mockService.Object);
         }
 
         [Theory]
