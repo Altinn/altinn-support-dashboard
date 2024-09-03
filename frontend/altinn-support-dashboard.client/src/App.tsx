@@ -5,59 +5,7 @@ import '@digdir/designsystemet-theme';
 import '@digdir/designsystemet-css';
 import { Button, Skeleton, Search } from '@digdir/designsystemet-react';
 import { MagnifyingGlassIcon } from '@navikt/aksel-icons';
-
-
-interface Organization {
-    Name: string;
-    OrganizationNumber: string;
-    Type: string;
-    _links: {
-        Rel: string;
-        Href: string;
-    }[];
-}
-
-interface PersonalContact {
-    PersonalContactId: string;
-    Name: string;
-    SocialSecurityNumber: string;
-    MobileNumber: string;
-    EMailAddress: string;
-    _links: {
-        Rel: string;
-        Href: string;
-    }[];
-}
-
-interface Subunit {
-    navn: string;
-    organisasjonsnummer: string;
-    overordnetEnhet: string;
-}
-
-interface ERRole {
-    type: {
-        kode: string;
-        beskrivelse: string;
-    };
-    sistEndret: string;
-    roller: {
-        type: {
-            kode: string;
-            beskrivelse: string;
-        };
-        person: {
-            fodselsdato: string;
-            navn: {
-                fornavn: string;
-                mellomnavn: string | null;
-                etternavn: string;
-            };
-            erDoed: boolean;
-        };
-        fratraadt: boolean;
-    }[];
-}
+import { Organization, PersonalContact, Subunit, ERRole } from './models/models';
 
 const App: React.FC = () => {
     const [query, setQuery] = useState('');
