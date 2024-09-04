@@ -1,4 +1,5 @@
-﻿import React, { useState } from 'react';
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState } from 'react';
 import './App.css';
 import logo from './assets/logo.png';
 import '@digdir/designsystemet-theme';
