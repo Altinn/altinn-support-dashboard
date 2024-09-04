@@ -1,12 +1,12 @@
 using altinn_support_dashboard.Server.Controllers;
-using altinn_support_dashboard.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
 using System.Threading.Tasks;
 using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Services.Interfaces;
 
-namespace altinn_support_dashboard.Tests
+namespace altinn_support_dashboard.backend.Tests.Controllers
 {
     public class DataBrregControllerTests
     {
@@ -33,7 +33,7 @@ namespace altinn_support_dashboard.Tests
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("ID must be exactly 9 digits.", badRequestResult.Value);
+            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 ﻿using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Services.Interfaces;
 using System.Text.Json;
 
 namespace altinn_support_dashboard.Server.Services

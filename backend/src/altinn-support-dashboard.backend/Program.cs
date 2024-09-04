@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using altinn_support_dashboard.Server.Services;
+using altinn_support_dashboard.Server.Services.Interfaces;
 
 namespace AltinnSupportDashboard
 {

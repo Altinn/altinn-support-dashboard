@@ -1,6 +1,6 @@
 ﻿using altinn_support_dashboard.Server.Models;
 
-namespace altinn_support_dashboard.Server.Services
+namespace altinn_support_dashboard.Server.Services.Interfaces
 {
     public interface IDataBrregService
     {

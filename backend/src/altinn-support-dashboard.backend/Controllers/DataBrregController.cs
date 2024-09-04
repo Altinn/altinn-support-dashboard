@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using altinn_support_dashboard.Server.Services;
+using altinn_support_dashboard.Server.Services.Interfaces;
 
 namespace altinn_support_dashboard.Server.Controllers
 {
