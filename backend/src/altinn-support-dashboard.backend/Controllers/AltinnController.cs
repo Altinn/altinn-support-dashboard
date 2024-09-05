@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using altinn_support_dashboard.Server.Services;
 
 namespace AltinnSupportDashboard.Controllers
 {
@@ -23,15 +24,15 @@ namespace AltinnSupportDashboard.Controllers
                 return BadRequest("Søketerm kan ikke være tom.");
             }
 
-            if (IsValidOrgNumber(query))
+            if (ValidationService.IsValidOrgNumber(query))
             {
                 return await GetOrganizationInfo(query);
             }
-            else if (IsValidPhoneNumber(query))
+            else if (ValidationService.IsValidPhoneNumber(query))
             {
                 return await GetOrganizationsByPhoneNumber(query);
             }
-            else if (IsValidEmail(query))
+            else if (ValidationService.IsValidEmail(query))
             {
                 return await GetOrganizationsByEmail(query);
             }
@@ -44,7 +45,7 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("{orgNumber}")]
         public async Task<IActionResult> GetOrganizationInfo(string orgNumber)
         {
-            if (string.IsNullOrEmpty(orgNumber) || !IsValidOrgNumber(orgNumber))
+            if (string.IsNullOrEmpty(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
@@ -86,7 +87,7 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("emails/{email}")]
         public async Task<IActionResult> GetOrganizationsByEmail(string email)
         {
-            if (string.IsNullOrEmpty(email) || !IsValidEmail(email))
+            if (string.IsNullOrEmpty(email) || !ValidationService.IsValidEmail(email))
             {
                 return BadRequest("E-postadressen er ugyldig.");
             }
@@ -105,7 +106,7 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("{orgNumber}/personalcontacts")]
         public async Task<IActionResult> GetPersonalContacts(string orgNumber)
         {
-            if (string.IsNullOrEmpty(orgNumber) || !IsValidOrgNumber(orgNumber))
+            if (string.IsNullOrEmpty(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
@@ -121,24 +122,5 @@ namespace AltinnSupportDashboard.Controllers
             }
         }
 
-        // Helper method to validate the organization number format
-        private bool IsValidOrgNumber(string orgNumber)
-        {
-            // Norwegian organization numbers are typically 9 digits
-            return Regex.IsMatch(orgNumber, @"^\d{9}$");
-        }
-
-        // Helper method to validate phone number format
-        private bool IsValidPhoneNumber(string phoneNumber)
-        {
-            // Simple validation for Norwegian phone numbers
-            return Regex.IsMatch(phoneNumber, @"^\d{8}$");
-        }
-
-        // Helper method to validate email format
-        private bool IsValidEmail(string email)
-        {
-            return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-        }
     }
 }
