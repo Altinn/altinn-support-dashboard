@@ -1,9 +1,11 @@
-﻿using System.Text.Json;
+﻿using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Services.Interfaces;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace altinn_support_dashboard.Server.Services
 {
-    public class AltinnApiService
+    public class AltinnApiService : IAltinnApiService
     {
         private readonly AltinnApiClient _client;
 
@@ -12,7 +14,7 @@ namespace altinn_support_dashboard.Server.Services
             _client = client;
         }
 
-        public async Task<string> GetOrganizationInfo(string orgNumber)
+        public async Task<Organization> GetOrganizationInfo(string orgNumber)
         {
             if (string.IsNullOrWhiteSpace(orgNumber) || orgNumber.Length != 9 || !long.TryParse(orgNumber, out _))
             {
@@ -20,7 +22,7 @@ namespace altinn_support_dashboard.Server.Services
             }
 
             var result = await _client.GetOrganizationInfo(orgNumber);
-            var organizationInfo = JsonSerializer.Deserialize<string>(result, new JsonSerializerOptions
+            var organizationInfo = JsonSerializer.Deserialize<Organization>(result, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true
@@ -29,7 +31,7 @@ namespace altinn_support_dashboard.Server.Services
             return organizationInfo;
         }
 
-        public async Task<string> GetOrganizationsByPhoneNumber(string phoneNumber)
+        public async Task<List<PersonalContact>> GetOrganizationsByPhoneNumber(string phoneNumber)
         {
             if (string.IsNullOrWhiteSpace(phoneNumber) || !ValidationService.IsValidPhoneNumber(phoneNumber))
             {
@@ -37,7 +39,7 @@ namespace altinn_support_dashboard.Server.Services
             }
 
             var result = await _client.GetOrganizationsByPhoneNumber(phoneNumber);
-            var organizations = JsonSerializer.Deserialize<string>(result, new JsonSerializerOptions
+            var organizations = JsonSerializer.Deserialize<List<PersonalContact>>(result, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true
@@ -46,7 +48,7 @@ namespace altinn_support_dashboard.Server.Services
             return organizations;
         }
 
-        public async Task<string> GetOrganizationsByEmail(string email)
+        public async Task<List<PersonalContact>> GetOrganizationsByEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email) || !ValidationService.IsValidEmail(email))
             {
@@ -54,7 +56,7 @@ namespace altinn_support_dashboard.Server.Services
             }
 
             var result = await _client.GetOrganizationsByEmail(email);
-            var organizations = JsonSerializer.Deserialize<string>(result, new JsonSerializerOptions
+            var organizations = JsonSerializer.Deserialize<List<PersonalContact>>(result, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true
@@ -63,7 +65,7 @@ namespace altinn_support_dashboard.Server.Services
             return organizations;
         }
 
-        public async Task<string> GetPersonalContacts(string orgNumber)
+        public async Task<List<PersonalContact>> GetPersonalContacts(string orgNumber)
         {
             if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
             {
@@ -71,7 +73,7 @@ namespace altinn_support_dashboard.Server.Services
             }
 
             var result = await _client.GetPersonalContacts(orgNumber);
-            var personalContacts = JsonSerializer.Deserialize<string>(result, new JsonSerializerOptions
+            var personalContacts = JsonSerializer.Deserialize<List<PersonalContact>>(result, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true

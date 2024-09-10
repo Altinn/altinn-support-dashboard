@@ -40,6 +40,8 @@ namespace AltinnSupportDashboard
                 {
                     services.AddScoped<DataBrregClient>();
                     services.AddScoped<IDataBrregService, DataBrregService>();
+                    services.AddScoped<AltinnApiClient>();
+                    services.AddScoped<IAltinnApiService, AltinnApiService>();
                 });
 
     }

@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using altinn_support_dashboard.Server.Services;
+using altinn_support_dashboard.Server.Services.Interfaces;
 
 namespace AltinnSupportDashboard.Controllers
 {
@@ -9,11 +10,11 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/serviceowner/organizations")]
     public class Altinn_Intern_APIController : ControllerBase
     {
-        private readonly AltinnApiClient _altinnApiClient;
+        private readonly IAltinnApiService _altinnApiService;
 
-        public Altinn_Intern_APIController(AltinnApiClient altinnApiClient)
+        public Altinn_Intern_APIController(IAltinnApiService altinnApiService)
         {
-            _altinnApiClient = altinnApiClient;
+            _altinnApiService = altinnApiService;
         }
 
         [HttpGet("search")]
@@ -52,7 +53,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-                var organizationInfo = await _altinnApiClient.GetOrganizationInfo(orgNumber);
+                var organizationInfo = await _altinnApiService.GetOrganizationInfo(orgNumber);
                 return Ok(organizationInfo);
             }
             catch (System.Exception ex)
@@ -75,7 +76,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-                var organizations = await _altinnApiClient.GetOrganizationsByPhoneNumber(phoneNumber);
+                var organizations = await _altinnApiService.GetOrganizationsByPhoneNumber(phoneNumber);
                 return Ok(organizations);
             }
             catch (System.Exception ex)
@@ -94,7 +95,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-                var organizations = await _altinnApiClient.GetOrganizationsByEmail(email);
+                var organizations = await _altinnApiService.GetOrganizationsByEmail(email);
                 return Ok(organizations);
             }
             catch (System.Exception ex)
@@ -113,7 +114,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-                var personalContacts = await _altinnApiClient.GetPersonalContacts(orgNumber);
+                var personalContacts = await _altinnApiService.GetPersonalContacts(orgNumber);
                 return Ok(personalContacts);
             }
             catch (System.Exception ex)
