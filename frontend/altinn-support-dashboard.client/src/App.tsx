@@ -39,16 +39,16 @@ const App: React.FC = () => {
             setError(null);
 
             const orgData: Organization[] = Array.isArray(data) ? data : [data];
-            const parentOrgs = orgData.filter(org => org.Type !== 'BEDR' && org.Type !== 'AAFY');
+            const parentOrgs = orgData.filter(org => org.type !== 'BEDR' && org.type !== 'AAFY');
 
             const relevantSubUnits: Subunit[] = [];
             for (const org of parentOrgs) {
-                const subunitRes = await fetch(`https://data.brreg.no/enhetsregisteret/api/underenheter?overordnetEnhet=${org.OrganizationNumber}&registrertIMvaregisteret=false`);
+                const subunitRes = await fetch(`https://data.brreg.no/enhetsregisteret/api/underenheter?overordnetEnhet=${org.organizationNumber}&registrertIMvaregisteret=false`);
                 const subunitData = await subunitRes.json();
 
                 if (subunitData?._embedded?.underenheter) {
                     relevantSubUnits.push(...subunitData._embedded.underenheter.filter((sub: any) =>
-                        orgData.some(org => org.OrganizationNumber === sub.organisasjonsnummer)
+                        orgData.some(org => org.organizationNumber === sub.organisasjonsnummer)
                     ).map((sub: any) => ({
                         navn: sub.navn,
                         organisasjonsnummer: sub.organisasjonsnummer,
@@ -57,7 +57,7 @@ const App: React.FC = () => {
                 }
             }
 
-            const filteredOrganizations = orgData.filter(org => !relevantSubUnits.some(sub => sub.organisasjonsnummer === org.OrganizationNumber));
+            const filteredOrganizations = orgData.filter(org => !relevantSubUnits.some(sub => sub.organisasjonsnummer === org.organizationNumber));
 
             setOrganizations(filteredOrganizations);
             setSubUnits(relevantSubUnits);
@@ -161,33 +161,33 @@ const App: React.FC = () => {
                             </div>
                         ) : (
                             organizations.map((org) => (
-                                <div key={org?.OrganizationNumber} className="org-card-container">
+                                <div key={org?.organizationNumber} className="org-card-container">
                                     <div
-                                        className={`org-card ${selectedOrg?.OrganizationNumber === org?.OrganizationNumber ? 'selected' : ''}`}
-                                        onClick={() => handleSelectOrg(org.OrganizationNumber, org.Name)}
+                                        className={`org-card ${selectedOrg?.OrganizationNumber === org?.organizationNumber ? 'selected' : ''}`}
+                                        onClick={() => handleSelectOrg(org.organizationNumber, org.name)}
                                     >
-                                        <h3>{org?.Name}</h3>
-                                        <p>Org Nr: {org?.OrganizationNumber}</p>
-                                        <p>Type: {org?.Type}</p>
+                                        <h3>{org?.name}</h3>
+                                        <p>Org Nr: {org?.organizationNumber}</p>
+                                        <p>Type: {org?.type}</p>
 
-                                        {subUnits.some(sub => sub.overordnetEnhet === org.OrganizationNumber) && (
+                                        {subUnits.some(sub => sub.overordnetEnhet === org.organizationNumber) && (
                                             <Button
                                                 variant='secondary'
                                                 className="expand-button"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleExpandToggle(org.OrganizationNumber);
+                                                    handleExpandToggle(org.organizationNumber);
                                                 }}
                                             >
-                                                {expandedOrg === org.OrganizationNumber ? '-' : '+'}
+                                                {expandedOrg === org.organizationNumber ? '-' : '+'}
                                             </Button>
                                         )}
                                     </div>
 
-                                    {expandedOrg === org.OrganizationNumber && (
+                                    {expandedOrg === org.organizationNumber && (
                                         <div className="subunits">
                                             {subUnits
-                                                .filter(sub => sub.overordnetEnhet === org.OrganizationNumber)
+                                                .filter(sub => sub.overordnetEnhet === org.organizationNumber)
                                                 .map(sub => (
                                                     <div
                                                         key={sub.organisasjonsnummer}
@@ -221,11 +221,11 @@ const App: React.FC = () => {
                                 </thead>
                                 <tbody>
                                     {moreInfo.map((contact) => (
-                                        <tr key={contact.PersonalContactId}>
-                                            <td>{contact.Name}</td>
-                                            <td>{contact.SocialSecurityNumber}</td>
-                                            <td>{contact.MobileNumber}</td>
-                                            <td>{contact.EMailAddress}</td>
+                                        <tr key={contact.personalContactId}>
+                                            <td>{contact.name}</td>
+                                            <td>{contact.socialSecurityNumber}</td>
+                                            <td>{contact.mobileNumber}</td>
+                                            <td>{contact.eMailAddress}</td>
                                         </tr>
                                     ))}
                                 </tbody>

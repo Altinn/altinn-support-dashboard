@@ -1,23 +1,47 @@
 export interface Organization {
-    Name: string;
-    OrganizationNumber: string;
-    Type: string;
-    _links: {
-        Rel: string;
-        Href: string;
-    }[];
+    name: string;
+    organizationNumber: string;
+    type: string;
+    lastChanged: string;
+    lastConfirmed: string;
+    _links: OrganizationLink[];
+}
+
+export interface OrganizationLink {
+    rel: string;
+    href: string;
+    title: string;
+    fileNameWithExtension: string;
+    mimeType: string;
+    isTemplated: boolean;
+    encrypted: boolean;
+    signingLocked: boolean;
+    signedByDefault: boolean;
+    fileSize: number;
 }
 
 export interface PersonalContact {
-    PersonalContactId: string;
-    Name: string;
-    SocialSecurityNumber: string;
-    MobileNumber: string;
-    EMailAddress: string;
-    _links: {
-        Rel: string;
-        Href: string;
-    }[];
+    personalContactId: string;
+    name: string;
+    socialSecurityNumber: string;
+    mobileNumber: string;
+    mobileNumberChanged: string;
+    eMailAddress: string;
+    eMailAddressChanged: string;
+    _links: PersonalContactLink[];
+}
+
+export interface PersonalContactLink {
+    rel: string;
+    href: string;
+    title: string;
+    fileNameWithExtension: string;
+    mimeType: string;
+    isTemplated: boolean;
+    encrypted: boolean;
+    signingLocked: boolean;
+    signedByDefault: boolean;
+    fileSize: number;
 }
 
 export interface Subunit {

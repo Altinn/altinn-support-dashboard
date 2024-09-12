@@ -31,7 +31,7 @@ namespace altinn_support_dashboard.Server.Services
             return organizationInfo;
         }
 
-        public async Task<List<PersonalContact>> GetOrganizationsByPhoneNumber(string phoneNumber)
+        public async Task<List<OrganizationByPhoneMail>> GetOrganizationsByPhoneNumber(string phoneNumber)
         {
             if (string.IsNullOrWhiteSpace(phoneNumber) || !ValidationService.IsValidPhoneNumber(phoneNumber))
             {
@@ -39,7 +39,7 @@ namespace altinn_support_dashboard.Server.Services
             }
 
             var result = await _client.GetOrganizationsByPhoneNumber(phoneNumber);
-            var organizations = JsonSerializer.Deserialize<List<PersonalContact>>(result, new JsonSerializerOptions
+            var organizations = JsonSerializer.Deserialize<List<OrganizationByPhoneMail>>(result, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true
@@ -48,7 +48,7 @@ namespace altinn_support_dashboard.Server.Services
             return organizations;
         }
 
-        public async Task<List<PersonalContact>> GetOrganizationsByEmail(string email)
+        public async Task<List<OrganizationByPhoneMail>> GetOrganizationsByEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email) || !ValidationService.IsValidEmail(email))
             {
@@ -56,7 +56,7 @@ namespace altinn_support_dashboard.Server.Services
             }
 
             var result = await _client.GetOrganizationsByEmail(email);
-            var organizations = JsonSerializer.Deserialize<List<PersonalContact>>(result, new JsonSerializerOptions
+            var organizations = JsonSerializer.Deserialize<List<OrganizationByPhoneMail>>(result, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true
