@@ -397,3 +397,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /backend/test/altinn-support-dashboard.backend.Tests/altinn-support-dashboard.backend.Tests.csproj
+/backend/src/altinn-support-dashboard.backend/EnvironmentConfigurations.xml
