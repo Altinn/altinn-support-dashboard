@@ -1,5 +1,6 @@
 ﻿using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using altinn_support_dashboard.Server.Validation;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 

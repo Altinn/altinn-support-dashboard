@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using altinn_support_dashboard.Server.Validation;
 
 namespace altinn_support_dashboard.Server.Controllers
 {
@@ -18,7 +19,7 @@ namespace altinn_support_dashboard.Server.Controllers
         [HttpGet("{orgNumber}")]
         public async Task<IActionResult> GetRoles(string orgNumber)
         {
-            if (string.IsNullOrWhiteSpace(orgNumber) || orgNumber.Length != 9 || !long.TryParse(orgNumber, out _))
+            if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
@@ -34,7 +35,35 @@ namespace altinn_support_dashboard.Server.Controllers
             }
             catch (HttpRequestException ex)
             {
-                return StatusCode(503, ex.Message); // Service Unavailable
+                return StatusCode(503, ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // GET: databrreg/{orgNumber}/underenheter
+        [HttpGet("{orgNumber}/underenheter")]
+        public async Task<IActionResult> GetUnderenheter(string orgNumber)
+        {
+            if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
+            {
+                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+            }
+
+            try
+            {
+                var result = await _dataBrregService.GetUnderenheter(orgNumber);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (HttpRequestException ex)
+            {
+                return StatusCode(503, ex.Message);
             }
             catch (Exception)
             {

@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace altinn_support_dashboard.Server.Services
+namespace altinn_support_dashboard.Server.Validation
 {
     public static class ValidationService
     {
