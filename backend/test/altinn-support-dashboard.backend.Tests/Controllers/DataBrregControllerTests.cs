@@ -54,5 +54,41 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             Assert.IsType<ErRollerModel>(okResult.Value);
 
         }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("123")]
+        [InlineData("12345678")]
+        [InlineData("123456789333")]
+        [InlineData("abcdefghij")]
+        public async Task GetUnderenheter_ReturnsBadRequest_WhenOrgNumberLengthIsInvalid(string invalidOrgNumber)
+        {
+            // Act
+            var result = await _controller.GetUnderenheter(invalidOrgNumber);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task GetUnderenheter_ReturnsOk_WhenOrgNumberLengthIsValid()
+        {
+            // Arrange
+            string validOrgNumber = "123456789";
+            _mockService.Setup(service => service.GetUnderenheter(validOrgNumber))
+                        .ReturnsAsync(new UnderenhetRootObject());
+
+
+            // Act
+            var result = await _controller.GetUnderenheter(validOrgNumber);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+
+            Assert.IsType<UnderenhetRootObject>(okResult.Value);
+
+        }
     }
 }
