@@ -38,7 +38,7 @@ const App: React.FC = () => {
 
             const relevantSubUnits: Subunit[] = [];
             for (const org of parentOrgs) {
-                const subunitRes = await fetch(`https://data.brreg.no/enhetsregisteret/api/underenheter?overordnetEnhet=${org.organizationNumber}&registrertIMvaregisteret=false`);
+                const subunitRes = await fetch(`${baseUrl}/brreg/${org.organizationNumber}/underenheter`);
                 const subunitData = await subunitRes.json();
 
                 if (subunitData?._embedded?.underenheter) {
