@@ -83,5 +83,15 @@ namespace altinn_support_dashboard.Server.Services
             return personalContacts;
         }
 
+        public async Task<string> GetPersonRoles(string subject, string reportee)
+        {
+            if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))
+            {
+                throw new ArgumentException("Subject eller Reportee er ugyldig.");
+            }
+
+            return await _client.GetPersonRoles(subject, reportee);
+        }
+
     }
 }

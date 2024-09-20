@@ -17,5 +17,25 @@ namespace altinn_support_dashboard.Server.Validation
         {
             return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
+
+        public static bool IsValidSubjectOrReportee(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            if (value.Length == 9 && long.TryParse(value, out _))
+            {
+                return true;
+            }
+
+            if (value.Length == 11 && long.TryParse(value, out _))
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

@@ -123,5 +123,24 @@ namespace AltinnSupportDashboard.Controllers
             }
         }
 
+        [HttpGet("/{subject}/roles/{reportee}")]
+        public async Task<IActionResult> GetPersonRoles(string subject, string reportee)
+        {
+            if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))
+            {
+                return BadRequest("Subject eller reportee er ugyldig.");
+            }
+
+            try
+            {
+                var roles = await _altinnApiService.GetPersonRoles(subject, reportee);
+                return Ok(roles);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"Intern serverfeil: {ex.Message}");
+            }
+        }
+
     }
 }
