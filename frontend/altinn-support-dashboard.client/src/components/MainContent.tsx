@@ -29,7 +29,7 @@ const MainContent: React.FC<{
 
         const handleViewRoles = async (subject: string, reportee: string) => {
             try {
-                const res = await fetch(`/serviceowner/authorization/roles?subject=${subject}&reportee=${reportee}`);
+                const res = await fetch(`/serviceowner/${subject}/roles/${reportee}`);
                 if (!res.ok) {
                     throw new Error(`Error fetching roles: ${res.status}`);
                 }
