@@ -1,9 +1,9 @@
 ﻿import React, { useState } from 'react';
 import './App.css';
-import Sidebar from './components/Sidebar';
-import SearchComponent from './components/Searchcomponent';
-import MainContent from './components/MainContent';
-import { Organization, PersonalContact, Subunit, ERRole } from './models/models';
+import Sidebar from '../components/Sidebar/SidebarComponent';
+import SearchComponent from '../components/TopSearchBar/TopSearchBarComponent';
+import MainContent from '../components/MainContent/MainContentComponent';
+import { Organization, PersonalContact, Subunit, ERRole } from '../models/models';
 
 const App: React.FC = () => {
     const [query, setQuery] = useState('');
