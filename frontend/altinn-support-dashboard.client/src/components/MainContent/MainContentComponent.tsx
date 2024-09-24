@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { Organization, Subunit, PersonalContact, ERRole } from '../models/models';
+import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
 import { Skeleton, Button, Search } from '@digdir/designsystemet-react';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 

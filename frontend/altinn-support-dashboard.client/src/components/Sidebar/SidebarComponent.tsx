@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@digdir/designsystemet-react';
-import logo from '../assets/logo.png';
+import logo from '../../assets/logo.png';
 
 const Sidebar: React.FC<{ environment: string, isEnvDropdownOpen: boolean, toggleEnvDropdown: () => void, handleEnvChange: (env: string) => void }> = ({ environment, isEnvDropdownOpen, toggleEnvDropdown, handleEnvChange }) => (
     <aside className="sidebar">
