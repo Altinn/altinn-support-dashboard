@@ -123,7 +123,7 @@ namespace AltinnSupportDashboard.Controllers
             }
         }
 
-        [HttpGet("/{subject}/roles/{reportee}")]
+        [HttpGet("/api/serviceowner/{subject}/roles/{reportee}")]
         public async Task<IActionResult> GetPersonRoles(string subject, string reportee)
         {
             if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))

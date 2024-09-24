@@ -20,12 +20,11 @@ const App: React.FC = () => {
 
     const baseUrl = 'https://localhost:7174/api';
 
-    const removewhitespacequery = query.replace(/\s/g, "");
-
     const handleSearch = async () => {
+        const trimmedQuery = query.replace(/\s/g, "");
         setIsLoading(true);
         try {
-            const res = await fetch(`${baseUrl}/serviceowner/organizations/search?query=${encodeURIComponent(removewhitespacequery)}`);
+            const res = await fetch(`${baseUrl}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`);
             if (!res.ok) {
                 throw new Error(`Feil ${res.status}: ${res.statusText}`);
             }
@@ -111,6 +110,7 @@ const App: React.FC = () => {
             <main className="main-content">
                 <SearchComponent query={query} setQuery={setQuery} handleSearch={handleSearch} />
                 <MainContent
+                    baseUrl={baseUrl} // pass the baseUrl down to MainContent
                     isLoading={isLoading}
                     organizations={organizations}
                     subUnits={subUnits}

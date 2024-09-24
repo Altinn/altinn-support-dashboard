@@ -1,8 +1,10 @@
 ﻿import React, { useState } from 'react';
 import { Organization, Subunit, PersonalContact, ERRole } from '../models/models';
-import { Skeleton, Button } from '@digdir/designsystemet-react';
+import { Skeleton, Button, Search } from '@digdir/designsystemet-react';
+import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 
 const MainContent: React.FC<{
+    baseUrl: string,  // Add baseUrl prop
     isLoading: boolean,
     organizations: Organization[],
     subUnits: Subunit[],
@@ -13,6 +15,7 @@ const MainContent: React.FC<{
     handleSelectOrg: (organizationNumber: string, name: string) => void,
     handleExpandToggle: (orgNumber: string) => void
 }> = ({
+    baseUrl,
     isLoading,
     organizations,
     subUnits,
@@ -26,86 +29,117 @@ const MainContent: React.FC<{
         const [selectedContact, setSelectedContact] = useState<PersonalContact | null>(null);
         const [roleInfo, setRoleInfo] = useState<any[]>([]); // Role info returned from API
         const [isRoleView, setIsRoleView] = useState(false);
+        const [showOrgList, setShowOrgList] = useState(true); // Controls the visibility of the org list
+        const [searchQuery, setSearchQuery] = useState(''); // To hold the search query
 
         const handleViewRoles = async (subject: string, reportee: string) => {
             try {
-                const res = await fetch(`/serviceowner/${subject}/roles/${reportee}`);
+                const res = await fetch(`${baseUrl}/serviceowner/${subject}/roles/${reportee}`);
                 if (!res.ok) {
                     throw new Error(`Error fetching roles: ${res.status}`);
                 }
                 const data = await res.json();
-                setRoleInfo(data._embedded['sample string 22']); // Assuming this is the format
+                setRoleInfo(data);
                 setIsRoleView(true);
+                setShowOrgList(false); // Hide org list when viewing roles
             } catch (error) {
                 console.error(error);
             }
         };
 
+        const filterContacts = (contacts: PersonalContact[]) => {
+            if (searchQuery.length < 3) return contacts; // Return all contacts if query is less than 3 characters
+
+            return contacts.filter(contact =>
+                contact.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                contact.socialSecurityNumber?.includes(searchQuery) ||
+                contact.mobileNumber?.includes(searchQuery) ||
+                contact.eMailAddress?.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        };
+
         return (
             <div className="results-section">
-                <div className="org-list">
-                    {isLoading ? (
-                        <div>
-                            <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
-                            <br />
-                            <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
-                            <br />
-                            <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
-                        </div>
-                    ) : (
-                        organizations.map((org) => (
-                            <div key={org?.organizationNumber} className="org-card-container">
-                                <div
-                                    className={`org-card ${selectedOrg?.OrganizationNumber === org?.organizationNumber ? 'selected' : ''}`}
-                                    onClick={() => handleSelectOrg(org.organizationNumber, org.name)}
-                                >
-                                    <h3>{org?.name}</h3>
-                                    <p>Org Nr: {org?.organizationNumber}</p>
-                                    <p>Type: {org?.type}</p>
+                {showOrgList && (
+                    <div className={`org-list ${isRoleView ? 'hidden' : ''}`}>
+                        {isLoading ? (
+                            <div>
+                                <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
+                                <br />
+                                <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
+                                <br />
+                                <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
+                            </div>
+                        ) : (
+                            organizations.map((org) => (
+                                <div key={org?.organizationNumber} className="org-card-container">
+                                    <div
+                                        className={`org-card ${selectedOrg?.OrganizationNumber === org?.organizationNumber ? 'selected' : ''}`}
+                                        onClick={() => handleSelectOrg(org.organizationNumber, org.name)}
+                                    >
+                                        <h3>{org?.name}</h3>
+                                        <p>Org Nr: {org?.organizationNumber}</p>
+                                        <p>Type: {org?.type}</p>
 
-                                    {subUnits.some(sub => sub.overordnetEnhet === org.organizationNumber) && (
-                                        <Button
-                                            variant='secondary'
-                                            className="expand-button"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleExpandToggle(org.organizationNumber);
-                                            }}
-                                        >
-                                            {expandedOrg === org.organizationNumber ? '-' : '+'}
-                                        </Button>
+                                        {subUnits.some(sub => sub.overordnetEnhet === org.organizationNumber) && (
+                                            <Button
+                                                variant='secondary'
+                                                className="expand-button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleExpandToggle(org.organizationNumber);
+                                                }}
+                                            >
+                                                {expandedOrg === org.organizationNumber ? <ChevronUpIcon title="a11y-title" fontSize="1.5rem" /> : <ChevronDownIcon title="a11y-title" fontSize="1.5rem" />}
+                                            </Button>
+                                        )}
+                                    </div>
+
+                                    {expandedOrg === org.organizationNumber && (
+                                        <div className="subunits">
+                                            {subUnits
+                                                .filter(sub => sub.overordnetEnhet === org.organizationNumber)
+                                                .map(sub => (
+                                                    <div
+                                                        key={sub.organisasjonsnummer}
+                                                        className="subunit-card"
+                                                        onClick={() => handleSelectOrg(sub.organisasjonsnummer, sub.navn)}
+                                                    >
+                                                        <h4>{sub.navn}</h4>
+                                                        <p>Org Nr: {sub.organisasjonsnummer}</p>
+                                                    </div>
+                                                ))}
+                                        </div>
                                     )}
                                 </div>
-
-                                {expandedOrg === org.organizationNumber && (
-                                    <div className="subunits">
-                                        {subUnits
-                                            .filter(sub => sub.overordnetEnhet === org.organizationNumber)
-                                            .map(sub => (
-                                                <div
-                                                    key={sub.organisasjonsnummer}
-                                                    className="subunit-card"
-                                                    onClick={() => handleSelectOrg(sub.organisasjonsnummer, sub.navn)}
-                                                >
-                                                    <h4>{sub.navn}</h4>
-                                                    <p>Org Nr: {sub.organisasjonsnummer}</p>
-                                                </div>
-                                            ))}
-                                    </div>
-                                )}
-                            </div>
-                        ))
-                    )}
-                </div>
+                            ))
+                        )}
+                    </div>
+                )}
 
                 {selectedOrg && (
-                    <div className="org-details">
+                    <div className={`org-details ${isRoleView ? 'full-width' : ''}`}>
                         <h2>{selectedOrg.Name}</h2>
+
+                        {/* Search bar on the right */}
+
 
                         {!isRoleView ? (
                             <>
                                 <br />
-                                <h3>Organisasjonsinfo</h3>
+
+                                <h3>Organisasjonsoversikt</h3>
+                                <div style={{ width: '400px', display: 'flex', justifyContent: 'flex-end', marginLeft: 'auto', marginTop: '-55px', textAlign: 'center' } }>
+
+                                    <Search
+                                        label="Søk i kontakter"
+                                        size="sm"
+                                        placeholder="Navn / SSN / Telefon / E-post"
+                                        clearButtonLabel='Empty'
+                                        variant="simple"
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                </div>
                                 <table className="contact-table">
                                     <thead>
                                         <tr>
@@ -117,7 +151,7 @@ const MainContent: React.FC<{
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {moreInfo.map((contact) => (
+                                        {filterContacts(moreInfo).map((contact) => (
                                             <tr key={contact.personalContactId}>
                                                 <td>{contact.name}</td>
                                                 <td>{contact.socialSecurityNumber}</td>
@@ -163,18 +197,21 @@ const MainContent: React.FC<{
                             </>
                         ) : (
                             <>
-                                <h3>Roles for {selectedContact?.name}</h3>
-                                    <Button variant="tertiary" onClick={() => setIsRoleView(false)}>
-                                    Back to Organization Info
+                                <h3>Roller knyttet til {selectedContact?.name}</h3>
+                                <Button variant="tertiary" onClick={() => {
+                                    setIsRoleView(false);
+                                    setShowOrgList(true); // Show org list when closing roles
+                                }}>
+                                    Tilbake til oversikt
                                 </Button>
                                 <br />
                                 <table className="roles-table">
                                     <thead>
                                         <tr>
-                                            <th>Role Type</th>
-                                            <th>Role Definition ID</th>
-                                            <th>Role Name</th>
-                                            <th>Role Description</th>
+                                            <th>Rolletype</th>
+                                            <th>Rolledefinisjons-ID</th>
+                                            <th>Rollenavn</th>
+                                            <th>Rollebeskrivelse</th>
                                         </tr>
                                     </thead>
                                     <tbody>

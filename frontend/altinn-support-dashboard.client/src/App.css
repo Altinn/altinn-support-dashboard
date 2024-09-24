@@ -3,13 +3,10 @@
 
 * {
     margin: 0;
-    padding: 0;
+
     box-sizing: border-box;
 }
 
-#searchbar{
-    padding: 10px
-}
 body, html {
     font-family: "Inter", sans-serif;
     height: 100%;
@@ -27,6 +24,7 @@ body, html {
 /* Sidebar Styling */
 .sidebar {
     width: 250px;
+    min-width: 250px;
     background-color: #004a70; /* Base Default (Accent) */
     color: #fff;
     display: flex;
@@ -73,8 +71,6 @@ body, html {
         position: relative;
         z-index: 1;
     }
-
-       
 
     .nav-button:hover {
         background-color: #d1e3f3; /* Surface Default (Accent) */
@@ -179,7 +175,7 @@ body, html {
     display: flex;
     flex-grow: 1;
     gap: 20px;
-    overflow: hidden; /* Ensure the content doesn't cause a page-wide scroll */
+    overflow: hidden;
 }
 
 .org-list {
@@ -188,7 +184,31 @@ body, html {
     flex-direction: column;
     gap: 20px;
     overflow-y: auto;
+    transition: all 0.5s ease; /* Smooth transition for hiding */
 }
+
+    .org-list.hidden {
+        opacity: 0;
+        width: 0;
+        visibility: hidden;
+    }
+
+.org-details {
+    flex: 2;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+    overflow-x: auto;
+    transition: all 0.5s ease; /* Smooth transition for expanding */
+}
+
+    .org-details.full-width {
+        flex: 1;
+        width: 100%;
+    }
 
 .org-card-container {
     position: relative;
@@ -218,8 +238,8 @@ body, html {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #004a70; /* Base Default (Accent) */
-    color: #fff;
+    
+  color: black;
     border: none;
     border-radius: 50%;
     width: 30px;
@@ -262,17 +282,6 @@ body, html {
         font-size: 14px;
     }
 
-.org-details {
-    flex: 2;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    max-height: calc(100vh - 100px);
-    overflow-x: auto;
-}
-
 .contact-table, .roles-table {
     width: 100%;
     border-collapse: collapse;
@@ -292,3 +301,31 @@ body, html {
         color: #ffffff;
     }
 
+/* Transition for Roles View */
+.org-details.full-width {
+    animation: slideIn 0.2s ease-in-out forwards;
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
