@@ -1,6 +1,0 @@
-@altinn_support_dashboard.Server_HostAddress = http://localhost:5072
-
-GET {{altinn_support_dashboard.Server_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

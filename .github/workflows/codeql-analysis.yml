@@ -1,0 +1,49 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ "30-implementering-av-oppslag-for-enhetsregisterroller-er-roller" ]
+    paths:
+    - 'src/**'
+  pull_request:
+    branches: [ "30-implementering-av-oppslag-for-enhetsregisterroller-er-roller" ]
+    paths:
+    - 'src/**'
+  schedule:
+    - cron: '35 18 * * 3'
+
+jobs:
+  analyze:
+    name: Analyze C#
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 8.0.* SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: |
+          8.0.x
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Build Solution
+      run: dotnet build ./altinn-support-dashboard.sln
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
