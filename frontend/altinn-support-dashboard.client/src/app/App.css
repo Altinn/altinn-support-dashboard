@@ -305,6 +305,45 @@ body, html {
 .org-details.full-width {
     animation: slideIn 0.2s ease-in-out forwards;
 }
+.error-message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed; /* Make it float over content */
+    top: 50%; /* Vertically center */
+    left: 50%; /* Horizontally center */
+    transform: translate(-50%, -50%); /* Center it with transform */
+    background-color: #fefefe; /* Soft white background */
+    color: #d9534f; /* Soft red color for the text */
+    font-size: 1rem; /* Slightly smaller text size */
+    padding: 20px; /* Padding inside the box */
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Soft shadow for a floating effect */
+    border: 1px solid #f5c6cb; /* Soft red border */
+    max-width: 400px; /* Limit the size of the error box */
+    width: 80%; /* Adjust width relative to the screen */
+    text-align: center; /* Center the text */
+    z-index: 1000; /* Ensure it floats above other content */
+}
+
+    .error-message p {
+        margin: 0 0 10px 0; /* Space between the message and any response */
+    }
+
+.error-response {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 0.9rem; /* Slightly smaller font for response */
+    color: #721c24;
+    white-space: pre-wrap; /* Keep formatting in the response */
+    max-height: 150px; /* Limit the height */
+    overflow-y: auto; /* Add scrolling if the response is long */
+    width: 100%; /* Make sure it fits inside the error box */
+}
+
 
 @keyframes slideIn {
     0% {
