@@ -3,42 +3,42 @@ using System.Collections.Generic;
 
 public class Links
 {
-    public Self self { get; set; }
-    public OverordnetEnhet overordnetEnhet { get; set; }
+    public Self? self { get; set; }
+    public OverordnetEnhet? overordnetEnhet { get; set; }
 }
 
 public class Self
 {
-    public string href { get; set; }
+    public string? href { get; set; }
 }
 
 public class OverordnetEnhet
 {
-    public string href { get; set; }
+    public string? href { get; set; }
 }
 
 public class Organisasjonsform
 {
-    public string kode { get; set; }
-    public string beskrivelse { get; set; }
-    public Links _links { get; set; }
+    public string? kode { get; set; }
+    public string? beskrivelse { get; set; }
+    public Links? _links { get; set; }
 }
 
 public class Naeringskode
 {
-    public string kode { get; set; }
-    public string beskrivelse { get; set; }
+    public string? kode { get; set; }
+    public string? beskrivelse { get; set; }
 }
 
 public class Adresse
 {
-    public string land { get; set; }
-    public string landkode { get; set; }
-    public string postnummer { get; set; }
-    public string poststed { get; set; }
-    public List<string> adresse { get; set; }
-    public string kommune { get; set; }
-    public string kommunenummer { get; set; }
+    public string? land { get; set; }
+    public string? landkode { get; set; }
+    public string? postnummer { get; set; }
+    public string? poststed { get; set; }
+    public List<string>? adresse { get; set; }
+    public string? kommune { get; set; }
+    public string? kommunenummer { get; set; }
 }
 
 public class UnderEnhet
