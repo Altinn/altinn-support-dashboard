@@ -1,5 +1,8 @@
-import { fileURLToPath, URL } from 'node:url';
+/// <reference types="vitest" />
+/// <reference types="vite/client" />
 
+import { fileURLToPath, URL } from 'node:url';
+import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import plugin from '@vitejs/plugin-react';
 import fs from 'fs';
@@ -53,5 +56,10 @@ export default defineConfig({
             key: fs.readFileSync(keyFilePath),
             cert: fs.readFileSync(certFilePath),
         }
-    }
+    },
+    test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: ['./src/setupTests.ts'],
+    },
 })
