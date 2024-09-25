@@ -1,7 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
 import { Skeleton, Button, Search, Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
-
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 
 const MainContent: React.FC<{
@@ -15,7 +14,7 @@ const MainContent: React.FC<{
     expandedOrg: string | null,
     handleSelectOrg: (organizationNumber: string, name: string) => void,
     handleExpandToggle: (orgNumber: string) => void,
-    error: { message: string, response?: string | null } // Handle both message and response
+    error: { message: string, response?: string | null }
 }> = ({
     baseUrl,
     isLoading,
@@ -67,10 +66,8 @@ const MainContent: React.FC<{
                         {isLoading ? (
                             <div>
                                 {error.message ? (
-                                    // Display the error message if it exists
                                     <Alert severity="danger">
                                         <Heading
-                                      
                                             level={2}
                                             role="alert"
                                             size="xs"
@@ -85,7 +82,6 @@ const MainContent: React.FC<{
                                         )}
                                     </Alert>
                                 ) : (
-                                    // Show skeletons when loading and no error is present
                                     <>
                                         <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
                                         <br />
@@ -96,10 +92,8 @@ const MainContent: React.FC<{
                                 )}
                             </div>
                         ) : error.message ? (
-                            // If there's an error after loading finishes, show the error message
-                                <Alert severity="danger" >
-                                    <Heading
-                                    
+                            <Alert severity="danger">
+                                <Heading
                                     level={2}
                                     role="alert"
                                     size="xs"
@@ -114,7 +108,6 @@ const MainContent: React.FC<{
                                 )}
                             </Alert>
                         ) : (
-                            // If no error, show the organizations
                             organizations.map((org) => (
                                 <div key={org?.organizationNumber} className="org-card-container">
                                     <div
@@ -226,7 +219,7 @@ const MainContent: React.FC<{
                                         {rolesInfo.map((roleGroup, index) => (
                                             roleGroup.roller.map((role, roleIndex) => (
                                                 <tr key={`${index}-${roleIndex}`}>
-                                                    <td>{role?.type.beskrivelse}</td>
+                                                    <td>{role?.type?.beskrivelse}</td>
                                                     <td>{role?.person?.navn.fornavn} {role?.person?.navn.etternavn}</td>
                                                     <td>{roleGroup.sistEndret}</td>
                                                 </tr>
