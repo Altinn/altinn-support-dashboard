@@ -1,10 +1,10 @@
 ﻿import React, { useState } from 'react';
 import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
-import { Skeleton, Button, Search } from '@digdir/designsystemet-react';
+import { Skeleton, Button, Search, Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 
 const MainContent: React.FC<{
-    baseUrl: string,  // Add baseUrl prop
+    baseUrl: string,
     isLoading: boolean,
     organizations: Organization[],
     subUnits: Subunit[],
@@ -13,7 +13,8 @@ const MainContent: React.FC<{
     rolesInfo: ERRole[],
     expandedOrg: string | null,
     handleSelectOrg: (organizationNumber: string, name: string) => void,
-    handleExpandToggle: (orgNumber: string) => void
+    handleExpandToggle: (orgNumber: string) => void,
+    error: { message: string, response?: string | null }
 }> = ({
     baseUrl,
     isLoading,
@@ -24,13 +25,14 @@ const MainContent: React.FC<{
     rolesInfo,
     expandedOrg,
     handleSelectOrg,
-    handleExpandToggle
+    handleExpandToggle,
+    error
 }) => {
         const [selectedContact, setSelectedContact] = useState<PersonalContact | null>(null);
-        const [roleInfo, setRoleInfo] = useState<any[]>([]); // Role info returned from API
+        const [roleInfo, setRoleInfo] = useState<any[]>([]);
         const [isRoleView, setIsRoleView] = useState(false);
-        const [showOrgList, setShowOrgList] = useState(true); // Controls the visibility of the org list
-        const [searchQuery, setSearchQuery] = useState(''); // To hold the search query
+        const [showOrgList, setShowOrgList] = useState(true);
+        const [searchQuery, setSearchQuery] = useState('');
 
         const handleViewRoles = async (subject: string, reportee: string) => {
             try {
@@ -41,15 +43,14 @@ const MainContent: React.FC<{
                 const data = await res.json();
                 setRoleInfo(data);
                 setIsRoleView(true);
-                setShowOrgList(false); // Hide org list when viewing roles
+                setShowOrgList(false);
             } catch (error) {
                 console.error(error);
             }
         };
 
         const filterContacts = (contacts: PersonalContact[]) => {
-            if (searchQuery.length < 3) return contacts; // Return all contacts if query is less than 3 characters
-
+            if (searchQuery.length < 3) return contacts;
             return contacts.filter(contact =>
                 contact.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 contact.socialSecurityNumber?.includes(searchQuery) ||
@@ -64,12 +65,48 @@ const MainContent: React.FC<{
                     <div className={`org-list ${isRoleView ? 'hidden' : ''}`}>
                         {isLoading ? (
                             <div>
-                                <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
-                                <br />
-                                <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
-                                <br />
-                                <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
+                                {error.message ? (
+                                    <Alert severity="danger">
+                                        <Heading
+                                            level={2}
+                                            role="alert"
+                                            size="xs"
+                                            spacing
+                                        >
+                                            {error.message}
+                                        </Heading>
+                                        {error.response && (
+                                            <Paragraph>
+                                                {error.response}
+                                            </Paragraph>
+                                        )}
+                                    </Alert>
+                                ) : (
+                                    <>
+                                        <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
+                                        <br />
+                                        <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
+                                        <br />
+                                        <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
+                                    </>
+                                )}
                             </div>
+                        ) : error.message ? (
+                            <Alert severity="danger">
+                                <Heading
+                                    level={2}
+                                    role="alert"
+                                    size="xs"
+                                    spacing
+                                >
+                                    {error.message}
+                                </Heading>
+                                {error.response && (
+                                    <Paragraph>
+                                        {error.response}
+                                    </Paragraph>
+                                )}
+                            </Alert>
                         ) : (
                             organizations.map((org) => (
                                 <div key={org?.organizationNumber} className="org-card-container">
@@ -121,16 +158,12 @@ const MainContent: React.FC<{
                     <div className={`org-details ${isRoleView ? 'full-width' : ''}`}>
                         <h2>{selectedOrg.Name}</h2>
 
-                        {/* Search bar on the right */}
-
-
                         {!isRoleView ? (
                             <>
                                 <br />
 
                                 <h3>Organisasjonsoversikt</h3>
-                                <div style={{ width: '400px', display: 'flex', justifyContent: 'flex-end', marginLeft: 'auto', marginTop: '-55px', textAlign: 'center' } }>
-
+                                <div style={{ width: '400px', display: 'flex', justifyContent: 'flex-end', marginLeft: 'auto', marginTop: '-55px', textAlign: 'center' }}>
                                     <Search
                                         label="Søk i kontakter"
                                         size="sm"
@@ -186,7 +219,7 @@ const MainContent: React.FC<{
                                         {rolesInfo.map((roleGroup, index) => (
                                             roleGroup.roller.map((role, roleIndex) => (
                                                 <tr key={`${index}-${roleIndex}`}>
-                                                    <td>{role?.type.beskrivelse}</td>
+                                                    <td>{role?.type?.beskrivelse}</td>
                                                     <td>{role?.person?.navn.fornavn} {role?.person?.navn.etternavn}</td>
                                                     <td>{roleGroup.sistEndret}</td>
                                                 </tr>
@@ -200,7 +233,7 @@ const MainContent: React.FC<{
                                 <h3>Roller knyttet til {selectedContact?.name}</h3>
                                 <Button variant="tertiary" onClick={() => {
                                     setIsRoleView(false);
-                                    setShowOrgList(true); // Show org list when closing roles
+                                    setShowOrgList(true);
                                 }}>
                                     Tilbake til oversikt
                                 </Button>

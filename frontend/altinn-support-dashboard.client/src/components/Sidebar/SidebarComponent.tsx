@@ -20,7 +20,7 @@ const Sidebar: React.FC<{ environment: string, isEnvDropdownOpen: boolean, toggl
             )}
         </div>
         <div className="profile">
-            <span className="profile-name"><strong>Halsen,<br />Espen Elstad</strong></span>
+            <span className="profile-name"><strong>Digdirsen,<br />Altinn Kenneth</strong></span>
             <div className="profile-pic"></div>
         </div>
     </aside>

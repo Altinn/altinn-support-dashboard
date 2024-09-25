@@ -13,7 +13,7 @@ const App: React.FC = () => {
     const [moreInfo, setMoreInfo] = useState<PersonalContact[]>([]);
     const [rolesInfo, setRolesInfo] = useState<ERRole[]>([]);
     const [expandedOrg, setExpandedOrg] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<{ message: string, response?: string | null }>({ message: '', response: null });
     const [environment, setEnvironment] = useState('PROD');
     const [isEnvDropdownOpen, setIsEnvDropdownOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -23,14 +23,14 @@ const App: React.FC = () => {
     const handleSearch = async () => {
         const trimmedQuery = query.replace(/\s/g, "");
         setIsLoading(true);
+        setError({ message: '', response: null });
         try {
             const res = await fetch(`${baseUrl}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`);
             if (!res.ok) {
-                throw new Error(`Feil ${res.status}: ${res.statusText}`);
+                const errorResponse = await res.text();
+                throw { message: `Error ${res.status}: ${res.statusText}`, response: errorResponse };
             }
             const data = await res.json();
-
-            setError(null);
 
             const orgData: Organization[] = Array.isArray(data) ? data : [data];
             const parentOrgs = orgData.filter(org => org.type !== 'BEDR' && org.type !== 'AAFY');
@@ -56,8 +56,8 @@ const App: React.FC = () => {
             setOrganizations(filteredOrganizations);
             setSubUnits(relevantSubUnits);
             setSelectedOrg(null);
-        } catch (error) {
-            setError(error.message);
+        } catch (error: any) {
+            setError({ message: error.message, response: error.response || null });
             setOrganizations([]);
         } finally {
             setIsLoading(false);
@@ -69,20 +69,26 @@ const App: React.FC = () => {
         try {
             const resPersonalContacts = await fetch(`${baseUrl}/serviceowner/organizations/${organizationNumber}/personalcontacts`);
             if (!resPersonalContacts.ok) {
-                throw new Error(`Feil ${resPersonalContacts.status}: ${resPersonalContacts.statusText}`);
+                const errorResponse = await resPersonalContacts.text();
+                throw { message: `Error ${resPersonalContacts.status}: ${resPersonalContacts.statusText}`, response: errorResponse };
             }
             const personalContacts = await resPersonalContacts.json();
             setMoreInfo(personalContacts);
 
-            const resRoles = await fetch(`${baseUrl}/brreg/${organizationNumber}`);
+            // Check if the selected organization is a subunit
+            const subunit = subUnits.find(sub => sub.organisasjonsnummer === organizationNumber);
+            const orgNumberForRoles = subunit ? subunit.overordnetEnhet : organizationNumber;
+
+            const resRoles = await fetch(`${baseUrl}/brreg/${orgNumberForRoles}`);
             if (!resRoles.ok) {
-                throw new Error(`Feil ${resRoles.status}: ${resRoles.statusText}`);
+                const errorResponse = await resRoles.text();
+                throw { message: `Error ${resRoles.status}: ${resRoles.statusText}`, response: errorResponse };
             }
             const roles = await resRoles.json();
             setRolesInfo(roles.rollegrupper);
 
-        } catch (error) {
-            setError(error.message);
+        } catch (error: any) {
+            setError({ message: error.message, response: error.response || null });
         }
     };
 
@@ -110,7 +116,7 @@ const App: React.FC = () => {
             <main className="main-content">
                 <SearchComponent query={query} setQuery={setQuery} handleSearch={handleSearch} />
                 <MainContent
-                    baseUrl={baseUrl} // pass the baseUrl down to MainContent
+                    baseUrl={baseUrl}
                     isLoading={isLoading}
                     organizations={organizations}
                     subUnits={subUnits}
@@ -120,6 +126,7 @@ const App: React.FC = () => {
                     expandedOrg={expandedOrg}
                     handleSelectOrg={handleSelectOrg}
                     handleExpandToggle={handleExpandToggle}
+                    error={error}
                 />
             </main>
         </div>
