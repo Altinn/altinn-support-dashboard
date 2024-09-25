@@ -13,7 +13,7 @@ const App: React.FC = () => {
     const [moreInfo, setMoreInfo] = useState<PersonalContact[]>([]);
     const [rolesInfo, setRolesInfo] = useState<ERRole[]>([]);
     const [expandedOrg, setExpandedOrg] = useState<string | null>(null);
-    const [error, setError] = useState<{ message: string, response?: string | null }>({ message: '', response: null }); // Handle both message and response
+    const [error, setError] = useState<{ message: string, response?: string | null }>({ message: '', response: null });
     const [environment, setEnvironment] = useState('PROD');
     const [isEnvDropdownOpen, setIsEnvDropdownOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -23,11 +23,11 @@ const App: React.FC = () => {
     const handleSearch = async () => {
         const trimmedQuery = query.replace(/\s/g, "");
         setIsLoading(true);
-        setError({ message: '', response: null }); // Reset error state
+        setError({ message: '', response: null });
         try {
             const res = await fetch(`${baseUrl}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`);
             if (!res.ok) {
-                const errorResponse = await res.text(); // Capture response if available
+                const errorResponse = await res.text();
                 throw { message: `Error ${res.status}: ${res.statusText}`, response: errorResponse };
             }
             const data = await res.json();
@@ -75,7 +75,11 @@ const App: React.FC = () => {
             const personalContacts = await resPersonalContacts.json();
             setMoreInfo(personalContacts);
 
-            const resRoles = await fetch(`${baseUrl}/brreg/${organizationNumber}`);
+            // Check if the selected organization is a subunit
+            const subunit = subUnits.find(sub => sub.organisasjonsnummer === organizationNumber);
+            const orgNumberForRoles = subunit ? subunit.overordnetEnhet : organizationNumber;
+
+            const resRoles = await fetch(`${baseUrl}/brreg/${orgNumberForRoles}`);
             if (!resRoles.ok) {
                 const errorResponse = await resRoles.text();
                 throw { message: `Error ${resRoles.status}: ${resRoles.statusText}`, response: errorResponse };
@@ -122,7 +126,7 @@ const App: React.FC = () => {
                     expandedOrg={expandedOrg}
                     handleSelectOrg={handleSelectOrg}
                     handleExpandToggle={handleExpandToggle}
-                    error={error} // Pass the updated error object to MainContent
+                    error={error}
                 />
             </main>
         </div>
