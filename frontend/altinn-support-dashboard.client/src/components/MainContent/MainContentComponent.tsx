@@ -83,11 +83,11 @@ const MainContent: React.FC<{
                                     </Alert>
                                 ) : (
                                     <>
-                                        <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
+                                        <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" data-testid="skeleton"/>
                                         <br />
-                                        <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
+                                        <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" data-testid="skeleton"/>
                                         <br />
-                                        <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" />
+                                        <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" data-testid="skeleton"/>
                                     </>
                                 )}
                             </div>
