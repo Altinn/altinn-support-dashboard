@@ -43,10 +43,10 @@ public class Adresse
 
 public class UnderEnhet
 {
-    public string organisasjonsnummer { get; set; }
-    public string navn { get; set; }
-    public Organisasjonsform organisasjonsform { get; set; }
-    public string hjemmeside { get; set; }
+    public string? organisasjonsnummer { get; set; }
+    public string? navn { get; set; }
+    public Organisasjonsform? organisasjonsform { get; set; }
+    public string? hjemmeside { get; set; }
     public string registreringsdatoEnhetsregisteret { get; set; }
     public bool registrertIMvaregisteret { get; set; }
     public Naeringskode naeringskode1 { get; set; }
