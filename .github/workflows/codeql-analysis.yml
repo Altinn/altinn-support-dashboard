@@ -2,11 +2,11 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "30-implementering-av-oppslag-for-enhetsregisterroller-er-roller" ]
+    branches: [ "main" ]
     paths:
     - 'src/**'
   pull_request:
-    branches: [ "30-implementering-av-oppslag-for-enhetsregisterroller-er-roller" ]
+    branches: [ "main" ]
     paths:
     - 'src/**'
   schedule:
