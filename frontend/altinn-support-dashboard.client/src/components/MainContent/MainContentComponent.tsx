@@ -243,7 +243,6 @@ const MainContent: React.FC<{
                                         <tr>
                                             <th>Rolletype</th>
                                             <th>Rollenavn</th>
-                                            <th>Rollebeskrivelse</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -251,7 +250,6 @@ const MainContent: React.FC<{
                                             <tr key={index}>
                                                 <td>{role.RoleType}</td>
                                                 <td>{role.RoleName}</td>
-                                                <td>{role.RoleDescription}</td>
                                             </tr>
                                         ))}
                                     </tbody>
