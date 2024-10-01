@@ -171,7 +171,9 @@ const MainContent: React.FC<{
                                         placeholder="Navn / SSN / Telefon / E-post"
                                         clearButtonLabel='Empty'
                                         variant="simple"
+                                        value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
+                                        onClear={() => setSearchQuery('')}
                                     />
                                 </div>
                                 <table className="contact-table">
