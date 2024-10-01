@@ -242,7 +242,6 @@ const MainContent: React.FC<{
                                     <thead>
                                         <tr>
                                             <th>Rolletype</th>
-                                            <th>Rolledefinisjons-ID</th>
                                             <th>Rollenavn</th>
                                             <th>Rollebeskrivelse</th>
                                         </tr>
@@ -251,7 +250,6 @@ const MainContent: React.FC<{
                                         {roleInfo.map((role, index) => (
                                             <tr key={index}>
                                                 <td>{role.RoleType}</td>
-                                                <td>{role.RoleDefinitionId}</td>
                                                 <td>{role.RoleName}</td>
                                                 <td>{role.RoleDescription}</td>
                                             </tr>
