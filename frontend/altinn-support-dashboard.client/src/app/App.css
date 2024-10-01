@@ -282,6 +282,10 @@ body, html {
         margin: 0;
         font-size: 14px;
     }
+    .subunit-card.selected {
+        border: 2px solid #0163ba; 
+        background-color: #a1c5e5
+    }
 
 .contact-table, .roles-table {
     width: 100%;

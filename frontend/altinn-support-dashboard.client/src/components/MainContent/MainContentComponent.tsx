@@ -139,7 +139,7 @@ const MainContent: React.FC<{
                                                 .map(sub => (
                                                     <div
                                                         key={sub.organisasjonsnummer}
-                                                        className="subunit-card"
+                                                        className={`subunit-card ${selectedOrg?.OrganizationNumber === sub.organisasjonsnummer ? 'selected' : ''}`}
                                                         onClick={() => handleSelectOrg(sub.organisasjonsnummer, sub.navn)}
                                                     >
                                                         <h4>{sub.navn}</h4>
@@ -148,6 +148,7 @@ const MainContent: React.FC<{
                                                 ))}
                                         </div>
                                     )}
+
                                 </div>
                             ))
                         )}
