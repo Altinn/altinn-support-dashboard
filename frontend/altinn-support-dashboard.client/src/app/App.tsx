@@ -32,7 +32,8 @@ const App: React.FC = () => {
             }
             const data = await res.json();
 
-            const orgData: Organization[] = Array.isArray(data) ? data : [data];
+            let orgData: Organization[] = Array.isArray(data) ? data : [data];
+            orgData = orgData.filter(org => org.type !== 'BEDR' && org.type !== 'AAFY');
 
             const allSubUnits: Subunit[] = [];
             for (const org of orgData) {
