@@ -25,11 +25,12 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ query, setQuery, hand
             <Search
                 id="searchbar"
                 label="Søk etter innhold"
-                clearButtonLabel=""
+                clearButtonLabel="Fjern søkeinnhold"
                 searchButtonLabel={<MagnifyingGlassIcon fontSize="1.5em" title="Search" />}
                 variant="primary"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onClear={() => setQuery('')} 
                 onSearchClick={handleSearch}
             />
         </form>
