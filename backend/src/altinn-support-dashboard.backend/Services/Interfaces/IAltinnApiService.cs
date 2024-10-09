@@ -11,5 +11,7 @@ namespace altinn_support_dashboard.Server.Services.Interfaces
         Task<List<PersonalContact>> GetPersonalContacts(string orgNumber);
 
         Task<string> GetPersonRoles(string subject, string reportee);
+
+        Task<RightsModel> GetPersonRights(string subject, string reportee);
     }
 }

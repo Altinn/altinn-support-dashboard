@@ -93,5 +93,22 @@ namespace altinn_support_dashboard.Server.Services
             return await _client.GetPersonRoles(subject, reportee);
         }
 
+        public async Task<RightsModel> GetPersonRights(string subject, string reportee)
+        {
+            if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))
+            {
+                throw new ArgumentException("Subject eller Reportee er ugyldig.");
+            }
+
+            var result = await _client.GetPersonRights(subject, reportee);
+            var rights = JsonSerializer.Deserialize<RightsModel>(result, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true
+            });
+
+            return rights;
+        }
+
     }
 }
