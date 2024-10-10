@@ -25,6 +25,10 @@ namespace AltinnSupportDashboard.Controllers
                 return BadRequest("Søketerm kan ikke være tom.");
             }
 
+            if (ValidationService.IsValidEmail(query))
+            {
+                return await GetOrganizationsByEmail(query);
+            }
             if (ValidationService.IsValidOrgNumber(query))
             {
                 return await GetOrganizationInfo(query);
@@ -33,10 +37,7 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return await GetOrganizationsByPhoneNumber(query);
             }
-            else if (ValidationService.IsValidEmail(query))
-            {
-                return await GetOrganizationsByEmail(query);
-            }
+
             else
             {
                 return BadRequest("Ugyldig søketerm. Angi et gyldig organisasjonsnummer, telefonnummer eller e-postadresse.");

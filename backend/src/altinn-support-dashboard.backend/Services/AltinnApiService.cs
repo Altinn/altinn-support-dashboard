@@ -17,7 +17,7 @@ namespace altinn_support_dashboard.Server.Services
 
         public async Task<Organization> GetOrganizationInfo(string orgNumber)
         {
-            if (string.IsNullOrWhiteSpace(orgNumber) || orgNumber.Length != 9 || !long.TryParse(orgNumber, out _))
+            if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
                 throw new ArgumentException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
@@ -34,9 +34,9 @@ namespace altinn_support_dashboard.Server.Services
 
         public async Task<List<OrganizationByPhoneMail>> GetOrganizationsByPhoneNumber(string phoneNumber)
         {
-            if (string.IsNullOrWhiteSpace(phoneNumber) || !ValidationService.IsValidPhoneNumber(phoneNumber))
+            if (!ValidationService.IsValidPhoneNumber(phoneNumber))
             {
-                throw new ArgumentException("Telefonnummeret er ugyldig. Det må være 8 sifre langt.");
+                throw new ArgumentException("Telefonnummeret er ugyldig.");
             }
 
             var result = await _client.GetOrganizationsByPhoneNumber(phoneNumber);
@@ -51,7 +51,7 @@ namespace altinn_support_dashboard.Server.Services
 
         public async Task<List<OrganizationByPhoneMail>> GetOrganizationsByEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email) || !ValidationService.IsValidEmail(email))
+            if (!ValidationService.IsValidEmail(email))
             {
                 throw new ArgumentException("E-postadressen er ugyldig.");
             }
@@ -68,7 +68,7 @@ namespace altinn_support_dashboard.Server.Services
 
         public async Task<List<PersonalContact>> GetPersonalContacts(string orgNumber)
         {
-            if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
+            if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
                 throw new ArgumentException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
