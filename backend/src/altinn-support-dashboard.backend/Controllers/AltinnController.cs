@@ -55,6 +55,10 @@ namespace AltinnSupportDashboard.Controllers
             try
             {
                 var organizationInfo = await _altinnApiService.GetOrganizationInfo(orgNumber);
+                if (organizationInfo == null)
+                {
+                    return NotFound("Ingen data funnet for det angitte organisasjonsnummeret.");
+                }
                 return Ok(organizationInfo);
             }
             catch (System.Exception ex)
@@ -78,6 +82,10 @@ namespace AltinnSupportDashboard.Controllers
             try
             {
                 var organizations = await _altinnApiService.GetOrganizationsByPhoneNumber(phoneNumber);
+                if (organizations == null || !organizations.Any())
+                {
+                    return NotFound("Ingen data funnet for det angitte telefonnummeret.");
+                }
                 return Ok(organizations);
             }
             catch (System.Exception ex)
@@ -97,6 +105,10 @@ namespace AltinnSupportDashboard.Controllers
             try
             {
                 var organizations = await _altinnApiService.GetOrganizationsByEmail(email);
+                if (organizations == null || !organizations.Any())
+                {
+                    return NotFound("Ingen data funnet for den angitte e-postadressen.");
+                }
                 return Ok(organizations);
             }
             catch (System.Exception ex)
@@ -116,6 +128,10 @@ namespace AltinnSupportDashboard.Controllers
             try
             {
                 var personalContacts = await _altinnApiService.GetPersonalContacts(orgNumber);
+                if (personalContacts == null || !personalContacts.Any())
+                {
+                    return NotFound("Ingen data funnet for det angitte organisasjonsnummeret.");
+                }
                 return Ok(personalContacts);
             }
             catch (System.Exception ex)
