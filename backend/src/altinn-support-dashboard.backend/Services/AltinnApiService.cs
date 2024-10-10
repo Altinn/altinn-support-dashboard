@@ -28,7 +28,10 @@ namespace altinn_support_dashboard.Server.Services
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true
             });
-
+            if (organizationInfo == null)
+            {
+                throw new Exception("Ingen data funnet for det angitte organisasjonsnummeret.");
+            }
             return organizationInfo;
         }
 
@@ -45,7 +48,10 @@ namespace altinn_support_dashboard.Server.Services
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true
             });
-
+            if (organizations == null)
+            {
+                throw new Exception("Ingen data funnet for det angitte telefonnummeret.");
+            }
             return organizations;
         }
 
@@ -62,7 +68,10 @@ namespace altinn_support_dashboard.Server.Services
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true
             });
-
+            if (organizations == null)
+            {
+                throw new Exception("Ingen data funnet for den angitte e-postadressen.");
+            }
             return organizations;
         }
 
@@ -79,7 +88,10 @@ namespace altinn_support_dashboard.Server.Services
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true
             });
-
+            if (personalContacts == null)
+            {
+                throw new Exception("Ingen data funnet for det angitte organisasjonsnummeret.");
+            }
             return personalContacts;
         }
 

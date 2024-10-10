@@ -195,6 +195,6 @@ public class AltinnApiClient
             }
         }
 
-        return null;
+        throw new Exception($"Certificate with thumbprint {cleanedThumbprint} not found in either LocalMachine or CurrentUser store.");
     }
 }
