@@ -47,7 +47,7 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("{orgNumber}")]
         public async Task<IActionResult> GetOrganizationInfo(string orgNumber)
         {
-            if (string.IsNullOrEmpty(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
+            if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
@@ -70,7 +70,7 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("phonenumbers/{phoneNumber}")]
         public async Task<IActionResult> GetOrganizationsByPhoneNumber(string phoneNumber)
         {
-            if (string.IsNullOrEmpty(phoneNumber))
+            if (!ValidationService.IsValidPhoneNumber(phoneNumber))
             {
                 return BadRequest("Telefonnummeret er ugyldig. Det kan ikke være tomt.");
             }
@@ -89,7 +89,7 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("emails/{email}")]
         public async Task<IActionResult> GetOrganizationsByEmail(string email)
         {
-            if (string.IsNullOrEmpty(email) || !ValidationService.IsValidEmail(email))
+            if (!ValidationService.IsValidEmail(email))
             {
                 return BadRequest("E-postadressen er ugyldig.");
             }
@@ -108,7 +108,7 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("{orgNumber}/personalcontacts")]
         public async Task<IActionResult> GetPersonalContacts(string orgNumber)
         {
-            if (string.IsNullOrEmpty(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
+            if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
