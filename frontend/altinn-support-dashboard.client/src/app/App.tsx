@@ -18,7 +18,7 @@ const App: React.FC = () => {
     const [isEnvDropdownOpen, setIsEnvDropdownOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const baseUrl = 'https://localhost:7174/api';
+    const baseUrl = 'https://localhost:7174/api/TT02';
 
     const handleSearch = async () => {
         const trimmedQuery = query.replace(/\s/g, "");

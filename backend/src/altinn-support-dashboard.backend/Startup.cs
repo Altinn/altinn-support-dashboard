@@ -1,11 +1,4 @@
-﻿using AltinnDesktopTool.Configuration;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-namespace AltinnSupportDashboard
+﻿namespace AltinnSupportDashboard
 {
     public class Startup
     {
@@ -22,10 +15,10 @@ namespace AltinnSupportDashboard
             services.AddControllers();
 
             // Register the ConfigurationService as a singleton
-            services.AddSingleton<EnvironmentConfigurationManager>();
+            //services.AddSingleton<EnvironmentConfigurationManager>();
 
             // Register the AltinnApiClient with HttpClient
-            services.AddHttpClient<AltinnApiClient>();
+            //services.AddHttpClient<AltinnApiClient>();
 
             services.AddSwaggerGen(); // Add Swagger for API documentation
         }

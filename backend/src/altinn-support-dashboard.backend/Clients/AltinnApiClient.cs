@@ -1,157 +1,43 @@
-﻿using AltinnDesktopTool.Configuration;
-using System.Security.Cryptography.X509Certificates;
+﻿
+using altinn_support_dashboard.Server.Models;
+using Altinn.ApiClients.Maskinporten.Factories;
+using Altinn.ApiClients.Maskinporten.Services;
+using Microsoft.Extensions.Options;
 
 public class AltinnApiClient
 {
-    private readonly HttpClient _client;
-    private readonly EnvironmentConfiguration _config;
-
-    public AltinnApiClient(HttpClient client)
+    private readonly IHttpClientFactory _clientFactory;
+    private readonly Dictionary<string, HttpClient> _clients = new();
+    
+    public AltinnApiClient(IOptions<Configuration> configuration, IHttpClientFactory clientFactory)
     {
-        _config = EnvironmentConfigurationManager.ActiveEnvironmentConfiguration;
-
-        var handler = new HttpClientHandler();
-
-        // Load the certificate from the machine or user store using the thumbprint
-        if (!string.IsNullOrEmpty(_config.Thumbprint))
-        {
-            var certificate = GetCertificateFromStore(_config.Thumbprint);
-            if (certificate != null)
-            {
-                Console.WriteLine($"Certificate with thumbprint {_config.Thumbprint} found and added to handler.");
-                handler.ClientCertificates.Add(certificate);
-                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-            }
-            else
-            {
-                throw new Exception($"Certificate with thumbprint {_config.Thumbprint} not found.");
-            }
-        }
-
-        if (_config.IgnoreSslErrors)
-        {
-            // Ignore SSL certificate errors if specified in the configuration
-            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
-        }
-
-        _client = new HttpClient(handler)
-        {
-            BaseAddress = new Uri(_config.BaseAddress),
-            Timeout = TimeSpan.FromSeconds(_config.Timeout)
-        };
-
-        // Add API key to headers
-        _client.DefaultRequestHeaders.Add("ApiKey", _config.ApiKey);
-        Console.WriteLine($"API Key {_config.ApiKey} added to request headers.");
+        _clientFactory = clientFactory;
+        InitClient(nameof(configuration.Value.Production), configuration.Value.Production);
+        InitClient(nameof(configuration.Value.TT02), configuration.Value.TT02);
     }
 
-    public async Task<string> GetOrganizationInfo(string orgNumber)
+    public void InitClient(string environmentName, EnvironmentConfiguration configuration)
+    {
+        var client = _clientFactory.CreateClient(environmentName);
+        client.BaseAddress = new Uri(configuration.BaseAddress);
+        client.Timeout = TimeSpan.FromSeconds(configuration.Timeout);
+        client.DefaultRequestHeaders.Add("ApiKey", configuration.ApiKey);
+        Console.WriteLine($"API Key {configuration.ApiKey} added to request headers.");
+        
+        _clients.Add(environmentName, client);
+    }
+    
+    public async Task<string> GetOrganizationInfo(string orgNumber, string environmentName)
     {
         try
         {
-            // Construct the full request URL
-            var requestUrl = $"organizations/{orgNumber}?ForceEIAuthentication";
-            Console.WriteLine($"Requesting URL: {_client.BaseAddress}{requestUrl}");
-
-            var response = await _client.GetAsync(requestUrl);
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
-        }
-    }
-
-    public async Task<string> GetOrganizationsByPhoneNumber(string phoneNumber)
-    {
-        try
-        {
-            var requestUrl = $"organizations?phoneNumber={phoneNumber}&ForceEIAuthentication";
-            Console.WriteLine($"Requesting URL: {_client.BaseAddress}{requestUrl}");
-
-            var response = await _client.GetAsync(requestUrl);
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
-        }
-    }
-
-    public async Task<string> GetOrganizationsByEmail(string email)
-    {
-        try
-        {
-            var requestUrl = $"organizations?email={email}&ForceEIAuthentication";
-            Console.WriteLine($"Requesting URL: {_client.BaseAddress}{requestUrl}");
-
-            var response = await _client.GetAsync(requestUrl);
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
-        }
-    }
-
-    public async Task<string> GetPersonalContacts(string orgNumber)
-    {
-        try
-        {
-            // Construct the full request URL
-            var requestUrl = $"organizations/{orgNumber}/personalcontacts?ForceEIAuthentication";
-            Console.WriteLine($"Requesting URL: {_client.BaseAddress}{requestUrl}");
-
-            var response = await _client.GetAsync(requestUrl);
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
-        }
-    }
-
-    public async Task<string> GetPersonRoles(string subject, string reportee)
-    {
-        try
-        {
+            var client = _clients[environmentName];
             
-            var requestUrl = $"authorization/roles?subject={subject}&reportee={reportee}&language=1044&?ForceEIAuthentication";
-            Console.WriteLine($"Requesting URL: {_client.BaseAddress}{requestUrl}");
+            // Construct the full request URL
+            var requestUrl = $"organizations/{orgNumber}";
+            Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
 
-            var response = await _client.GetAsync(requestUrl);
+            var response = await client.GetAsync(requestUrl);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadAsStringAsync();
@@ -168,33 +54,108 @@ public class AltinnApiClient
         }
     }
 
-    private X509Certificate2 GetCertificateFromStore(string thumbprint)
+    public async Task<string> GetOrganizationsByPhoneNumber(string phoneNumber, string environmentName)
     {
-        // Clean the thumbprint by removing any potential spaces or hidden characters
-        string cleanedThumbprint = thumbprint.Replace(" ", "").ToUpperInvariant();
-
-        using (X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine))
+        try
         {
-            store.Open(OpenFlags.ReadOnly);
-            var certs = store.Certificates.Find(X509FindType.FindByThumbprint, cleanedThumbprint, false);
-            if (certs.Count > 0)
+            var client = _clients[environmentName];
+
+            var requestUrl = $"organizations?phoneNumber={phoneNumber}&ForceEIAuthentication";
+            Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
+
+            var response = await client.GetAsync(requestUrl);
+            if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine($"Certificate found in LocalMachine store with thumbprint {cleanedThumbprint}");
-                return certs[0];
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
             }
         }
-
-        using (X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+        catch (Exception ex)
         {
-            store.Open(OpenFlags.ReadOnly);
-            var certs = store.Certificates.Find(X509FindType.FindByThumbprint, cleanedThumbprint, false);
-            if (certs.Count > 0)
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+        }
+    }
+
+    public async Task<string> GetOrganizationsByEmail(string email, string environmentName)
+    {
+        try
+        {
+            var client = _clients[environmentName];
+
+            var requestUrl = $"organizations?email={email}&ForceEIAuthentication";
+            Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
+
+            var response = await client.GetAsync(requestUrl);
+            if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine($"Certificate found in CurrentUser store with thumbprint {cleanedThumbprint}");
-                return certs[0];
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
             }
         }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+        }
+    }
 
-        return null;
+    public async Task<string> GetPersonalContacts(string orgNumber, string environmentName)
+    {
+        try
+        {
+            var client = _clients[environmentName];
+
+            // Construct the full request URL
+            var requestUrl = $"organizations/{orgNumber}/personalcontacts";
+            Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
+
+            var response = await client.GetAsync(requestUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+        }
+    }
+
+    public async Task<string> GetPersonRoles(string subject, string reportee, string environmentName)
+    {
+        try
+        {
+            var client = _clients[environmentName];
+            
+            var requestUrl = $"authorization/roles?subject={subject}&reportee={reportee}&language=1044&";
+            Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
+
+            var response = await client.GetAsync(requestUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+        }
     }
 }
