@@ -1,10 +1,8 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Altinn.ApiClients.Maskinporten.Extensions;
+using Altinn.ApiClients.Maskinporten.Services;
 
 namespace AltinnSupportDashboard
 {
@@ -23,13 +21,22 @@ namespace AltinnSupportDashboard
                 })
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    // Load additional configuration files if needed
                     var env = hostingContext.HostingEnvironment;
 
-                    // Load the environmentConfigurations.xml file
-                    config.AddXmlFile("environmentConfigurations.xml", optional: false, reloadOnChange: true);
+                    // Load standard appsettings.json
+                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
-                    // Load other configurations if necessary
+                    // Load environment-specific appsettings.{env}.json
+                    config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+
+                    // Load user secrets in development mode
+                    if (env.IsDevelopment())
+                    {
+                        config.AddUserSecrets<Program>();
+                    }
+
+                    // Add environment variables
+                    config.AddEnvironmentVariables();
                 })
                 .ConfigureLogging(logging =>
                 {
@@ -38,6 +45,19 @@ namespace AltinnSupportDashboard
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    // Bind to Configuration and add to DI
+                    services.Configure<Configuration>(hostContext.Configuration.GetSection("Configuration"));
+
+                    var config = hostContext.Configuration.GetSection("Configuration").Get<Configuration>();
+
+                    services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(
+                        nameof(config.Production),
+                        config.Production.MaskinportenSettings);
+
+                    services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(
+                        nameof(config.TT02),
+                        config.TT02.MaskinportenSettings);
+
                     services.AddScoped<DataBrregClient>();
                     services.AddScoped<IDataBrregService, DataBrregService>();
                     services.AddScoped<AltinnApiClient>();

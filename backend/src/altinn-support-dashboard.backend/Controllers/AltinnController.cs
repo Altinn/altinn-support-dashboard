@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
 
 namespace AltinnSupportDashboard.Controllers
 {
     [ApiController]
-    [Route("api/serviceowner/organizations")]
+    [Route("api/{environmentName}/serviceowner/organizations")]
     public class Altinn_Intern_APIController : ControllerBase
     {
         private readonly IAltinnApiService _altinnApiService;
@@ -18,7 +16,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> Search(string query)
+        public async Task<IActionResult> Search([FromRoute] string environmentName, string query)
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -27,24 +25,25 @@ namespace AltinnSupportDashboard.Controllers
 
             if (ValidationService.IsValidOrgNumber(query))
             {
-                return await GetOrganizationInfo(query);
+                return await GetOrganizationInfo(environmentName, query);
             }
-            else if (ValidationService.IsValidPhoneNumber(query))
+
+            if (ValidationService.IsValidPhoneNumber(query))
             {
-                return await GetOrganizationsByPhoneNumber(query);
+                return await GetOrganizationsByPhoneNumber(environmentName, query);
             }
-            else if (ValidationService.IsValidEmail(query))
+
+            if (ValidationService.IsValidEmail(query))
             {
-                return await GetOrganizationsByEmail(query);
+                return await GetOrganizationsByEmail(environmentName, query);
             }
-            else
-            {
-                return BadRequest("Ugyldig søketerm. Angi et gyldig organisasjonsnummer, telefonnummer eller e-postadresse.");
-            }
+
+            return BadRequest("Ugyldig søketerm. Angi et gyldig organisasjonsnummer, telefonnummer eller e-postadresse.");
+
         }
 
         [HttpGet("{orgNumber}")]
-        public async Task<IActionResult> GetOrganizationInfo(string orgNumber)
+        public async Task<IActionResult> GetOrganizationInfo([FromRoute] string environmentName, string orgNumber)
         {
             if (string.IsNullOrEmpty(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
             {
@@ -53,7 +52,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-                var organizationInfo = await _altinnApiService.GetOrganizationInfo(orgNumber);
+                var organizationInfo = await _altinnApiService.GetOrganizationInfo(orgNumber, environmentName);
                 return Ok(organizationInfo);
             }
             catch (System.Exception ex)
@@ -67,7 +66,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("phonenumbers/{phoneNumber}")]
-        public async Task<IActionResult> GetOrganizationsByPhoneNumber(string phoneNumber)
+        public async Task<IActionResult> GetOrganizationsByPhoneNumber([FromRoute] string environmentName, string phoneNumber)
         {
             if (string.IsNullOrEmpty(phoneNumber))
             {
@@ -76,7 +75,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-                var organizations = await _altinnApiService.GetOrganizationsByPhoneNumber(phoneNumber);
+                var organizations = await _altinnApiService.GetOrganizationsByPhoneNumber(phoneNumber, environmentName);
                 return Ok(organizations);
             }
             catch (System.Exception ex)
@@ -86,7 +85,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("emails/{email}")]
-        public async Task<IActionResult> GetOrganizationsByEmail(string email)
+        public async Task<IActionResult> GetOrganizationsByEmail([FromRoute] string environmentName, string email)
         {
             if (string.IsNullOrEmpty(email) || !ValidationService.IsValidEmail(email))
             {
@@ -95,7 +94,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-                var organizations = await _altinnApiService.GetOrganizationsByEmail(email);
+                var organizations = await _altinnApiService.GetOrganizationsByEmail(email, environmentName);
                 return Ok(organizations);
             }
             catch (System.Exception ex)
@@ -105,7 +104,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("{orgNumber}/personalcontacts")]
-        public async Task<IActionResult> GetPersonalContacts(string orgNumber)
+        public async Task<IActionResult> GetPersonalContacts([FromRoute] string environmentName, string orgNumber)
         {
             if (string.IsNullOrEmpty(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
             {
@@ -114,7 +113,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-                var personalContacts = await _altinnApiService.GetPersonalContacts(orgNumber);
+                var personalContacts = await _altinnApiService.GetPersonalContacts(orgNumber, environmentName);
                 return Ok(personalContacts);
             }
             catch (System.Exception ex)
@@ -124,7 +123,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("/api/serviceowner/{subject}/roles/{reportee}")]
-        public async Task<IActionResult> GetPersonRoles(string subject, string reportee)
+        public async Task<IActionResult> GetPersonRoles([FromRoute] string environmentName, string subject, string reportee)
         {
             if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))
             {
@@ -133,7 +132,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-                var roles = await _altinnApiService.GetPersonRoles(subject, reportee);
+                var roles = await _altinnApiService.GetPersonRoles(subject, reportee, environmentName);
                 return Ok(roles);
             }
             catch (System.Exception ex)
