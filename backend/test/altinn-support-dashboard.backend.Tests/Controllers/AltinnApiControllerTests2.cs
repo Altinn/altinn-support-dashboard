@@ -26,6 +26,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             // Arrange
             string orgNumber = "123456789";
+
             Organization organization = new Organization
             {
                 Name = "Test Organization",
@@ -50,10 +51,10 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                     }
                 }
             };
-            _mockService.Setup(service => service.GetOrganizationInfo(orgNumber)).ReturnsAsync(organization);
+            _mockService.Setup(service => service.GetOrganizationInfo(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(organization);
 
             // Act
-            var result = _controller.GetOrganizationInfo(orgNumber).Result as OkObjectResult;
+            var result = _controller.GetOrganizationInfo(It.IsAny<string>(), It.IsAny<string>()).Result as OkObjectResult;
 
             // Assert
             Assert.Equal(organization, result.Value);

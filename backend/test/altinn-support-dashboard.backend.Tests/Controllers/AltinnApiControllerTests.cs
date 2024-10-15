@@ -30,11 +30,11 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetOrganizationInfo_ReturnsBadRequest_WhenOrgNumberLengthIsInvalid(string invalidOrgNumber)
         {
             // Act
-            var result = await _controller.GetOrganizationInfo(invalidOrgNumber);
+            var result = await _controller.GetOrganizationInfo("foo", invalidOrgNumber);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
+            Assert.Equal("Organisasjonsnummeret er ugyldig. Det mï¿½ vï¿½re 9 sifre langt.", badRequestResult.Value);
         }
 
         [Theory]
@@ -44,11 +44,11 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
 
             // Act
-            var result = await _controller.GetOrganizationsByPhoneNumber(invalidPhonenumber);
+            var result = await _controller.GetOrganizationsByPhoneNumber("foo", invalidPhonenumber);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Telefonnummeret er ugyldig. Det kan ikke være tomt.", badRequestResult.Value);
+            Assert.Equal("Telefonnummeret er ugyldig. Det kan ikke vï¿½re tomt.", badRequestResult.Value);
         }
         [Theory]
         [InlineData(null)]
@@ -59,7 +59,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetOrganizationsByEmail_ReturnsBadRequest_WhenEmailIsInvalid(string invalidEmail)
         {
             // Act
-            var result = await _controller.GetOrganizationsByEmail(invalidEmail);
+            var result = await _controller.GetOrganizationsByEmail("foo", invalidEmail);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -75,11 +75,11 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetPersonalContacts_ReturnsBadRequest_WhenOrgNumberLengthIsInvalid(string invalidOrgNumber)
         {
             // Act
-            var result = await _controller.GetPersonalContacts(invalidOrgNumber);
+            var result = await _controller.GetPersonalContacts("foo", invalidOrgNumber);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
+            Assert.Equal("Organisasjonsnummeret er ugyldig. Det mï¿½ vï¿½re 9 sifre langt.", badRequestResult.Value);
         }
 
     }

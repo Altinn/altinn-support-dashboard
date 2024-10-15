@@ -18,7 +18,7 @@ const App: React.FC = () => {
     const [isEnvDropdownOpen, setIsEnvDropdownOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const baseUrl = 'https://localhost:7174/api';
+    const baseUrl = 'https://localhost:7174/api/TT02';
 
     const handleSearch = async () => {
         const trimmedQuery = query.replace(/\s/g, "");
@@ -32,37 +32,47 @@ const App: React.FC = () => {
             }
             const data = await res.json();
 
-            const orgData: Organization[] = Array.isArray(data) ? data : [data];
-            const parentOrgs = orgData.filter(org => org.type !== 'BEDR' && org.type !== 'AAFY');
+            let orgData: Organization[] = Array.isArray(data) ? data : [data];
+            orgData = orgData.filter(org => org.type !== 'BEDR' && org.type !== 'AAFY');
 
-            const relevantSubUnits: Subunit[] = [];
-            for (const org of parentOrgs) {
-                const subunitRes = await fetch(`${baseUrl}/brreg/${org.organizationNumber}/underenheter`);
-                const subunitData = await subunitRes.json();
+            const allSubUnits: Subunit[] = [];
+            for (const org of orgData) {
+                try {
+                    const subunitRes = await fetch(`${baseUrl}/brreg/${org.organizationNumber}/underenheter`);
+                    if (!subunitRes.ok) {
+                        console.error(`Failed to fetch subunits for ${org.organizationNumber}: ${subunitRes.statusText}`);
+                        continue;
+                    }
+                    const subunitData = await subunitRes.json();
 
-                if (subunitData?._embedded?.underenheter) {
-                    relevantSubUnits.push(...subunitData._embedded.underenheter.filter((sub: any) =>
-                        orgData.some(org => org.organizationNumber === sub.organisasjonsnummer)
-                    ).map((sub: any) => ({
-                        navn: sub.navn,
-                        organisasjonsnummer: sub.organisasjonsnummer,
-                        overordnetEnhet: sub.overordnetEnhet
-                    })));
+                    if (subunitData?._embedded?.underenheter) {
+                        const subunits = subunitData._embedded.underenheter.map((sub: any) => ({
+                            navn: sub.navn,
+                            organisasjonsnummer: sub.organisasjonsnummer,
+                            overordnetEnhet: sub.overordnetEnhet,
+                            type: sub.organisasjonsform?.kode
+                        }));
+                        allSubUnits.push(...subunits);
+                    }
+                } catch (error) {
+                    console.error(`Error fetching subunits for ${org.organizationNumber}:`, error);
                 }
             }
 
-            const filteredOrganizations = orgData.filter(org => !relevantSubUnits.some(sub => sub.organisasjonsnummer === org.organizationNumber));
+            console.log('All subunits:', allSubUnits);
 
-            setOrganizations(filteredOrganizations);
-            setSubUnits(relevantSubUnits);
+            setOrganizations(orgData);
+            setSubUnits(allSubUnits);
             setSelectedOrg(null);
         } catch (error: any) {
             setError({ message: error.message, response: error.response || null });
             setOrganizations([]);
+            setSubUnits([]);
         } finally {
             setIsLoading(false);
         }
     };
+
 
     const handleSelectOrg = async (organizationNumber: string, name: string) => {
         setSelectedOrg({ Name: name, OrganizationNumber: organizationNumber });
@@ -72,10 +82,9 @@ const App: React.FC = () => {
                 const errorResponse = await resPersonalContacts.text();
                 throw { message: `Error ${resPersonalContacts.status}: ${resPersonalContacts.statusText}`, response: errorResponse };
             }
-            const personalContacts = await resPersonalContacts.json();
+            const personalContacts: PersonalContact[] = await resPersonalContacts.json();
             setMoreInfo(personalContacts);
 
-            // Check if the selected organization is a subunit
             const subunit = subUnits.find(sub => sub.organisasjonsnummer === organizationNumber);
             const orgNumberForRoles = subunit ? subunit.overordnetEnhet : organizationNumber;
 
@@ -84,11 +93,13 @@ const App: React.FC = () => {
                 const errorResponse = await resRoles.text();
                 throw { message: `Error ${resRoles.status}: ${resRoles.statusText}`, response: errorResponse };
             }
-            const roles = await resRoles.json();
+            const roles: { rollegrupper: ERRole[] } = await resRoles.json();
             setRolesInfo(roles.rollegrupper);
 
         } catch (error: any) {
             setError({ message: error.message, response: error.response || null });
+            setMoreInfo([]);
+            setRolesInfo([]);
         }
     };
 

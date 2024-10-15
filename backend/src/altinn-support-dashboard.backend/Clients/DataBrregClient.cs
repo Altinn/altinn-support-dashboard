@@ -3,6 +3,7 @@
     public class DataBrregClient
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IConfiguration _configuration;
 
         public DataBrregClient(IHttpClientFactory clientFactory)
         {
