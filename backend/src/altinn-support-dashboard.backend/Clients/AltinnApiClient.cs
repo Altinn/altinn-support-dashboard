@@ -158,4 +158,5 @@ public class AltinnApiClient
             throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
     }
+
 }

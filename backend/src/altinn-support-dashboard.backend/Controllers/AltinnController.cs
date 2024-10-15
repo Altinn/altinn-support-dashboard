@@ -23,6 +23,10 @@ namespace AltinnSupportDashboard.Controllers
                 return BadRequest("Søketerm kan ikke være tom.");
             }
 
+            if (ValidationService.IsValidEmail(query))
+            {
+                return await GetOrganizationsByEmail(query);
+            }
             if (ValidationService.IsValidOrgNumber(query))
             {
                 return await GetOrganizationInfo(environmentName, query);
@@ -34,6 +38,7 @@ namespace AltinnSupportDashboard.Controllers
             }
 
             if (ValidationService.IsValidEmail(query))
+            
             {
                 return await GetOrganizationsByEmail(environmentName, query);
             }
@@ -45,14 +50,16 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("{orgNumber}")]
         public async Task<IActionResult> GetOrganizationInfo([FromRoute] string environmentName, string orgNumber)
         {
-            if (string.IsNullOrEmpty(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
+            if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
 
             try
             {
+
                 var organizationInfo = await _altinnApiService.GetOrganizationInfo(orgNumber, environmentName);
+                
                 return Ok(organizationInfo);
             }
             catch (System.Exception ex)
@@ -68,14 +75,16 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("phonenumbers/{phoneNumber}")]
         public async Task<IActionResult> GetOrganizationsByPhoneNumber([FromRoute] string environmentName, string phoneNumber)
         {
-            if (string.IsNullOrEmpty(phoneNumber))
+            if (!ValidationService.IsValidPhoneNumber(phoneNumber))
             {
                 return BadRequest("Telefonnummeret er ugyldig. Det kan ikke være tomt.");
             }
 
             try
             {
+
                 var organizations = await _altinnApiService.GetOrganizationsByPhoneNumber(phoneNumber, environmentName);
+
                 return Ok(organizations);
             }
             catch (System.Exception ex)
@@ -87,14 +96,16 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("emails/{email}")]
         public async Task<IActionResult> GetOrganizationsByEmail([FromRoute] string environmentName, string email)
         {
-            if (string.IsNullOrEmpty(email) || !ValidationService.IsValidEmail(email))
+            if (!ValidationService.IsValidEmail(email))
             {
                 return BadRequest("E-postadressen er ugyldig.");
             }
 
             try
             {
+
                 var organizations = await _altinnApiService.GetOrganizationsByEmail(email, environmentName);
+
                 return Ok(organizations);
             }
             catch (System.Exception ex)
@@ -106,14 +117,16 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("{orgNumber}/personalcontacts")]
         public async Task<IActionResult> GetPersonalContacts([FromRoute] string environmentName, string orgNumber)
         {
-            if (string.IsNullOrEmpty(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
+            if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
 
             try
             {
+
                 var personalContacts = await _altinnApiService.GetPersonalContacts(orgNumber, environmentName);
+
                 return Ok(personalContacts);
             }
             catch (System.Exception ex)
