@@ -4,16 +4,25 @@
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly IConfiguration _configuration;
+        private string baseUrl;
 
-        public DataBrregClient(IHttpClientFactory clientFactory)
+        public DataBrregClient(IHttpClientFactory clientFactory, string environmentName)
         {
             _clientFactory = clientFactory;
+            if (environmentName == "TT02")
+            {
+                baseUrl = "https://data.ppe.brreg.no";
+            }
+            else
+            {
+                baseUrl = "https://data.brreg.no";
+            }
         }
 
         public async Task<string> GetRolesAsync(string orgNumber)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                $"https://data.brreg.no/enhetsregisteret/api/enheter/{orgNumber}/roller");
+                $"{baseUrl}/enhetsregisteret/api/enheter/{orgNumber}/roller");
 
             request.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue
             {
@@ -40,7 +49,7 @@
 
         public async Task<string> GetUnderenheter(string orgNumber)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"https://data.brreg.no/enhetsregisteret/api/underenheter?overordnetEnhet={orgNumber}&registrertIMvaregisteret=false");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{baseUrl}/enhetsregisteret/api/underenheter?overordnetEnhet={orgNumber}&registrertIMvaregisteret=false");
 
             request.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue
             {
