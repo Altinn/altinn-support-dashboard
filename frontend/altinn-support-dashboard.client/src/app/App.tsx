@@ -18,14 +18,14 @@ const App: React.FC = () => {
     const [isEnvDropdownOpen, setIsEnvDropdownOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const baseUrl = 'https://localhost:7174/api/TT02';
+    const getBaseUrl = () => `https://localhost:7174/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
 
     const handleSearch = async () => {
         const trimmedQuery = query.replace(/\s/g, "");
         setIsLoading(true);
         setError({ message: '', response: null });
         try {
-            const res = await fetch(`${baseUrl}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`);
+            const res = await fetch(`${getBaseUrl()}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`);
             if (!res.ok) {
                 const errorResponse = await res.text();
                 throw { message: `Error ${res.status}: ${res.statusText}`, response: errorResponse };
@@ -38,7 +38,7 @@ const App: React.FC = () => {
             const allSubUnits: Subunit[] = [];
             for (const org of orgData) {
                 try {
-                    const subunitRes = await fetch(`${baseUrl}/brreg/${org.organizationNumber}/underenheter`);
+                    const subunitRes = await fetch(`${getBaseUrl()}/brreg/${org.organizationNumber}/underenheter`);
                     if (!subunitRes.ok) {
                         console.error(`Failed to fetch subunits for ${org.organizationNumber}: ${subunitRes.statusText}`);
                         continue;
@@ -77,7 +77,7 @@ const App: React.FC = () => {
     const handleSelectOrg = async (organizationNumber: string, name: string) => {
         setSelectedOrg({ Name: name, OrganizationNumber: organizationNumber });
         try {
-            const resPersonalContacts = await fetch(`${baseUrl}/serviceowner/organizations/${organizationNumber}/personalcontacts`);
+            const resPersonalContacts = await fetch(`${getBaseUrl()}/serviceowner/organizations/${organizationNumber}/personalcontacts`);
             if (!resPersonalContacts.ok) {
                 const errorResponse = await resPersonalContacts.text();
                 throw { message: `Error ${resPersonalContacts.status}: ${resPersonalContacts.statusText}`, response: errorResponse };
@@ -88,7 +88,7 @@ const App: React.FC = () => {
             const subunit = subUnits.find(sub => sub.organisasjonsnummer === organizationNumber);
             const orgNumberForRoles = subunit ? subunit.overordnetEnhet : organizationNumber;
 
-            const resRoles = await fetch(`${baseUrl}/brreg/${orgNumberForRoles}`);
+            const resRoles = await fetch(`${getBaseUrl()}/brreg/${orgNumberForRoles}`);
             if (!resRoles.ok) {
                 const errorResponse = await resRoles.text();
                 throw { message: `Error ${resRoles.status}: ${resRoles.statusText}`, response: errorResponse };
@@ -110,6 +110,12 @@ const App: React.FC = () => {
     const handleEnvChange = (env: string) => {
         setEnvironment(env);
         setIsEnvDropdownOpen(false);
+        setOrganizations([]);
+        setSubUnits([]);
+        setSelectedOrg(null);
+        setMoreInfo([]);
+        setRolesInfo([]);
+        setError({ message: '', response: null });
     };
 
     const handleExpandToggle = (orgNumber: string) => {
@@ -127,7 +133,7 @@ const App: React.FC = () => {
             <main className="main-content">
                 <SearchComponent query={query} setQuery={setQuery} handleSearch={handleSearch} />
                 <MainContent
-                    baseUrl={baseUrl}
+                    baseUrl={getBaseUrl()}
                     isLoading={isLoading}
                     organizations={organizations}
                     subUnits={subUnits}

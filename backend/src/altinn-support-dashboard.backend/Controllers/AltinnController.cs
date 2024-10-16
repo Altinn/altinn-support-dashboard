@@ -25,7 +25,7 @@ namespace AltinnSupportDashboard.Controllers
 
             if (ValidationService.IsValidEmail(query))
             {
-                return await GetOrganizationsByEmail(query);
+                return await GetOrganizationsByEmail(environmentName, query);
             }
             if (ValidationService.IsValidOrgNumber(query))
             {
