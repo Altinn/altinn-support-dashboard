@@ -1,77 +1,63 @@
-﻿namespace altinn_support_dashboard.Server.Services
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+namespace altinn_support_dashboard.Server.Services
 {
     public class DataBrregClient
     {
         private readonly IHttpClientFactory _clientFactory;
-        private readonly IConfiguration _configuration;
-        private string baseUrl;
 
-        public DataBrregClient(IHttpClientFactory clientFactory, string environmentName)
+        public DataBrregClient(IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
-            if (environmentName == "TT02")
+        }
+
+        private string GetBaseUrl(string environmentName)
+        {
+            return environmentName switch
             {
-                baseUrl = "https://data.ppe.brreg.no";
+                "TT02" => "https://data.ppe.brreg.no",
+                "Production" => "https://data.brreg.no",
+                _ => throw new ArgumentException("Invalid environment name")
+            };
+        }
+
+        public async Task<string> GetRolesAsync(string orgNumber, string environmentName)
+        {
+            var baseUrl = GetBaseUrl(environmentName);
+            var client = _clientFactory.CreateClient();
+            var requestUrl = $"{baseUrl}/enhetsregisteret/api/enheter/{orgNumber}/roller";
+
+            try
+            {
+                var response = await client.GetAsync(requestUrl);
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadAsStringAsync();
             }
-            else
+            catch (HttpRequestException ex)
             {
-                baseUrl = "https://data.brreg.no";
+                throw new Exception($"Request to {requestUrl} failed: {ex.Message}");
             }
         }
 
-        public async Task<string> GetRolesAsync(string orgNumber)
+        public async Task<string> GetUnderenheterAsync(string orgNumber, string environmentName)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get,
-                $"{baseUrl}/enhetsregisteret/api/enheter/{orgNumber}/roller");
-
-            request.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue
-            {
-                NoCache = true,
-                NoStore = true,
-                MaxAge = TimeSpan.Zero,
-                MustRevalidate = true
-            };
-            request.Headers.Pragma.Add(new System.Net.Http.Headers.NameValueHeaderValue("no-cache"));
-
+            var baseUrl = GetBaseUrl(environmentName);
             var client = _clientFactory.CreateClient();
+            var requestUrl = $"{baseUrl}/enhetsregisteret/api/underenheter?overordnetEnhet={orgNumber}&registrertIMvaregisteret=false";
 
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
+                var response = await client.GetAsync(requestUrl);
+                response.EnsureSuccessStatusCode();
+
                 return await response.Content.ReadAsStringAsync();
             }
-            else
+            catch (HttpRequestException ex)
             {
-                throw new HttpRequestException($"Failed to retrieve data from Brreg. Status code: {response.StatusCode}");
-            }
-        }
-
-        public async Task<string> GetUnderenheter(string orgNumber)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{baseUrl}/enhetsregisteret/api/underenheter?overordnetEnhet={orgNumber}&registrertIMvaregisteret=false");
-
-            request.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue
-            {
-                NoCache = true,
-                NoStore = true,
-                MaxAge = TimeSpan.Zero,
-                MustRevalidate = true
-            };
-
-            request.Headers.Pragma.Add(new System.Net.Http.Headers.NameValueHeaderValue("no-cache"));
-
-            var client = _clientFactory.CreateClient();
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                throw new HttpRequestException($"Failed to retrieve data from Brreg. Status code: {response.StatusCode}");
+                throw new Exception($"Request to {requestUrl} failed: {ex.Message}");
             }
         }
     }

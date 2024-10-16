@@ -5,7 +5,7 @@ using altinn_support_dashboard.Server.Validation;
 namespace altinn_support_dashboard.Server.Controllers
 {
     [ApiController]
-    [Route("api/brreg")]
+    [Route("api/{environmentName}/brreg")]
     public class ER_Roller_APIController : ControllerBase
     {
         private readonly IDataBrregService _dataBrregService;
@@ -15,18 +15,18 @@ namespace altinn_support_dashboard.Server.Controllers
             _dataBrregService = dataBrregService;
         }
 
-        // GET: databrreg/{orgNumber}
+        // GET: api/{environmentName}/brreg/{orgNumber}
         [HttpGet("{orgNumber}")]
-        public async Task<IActionResult> GetRoles(string orgNumber)
+        public async Task<IActionResult> GetRoles([FromRoute] string environmentName, string orgNumber)
         {
-            if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
+            if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
 
             try
             {
-                var result = await _dataBrregService.GetRolesAsync(orgNumber);
+                var result = await _dataBrregService.GetRolesAsync(orgNumber, environmentName);
                 return Ok(result);
             }
             catch (ArgumentException ex)
@@ -43,18 +43,18 @@ namespace altinn_support_dashboard.Server.Controllers
             }
         }
 
-        // GET: databrreg/{orgNumber}/underenheter
+        // GET: api/{environmentName}/brreg/{orgNumber}/underenheter
         [HttpGet("{orgNumber}/underenheter")]
-        public async Task<IActionResult> GetUnderenheter(string orgNumber)
+        public async Task<IActionResult> GetUnderenheter([FromRoute] string environmentName, string orgNumber)
         {
-            if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
+            if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
 
             try
             {
-                var result = await _dataBrregService.GetUnderenheter(orgNumber);
+                var result = await _dataBrregService.GetUnderenheter(orgNumber, environmentName);
                 return Ok(result);
             }
             catch (ArgumentException ex)
