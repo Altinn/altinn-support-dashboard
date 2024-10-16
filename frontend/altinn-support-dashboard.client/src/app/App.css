@@ -1,9 +1,8 @@
 ﻿/* Basic Reset */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
 * {
     margin: 0;
-
     box-sizing: border-box;
 }
 
@@ -25,13 +24,20 @@ body, html {
 .sidebar {
     width: 250px;
     min-width: 250px;
-    background-color: #004a70; /* Base Default (Accent) */
     color: #fff;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-prod {
+    background-color: #004a70; /* Blue for PROD */
+}
+
+.sidebar-tt02 {
+    background-color: #FF8C00; /* Orange for TT02 */
 }
 
 .logo {
@@ -60,70 +66,122 @@ body, html {
     cursor: pointer;
 }
 
-    .nav-button.selected {
-        background-color: #eef4fa; /* Background Subtle (Accent) */
-        width: calc(100% + 20px); /* Extend the button beyond the edge */
-        padding-right: 35px; /* Offset padding to keep alignment */
-        color: #004a70; /* Base Default (Accent) */
-        margin: 10px -0px; /* Offset margin to keep alignment */
-        box-shadow: none;
-        border-radius: 30px 0 0 30px; /* Rounded edges on the right side */
-        position: relative;
-        z-index: 1;
-    }
+.sidebar-tt02 .nav-button {
+    background-color: #FF8C00;
+}
 
-    .nav-button:hover {
-        background-color: #d1e3f3; /* Surface Default (Accent) */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
+.nav-button.selected {
+    background-color: #eef4fa; /* Background Subtle (Accent) */
+    width: calc(100% + 20px); /* Extend the button beyond the edge */
+    padding-right: 35px; /* Offset padding to keep alignment */
+    color: #004a70; /* Base Default (Accent) */
+    margin: 10px -0px; /* Offset margin to keep alignment */
+    box-shadow: none;
+    border-radius: 30px 0 0 30px; /* Rounded edges on the right side */
+    position: relative;
+    z-index: 1;
+}
+
+.sidebar-tt02 .nav-button.selected {
+    color: #FF8C00;
+}
+
+.nav-button:hover {
+    background-color: #d1e3f3; /* Surface Default (Accent) */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-tt02 .nav-button:hover {
+    background-color: #FFDAB9;
+}
+
+/* Environment Selector */
+.environment-selector-container {
+    position: relative;
+    margin-bottom: 20px;
+}
 
 .environment-selector {
-    position: relative;
     cursor: pointer;
     background-color: #bad5ec; /* Surface Hover (Accent) */
     color: #004a70; /* Base Default (Accent) */
     padding: 10px 20px;
     border-radius: 20px;
     font-size: 16px;
-    display: inline-block;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s, box-shadow 0.3s;
-    margin-bottom: 20px;
+    width: 100%;
+    text-align: center;
+    border: none;
+    position: relative;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    z-index: 10;
 }
 
-    .environment-selector:hover {
-        background-color: #015097; /* Base Hover (Accent) */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-    }
+.sidebar-tt02 .environment-selector {
+    background-color: #FFDAB9; /* Light orange */
+    color: #FF8C00; /* Orange text */
+}
 
+.environment-selector.open {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    background-color: #a1c5e5;
+}
+
+.sidebar-tt02 .environment-selector.open {
+    background-color: #FFB451;
+}
+
+.environment-selector:hover {
+    background-color: #015097; /* Base Hover (Accent) */
+    color: #fff;
+}
+
+.sidebar-tt02 .environment-selector:hover {
+    background-color: #FFB451; /* Orange */
+    color: #fff;
+}
+
+/* Dropdown Animation */
 .env-dropdown {
     position: absolute;
-    bottom: 50px;
+    bottom: 100%; /* Position the dropdown above the button */
     left: 0;
+    width: 100%;
     background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    z-index:8;
 }
+
+    .env-dropdown.open {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+    }
 
 .env-dropdown-item {
     display: block;
     padding: 10px 20px;
     width: 100%;
-    text-align: left;
+    text-align: center;
     background-color: #fff;
     border: none;
     cursor: pointer;
     font-size: 16px;
     color: #333;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
     .env-dropdown-item:hover {
         background-color: #f0f0f0; /* Background Subtle (Neutral) */
     }
 
+/* Profile Section */
 .profile {
     display: flex;
     flex-direction: column;
@@ -144,6 +202,10 @@ body, html {
     border-radius: 50%;
     border: 2px solid #004a70; /* Base Default (Accent) */
     background-size: cover;
+}
+
+.sidebar-tt02 .profile-pic {
+    border-color: #FF8C00; /* Orange border */
 }
 
 /* Main Content Styling */
@@ -232,23 +294,23 @@ body, html {
 
     .org-card.selected {
         border: 2px solid #0163ba; /* Base Default (Accent) */
-        background-color: #a1c5e5
+        background-color: #a1c5e5;
     }
+
+.sidebar-tt02 .org-card.selected {
+    border-color: #FF8C00;
+    background-color: #FFDAB9;
+}
 
 .expand-button {
     position: absolute;
     top: 10px;
     right: 10px;
-    
-  color: black;
+    color: black;
     border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    background: none;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 18px;
 }
 
 .subunits {
@@ -282,9 +344,23 @@ body, html {
         margin: 0;
         font-size: 14px;
     }
+
     .subunit-card.selected {
-        border: 2px solid #0163ba; 
-        background-color: #a1c5e5
+        border: 2px solid #0163ba;
+        background-color: #a1c5e5;
+    }
+
+.sidebar-tt02 .subunit-card {
+    border-color: #FF8C00;
+}
+
+    .sidebar-tt02 .subunit-card h4 {
+        color: #FF8C00;
+    }
+
+    .sidebar-tt02 .subunit-card.selected {
+        border-color: #FF8C00;
+        background-color: #FFDAB9;
     }
 
 .contact-table, .roles-table {
@@ -306,10 +382,11 @@ body, html {
         color: #ffffff;
     }
 
-/* Transition for Roles View */
-.org-details.full-width {
-    animation: slideIn 0.2s ease-in-out forwards;
+.sidebar-tt02 .contact-table th, .sidebar-tt02 .roles-table th {
+    background-color: #FF8C00;
 }
+
+/* Error Message Styling */
 .error-message {
     display: flex;
     flex-direction: column;
@@ -347,29 +424,4 @@ body, html {
     max-height: 150px; /* Limit the height */
     overflow-y: auto; /* Add scrolling if the response is long */
     width: 100%; /* Make sure it fits inside the error box */
-}
-
-
-@keyframes slideIn {
-    0% {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-
-    100% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideOut {
-    0% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-
-    100% {
-        transform: translateX(100%);
-        opacity: 0;
-    }
 }
