@@ -8,7 +8,7 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "noEmit": true,
-    "types": [ "node", "testing-library__jest-dom" ] // Legg til denne linjen
+
   },
   "include": [ "vite.config.ts" ]
 }

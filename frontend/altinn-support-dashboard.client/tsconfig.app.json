@@ -24,6 +24,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [ "src" ],
-  "types": [ "testing-library__jest-dom" ] 
+
+  "include": [ "src/**/*", "types.d.ts" ], 
+  "types": [  ]
 }
