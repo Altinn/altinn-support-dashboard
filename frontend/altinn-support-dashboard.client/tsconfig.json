@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+
     // Dine andre innstillinger
     "types": []
+
   },
   "files": [],
   "references": [

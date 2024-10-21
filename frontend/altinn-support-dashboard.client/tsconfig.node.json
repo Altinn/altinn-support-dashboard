@@ -9,6 +9,8 @@
     "strict": true,
     "noEmit": true,
 
+
+
   },
   "include": [ "vite.config.ts" ]
 }
