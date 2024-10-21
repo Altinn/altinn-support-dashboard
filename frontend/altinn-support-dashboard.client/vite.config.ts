@@ -10,6 +10,8 @@ import path from 'path';
 import child_process from 'child_process';
 import { env } from 'process';
 
+const isDevelopment = env.NODE_ENV === 'development';
+
 const baseFolder =
     env.APPDATA !== undefined && env.APPDATA !== ''
         ? `${env.APPDATA}/ASP.NET/https`
@@ -19,7 +21,7 @@ const certificateName = "altinn-support-dashboard.client";
 const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
 const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
-if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
+if (isDevelopment && (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath))) {
     if (0 !== child_process.spawnSync('dotnet', [
         'dev-certs',
         'https',
@@ -47,10 +49,12 @@ export default defineConfig({
     },
     server: {
         port: 5173,
-        https: {
-            key: fs.readFileSync(keyFilePath),
-            cert: fs.readFileSync(certFilePath),
-        }
+        https: isDevelopment
+            ? {
+                key: fs.readFileSync(keyFilePath),
+                cert: fs.readFileSync(certFilePath),
+            }
+            : false, // Deaktiver HTTPS i produksjon
     },
     test: {
         globals: true,
