@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import { useState } from 'react';
 import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
 import { Skeleton, Button, Search, Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
