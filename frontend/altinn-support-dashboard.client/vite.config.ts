@@ -35,7 +35,6 @@ if (isDevelopment && (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath
     }
 }
 
-// Fjerne ubrukt 'weatherforecast' proxy
 const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
     env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7174';
 
@@ -54,7 +53,7 @@ export default defineConfig({
                 key: fs.readFileSync(keyFilePath),
                 cert: fs.readFileSync(certFilePath),
             }
-            : false, // Deaktiver HTTPS i produksjon
+            : undefined, // Deaktiver HTTPS i produksjon ved å sette til undefined
     },
     test: {
         globals: true,
