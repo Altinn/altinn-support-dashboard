@@ -33,6 +33,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
     }
 }
 
+// Fjerne ubrukt 'weatherforecast' proxy
 const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
     env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7174';
 
@@ -45,12 +46,6 @@ export default defineConfig({
         }
     },
     server: {
-        proxy: {
-            '^/weatherforecast': {
-                target,
-                secure: false
-            }
-        },
         port: 5173,
         https: {
             key: fs.readFileSync(keyFilePath),
@@ -62,4 +57,4 @@ export default defineConfig({
         environment: 'jsdom',
         setupFiles: ['./src/setupTests.ts'],
     },
-})
+});
