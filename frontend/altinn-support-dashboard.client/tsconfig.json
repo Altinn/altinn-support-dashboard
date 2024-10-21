@@ -1,4 +1,8 @@
 {
+  "compilerOptions": {
+    // Dine nåværende innstillinger
+    "types": [ "testing-library__jest-dom" ] // Legg til denne linjen
+  },
   "files": [],
   "references": [
     {
