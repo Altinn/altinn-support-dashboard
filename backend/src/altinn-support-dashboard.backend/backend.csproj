@@ -12,6 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\dist\assets\index-DDwQ__HF.js" />
+    <Content Remove="wwwroot\dist\assets\index-YhSi2BgQ.css" />
+    <Content Remove="wwwroot\dist\index.html" />
+    <Content Remove="wwwroot\dist\vite.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Altinn.ApiClients.Maskinporten" Version="9.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <Version>8.*-*</Version>
@@ -23,6 +30,13 @@
     <ProjectReference Include="..\..\..\frontend\altinn-support-dashboard.client\altinn-support-dashboard.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\dist\assets\index-DDwQ__HF.js" />
+    <None Include="wwwroot\dist\assets\index-YhSi2BgQ.css" />
+    <None Include="wwwroot\dist\index.html" />
+    <None Include="wwwroot\dist\vite.svg" />
   </ItemGroup>
 
 </Project>

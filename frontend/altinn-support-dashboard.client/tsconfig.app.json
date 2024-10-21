@@ -24,6 +24,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
+
   "include": [ "src/**/*", "types.d.ts" ], 
   "types": [  ]
 }

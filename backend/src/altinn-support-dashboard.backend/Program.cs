@@ -3,6 +3,10 @@ using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Altinn.ApiClients.Maskinporten.Extensions;
 using Altinn.ApiClients.Maskinporten.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace AltinnSupportDashboard
 {
@@ -23,7 +27,7 @@ namespace AltinnSupportDashboard
                 {
                     var env = hostingContext.HostingEnvironment;
 
-                    // Load standard appsettings.json
+                    // Load the standard appsettings.json
                     config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
                     // Load environment-specific appsettings.{env}.json
@@ -40,16 +44,21 @@ namespace AltinnSupportDashboard
                 })
                 .ConfigureLogging(logging =>
                 {
+                    // Clear default logging providers
                     logging.ClearProviders();
+
+                    // Add console logging
                     logging.AddConsole();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    // Bind to Configuration and add to DI
+                    // Bind Configuration section to the Configuration class and add to DI
                     services.Configure<Configuration>(hostContext.Configuration.GetSection("Configuration"));
 
+                    // Retrieve configuration values
                     var config = hostContext.Configuration.GetSection("Configuration").Get<Configuration>();
 
+                    // Register Maskinporten clients with their respective settings
                     services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(
                         nameof(config.Production),
                         config.Production.MaskinportenSettings);
@@ -58,11 +67,11 @@ namespace AltinnSupportDashboard
                         nameof(config.TT02),
                         config.TT02.MaskinportenSettings);
 
+                    // Register application services
                     services.AddScoped<DataBrregClient>();
                     services.AddScoped<IDataBrregService, DataBrregService>();
                     services.AddScoped<AltinnApiClient>();
                     services.AddScoped<IAltinnApiService, AltinnApiService>();
                 });
-
     }
 }

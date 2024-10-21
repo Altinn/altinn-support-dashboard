@@ -53,7 +53,9 @@ export default defineConfig({
                 key: fs.readFileSync(keyFilePath),
                 cert: fs.readFileSync(certFilePath),
             }
-            : undefined, // Deaktiver HTTPS i produksjon ved å sette til undefined
+
+            : undefined, // Deaktiver HTTPS i produksjon ved � sette til undefined
+
     },
     test: {
         globals: true,
