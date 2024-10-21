@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.271090-alpha">
+
 	<PropertyGroup>
 		<StartupCommand>npm run dev</StartupCommand>
 		<JavaScriptTestRoot>src\</JavaScriptTestRoot>
@@ -12,4 +13,3 @@
 		<Folder Include="src\models\" />
 	</ItemGroup>
 </Project>
-
