@@ -10,42 +10,59 @@ describe('Sidebar', () => {
         isEnvDropdownOpen: false,
         toggleEnvDropdown: vi.fn(),
         handleEnvChange: vi.fn(),
+        currentPage: 'dashboard' as 'dashboard' | 'settings',  // Fix the type issue here
+        setCurrentPage: vi.fn(),
     };
 
     const renderSidebar = (props = {}) => {
         render(<Sidebar {...defaultProps} {...props} />);
     };
 
-    it('renders the sidebar with logo and navigation', () => {
+    it('renders the sidebar with navigation buttons', () => {
         renderSidebar();
 
-        expect(screen.getByRole('img')).toBeInTheDocument();
-        expect(screen.getByText('Dashboard')).toBeInTheDocument();
+        // Ensure both buttons are rendered with correct labels
+        expect(screen.getByText('Oppslag')).toBeInTheDocument();
         expect(screen.getByText('Innstillinger')).toBeInTheDocument();
     });
 
-    it('toggles the environment dropdown when clicked', async () => {
-        renderSidebar({ isEnvDropdownOpen: true });
-
-        const environmentSelector = screen.getByText('PROD');
-        await userEvent.click(environmentSelector);
-
-        expect(screen.getByText('TT02')).toBeInTheDocument();
-    });
-
-    it('calls handleEnvChange with the new environment', async () => {
-        const mockHandleEnvChange = vi.fn();
+    it('calls setCurrentPage with "dashboard" when Oppslag is clicked', async () => {
+        const mockSetCurrentPage = vi.fn();
         renderSidebar({
-            isEnvDropdownOpen: true,
-            handleEnvChange: mockHandleEnvChange,
+            setCurrentPage: mockSetCurrentPage,
+            currentPage: 'settings',  // Set the other option to test navigation
         });
 
-        const environmentSelector = screen.getByText('PROD');
-        await userEvent.click(environmentSelector);
+        const oppslagButton = screen.getByText('Oppslag');
+        await userEvent.click(oppslagButton);
 
-        const newEnv = screen.getByText('TT02');
-        await userEvent.click(newEnv);
+        // Ensure setCurrentPage is called with 'dashboard' when Oppslag is clicked
+        expect(mockSetCurrentPage).toHaveBeenCalledWith('dashboard');
+    });
 
-        expect(mockHandleEnvChange).toHaveBeenLastCalledWith('TT02');
+    it('calls setCurrentPage with "settings" when Innstillinger is clicked', async () => {
+        const mockSetCurrentPage = vi.fn();
+        renderSidebar({
+            setCurrentPage: mockSetCurrentPage,
+            currentPage: 'dashboard',  // Set the other option to test navigation
+        });
+
+        const innstillingerButton = screen.getByText('Innstillinger');
+        await userEvent.click(innstillingerButton);
+
+        // Ensure setCurrentPage is called with 'settings' when Innstillinger is clicked
+        expect(mockSetCurrentPage).toHaveBeenCalledWith('settings');
+    });
+
+    it('highlights the correct button based on currentPage', () => {
+        // Render with 'dashboard' selected
+        renderSidebar({ currentPage: 'dashboard' });
+        expect(screen.getByText('Oppslag')).toHaveClass('selected');
+        expect(screen.getByText('Innstillinger')).not.toHaveClass('selected');
+
+        // Render with 'settings' selected
+        renderSidebar({ currentPage: 'settings' });
+        expect(screen.getByText('Innstillinger')).toHaveClass('selected');
+        expect(screen.getByText('Oppslag')).not.toHaveClass('selected');
     });
 });

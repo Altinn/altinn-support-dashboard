@@ -7,7 +7,8 @@ interface SettingsContentProps {
     environment: string;
 }
 
-const SettingsContentComponent: React.FC<SettingsContentProps> = ({ baseUrl, environment }) => {
+const SettingsContentComponent: React.FC<SettingsContentProps> = ({ environment }) => {
+
     const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
     // Use these to change version number and name
@@ -185,7 +186,11 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({ baseUrl, env
 
             <div className="settings-section">
                 <h2>Mørk Modus</h2>
-                <Switch label="Aktiver mørk modus" checked={isDarkMode} onChange={toggleDarkMode} />
+                <label>
+                    Aktiver mørk modus
+                    <Switch checked={isDarkMode} onChange={toggleDarkMode} />
+                </label>
+
             </div>
 
             <div className="settings-section">
