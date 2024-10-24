@@ -1,8 +1,8 @@
+using Altinn.ApiClients.Maskinporten.Extensions;
+using Altinn.ApiClients.Maskinporten.Services;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
-using Altinn.ApiClients.Maskinporten.Extensions;
-using Altinn.ApiClients.Maskinporten.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,7 +33,7 @@ namespace AltinnSupportDashboard
                     // Load environment-specific appsettings.{env}.json
                     config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
-                    // Load user secrets in development mode
+                    // Load user secrets in development mode (useful for local development)
                     if (env.IsDevelopment())
                     {
                         config.AddUserSecrets<Program>();
@@ -41,6 +41,9 @@ namespace AltinnSupportDashboard
 
                     // Add environment variables
                     config.AddEnvironmentVariables();
+
+                    // (Future) Uncomment this if you switch to using Azure Key Vault
+                    // config.AddAzureKeyVault(new Uri("https://<your-keyvault-name>.vault.azure.net/"), new DefaultAzureCredential());
                 })
                 .ConfigureLogging(logging =>
                 {
@@ -55,10 +58,10 @@ namespace AltinnSupportDashboard
                     // Bind Configuration section to the Configuration class and add to DI
                     services.Configure<Configuration>(hostContext.Configuration.GetSection("Configuration"));
 
-                    // Retrieve configuration values
+                    // Retrieve configuration values from environment variables or appsettings.json
                     var config = hostContext.Configuration.GetSection("Configuration").Get<Configuration>();
 
-                    // Register Maskinporten clients with their respective settings
+                    // Register Maskinporten clients with their respective settings (adjust as needed)
                     services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(
                         nameof(config.Production),
                         config.Production.MaskinportenSettings);

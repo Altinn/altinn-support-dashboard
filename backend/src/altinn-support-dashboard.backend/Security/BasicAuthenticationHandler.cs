@@ -32,8 +32,11 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
             var username = credentials[0];
             var password = credentials[1];
 
-   
-            if (username == "abstest" && password == "Altinn123!") // Use your password
+
+            var expectedUsername = Environment.GetEnvironmentVariable("BasicAuthUsername");
+            var expectedPassword = Environment.GetEnvironmentVariable("BasicAuthPassword");
+
+            if (username == expectedUsername && password == expectedPassword)
             {
                 var claims = new[] { new Claim(ClaimTypes.Name, username) };
                 var identity = new ClaimsIdentity(claims, Scheme.Name);
