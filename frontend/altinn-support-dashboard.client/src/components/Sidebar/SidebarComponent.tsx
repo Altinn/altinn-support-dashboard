@@ -7,20 +7,36 @@ interface SidebarProps {
     isEnvDropdownOpen: boolean;
     toggleEnvDropdown: () => void;
     handleEnvChange: (env: string) => void;
+    currentPage: 'dashboard' | 'settings'; // Add currentPage prop
+    setCurrentPage: (page: 'dashboard' | 'settings') => void; // Add setCurrentPage prop
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
     environment,
     isEnvDropdownOpen,
     toggleEnvDropdown,
-    handleEnvChange
+    handleEnvChange,
+    currentPage,
+    setCurrentPage
 }) => (
     <aside className={`sidebar ${environment === 'TT02' ? 'sidebar-tt02' : 'sidebar-prod'}`}>
         <div className="logo"><img width="150px" src={logo} alt="Logo" /></div>
         <br />
         <nav className="nav">
-            <Button variant='secondary' className="nav-button selected">Dashboard</Button>
-            <Button variant='secondary' className="nav-button">Innstillinger</Button>
+            <Button
+                variant='secondary'
+                className={`nav-button ${currentPage === 'dashboard' ? 'selected' : ''}`}
+                onClick={() => setCurrentPage('dashboard')}
+            >
+                Oppslag
+            </Button>
+            <Button
+                variant='secondary'
+                className={`nav-button ${currentPage === 'settings' ? 'selected' : ''}`}
+                onClick={() => setCurrentPage('settings')}
+            >
+                Innstillinger
+            </Button>
         </nav>
         <div className="environment-selector-container">
             <button className={`environment-selector ${isEnvDropdownOpen ? 'open' : ''}`} onClick={toggleEnvDropdown}>
@@ -32,10 +48,10 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
         </div>
         <div className="profile">
-            <span className="profile-name"><strong>Digdirsen,<br />Altinn Kenneth</strong></span>
+            <span className="profile-name"><strong>Testbruker,<br />Altinn Support</strong></span>
             <div className="profile-pic"></div>
         </div>
-    </aside>
+    </aside>    
 );
 
 export default Sidebar;

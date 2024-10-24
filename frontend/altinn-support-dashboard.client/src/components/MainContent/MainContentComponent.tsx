@@ -36,12 +36,26 @@ export default function MainContent({
     const [showOrgList, setShowOrgList] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
 
+    // Helper function for authorized fetch requests
+    const authorizedFetch = async (url: string, options: RequestInit = {}) => {
+        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+        const headers = {
+            ...options.headers,
+            'Authorization': `Basic ${token}`,
+            'Content-Type': 'application/json',
+        };
+
+        const response = await fetch(url, { ...options, headers });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`${response.statusText}: ${errorText}`);
+        }
+        return response;
+    };
+
     const handleViewRoles = async (subject: string, reportee: string) => {
         try {
-            const res = await fetch(`${baseUrl}/serviceowner/${subject}/roles/${reportee}`);
-            if (!res.ok) {
-                throw new Error(`Error fetching roles: ${res.status}`);
-            }
+            const res = await authorizedFetch(`${baseUrl}/serviceowner/${subject}/roles/${reportee}`);
             const data = await res.json();
             setRoleInfo(data);
             setIsRoleView(true);
@@ -151,7 +165,7 @@ export default function MainContent({
                     {!isRoleView ? (
                         <>
                             <h3>Organisasjonsoversikt</h3>
-                                <div style={{ width: '400px', display: 'flex', justifyContent: 'flex-end', marginLeft: 'auto', marginTop: '-55px', textAlign: 'center' }}>
+                            <div style={{ width: '400px', display: 'flex', justifyContent: 'flex-end', marginLeft: 'auto', marginTop: '-55px', textAlign: 'center' }}>
                                 <Search
                                     label="Søk i kontakter"
                                     size="sm"

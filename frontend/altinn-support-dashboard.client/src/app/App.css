@@ -9,8 +9,8 @@
 body, html {
     font-family: "Inter", sans-serif;
     height: 100%;
-    background-color: #fefefe; /* Neutral Background Default */
-    overflow: hidden; /* Prevent the whole page from scrolling */
+    background-color: #fefefe;
+    overflow: hidden;
 }
 
 /* Wrapper */
@@ -28,16 +28,16 @@ body, html {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 20px;
+    padding: 20px; /* Sidebar padding */
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-prod {
-    background-color: #004a70; /* Blue for PROD */
+    background-color: #004a70;
 }
 
 .sidebar-tt02 {
-    background-color: #FF8C00; /* Orange for TT02 */
+    background-color: #FF8C00;
 }
 
 .logo {
@@ -48,47 +48,63 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
 }
 
 .nav {
     flex-grow: 1;
 }
 
+/* Navigation Buttons */
 .nav-button {
-    width: 100%; /* Extend the button beyond the edge */
+    position: relative;
+    width: calc(100% + 20px);
     padding: 15px;
     font-size: 18px;
-    background-color: #004a70;
-    color: #eef4fa; /* Base Default (Accent) */
+    background-color: transparent;
+    color: #eef4fa;
     border: none;
     border-radius: 30px;
     cursor: pointer;
+    text-align: left;
+    margin: 0 -10px 10px -10px;
+    transition: background-color 0.3s, color 0.3s;
 }
+
+    .nav-button.selected {
+        background-color: #eef4fa;
+        color: #004a70;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+        .nav-button.selected::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -10px;
+            width: 20px;
+            height: 100%;
+            background-color: inherit;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
 
 .sidebar-tt02 .nav-button {
-    background-color: #FF8C00;
+    color: #f0f2f5;
 }
 
-.nav-button.selected {
-    background-color: #eef4fa; /* Background Subtle (Accent) */
-    width: calc(100% + 20px); /* Extend the button beyond the edge */
-    padding-right: 35px; /* Offset padding to keep alignment */
-    color: #004a70; /* Base Default (Accent) */
-    margin: 10px -0px; /* Offset margin to keep alignment */
-    box-shadow: none;
-    border-radius: 30px 0 0 30px; /* Rounded edges on the right side */
-    position: relative;
-    z-index: 1;
-}
+    .sidebar-tt02 .nav-button.selected {
+        background-color: #f0f2f5;
+        color: #FF8C00;
+    }
 
-.sidebar-tt02 .nav-button.selected {
-    color: #FF8C00;
-}
+        .sidebar-tt02 .nav-button.selected::after {
+            background-color: inherit;
+        }
 
+/* Hover Effects */
 .nav-button:hover {
-    background-color: #d1e3f3; /* Surface Default (Accent) */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    background-color: #d1e3f3;
 }
 
 .sidebar-tt02 .nav-button:hover {
@@ -425,3 +441,149 @@ body, html {
     overflow-y: auto; /* Add scrolling if the response is long */
     width: 100%; /* Make sure it fits inside the error box */
 }
+/* Settings Content Styles */
+.settings-content {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+   
+    color: #333;
+    border-radius: 10px;
+ 
+}
+
+.settings-section {
+    margin-bottom: 30px;
+}
+
+    .settings-section h2 {
+        margin-bottom: 10px;
+        font-size: 22px;
+        color: #004a70; /* Accent Color */
+    }
+
+    .settings-section label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+.language-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #fff;
+    color: #333;
+}
+
+.settings-footer {
+    margin-top: 40px;
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+}
+
+    .settings-footer p {
+        margin: 5px 0;
+        color: #666;
+    }
+
+/* Style the alert components */
+.settings-content .ds-alert {
+    margin-top: 10px;
+}
+
+/* Ensure the switch aligns properly */
+.settings-content .ds-switch {
+    margin-top: 10px;
+}
+
+/* Improve the appearance of buttons in the settings page */
+.settings-section .ds-button {
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+    body.dark-mode .main-content {
+        background-color: #1e1e1e;
+    }
+
+    body.dark-mode .settings-content {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+    }
+
+    body.dark-mode .settings-section h2,
+    body.dark-mode .settings-section label {
+        color: #e0e0e0;
+    }
+
+    body.dark-mode .language-select {
+        background-color: #2e2e2e;
+        color: #e0e0e0;
+        border-color: #444;
+    }
+
+    body.dark-mode .settings-footer {
+        border-top-color: #444444;
+    }
+
+        body.dark-mode .settings-footer p {
+            color: #aaa;
+        }
+
+/* Style the settings page headings */
+.settings-content h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #004a70; /* Accent Color */
+}
+
+body.dark-mode .settings-content h1 {
+    color: #e0e0e0;
+}
+
+/* Style the alert components in dark mode */
+body.dark-mode .ds-alert {
+    background-color: #333;
+    border-color: #444;
+    color: #e0e0e0;
+}
+
+    body.dark-mode .ds-alert .ds-heading {
+        color: #e0e0e0;
+    }
+
+/* Style the buttons in dark mode */
+body.dark-mode .ds-button {
+    background-color: #444;
+    color: #e0e0e0;
+}
+
+    body.dark-mode .ds-button:hover {
+        background-color: #555;
+    }
+
+/* Style the switch in dark mode */
+body.dark-mode .ds-switch {
+    color: #e0e0e0;
+}
+
+    body.dark-mode .ds-switch .ds-switch__input:checked + .ds-switch__slider {
+        background-color: #0072b1; /* Accent Color */
+    }
+
+    body.dark-mode .ds-switch .ds-switch__slider {
+        background-color: #555;
+    }
+
+    body.dark-mode .ds-switch .ds-switch__input:focus + .ds-switch__slider {
+        box-shadow: 0 0 2px 2px rgba(0, 114, 177, 0.5);
+    }

@@ -12,14 +12,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\dist\assets\index-DDwQ__HF.js" />
-    <Content Remove="wwwroot\dist\assets\index-YhSi2BgQ.css" />
+    <Content Remove="wwwroot\dist\assets\index-D3ITFgao.js" />
+    <Content Remove="wwwroot\dist\assets\index-h8DHQkcW.css" />
+    <Content Remove="wwwroot\dist\assets\logo-HzEGxyCu.png" />
+    <Content Remove="wwwroot\dist\assets\logologin-DA5o-_I9.svg" />
     <Content Remove="wwwroot\dist\index.html" />
     <Content Remove="wwwroot\dist\vite.svg" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Altinn.ApiClients.Maskinporten" Version="9.2.0" />
+    <PackageReference Include="AspNetCore.Authentication.Basic" Version="8.0.0" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.2" />
+    <PackageReference Include="Azure.Identity" Version="1.13.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <Version>8.*-*</Version>
     </PackageReference>
@@ -33,8 +38,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\dist\assets\index-DDwQ__HF.js" />
-    <None Include="wwwroot\dist\assets\index-YhSi2BgQ.css" />
+    <None Include="wwwroot\dist\assets\index-D3ITFgao.js" />
+    <None Include="wwwroot\dist\assets\index-h8DHQkcW.css" />
+    <None Include="wwwroot\dist\assets\logo-HzEGxyCu.png" />
+    <None Include="wwwroot\dist\assets\logologin-DA5o-_I9.svg" />
     <None Include="wwwroot\dist\index.html" />
     <None Include="wwwroot\dist\vite.svg" />
   </ItemGroup>
