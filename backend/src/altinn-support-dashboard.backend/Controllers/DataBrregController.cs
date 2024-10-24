@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
 
 namespace altinn_support_dashboard.Server.Controllers
 {
+    [Authorize] // Securing the entire controller
     [ApiController]
     [Route("api/brreg")]
     public class ER_Roller_APIController : ControllerBase
@@ -15,7 +17,6 @@ namespace altinn_support_dashboard.Server.Controllers
             _dataBrregService = dataBrregService;
         }
 
-        // GET: databrreg/{orgNumber}
         [HttpGet("{orgNumber}")]
         public async Task<IActionResult> GetRoles(string orgNumber)
         {
@@ -43,7 +44,6 @@ namespace altinn_support_dashboard.Server.Controllers
             }
         }
 
-        // GET: databrreg/{orgNumber}/underenheter
         [HttpGet("{orgNumber}/underenheter")]
         public async Task<IActionResult> GetUnderenheter(string orgNumber)
         {

@@ -1,4 +1,9 @@
-﻿namespace AltinnSupportDashboard
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+namespace AltinnSupportDashboard
 {
     public class Startup
     {
@@ -9,16 +14,22 @@
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add authentication using the custom BasicAuthenticationHandler
+            services.AddAuthentication("BasicAuthentication")
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
+            // Add authorization services
+            services.AddAuthorization();
+
             // Add controllers for the API
             services.AddControllers();
 
             // Register Swagger for API documentation
             services.AddSwaggerGen();
 
-            // Enable CORS (allow requests from any origin for the API)
+            // Enable CORS
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
@@ -30,7 +41,6 @@
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -49,12 +59,12 @@
             // Enable serving static files (Vite build output will go into wwwroot)
             app.UseStaticFiles();
 
-            // Enable Swagger for API documentation
+            // Enable Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Altinn Support Dashboard API V1");
-                c.RoutePrefix = "swagger"; // Swagger UI available at /swagger
+                c.RoutePrefix = "swagger";
             });
 
             // Enable routing
@@ -63,20 +73,20 @@
             // Enable CORS
             app.UseCors();
 
-            // Enable Authorization (this can be extended for authentication if required)
-            app.UseAuthorization();
+            // Enable Authentication and Authorization middleware
+            app.UseAuthentication(); // Ensure authentication is used
+            app.UseAuthorization();  // Ensure authorization is used
 
             // Configure endpoints for API controllers
             app.UseEndpoints(endpoints =>
             {
-                // Map API routes (e.g., /api/*)
                 endpoints.MapControllers();
             });
 
             // Serve the frontend for any non-API routes
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapFallbackToFile("index.html");  // Ensures all other routes serve the frontend
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

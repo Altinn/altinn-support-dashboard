@@ -1,9 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
 
 namespace AltinnSupportDashboard.Controllers
 {
+    [Authorize] // Securing the entire controller
+    [ApiController]
+    [Route("api/{environmentName}")]
+    public class HealthController : ControllerBase
+    {
+        [HttpGet("health")]
+        public IActionResult Health([FromRoute] string environmentName)
+        {
+            return Ok($"API is running in {environmentName} environment.");
+        }
+    }
+
+    [Authorize] // Securing the entire controller
     [ApiController]
     [Route("api/{environmentName}/serviceowner/organizations")]
     public class Altinn_Intern_APIController : ControllerBase
@@ -37,14 +51,7 @@ namespace AltinnSupportDashboard.Controllers
                 return await GetOrganizationsByPhoneNumber(environmentName, query);
             }
 
-            if (ValidationService.IsValidEmail(query))
-            
-            {
-                return await GetOrganizationsByEmail(environmentName, query);
-            }
-
             return BadRequest("Ugyldig søketerm. Angi et gyldig organisasjonsnummer, telefonnummer eller e-postadresse.");
-
         }
 
         [HttpGet("{orgNumber}")]
@@ -57,9 +64,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-
                 var organizationInfo = await _altinnApiService.GetOrganizationInfo(orgNumber, environmentName);
-                
                 return Ok(organizationInfo);
             }
             catch (System.Exception ex)
@@ -82,9 +87,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-
                 var organizations = await _altinnApiService.GetOrganizationsByPhoneNumber(phoneNumber, environmentName);
-
                 return Ok(organizations);
             }
             catch (System.Exception ex)
@@ -103,9 +106,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-
                 var organizations = await _altinnApiService.GetOrganizationsByEmail(email, environmentName);
-
                 return Ok(organizations);
             }
             catch (System.Exception ex)
@@ -124,9 +125,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-
                 var personalContacts = await _altinnApiService.GetPersonalContacts(orgNumber, environmentName);
-
                 return Ok(personalContacts);
             }
             catch (System.Exception ex)
@@ -153,6 +152,5 @@ namespace AltinnSupportDashboard.Controllers
                 return StatusCode(500, $"Intern serverfeil: {ex.Message}");
             }
         }
-
     }
 }

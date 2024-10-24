@@ -14,9 +14,14 @@
     "@digdir/designsystemet-css": "^0.10.0",
     "@digdir/designsystemet-react": "^0.63.0",
     "@digdir/designsystemet-theme": "^0.15.3",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^6.1.5",
     "@navikt/aksel-icons": "^6.17.0",
+    "mui": "^0.0.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.3.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
