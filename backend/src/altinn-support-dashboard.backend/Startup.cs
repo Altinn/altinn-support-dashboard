@@ -33,24 +33,14 @@ namespace AltinnSupportDashboard
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Altinn Support Dashboard API", Version = "v1" });
             });
 
-            // Enable CORS with specific configuration
+            // Enable CORS for any origin, method, and header (wide open)
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigin", builder =>
-                {
-                    // Allowing specific origin (adjust as needed)
-                    builder.WithOrigins("https://altinn-support-dashboard-test-app-g4f3czeqcqdnfgfu.norwayeast-01.azurewebsites.net") 
-                           .AllowAnyMethod()
-                           .AllowAnyHeader()
-                           .AllowCredentials(); // Allowing credentials if needed
-                });
-
-                // Default policy allowing all origins (for development/testing)
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
+                    builder.AllowAnyOrigin()   // Allow all origins
+                           .AllowAnyMethod()   // Allow all methods (GET, POST, PUT, DELETE, etc.)
+                           .AllowAnyHeader();  // Allow all headers (Authorization, Content-Type, etc.)
                 });
             });
         }
@@ -84,12 +74,12 @@ namespace AltinnSupportDashboard
             // Enable routing
             app.UseRouting();
 
-            // Enable CORS
-            app.UseCors("AllowSpecificOrigin"); // Apply the CORS policy here
+            // Enable CORS (ensure it's applied globally to all routes)
+            app.UseCors();  // Globally apply the default CORS policy
 
             // Enable Authentication and Authorization middleware
-            app.UseAuthentication(); // Ensure authentication is used
-            app.UseAuthorization();  // Ensure authorization is used
+            app.UseAuthentication();  // Ensure authentication is used
+            app.UseAuthorization();   // Ensure authorization is used
 
             // Configure endpoints for API controllers
             app.UseEndpoints(endpoints =>
