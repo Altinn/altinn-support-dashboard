@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+
 
 namespace AltinnSupportDashboard
 {
@@ -33,9 +34,21 @@ namespace AltinnSupportDashboard
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Altinn Support Dashboard API", Version = "v1" });
             });
 
-            // Enable CORS for any origin, method, and header (wide open)
+
+       
+
             services.AddCors(options =>
             {
+                options.AddPolicy("AllowSpecificOrigin", builder =>
+                {
+                    // Allowing specific origin (adjust as needed)
+                    builder.WithOrigins("https://altinn-support-dashboard-test-app-g4f3czeqcqdnfgfu.norwayeast-01.azurewebsites.net") 
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials(); // Allowing credentials if needed
+                });
+
+                // Default policy allowing all origins (for development/testing)
                 options.AddDefaultPolicy(builder =>
                 {
                     builder.AllowAnyOrigin()   // Allow all origins
@@ -63,7 +76,7 @@ namespace AltinnSupportDashboard
             // Enable serving static files (Vite build output will go into wwwroot)
             app.UseStaticFiles();
 
-            // Enable Swagger for API documentation
+            // Enable Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -74,8 +87,9 @@ namespace AltinnSupportDashboard
             // Enable routing
             app.UseRouting();
 
-            // Enable CORS (ensure it's applied globally to all routes)
-            app.UseCors();  // Globally apply the default CORS policy
+
+            
+            app.UseCors();  
 
             // Enable Authentication and Authorization middleware
             app.UseAuthentication();  // Ensure authentication is used
