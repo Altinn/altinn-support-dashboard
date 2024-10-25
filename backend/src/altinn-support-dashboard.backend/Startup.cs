@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,7 +35,7 @@ namespace AltinnSupportDashboard
             });
 
 
-            // Enable CORS with specific configuration
+       
 
             services.AddCors(options =>
             {
@@ -51,9 +51,9 @@ namespace AltinnSupportDashboard
                 // Default policy allowing all origins (for development/testing)
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
+                    builder.AllowAnyOrigin()   // Allow all origins
+                           .AllowAnyMethod()   // Allow all methods (GET, POST, PUT, DELETE, etc.)
+                           .AllowAnyHeader();  // Allow all headers (Authorization, Content-Type, etc.)
                 });
             });
         }
@@ -87,12 +87,13 @@ namespace AltinnSupportDashboard
             // Enable routing
             app.UseRouting();
 
-            // Enable CORS
-            app.UseCors("AllowSpecificOrigin"); // Apply the CORS policy here
+
+            
+            app.UseCors();  
 
             // Enable Authentication and Authorization middleware
-            app.UseAuthentication(); // Ensure authentication is used
-            app.UseAuthorization();  // Ensure authorization is used
+            app.UseAuthentication();  // Ensure authentication is used
+            app.UseAuthorization();   // Ensure authorization is used
 
             // Configure endpoints for API controllers
             app.UseEndpoints(endpoints =>
