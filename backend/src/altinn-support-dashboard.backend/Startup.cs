@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+
 
 namespace AltinnSupportDashboard
 {
@@ -27,11 +29,26 @@ namespace AltinnSupportDashboard
             services.AddControllers();
 
             // Register Swagger for API documentation
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Altinn Support Dashboard API", Version = "v1" });
+            });
 
-            // Enable CORS
+
+            // Enable CORS with specific configuration
+
             services.AddCors(options =>
             {
+                options.AddPolicy("AllowSpecificOrigin", builder =>
+                {
+                    // Allowing specific origin (adjust as needed)
+                    builder.WithOrigins("https://altinn-support-dashboard-test-app-g4f3czeqcqdnfgfu.norwayeast-01.azurewebsites.net") 
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials(); // Allowing credentials if needed
+                });
+
+                // Default policy allowing all origins (for development/testing)
                 options.AddDefaultPolicy(builder =>
                 {
                     builder.AllowAnyOrigin()
@@ -71,7 +88,7 @@ namespace AltinnSupportDashboard
             app.UseRouting();
 
             // Enable CORS
-            app.UseCors();
+            app.UseCors("AllowSpecificOrigin"); // Apply the CORS policy here
 
             // Enable Authentication and Authorization middleware
             app.UseAuthentication(); // Ensure authentication is used
@@ -83,7 +100,7 @@ namespace AltinnSupportDashboard
                 endpoints.MapControllers();
             });
 
-            // Serve the frontend for any non-API routes
+            // Serve the frontend for any non-API routes (Vite build)
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapFallbackToFile("index.html");
