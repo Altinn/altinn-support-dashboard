@@ -36,10 +36,12 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
             var expectedUsername = Environment.GetEnvironmentVariable("BasicAuthUsername");
             var expectedPassword = Environment.GetEnvironmentVariable("BasicAuthPassword");
 
+
             if (expectedUsername == null || expectedPassword == null)
             {
                 return Task.FromResult(AuthenticateResult.Fail("Environment variables for username and password are not set."));
             }
+
 
             if (username == expectedUsername && password == expectedPassword)
             {
