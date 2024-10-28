@@ -1,4 +1,6 @@
+
 using Microsoft.AspNetCore.Authentication;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,22 +37,12 @@ namespace AltinnSupportDashboard
             });
 
 
-       
-
+            // Enable wide-open CORS policy
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigin", builder =>
+                options.AddPolicy("AllowAll", builder =>
                 {
-                    // Allowing specific origin (adjust as needed)
-                    builder.WithOrigins("https://altinn-support-dashboard-test-app-g4f3czeqcqdnfgfu.norwayeast-01.azurewebsites.net") 
-                           .AllowAnyMethod()
-                           .AllowAnyHeader()
-                           .AllowCredentials(); // Allowing credentials if needed
-                });
 
-                // Default policy allowing all origins (for development/testing)
-                options.AddDefaultPolicy(builder =>
-                {
                     builder.AllowAnyOrigin()   // Allow all origins
                            .AllowAnyMethod()   // Allow all methods (GET, POST, PUT, DELETE, etc.)
                            .AllowAnyHeader();  // Allow all headers (Authorization, Content-Type, etc.)
@@ -70,6 +62,9 @@ namespace AltinnSupportDashboard
                 app.UseHsts();
             }
 
+            // Enable CORS immediately
+            app.UseCors("AllowAll");  // Globally apply the "AllowAll" CORS policy
+
             // Use HTTPS redirection
             app.UseHttpsRedirection();
 
@@ -87,9 +82,6 @@ namespace AltinnSupportDashboard
             // Enable routing
             app.UseRouting();
 
-
-            
-            app.UseCors();  
 
             // Enable Authentication and Authorization middleware
             app.UseAuthentication();  // Ensure authentication is used
