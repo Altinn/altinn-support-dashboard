@@ -33,10 +33,10 @@ namespace AltinnSupportDashboard
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Altinn Support Dashboard API", Version = "v1" });
             });
 
-            // Enable CORS for any origin, method, and header (wide open)
+            // Enable wide-open CORS policy
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(builder =>
+                options.AddPolicy("AllowAll", builder =>
                 {
                     builder.AllowAnyOrigin()   // Allow all origins
                            .AllowAnyMethod()   // Allow all methods (GET, POST, PUT, DELETE, etc.)
@@ -57,6 +57,9 @@ namespace AltinnSupportDashboard
                 app.UseHsts();
             }
 
+            // Enable CORS immediately
+            app.UseCors("AllowAll");  // Globally apply the "AllowAll" CORS policy
+
             // Use HTTPS redirection
             app.UseHttpsRedirection();
 
@@ -73,9 +76,6 @@ namespace AltinnSupportDashboard
 
             // Enable routing
             app.UseRouting();
-
-            // Enable CORS (ensure it's applied globally to all routes)
-            app.UseCors();  // Globally apply the default CORS policy
 
             // Enable Authentication and Authorization middleware
             app.UseAuthentication();  // Ensure authentication is used
