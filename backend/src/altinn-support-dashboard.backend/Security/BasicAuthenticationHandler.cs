@@ -41,6 +41,7 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
                 return Task.FromResult(AuthenticateResult.Fail("Environment variables for username and password are not set."));
             }
 
+
             if (username == expectedUsername && password == expectedPassword)
             {
                 var claims = new[] { new Claim(ClaimTypes.Name, username) };

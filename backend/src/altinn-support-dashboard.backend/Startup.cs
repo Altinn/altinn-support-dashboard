@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+
 
 namespace AltinnSupportDashboard
 {
@@ -33,11 +34,13 @@ namespace AltinnSupportDashboard
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Altinn Support Dashboard API", Version = "v1" });
             });
 
+
             // Enable wide-open CORS policy
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", builder =>
                 {
+
                     builder.AllowAnyOrigin()   // Allow all origins
                            .AllowAnyMethod()   // Allow all methods (GET, POST, PUT, DELETE, etc.)
                            .AllowAnyHeader();  // Allow all headers (Authorization, Content-Type, etc.)
@@ -66,7 +69,7 @@ namespace AltinnSupportDashboard
             // Enable serving static files (Vite build output will go into wwwroot)
             app.UseStaticFiles();
 
-            // Enable Swagger for API documentation
+            // Enable Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
