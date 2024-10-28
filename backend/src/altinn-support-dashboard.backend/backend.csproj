@@ -12,7 +12,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\dist\assets\index-D3ITFgao.js" />
+
+    <Content Remove="wwwroot\dist\assets\index-C0imym_O.js" />
+
     <Content Remove="wwwroot\dist\assets\index-h8DHQkcW.css" />
     <Content Remove="wwwroot\dist\assets\logo-HzEGxyCu.png" />
     <Content Remove="wwwroot\dist\assets\logologin-DA5o-_I9.svg" />
@@ -38,7 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\dist\assets\index-D3ITFgao.js" />
+
+    <None Include="wwwroot\dist\assets\index-C0imym_O.js" />
+
     <None Include="wwwroot\dist\assets\index-h8DHQkcW.css" />
     <None Include="wwwroot\dist\assets\logo-HzEGxyCu.png" />
     <None Include="wwwroot\dist\assets\logologin-DA5o-_I9.svg" />

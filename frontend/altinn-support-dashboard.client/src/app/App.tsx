@@ -45,9 +45,10 @@ const App: React.FC = () => {
         return response;
     };
 
+
+
     // Adjust the base URL to include the correct API port
     const getBaseUrl = () => {
-
 
         const apiHost = window.location.hostname;
         const protocol = window.location.protocol;
@@ -62,7 +63,6 @@ const App: React.FC = () => {
             setOpenLoginDialog(false);
         }
     }, []);
-
 
     const handleLogin = async () => {
         setIsLoggingIn(true);
