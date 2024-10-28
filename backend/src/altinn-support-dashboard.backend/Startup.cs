@@ -1,6 +1,4 @@
-
 using Microsoft.AspNetCore.Authentication;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -81,7 +79,6 @@ namespace AltinnSupportDashboard
 
             // Enable routing
             app.UseRouting();
-
 
             // Enable Authentication and Authorization middleware
             app.UseAuthentication();  // Ensure authentication is used

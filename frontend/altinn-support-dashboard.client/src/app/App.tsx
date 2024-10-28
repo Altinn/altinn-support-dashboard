@@ -47,10 +47,11 @@ const App: React.FC = () => {
 
     // Adjust the base URL to include the correct API port
     const getBaseUrl = () => {
-        const apiPort = 7174;
+
+
         const apiHost = window.location.hostname;
         const protocol = window.location.protocol;
-        return `${protocol}//${apiHost}:${apiPort}/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
+        return `${protocol}//${apiHost}/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
     };
 
     // Check if user is authenticated (if token exists in localStorage or sessionStorage)
@@ -61,6 +62,7 @@ const App: React.FC = () => {
             setOpenLoginDialog(false);
         }
     }, []);
+
 
     const handleLogin = async () => {
         setIsLoggingIn(true);
