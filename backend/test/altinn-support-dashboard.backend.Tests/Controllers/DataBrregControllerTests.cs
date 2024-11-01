@@ -12,6 +12,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
     {
         private readonly ER_Roller_APIController _controller;
         private readonly Mock<IDataBrregService> _mockService;
+        private readonly string _environmentName = "Production"; // You can set this to "TT02" for testing TT02 environment
 
         public DataBrregControllerTests()
         {
@@ -29,7 +30,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetRoles_ReturnsBadRequest_WhenOrgNumberLengthIsInvalid(string invalidOrgNumber)
         {
             // Act
-            var result = await _controller.GetRoles(invalidOrgNumber);
+            var result = await _controller.GetRoles(_environmentName, invalidOrgNumber);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -41,18 +42,15 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             // Arrange
             string validOrgNumber = "123456789";
-            _mockService.Setup(service => service.GetRolesAsync(validOrgNumber))
+            _mockService.Setup(service => service.GetRolesAsync(validOrgNumber, _environmentName))
                         .ReturnsAsync(new ErRollerModel());
 
-
             // Act
-            var result = await _controller.GetRoles(validOrgNumber);
+            var result = await _controller.GetRoles(_environmentName, validOrgNumber);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-
             Assert.IsType<ErRollerModel>(okResult.Value);
-
         }
 
         [Theory]
@@ -65,7 +63,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetUnderenheter_ReturnsBadRequest_WhenOrgNumberLengthIsInvalid(string invalidOrgNumber)
         {
             // Act
-            var result = await _controller.GetUnderenheter(invalidOrgNumber);
+            var result = await _controller.GetUnderenheter(_environmentName, invalidOrgNumber);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -77,18 +75,15 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             // Arrange
             string validOrgNumber = "123456789";
-            _mockService.Setup(service => service.GetUnderenheter(validOrgNumber))
+            _mockService.Setup(service => service.GetUnderenheter(validOrgNumber, _environmentName))
                         .ReturnsAsync(new UnderenhetRootObject());
 
-
             // Act
-            var result = await _controller.GetUnderenheter(validOrgNumber);
+            var result = await _controller.GetUnderenheter(_environmentName, validOrgNumber);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-
             Assert.IsType<UnderenhetRootObject>(okResult.Value);
-
         }
     }
 }
