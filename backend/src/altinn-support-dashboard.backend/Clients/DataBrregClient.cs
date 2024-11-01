@@ -1,69 +1,121 @@
-﻿namespace altinn_support_dashboard.Server.Services
+﻿using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+namespace altinn_support_dashboard.Server.Services
 {
     public class DataBrregClient
     {
         private readonly IHttpClientFactory _clientFactory;
-        private readonly IConfiguration _configuration;
+        private readonly Dictionary<string, HttpClient> _clients = new();
+        private readonly BrregConfiguration _brregConfiguration;
 
-        public DataBrregClient(IHttpClientFactory clientFactory)
+        public DataBrregClient(IHttpClientFactory clientFactory, IOptions<BrregConfiguration> brregConfiguration)
         {
             _clientFactory = clientFactory;
+            _brregConfiguration = brregConfiguration.Value;
+
+            InitClient(nameof(_brregConfiguration.Production), _brregConfiguration.Production);
+            InitClient(nameof(_brregConfiguration.TT02), _brregConfiguration.TT02);
         }
 
-        public async Task<string> GetRolesAsync(string orgNumber)
+        private void InitClient(string environmentName, EnvironmentConfiguration configuration)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get,
-                $"https://data.brreg.no/enhetsregisteret/api/enheter/{orgNumber}/roller");
+            var client = _clientFactory.CreateClient(environmentName);
+            client.BaseAddress = new Uri(configuration.BaseAddress);
+            client.Timeout = TimeSpan.FromSeconds(configuration.Timeout);
 
-            request.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue
-            {
-                NoCache = true,
-                NoStore = true,
-                MaxAge = TimeSpan.Zero,
-                MustRevalidate = true
-            };
-            request.Headers.Pragma.Add(new System.Net.Http.Headers.NameValueHeaderValue("no-cache"));
-
-            var client = _clientFactory.CreateClient();
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                throw new HttpRequestException($"Failed to retrieve data from Brreg. Status code: {response.StatusCode}");
-            }
+            _clients.Add(environmentName, client);
         }
 
-        public async Task<string> GetUnderenheter(string orgNumber)
+        public async Task<string> GetRolesAsync(string orgNumber, string environmentName)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"https://data.brreg.no/enhetsregisteret/api/underenheter?overordnetEnhet={orgNumber}&registrertIMvaregisteret=false");
-
-            request.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue
+            try
             {
-                NoCache = true,
-                NoStore = true,
-                MaxAge = TimeSpan.Zero,
-                MustRevalidate = true
-            };
+                var client = _clients[environmentName];
 
-            request.Headers.Pragma.Add(new System.Net.Http.Headers.NameValueHeaderValue("no-cache"));
+                var requestUrl = $"enhetsregisteret/api/enheter/{orgNumber}/roller";
+                Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
 
-            var client = _clientFactory.CreateClient();
+                var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
-            var response = await client.SendAsync(request);
+                request.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue
+                {
+                    NoCache = true,
+                    NoStore = true,
+                    MaxAge = TimeSpan.Zero,
+                    MustRevalidate = true
+                };
+                request.Headers.Pragma.Add(new System.Net.Http.Headers.NameValueHeaderValue("no-cache"));
 
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsStringAsync();
+                var response = await client.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    throw new HttpRequestException($"Failed to retrieve data from Brreg. Status code: {response.StatusCode}, Response: {responseBody}");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                throw new HttpRequestException($"Failed to retrieve data from Brreg. Status code: {response.StatusCode}");
+                throw new Exception($"An error occurred while calling Brreg API: {ex.Message}", ex);
             }
         }
+
+        public async Task<string> GetUnderenheter(string orgNumber, string environmentName)
+        {
+            try
+            {
+                var client = _clients[environmentName];
+
+                var requestUrl = $"enhetsregisteret/api/underenheter?overordnetEnhet={orgNumber}&registrertIMvaregisteret=false";
+                Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
+
+                var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+                request.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue
+                {
+                    NoCache = true,
+                    NoStore = true,
+                    MaxAge = TimeSpan.Zero,
+                    MustRevalidate = true
+                };
+                request.Headers.Pragma.Add(new System.Net.Http.Headers.NameValueHeaderValue("no-cache"));
+
+                var response = await client.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    throw new HttpRequestException($"Failed to retrieve data from Brreg. Status code: {response.StatusCode}, Response: {responseBody}");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while calling Brreg API: {ex.Message}", ex);
+            }
+        }
+    }
+
+    public class BrregConfiguration
+    {
+        public EnvironmentConfiguration Production { get; set; }
+        public EnvironmentConfiguration TT02 { get; set; }
+    }
+
+    public class EnvironmentConfiguration
+    {
+        public string BaseAddress { get; set; }
+        public int Timeout { get; set; } = 100; // Default timeout in seconds
     }
 }
