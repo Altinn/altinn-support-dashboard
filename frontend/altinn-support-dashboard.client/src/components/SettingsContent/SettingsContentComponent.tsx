@@ -12,7 +12,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({ environment 
     const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
     // Use these to change version number and name
-    const versionnumber = "1.3.0";
+    const versionnumber = "1.8.0";
     const versionname = "Test";
 
     // State variables for API status of both environments
@@ -40,11 +40,11 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({ environment 
 
     // Function to construct base URLs for both environments
     const getBaseUrl = (env: string) => {
-        const apiPort = 7174;
+
         const apiHost = window.location.hostname;
         const protocol = window.location.protocol;
 
-        return `${protocol}//${apiHost}:${apiPort}/api/${env}`;
+        return `${protocol}//${apiHost}/api/${env}`;
     };
 
     useEffect(() => {
