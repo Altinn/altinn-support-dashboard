@@ -106,28 +106,28 @@ export default function MainContent({
                             {error.response && <Paragraph>{error.response}</Paragraph>}
                         </Alert>
                     ) : (
-                        organizations.map((org) => (
+                        organizations?.map((org) => (
                             <div key={org?.organizationNumber} className="org-card-container">
                                 <div
                                     className={`org-card ${selectedOrg?.OrganizationNumber === org?.organizationNumber ? 'selected' : ''}`}
-                                    onClick={() => handleSelectOrg(org.organizationNumber, org.name)}
+                                    onClick={() => handleSelectOrg(org?.organizationNumber, org?.name)}
                                 >
                                     <h3>{org?.name}</h3>
                                     <p>Org Nr: {org?.organizationNumber}</p>
                                     <p>Type: {org?.type}</p>
 
-                                    {subUnits.some(sub => sub.overordnetEnhet === org.organizationNumber) && (
+                                    {subUnits?.some(sub => sub?.overordnetEnhet === org?.organizationNumber) && (
                                         <Button
                                             variant="secondary"
                                             className="expand-button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                handleExpandToggle(org.organizationNumber);
+                                                handleExpandToggle(org?.organizationNumber);
                                             }}
-                                            aria-expanded={expandedOrg === org.organizationNumber}
-                                            aria-label={`${expandedOrg === org.organizationNumber ? 'Collapse' : 'Expand'} subunits for ${org.name}`}
+                                            aria-expanded={expandedOrg === org?.organizationNumber}
+                                            aria-label={`${expandedOrg === org?.organizationNumber ? 'Collapse' : 'Expand'} subunits for ${org?.name}`}
                                         >
-                                            {expandedOrg === org.organizationNumber ? (
+                                            {expandedOrg === org?.organizationNumber ? (
                                                 <ChevronUpIcon title="Collapse subunits" fontSize="1.5rem" />
                                             ) : (
                                                 <ChevronDownIcon title="Expand subunits" fontSize="1.5rem" />
@@ -136,18 +136,18 @@ export default function MainContent({
                                     )}
                                 </div>
 
-                                {expandedOrg === org.organizationNumber && (
+                                {expandedOrg === org?.organizationNumber && (
                                     <div className="subunits">
                                         {subUnits
-                                            .filter(sub => sub.overordnetEnhet === org.organizationNumber)
-                                            .map(sub => (
+                                            ?.filter(sub => sub?.overordnetEnhet === org?.organizationNumber)
+                                            ?.map(sub => (
                                                 <div
-                                                    key={sub.organisasjonsnummer}
-                                                    className={`subunit-card ${selectedOrg?.OrganizationNumber === sub.organisasjonsnummer ? 'selected' : ''}`}
-                                                    onClick={() => handleSelectOrg(sub.organisasjonsnummer, sub.navn)}
+                                                    key={sub?.organisasjonsnummer}
+                                                    className={`subunit-card ${selectedOrg?.OrganizationNumber === sub?.organisasjonsnummer ? 'selected' : ''}`}
+                                                    onClick={() => handleSelectOrg(sub?.organisasjonsnummer, sub?.navn)}
                                                 >
-                                                    <h4>{sub.navn}</h4>
-                                                    <p>Org Nr: {sub.organisasjonsnummer}</p>
+                                                    <h4>{sub?.navn}</h4>
+                                                    <p>Org Nr: {sub?.organisasjonsnummer}</p>
                                                 </div>
                                             ))}
                                     </div>
@@ -160,7 +160,7 @@ export default function MainContent({
 
             {selectedOrg && (
                 <div className={`org-details ${isRoleView ? 'full-width' : ''}`}>
-                    <h2>{selectedOrg.Name}</h2>
+                    <h2>{selectedOrg?.Name}</h2>
 
                     {!isRoleView ? (
                         <>
@@ -188,18 +188,18 @@ export default function MainContent({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filterContacts(moreInfo).map((contact) => (
-                                        <tr key={contact.personalContactId}>
-                                            <td>{contact.name}</td>
-                                            <td>{contact.socialSecurityNumber}</td>
-                                            <td>{contact.mobileNumber}</td>
-                                            <td>{contact.eMailAddress}</td>
+                                    {filterContacts(moreInfo || []).map((contact) => (
+                                        <tr key={contact?.personalContactId}>
+                                            <td>{contact?.name}</td>
+                                            <td>{contact?.socialSecurityNumber}</td>
+                                            <td>{contact?.mobileNumber}</td>
+                                            <td>{contact?.eMailAddress}</td>
                                             <td>
                                                 <Button
                                                     variant="tertiary"
                                                     onClick={() => {
                                                         setSelectedContact(contact);
-                                                        handleViewRoles(contact.socialSecurityNumber, selectedOrg.OrganizationNumber);
+                                                        handleViewRoles(contact?.socialSecurityNumber, selectedOrg?.OrganizationNumber);
                                                     }}
                                                 >
                                                     Vis
@@ -219,12 +219,12 @@ export default function MainContent({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {rolesInfo.map((roleGroup, index) => (
-                                        roleGroup.roller.map((role, roleIndex) => (
+                                    {rolesInfo?.map((roleGroup, index) => (
+                                        roleGroup?.roller?.map((role, roleIndex) => (
                                             <tr key={`${index}-${roleIndex}`}>
                                                 <td>{role?.type?.beskrivelse}</td>
-                                                <td>{role?.person?.navn.fornavn} {role?.person?.navn.etternavn}</td>
-                                                <td>{roleGroup.sistEndret}</td>
+                                                <td>{role?.person?.navn?.fornavn} {role?.person?.navn?.etternavn}</td>
+                                                <td>{roleGroup?.sistEndret}</td>
                                             </tr>
                                         ))
                                     ))}
@@ -251,10 +251,10 @@ export default function MainContent({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {roleInfo.map((role, index) => (
+                                    {roleInfo?.map((role, index) => (
                                         <tr key={index}>
-                                            <td>{role.RoleType}</td>
-                                            <td>{role.RoleName}</td>
+                                            <td>{role?.RoleType}</td>
+                                            <td>{role?.RoleName}</td>
                                         </tr>
                                     ))}
                                 </tbody>
