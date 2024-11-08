@@ -7,7 +7,6 @@ using System.Net.Http;
 
 namespace altinn_support_dashboard.Server.Controllers
 {
-    [Authorize] // Securing the entire controller
     [ApiController]
     [Route("api/brreg")]
     public class ER_Roller_APIController : ControllerBase
