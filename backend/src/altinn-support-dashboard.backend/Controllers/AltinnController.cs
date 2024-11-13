@@ -134,7 +134,7 @@ namespace AltinnSupportDashboard.Controllers
             }
         }
 
-        [HttpGet("/api/serviceowner/{subject}/roles/{reportee}")]
+        [HttpGet("/api/{environmentName}/serviceowner/{subject}/roles/{reportee}")]
         public async Task<IActionResult> GetPersonRoles([FromRoute] string environmentName, string subject, string reportee)
         {
             if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))

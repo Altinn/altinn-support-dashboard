@@ -1,12 +1,12 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import Sidebar from '../components/Sidebar/SidebarComponent';
 import SearchComponent from '../components/TopSearchBar/TopSearchBarComponent';
 import MainContent from '../components/MainContent/MainContentComponent';
 import SettingsContentComponent from '../components/SettingsContent/SettingsContentComponent';
 import { Organization, PersonalContact, Subunit, ERRole } from '../models/models';
-import { Dialog, DialogContent, DialogActions, TextField, Button, CircularProgress } from '@mui/material';
-import logologin from '../assets/logologin.svg'; // Import logo
+import { Dialog, DialogContent, DialogActions, TextField, Button, CircularProgress, Alert } from '@mui/material';
+import logologin from '../assets/logologin.svg';
 
 const App: React.FC = () => {
     const [query, setQuery] = useState('');
@@ -28,8 +28,13 @@ const App: React.FC = () => {
     const [loginError, setLoginError] = useState('');
     const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-    // Helper function for authorized fetch requests
-    const authorizedFetch = async (url: string, options: RequestInit = {}) => {
+    const getBaseUrl = useCallback(() => {
+        const apiHost = window.location.hostname;
+        const protocol = window.location.protocol;
+        return `${protocol}//${apiHost}/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
+    }, [environment]);
+
+    const authorizedFetch = useCallback(async (url: string, options: RequestInit = {}) => {
         const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
         const headers = {
             ...options.headers,
@@ -43,19 +48,8 @@ const App: React.FC = () => {
             throw new Error(`${response.statusText}: ${errorText}`);
         }
         return response;
-    };
+    }, []);
 
-
-
-    // Adjust the base URL to include the correct API port
-    const getBaseUrl = () => {
-
-        const apiHost = window.location.hostname;
-        const protocol = window.location.protocol;
-        return `${protocol}//${apiHost}/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
-    };
-
-    // Check if user is authenticated (if token exists in localStorage or sessionStorage)
     useEffect(() => {
         const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
         if (token) {
@@ -92,7 +86,7 @@ const App: React.FC = () => {
         }
     };
 
-    const handleSearch = async () => {
+    const handleSearch = useCallback(async () => {
         const trimmedQuery = query.replace(/\s/g, '');
         setIsLoading(true);
         setError({ message: '', response: null });
@@ -118,7 +112,7 @@ const App: React.FC = () => {
                         allSubUnits.push(...subunits);
                     }
                 } catch (error) {
-                    console.error(`Error fetching subunits for ${org.organizationNumber}:`, error);
+                    console.warn(`No subunits found for organization ${org.organizationNumber}:`, error);
                 }
             }
 
@@ -132,31 +126,47 @@ const App: React.FC = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [query, authorizedFetch, getBaseUrl]);
 
-    const handleSelectOrg = async (organizationNumber: string, name: string) => {
+    const handleSelectOrg = useCallback(async (organizationNumber: string, name: string) => {
         setSelectedOrg({ Name: name, OrganizationNumber: organizationNumber });
+        setMoreInfo([]);
+        setRolesInfo([]);
+        setError({ message: '', response: null });
+
         try {
+            // Fetch personal contacts
             const resPersonalContacts = await authorizedFetch(`${getBaseUrl()}/serviceowner/organizations/${organizationNumber}/personalcontacts`);
             const personalContacts: PersonalContact[] = await resPersonalContacts.json();
             setMoreInfo(personalContacts);
 
-            const subunit = subUnits.find(sub => sub.organisasjonsnummer === organizationNumber);
-            const orgNumberForRoles = subunit ? subunit.overordnetEnhet : organizationNumber;
+            // Fetch ER roles
+            try {
+                const subunit = subUnits.find(sub => sub.organisasjonsnummer === organizationNumber);
+                const orgNumberForRoles = subunit ? subunit.overordnetEnhet : organizationNumber;
 
-            const resRoles = await authorizedFetch(`${getBaseUrl()}/brreg/${orgNumberForRoles}`);
-            const roles: { rollegrupper: ERRole[] } = await resRoles.json();
-            setRolesInfo(roles.rollegrupper);
+                const resRoles = await authorizedFetch(`${getBaseUrl()}/brreg/${orgNumberForRoles}`);
+                const roles: { rollegrupper: ERRole[] } = await resRoles.json();
+                setRolesInfo(roles.rollegrupper);
+            } catch (rolesError: any) {
+                console.error("Error fetching ER roles:", rolesError);
+                setError(prevError => ({
+                    ...prevError,
+                    message: prevError.message + " ER roller kunne ikke hentes. "
+                }));
+                // Don't set rolesInfo to empty array here, keep the previous state
+            }
         } catch (error: any) {
-            setError({ message: error.message, response: error.response || null });
-            setMoreInfo([]);
-            setRolesInfo([]);
+            console.error("Error fetching data:", error);
+            setError(prevError => ({
+                message: prevError.message + "Feil ved henting av data. ",
+                response: error.response || null
+            }));
+            // Don't clear moreInfo or rolesInfo here, keep the previous state
         }
-    };
+    }, [authorizedFetch, getBaseUrl, subUnits]);
 
-    const toggleEnvDropdown = () => {
-        setIsEnvDropdownOpen(prevState => !prevState);
-    };
+    const toggleEnvDropdown = () => setIsEnvDropdownOpen(prev => !prev);
 
     const handleEnvChange = (env: string) => {
         setEnvironment(env);
@@ -197,7 +207,7 @@ const App: React.FC = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    {loginError && <p style={{ color: 'red' }}>{loginError}</p>}
+                    {loginError && <Alert severity="error">{loginError}</Alert>}
                     {isLoggingIn && <CircularProgress />}
                 </DialogContent>
                 <DialogActions>
