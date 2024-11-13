@@ -1,83 +1,105 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using altinn_support_dashboard.Server.Services.Interfaces;
+﻿using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
-using System.Threading.Tasks;
-using System.Net.Http;
+using Microsoft.AspNetCore.Mvc;
 
-namespace altinn_support_dashboard.Server.Controllers
+[ApiController]
+[Route("api/{environmentName}/brreg/{orgNumber}")]
+public class ER_Roller_APIController : ControllerBase
 {
-    [ApiController]
-    [Route("api/brreg")]
-    public class ER_Roller_APIController : ControllerBase
+    private readonly IDataBrregService _dataBrregService;
+
+    public ER_Roller_APIController(IDataBrregService dataBrregService)
     {
-        private readonly IDataBrregService _dataBrregService;
+        _dataBrregService = dataBrregService;
+    }
 
-        public ER_Roller_APIController(IDataBrregService dataBrregService)
+    [HttpGet]
+    public async Task<IActionResult> GetRoles(string environmentName, string orgNumber)
+    {
+        if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
         {
-            _dataBrregService = dataBrregService;
+            return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
         }
 
-        [HttpGet("{environmentName}/{orgNumber}")]
-        public async Task<IActionResult> GetRoles(string environmentName, string orgNumber)
+        if (!IsValidEnvironment(environmentName))
         {
-            if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
-            {
-                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
-            }
+            return BadRequest("Ugyldig miljønavn.");
+        }
 
-            try
+        try
+        {
+            var result = await _dataBrregService.GetRolesAsync(orgNumber, environmentName);
+            if (result == null)
             {
-                var result = await _dataBrregService.GetRolesAsync(orgNumber, environmentName);
-                return Ok(result);
+                return NotFound("Ingen data funnet");
             }
-            catch (ArgumentException ex)
+            return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (HttpRequestException ex)
+        {
+            if (ex.Message.Contains("NotFound"))
             {
-                return BadRequest(ex.Message);
+                return NotFound("Ingen data funnet");
             }
-            catch (HttpRequestException ex)
-            {
-                return StatusCode(503, ex.Message);
-            }
-            catch (KeyNotFoundException)
-            {
-                return BadRequest("Ugyldig miljønavn.");
-            }
-            catch (Exception)
-            {
+            return StatusCode(503, ex.Message);
+        }
+        catch (KeyNotFoundException)
+        {
+            return BadRequest("Ugyldig miljønavn.");
+        }
+        catch (Exception ex)
+        {
                 return StatusCode(500, "Intern serverfeil");
-            }
+            return StatusCode(500, $"Intern serverfeil: {ex.Message}");
         }
+    }
 
-        [HttpGet("{environmentName}/{orgNumber}/underenheter")]
-        public async Task<IActionResult> GetUnderenheter(string environmentName, string orgNumber)
+    [HttpGet("underenheter")]
+    public async Task<IActionResult> GetUnderenheter(string environmentName, string orgNumber)
+    {
+        if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
         {
-            if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
-            {
-                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
-            }
-
-            try
-            {
-                var result = await _dataBrregService.GetUnderenheter(orgNumber, environmentName);
-                return Ok(result);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (HttpRequestException ex)
-            {
-                return StatusCode(503, ex.Message);
-            }
-            catch (KeyNotFoundException)
-            {
-                return BadRequest("Ugyldig miljønavn.");
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Intern serverfeil");
-            }
+            return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
         }
+
+        if (!IsValidEnvironment(environmentName))
+        {
+            return BadRequest("Ugyldig miljønavn.");
+        }
+
+        try
+        {
+            var result = await _dataBrregService.GetUnderenheter(orgNumber, environmentName);
+            if (result == null || (result is System.Collections.ICollection collection && collection.Count == 0))
+            {
+                return NotFound("Ingen data funnet");
+            }
+            return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (HttpRequestException ex)
+        {
+            return StatusCode(503, ex.Message);
+        }
+        catch (KeyNotFoundException)
+        {
+            return BadRequest("Ugyldig miljønavn.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Intern serverfeil: {ex.Message}");
+        }
+    }
+
+    private bool IsValidEnvironment(string environmentName)
+    {
+        return environmentName == "TT02" || environmentName == "Production";
     }
 }

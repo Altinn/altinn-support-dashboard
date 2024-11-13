@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
 import { Skeleton, Button, Search, Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
@@ -36,7 +36,6 @@ export default function MainContent({
     const [showOrgList, setShowOrgList] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Helper function for authorized fetch requests
     const authorizedFetch = async (url: string, options: RequestInit = {}) => {
         const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
         const headers = {
@@ -77,34 +76,25 @@ export default function MainContent({
 
     return (
         <div className="results-section">
+            {error.message && (
+                <Alert severity="danger" className="error-alert">
+                    <Heading level={2} role="alert" size="xs" spacing>
+                        {error.message}
+                    </Heading>
+                    {error.response && <Paragraph>{error.response}</Paragraph>}
+                </Alert>
+            )}
+
             {showOrgList && (
                 <div className={`org-list ${isRoleView ? 'hidden' : ''}`}>
                     {isLoading ? (
-                        <div>
-                            {error.message ? (
-                                <Alert severity="danger">
-                                    <Heading level={2} role="alert" size="xs" spacing>
-                                        {error.message}
-                                    </Heading>
-                                    {error.response && <Paragraph>{error.response}</Paragraph>}
-                                </Alert>
-                            ) : (
-                                <>
-                                    <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" data-testid="skeleton" />
-                                    <br />
-                                    <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" data-testid="skeleton" />
-                                    <br />
-                                    <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" data-testid="skeleton" />
-                                </>
-                            )}
-                        </div>
-                    ) : error.message ? (
-                        <Alert severity="danger">
-                            <Heading level={2} role="alert" size="xs" spacing>
-                                {error.message}
-                            </Heading>
-                            {error.response && <Paragraph>{error.response}</Paragraph>}
-                        </Alert>
+                        <>
+                            <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" data-testid="skeleton" />
+                            <br />
+                            <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" data-testid="skeleton" />
+                            <br />
+                            <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" data-testid="skeleton" />
+                        </>
                     ) : (
                         organizations?.map((org) => (
                             <div key={org?.organizationNumber} className="org-card-container">
@@ -165,7 +155,7 @@ export default function MainContent({
                     {!isRoleView ? (
                         <>
                             <h3>Organisasjonsoversikt</h3>
-                            <div style={{ width: '400px', display: 'flex', justifyContent: 'flex-end', marginLeft: 'auto', marginTop: '-55px', textAlign: 'center' }}>
+                            <div className="search-container">
                                 <Search
                                     label="Søk i kontakter"
                                     size="sm"
