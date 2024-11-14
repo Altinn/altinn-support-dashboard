@@ -1,23 +1,29 @@
-﻿import React, { useState } from 'react';
-import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
-import { Skeleton, Button, Search, Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
-import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
+﻿'use client'
+
+import React, { useState } from 'react'
+import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models'
+import { Skeleton, Button, Search, Alert, Heading, Paragraph, Table, TableHeaderCellProps } from '@digdir/designsystemet-react'
+import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons'
 
 interface MainContentProps {
-    baseUrl: string;
-    isLoading: boolean;
-    organizations: Organization[];
-    subUnits: Subunit[];
-    selectedOrg: { Name: string; OrganizationNumber: string } | null;
-    moreInfo: PersonalContact[];
-    rolesInfo: ERRole[];
-    expandedOrg: string | null;
-    handleSelectOrg: (organizationNumber: string, name: string) => void;
-    handleExpandToggle: (orgNumber: string) => void;
-    error: { message: string; response?: string | null };
+    baseUrl: string
+    isLoading: boolean
+    organizations: Organization[]
+    subUnits: Subunit[]
+    selectedOrg: { Name: string; OrganizationNumber: string } | null
+    moreInfo: PersonalContact[]
+    rolesInfo: ERRole[]
+    expandedOrg: string | null
+    handleSelectOrg: (organizationNumber: string, name: string) => void
+    handleExpandToggle: (orgNumber: string) => void
+    error: { message: string; response?: string | null }
 }
 
-export default function MainContent({
+type SortField = keyof PersonalContact | null
+type SortDirection = TableHeaderCellProps['sort'] | undefined
+
+
+export default function Component({
     baseUrl,
     isLoading,
     organizations,
@@ -28,51 +34,86 @@ export default function MainContent({
     expandedOrg,
     handleSelectOrg,
     handleExpandToggle,
-    error
+    error,
 }: MainContentProps) {
-    const [selectedContact, setSelectedContact] = useState<PersonalContact | null>(null);
-    const [roleInfo, setRoleInfo] = useState<any[]>([]);
-    const [isRoleView, setIsRoleView] = useState(false);
-    const [showOrgList, setShowOrgList] = useState(true);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedContact, setSelectedContact] = useState<PersonalContact | null>(null)
+    const [roleInfo, setRoleInfo] = useState<any[]>([])
+    const [isRoleView, setIsRoleView] = useState(false)
+    const [showOrgList, setShowOrgList] = useState(true)
+    const [searchQuery, setSearchQuery] = useState('')
+    const [sortField, setSortField] = useState<keyof PersonalContact | null>(null);
+    const [sortDirection, setSortDirection] = useState<TableHeaderCellProps['sort']>(undefined);
+    const [erRoleSortField, setERRoleSortField] = useState<'type' | 'person' | 'sistEndret' | null>(null);
+    const [erRoleSortDirection, setERRoleSortDirection] = useState<TableHeaderCellProps['sort']>(undefined);
 
     const authorizedFetch = async (url: string, options: RequestInit = {}) => {
-        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken')
         const headers = {
             ...options.headers,
-            'Authorization': `Basic ${token}`,
+            Authorization: `Basic ${token}`,
             'Content-Type': 'application/json',
-        };
-
-        const response = await fetch(url, { ...options, headers });
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`${response.statusText}: ${errorText}`);
         }
-        return response;
-    };
+
+        const response = await fetch(url, { ...options, headers })
+        if (!response.ok) {
+            const errorText = await response.text()
+            throw new Error(`${response.statusText}: ${errorText}`)
+        }
+        return response
+    }
 
     const handleViewRoles = async (subject: string, reportee: string) => {
         try {
-            const res = await authorizedFetch(`${baseUrl}/serviceowner/${subject}/roles/${reportee}`);
-            const data = await res.json();
-            setRoleInfo(data);
-            setIsRoleView(true);
-            setShowOrgList(false);
+            const res = await authorizedFetch(`${baseUrl}/serviceowner/${subject}/roles/${reportee}`)
+            const data = await res.json()
+            setRoleInfo(data)
+            setIsRoleView(true)
+            setShowOrgList(false)
         } catch (error) {
-            console.error(error);
+            console.error(error)
+        }
+    }
+
+    const filterContacts = (contacts: PersonalContact[]) => {
+        if (searchQuery.length < 3) return contacts
+        return contacts.filter(
+            (contact) =>
+                contact.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                contact.socialSecurityNumber?.includes(searchQuery) ||
+                contact.mobileNumber?.includes(searchQuery) ||
+                contact.eMailAddress?.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+    }
+
+    const sortContacts = (contacts: PersonalContact[]) => {
+        return [...contacts].sort((a, b) => {
+            if (sortField === null) return 0;
+            if (a[sortField] < b[sortField]) return sortDirection === 'ascending' ? -1 : 1;
+            if (a[sortField] > b[sortField]) return sortDirection === 'ascending' ? 1 : -1;
+            return 0;
+        });
+    };
+
+    const handleSort = (field: keyof PersonalContact) => {
+        if (sortField === field && sortDirection === 'descending') {
+            setSortField(null);
+            setSortDirection(undefined);
+        } else {
+            setSortField(field);
+            setSortDirection(sortField === field && sortDirection === 'ascending' ? 'descending' : 'ascending');
         }
     };
 
-    const filterContacts = (contacts: PersonalContact[]) => {
-        if (searchQuery.length < 3) return contacts;
-        return contacts.filter(contact =>
-            contact.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            contact.socialSecurityNumber?.includes(searchQuery) ||
-            contact.mobileNumber?.includes(searchQuery) ||
-            contact.eMailAddress?.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+    const handleERRoleSort = (field: 'type' | 'person' | 'sistEndret') => {
+        if (erRoleSortField === field && erRoleSortDirection === 'descending') {
+            setERRoleSortField(null);
+            setERRoleSortDirection(undefined);
+        } else {
+            setERRoleSortField(field);
+            setERRoleSortDirection(erRoleSortField === field && erRoleSortDirection === 'ascending' ? 'descending' : 'ascending');
+        }
     };
+
 
     return (
         <div className="results-section">
@@ -99,23 +140,25 @@ export default function MainContent({
                         organizations?.map((org) => (
                             <div key={org?.organizationNumber} className="org-card-container">
                                 <div
-                                    className={`org-card ${selectedOrg?.OrganizationNumber === org?.organizationNumber ? 'selected' : ''}`}
+                                    className={`org-card ${selectedOrg?.OrganizationNumber === org?.organizationNumber ? 'selected' : ''
+                                        }`}
                                     onClick={() => handleSelectOrg(org?.organizationNumber, org?.name)}
                                 >
                                     <h3>{org?.name}</h3>
                                     <p>Org Nr: {org?.organizationNumber}</p>
                                     <p>Type: {org?.type}</p>
 
-                                    {subUnits?.some(sub => sub?.overordnetEnhet === org?.organizationNumber) && (
+                                    {subUnits?.some((sub) => sub?.overordnetEnhet === org?.organizationNumber) && (
                                         <Button
                                             variant="secondary"
                                             className="expand-button"
                                             onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleExpandToggle(org?.organizationNumber);
+                                                e.stopPropagation()
+                                                handleExpandToggle(org?.organizationNumber)
                                             }}
                                             aria-expanded={expandedOrg === org?.organizationNumber}
-                                            aria-label={`${expandedOrg === org?.organizationNumber ? 'Collapse' : 'Expand'} subunits for ${org?.name}`}
+                                            aria-label={`${expandedOrg === org?.organizationNumber ? 'Collapse' : 'Expand'
+                                                } subunits for ${org?.name}`}
                                         >
                                             {expandedOrg === org?.organizationNumber ? (
                                                 <ChevronUpIcon title="Collapse subunits" fontSize="1.5rem" />
@@ -129,11 +172,12 @@ export default function MainContent({
                                 {expandedOrg === org?.organizationNumber && (
                                     <div className="subunits">
                                         {subUnits
-                                            ?.filter(sub => sub?.overordnetEnhet === org?.organizationNumber)
-                                            ?.map(sub => (
+                                            ?.filter((sub) => sub?.overordnetEnhet === org?.organizationNumber)
+                                            ?.map((sub) => (
                                                 <div
                                                     key={sub?.organisasjonsnummer}
-                                                    className={`subunit-card ${selectedOrg?.OrganizationNumber === sub?.organisasjonsnummer ? 'selected' : ''}`}
+                                                    className={`subunit-card ${selectedOrg?.OrganizationNumber === sub?.organisasjonsnummer ? 'selected' : ''
+                                                        }`}
                                                     onClick={() => handleSelectOrg(sub?.organisasjonsnummer, sub?.navn)}
                                                 >
                                                     <h4>{sub?.navn}</h4>
@@ -167,59 +211,112 @@ export default function MainContent({
                                     onClear={() => setSearchQuery('')}
                                 />
                             </div>
-                            <table className="contact-table">
-                                <thead>
-                                    <tr>
-                                        <th>Navn</th>
-                                        <th>Fødselsnummer</th>
-                                        <th>Mobilnummer</th>
-                                        <th>E-post</th>
-                                        <th>Roller</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filterContacts(moreInfo || []).map((contact) => (
-                                        <tr key={contact?.personalContactId}>
-                                            <td>{contact?.name}</td>
-                                            <td>{contact?.socialSecurityNumber}</td>
-                                            <td>{contact?.mobileNumber}</td>
-                                            <td>{contact?.eMailAddress}</td>
-                                            <td>
+                            <Table className="contact-table">
+                                <Table.Head>
+                                    <Table.Row>
+                                        <Table.HeaderCell sortable onClick={() => handleSort('name')} sort={sortField === 'name' ? sortDirection : undefined}>
+                                            Navn
+                                        </Table.HeaderCell>
+                                        <Table.HeaderCell onClick={() => handleSort('socialSecurityNumber')} sort={sortField === 'socialSecurityNumber' ? sortDirection : undefined}>
+                                            Fødselsnummer
+                                        </Table.HeaderCell>
+                                        <Table.HeaderCell onClick={() => handleSort('mobileNumber')} sort={sortField === 'mobileNumber' ? sortDirection : undefined}>
+                                            Mobilnummer
+                                        </Table.HeaderCell>
+                                        <Table.HeaderCell onClick={() => handleSort('eMailAddress')} sort={sortField === 'eMailAddress' ? sortDirection : undefined}>
+                                            E-post
+                                        </Table.HeaderCell>
+                                        <Table.HeaderCell>Roller</Table.HeaderCell>
+                                    </Table.Row>
+                                </Table.Head>
+                                <Table.Body>
+                                    {sortContacts(filterContacts(moreInfo || [])).map((contact) => (
+                                        <Table.Row key={contact?.personalContactId}>
+                                            <Table.Cell>{contact?.name}</Table.Cell>
+                                            <Table.Cell>{contact?.socialSecurityNumber}</Table.Cell>
+                                            <Table.Cell>{contact?.mobileNumber}</Table.Cell>
+                                            <Table.Cell>{contact?.eMailAddress}</Table.Cell>
+                                            <Table.Cell>
                                                 <Button
                                                     variant="tertiary"
                                                     onClick={() => {
-                                                        setSelectedContact(contact);
-                                                        handleViewRoles(contact?.socialSecurityNumber, selectedOrg?.OrganizationNumber);
+                                                        setSelectedContact(contact)
+                                                        handleViewRoles(contact?.socialSecurityNumber, selectedOrg?.OrganizationNumber)
                                                     }}
                                                 >
                                                     Vis
                                                 </Button>
-                                            </td>
-                                        </tr>
+                                            </Table.Cell>
+                                        </Table.Row>
                                     ))}
-                                </tbody>
-                            </table>
+                                </Table.Body>
+                            </Table>
                             <h3>ER-Roller</h3>
-                            <table className="roles-table">
-                                <thead>
-                                    <tr>
-                                        <th>Rolltype</th>
-                                        <th>Person</th>
-                                        <th>Dato Endret</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {rolesInfo?.map((roleGroup, index) => (
-                                        roleGroup?.roller?.map((role, roleIndex) => (
-                                            <tr key={`${index}-${roleIndex}`}>
-                                                <td>{role?.type?.beskrivelse}</td>
-                                                <td>{role?.person?.navn?.fornavn} {role?.person?.navn?.etternavn}</td>
-                                                <td>{roleGroup?.sistEndret}</td>
-                                            </tr>
+                            <Table className="roles-table">
+                                <Table.Head>
+                                    <Table.Row>
+                                        <Table.HeaderCell
+                                            sortable
+                                            sort={erRoleSortField === 'type' ? erRoleSortDirection : undefined}
+                                            onClick={() => handleERRoleSort('type')}
+                                        >
+                                            Rolletype
+                                        </Table.HeaderCell>
+                                        <Table.HeaderCell
+                                            sort={erRoleSortField === 'person' ? erRoleSortDirection : undefined}
+                                            onClick={() => handleERRoleSort('person')}
+                                        >
+                                            Person
+                                        </Table.HeaderCell>
+                                        <Table.HeaderCell
+                                            sort={erRoleSortField === 'sistEndret' ? erRoleSortDirection : undefined}
+                                            onClick={() => handleERRoleSort('sistEndret')}
+                                        >
+                                            Dato Endret
+                                        </Table.HeaderCell>
+                                    </Table.Row>
+                                </Table.Head>
+                                <Table.Body>
+                                    {rolesInfo
+                                        ?.flatMap(roleGroup =>
+                                            roleGroup?.roller?.map(role => ({
+                                                ...role,
+                                                sistEndret: roleGroup.sistEndret
+                                            }))
+                                        )
+                                        ?.sort((a, b) => {
+                                            if (erRoleSortField === null) return 0;
+                                            if (erRoleSortField === 'type') {
+                                                return erRoleSortDirection === 'ascending'
+                                                    ? a.type.beskrivelse.localeCompare(b.type.beskrivelse)
+                                                    : b.type.beskrivelse.localeCompare(a.type.beskrivelse);
+                                            }
+                                            if (erRoleSortField === 'person') {
+                                                const aName = `${a.person?.navn?.fornavn} ${a.person?.navn?.etternavn}`;
+                                                const bName = `${b.person?.navn?.fornavn} ${b.person?.navn?.etternavn}`;
+                                                return erRoleSortDirection === 'ascending'
+                                                    ? aName.localeCompare(bName)
+                                                    : bName.localeCompare(aName);
+                                            }
+                                            if (erRoleSortField === 'sistEndret') {
+                                                return erRoleSortDirection === 'ascending'
+                                                    ? new Date(a.sistEndret).getTime() - new Date(b.sistEndret).getTime()
+                                                    : new Date(b.sistEndret).getTime() - new Date(a.sistEndret).getTime();
+                                            }
+                                            return 0;
+                                        })
+                                        ?.map((role, index) => (
+                                            <Table.Row key={index}>
+                                                <Table.Cell>{role?.type?.beskrivelse}</Table.Cell>
+                                                <Table.Cell>
+                                                    {role?.person?.navn?.fornavn} {role?.person?.navn?.etternavn}
+                                                </Table.Cell>
+                                                <Table.Cell>{role?.sistEndret}</Table.Cell>
+                                            </Table.Row>
                                         ))
-                                    ))}
-                                </tbody>
-                            </table>
+                                    }
+                                </Table.Body>
+                            </Table>
                         </>
                     ) : (
                         <>
@@ -227,32 +324,32 @@ export default function MainContent({
                             <Button
                                 variant="tertiary"
                                 onClick={() => {
-                                    setIsRoleView(false);
-                                    setShowOrgList(true);
+                                    setIsRoleView(false)
+                                    setShowOrgList(true)
                                 }}
                             >
                                 Tilbake til oversikt
                             </Button>
-                            <table className="roles-table">
-                                <thead>
-                                    <tr>
-                                        <th>Rolletype</th>
-                                        <th>Rollenavn</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            <Table className="roles-table">
+                                <Table.Head>
+                                    <Table.Row>
+                                        <Table.HeaderCell>Rolletype</Table.HeaderCell>
+                                        <Table.HeaderCell>Rollenavn</Table.HeaderCell>
+                                    </Table.Row>
+                                </Table.Head>
+                                <Table.Body>
                                     {roleInfo?.map((role, index) => (
-                                        <tr key={index}>
-                                            <td>{role?.RoleType}</td>
-                                            <td>{role?.RoleName}</td>
-                                        </tr>
+                                        <Table.Row key={index}>
+                                            <Table.Cell>{role?.RoleType}</Table.Cell>
+                                            <Table.Cell>{role?.RoleName}</Table.Cell>
+                                        </Table.Row>
                                     ))}
-                                </tbody>
-                            </table>
+                                </Table.Body>
+                            </Table>
                         </>
                     )}
                 </div>
             )}
         </div>
-    );
+    )
 }

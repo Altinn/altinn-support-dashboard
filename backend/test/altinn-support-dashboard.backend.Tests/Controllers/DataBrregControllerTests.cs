@@ -1,10 +1,10 @@
-using altinn_support_dashboard.Server.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
 using System.Threading.Tasks;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using AltinnSupportDashboard.Controllers;
 
 namespace altinn_support_dashboard.backend.Tests.Controllers
 {

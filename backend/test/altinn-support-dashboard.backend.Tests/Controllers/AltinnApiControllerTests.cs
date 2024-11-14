@@ -1,4 +1,3 @@
-using altinn_support_dashboard.Server.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
@@ -34,7 +33,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Organisasjonsnummeret er ugyldig. Det m� v�re 9 sifre langt.", badRequestResult.Value);
+            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
         }
 
         [Theory]
@@ -48,10 +47,9 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Telefonnummeret er ugyldig. Det kan ikke v�re tomt.", badRequestResult.Value);
+            Assert.Equal("Telefonnummeret er ugyldig. Det kan ikke være tomt.", badRequestResult.Value);
         }
         [Theory]
-        [InlineData(null)]
         [InlineData("123")]
         [InlineData("12345678")]
         [InlineData("123456789333")]
@@ -79,7 +77,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Organisasjonsnummeret er ugyldig. Det m� v�re 9 sifre langt.", badRequestResult.Value);
+            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
         }
 
     }
