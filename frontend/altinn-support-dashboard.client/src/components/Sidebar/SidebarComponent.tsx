@@ -29,6 +29,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     formattedTime,
     formattedDate,
 }) => {
+
+
     return (
         <aside className={`sidebar ${environment === 'TT02' ? 'sidebar-tt02' : 'sidebar-prod'}`}>
             <div className="logo">
