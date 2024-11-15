@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+// src/components/Sidebar/SidebarComponent.tsx
+
+import React from 'react';
 import { Button } from '@digdir/designsystemet-react';
 import logo from '../../assets/logo.png';
 
@@ -7,8 +9,12 @@ interface SidebarProps {
     isEnvDropdownOpen: boolean;
     toggleEnvDropdown: () => void;
     handleEnvChange: (env: string) => void;
-    currentPage: 'dashboard' | 'settings'; // Add currentPage prop
-    setCurrentPage: (page: 'dashboard' | 'settings') => void; // Add setCurrentPage prop
+    currentPage: 'dashboard' | 'settings';
+    setCurrentPage: (page: 'dashboard' | 'settings') => void;
+    userName: string;
+    userEmail: string;
+    formattedTime: string;
+    formattedDate: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -17,34 +23,19 @@ const Sidebar: React.FC<SidebarProps> = ({
     toggleEnvDropdown,
     handleEnvChange,
     currentPage,
-    setCurrentPage
+    setCurrentPage,
+    userName,
+    userEmail,
+    formattedTime,
+    formattedDate,
 }) => {
-    const [userName, setUserName] = useState('Testbruker');
-    const [userEmail, setUserEmail] = useState('support@altinn.no');
-
-    useEffect(() => {
-        // Fetch user details from Azure App Service
-        fetch('/.auth/me')
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.length > 0) {
-                    const user = data[0];
-                    const nameClaim = user.user_claims.find((claim: any) => claim.typ === 'name');
-                    const emailClaim = user.user_claims.find((claim: any) => claim.typ === 'preferred_username');
-
-                    setUserName(nameClaim ? nameClaim.val : 'Unknown User');
-                    setUserEmail(emailClaim ? emailClaim.val : 'No Email Found');
-                }
-            })
-            .catch((error) => console.error('Error fetching user info:', error));
-    }, []);
-
     return (
         <aside className={`sidebar ${environment === 'TT02' ? 'sidebar-tt02' : 'sidebar-prod'}`}>
             <div className="logo">
                 <img width="150px" src={logo} alt="Logo" />
             </div>
             <br />
+
             <nav className="nav">
                 <Button
                     variant="secondary"
@@ -61,6 +52,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                     Innstillinger
                 </Button>
             </nav>
+            <div className="sidebar-time-date">
+                <div className="sidebar-time">{formattedTime}</div>
+                <div className="sidebar-date">{formattedDate}</div>
+            </div>
             <div className="environment-selector-container">
                 <button
                     className={`environment-selector ${isEnvDropdownOpen ? 'open' : ''}`}
