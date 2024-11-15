@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 if (data.length > 0) {
                     const user = data[0];
                     const nameClaim = user.user_claims.find((claim: any) => claim.typ === 'name');
-                    const emailClaim = user.user_claims.find((claim: any) => claim.typ === 'emails');
+                    const emailClaim = user.user_claims.find((claim: any) => claim.typ === 'preferred_username');
 
                     setUserName(nameClaim ? nameClaim.val : 'Unknown User');
                     setUserEmail(emailClaim ? emailClaim.val : 'No Email Found');
