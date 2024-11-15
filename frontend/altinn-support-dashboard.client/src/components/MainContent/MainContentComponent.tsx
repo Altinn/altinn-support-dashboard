@@ -1,7 +1,8 @@
+// src/components/MainContent/MainContentComponent.tsx
 
 'use client';
 
-import  { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
 import {
@@ -28,8 +29,9 @@ interface MainContentProps {
     handleExpandToggle: (orgNumber: string) => void;
     error: { message: string; response?: string | null };
     erRolesError: string | null;
+    formattedTime: string;
+    formattedDate: string;
 }
-
 
 type SortDirection = 'ascending' | 'descending' | undefined;
 
@@ -46,6 +48,7 @@ export default function MainContentComponent({
     handleExpandToggle,
     error,
     erRolesError,
+
 }: MainContentProps) {
     const [selectedContact, setSelectedContact] = useState<PersonalContact | null>(null);
     const [roleInfo, setRoleInfo] = useState<any[]>([]);
@@ -57,6 +60,26 @@ export default function MainContentComponent({
     const [erRoleSortField, setERRoleSortField] = useState<'type' | 'person' | 'sistEndret' | null>(null);
     const [erRoleSortDirection, setERRoleSortDirection] = useState<SortDirection>(undefined);
     const [roleViewError, setRoleViewError] = useState<string | null>(null);
+
+    // Quotes array in Norwegian
+    const quotes = [
+        "Dette er en fin dag.",
+        "Husk at hver dag er en gave.",
+        "Gjør det beste ut av det du har.",
+        "Livet er fullt av muligheter.",
+        "Sammen er vi sterke.",
+        "Ta vare på øyeblikket.",
+        "Smil til verden, og verden smiler til deg.",
+        "Gi aldri opp.",
+        "Livet er hva som skjer mens du planlegger noe annet.",
+    ];
+
+    // Use useMemo to compute randomQuote only once
+    const randomQuote = useMemo(() => {
+        return quotes[Math.floor(Math.random() * quotes.length)];
+    }, []);
+
+    // Removed time and date calculation from here, as it's passed as props
 
     const authorizedFetch = async (url: string, options: RequestInit = {}) => {
         const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
@@ -155,6 +178,11 @@ export default function MainContentComponent({
                             <br />
                             <Skeleton.Rectangle height="100px" width="calc(100% - 20px)" data-testid="skeleton" />
                         </>
+                    ) : organizations.length === 0 ? (
+                        <div className="no-search-message">
+                            <p>"{randomQuote}"</p>
+
+                        </div>
                     ) : (
                         organizations?.map((org) => (
                             <div key={org?.organizationNumber} className="org-card-container">
@@ -221,9 +249,7 @@ export default function MainContentComponent({
 
                     {!isRoleView ? (
                         <>
-
                             <div className="search-ssn">
-
                                 <Search
                                     label="Søk i kontakter"
                                     size="sm"

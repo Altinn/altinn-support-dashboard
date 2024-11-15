@@ -1,5 +1,5 @@
-﻿/* Basic Reset */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+﻿
+@import url('https://altinncdn.no/fonts/inter/inter.css');
 
 * {
     margin: 0;
@@ -554,6 +554,42 @@ body.dark-mode {
     margin-bottom: 20px;
     color: #004a70; /* Accent Color */
 }
+/* Sidebar Time and Date Styling */
+.sidebar-time-date {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebar-time {
+    font-size: 2em; /* Make the time big */
+    font-weight: bold;
+    color: #fff;
+}
+
+.sidebar-date {
+    font-size: 1em; /* Make the date smaller */
+    color: #fff;
+}
+
+/* Styles for the no-search message */
+.no-search-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px; /* Adjust as needed */
+    color: #888; /* Light gray color for low-key appearance */
+    font-style: italic;
+    text-align: center;
+    opacity: 0.8; /* Slightly transparent */
+}
+
+    /* Optional: Adjust the font size and spacing */
+    .no-search-message p {
+        margin: 5px 0;
+        font-size: 1.1rem;
+    }
+
 
 body.dark-mode .settings-content h1 {
     color: #e0e0e0;

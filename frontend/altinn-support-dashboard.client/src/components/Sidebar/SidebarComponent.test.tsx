@@ -10,8 +10,12 @@ describe('Sidebar', () => {
         isEnvDropdownOpen: false,
         toggleEnvDropdown: vi.fn(),
         handleEnvChange: vi.fn(),
-        currentPage: 'dashboard' as 'dashboard' | 'settings',  // Fix the type issue here
+        currentPage: 'dashboard' as 'dashboard' | 'settings',
         setCurrentPage: vi.fn(),
+        userName: 'Test User',
+        userEmail: 'test@example.com',
+        formattedTime: '12:00',
+        formattedDate: '2024-11-15',
     };
 
     const renderSidebar = (props = {}) => {
@@ -21,7 +25,6 @@ describe('Sidebar', () => {
     it('renders the sidebar with navigation buttons', () => {
         renderSidebar();
 
-        // Ensure both buttons are rendered with correct labels
         expect(screen.getByText('Oppslag')).toBeInTheDocument();
         expect(screen.getByText('Innstillinger')).toBeInTheDocument();
     });
@@ -30,13 +33,12 @@ describe('Sidebar', () => {
         const mockSetCurrentPage = vi.fn();
         renderSidebar({
             setCurrentPage: mockSetCurrentPage,
-            currentPage: 'settings',  // Set the other option to test navigation
+            currentPage: 'settings',
         });
 
         const oppslagButton = screen.getByText('Oppslag');
         await userEvent.click(oppslagButton);
 
-        // Ensure setCurrentPage is called with 'dashboard' when Oppslag is clicked
         expect(mockSetCurrentPage).toHaveBeenCalledWith('dashboard');
     });
 
@@ -44,23 +46,20 @@ describe('Sidebar', () => {
         const mockSetCurrentPage = vi.fn();
         renderSidebar({
             setCurrentPage: mockSetCurrentPage,
-            currentPage: 'dashboard',  // Set the other option to test navigation
+            currentPage: 'dashboard',
         });
 
         const innstillingerButton = screen.getByText('Innstillinger');
         await userEvent.click(innstillingerButton);
 
-        // Ensure setCurrentPage is called with 'settings' when Innstillinger is clicked
         expect(mockSetCurrentPage).toHaveBeenCalledWith('settings');
     });
 
     it('highlights the correct button based on currentPage', () => {
-        // Render with 'dashboard' selected
         renderSidebar({ currentPage: 'dashboard' });
         expect(screen.getByText('Oppslag')).toHaveClass('selected');
         expect(screen.getByText('Innstillinger')).not.toHaveClass('selected');
 
-        // Render with 'settings' selected
         renderSidebar({ currentPage: 'settings' });
         expect(screen.getByText('Innstillinger')).toHaveClass('selected');
         expect(screen.getByText('Oppslag')).not.toHaveClass('selected');
