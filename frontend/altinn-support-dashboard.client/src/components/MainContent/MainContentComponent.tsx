@@ -1,8 +1,8 @@
-﻿// src/components/MainContent/MainContentComponent.tsx
 
 'use client';
 
 import  { useState } from 'react';
+
 import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
 import {
     Skeleton,
@@ -221,7 +221,9 @@ export default function MainContentComponent({
 
                     {!isRoleView ? (
                         <>
+
                             <div className="search-ssn">
+
                                 <Search
                                     label="Søk i kontakter"
                                     size="sm"

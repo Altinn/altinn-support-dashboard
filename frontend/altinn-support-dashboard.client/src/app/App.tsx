@@ -1,11 +1,12 @@
-﻿import React, { useState,  useCallback } from 'react';
+
+import React, { useState,  useCallback } from 'react';
+
 import './App.css';
 import Sidebar from '../components/Sidebar/SidebarComponent';
 import SearchComponent from '../components/TopSearchBar/TopSearchBarComponent';
 import MainContent from '../components/MainContent/MainContentComponent';
 import SettingsContentComponent from '../components/SettingsContent/SettingsContentComponent';
 import { Organization, PersonalContact, Subunit, ERRole } from '../models/models';
-
 
 
 const App: React.FC = () => {
@@ -45,9 +46,6 @@ const App: React.FC = () => {
         }
         return response;
     }, []);
-
-
-
 
 
 
@@ -99,7 +97,9 @@ const App: React.FC = () => {
         setMoreInfo([]);
         setRolesInfo([]);
         setError({ message: '', response: null });
+
         setErRolesError(null); // Reset ER roles error
+
 
         try {
             // Fetch personal contacts
@@ -116,15 +116,19 @@ const App: React.FC = () => {
                 const roles: { rollegrupper: ERRole[] } = await resRoles.json();
                 setRolesInfo(roles.rollegrupper);
             } catch (rolesError: any) {
+
                 console.error("Error fetching ER-roles:", rolesError);
                 setErRolesError('ER roller kunne ikke hentes.'); // Set ER roles error
+
             }
         } catch (error: any) {
             console.error("Error fetching data:", error);
             setError(prevError => ({
+
                 message: prevError.message + " Feil ved henting av data.",
                 response: error.response || null
             }));
+
         }
     }, [authorizedFetch, getBaseUrl, subUnits]);
 
