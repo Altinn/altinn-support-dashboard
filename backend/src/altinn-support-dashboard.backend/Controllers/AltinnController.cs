@@ -5,7 +5,7 @@ using altinn_support_dashboard.Server.Validation;
 
 namespace AltinnSupportDashboard.Controllers
 {
-    [Authorize] // Securing the entire controller
+
     [ApiController]
     [Route("api/{environmentName}")]
     public class HealthController : ControllerBase
@@ -17,7 +17,7 @@ namespace AltinnSupportDashboard.Controllers
         }
     }
 
-    [Authorize] // Securing the entire controller
+
     [ApiController]
     [Route("api/{environmentName}/serviceowner/organizations")]
     public class Altinn_Intern_APIController : ControllerBase

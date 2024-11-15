@@ -12,12 +12,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-
-    <Content Remove="wwwroot\dist\assets\index-C0imym_O.js" />
-
-    <Content Remove="wwwroot\dist\assets\index-h8DHQkcW.css" />
+    <Content Remove="wwwroot\dist\assets\index-BMpri8gY.js" />
+    <Content Remove="wwwroot\dist\assets\index-CuUnY-dO.css" />
     <Content Remove="wwwroot\dist\assets\logo-HzEGxyCu.png" />
-    <Content Remove="wwwroot\dist\assets\logologin-DA5o-_I9.svg" />
     <Content Remove="wwwroot\dist\index.html" />
     <Content Remove="wwwroot\dist\vite.svg" />
   </ItemGroup>
@@ -40,12 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
-
-    <None Include="wwwroot\dist\assets\index-C0imym_O.js" />
-
-    <None Include="wwwroot\dist\assets\index-h8DHQkcW.css" />
+    <None Include="wwwroot\dist\assets\index-BMpri8gY.js" />
+    <None Include="wwwroot\dist\assets\index-CuUnY-dO.css" />
     <None Include="wwwroot\dist\assets\logo-HzEGxyCu.png" />
-    <None Include="wwwroot\dist\assets\logologin-DA5o-_I9.svg" />
     <None Include="wwwroot\dist\index.html" />
     <None Include="wwwroot\dist\vite.svg" />
   </ItemGroup>

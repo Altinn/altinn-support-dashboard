@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,13 +18,7 @@ namespace AltinnSupportDashboard
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add authentication using the custom BasicAuthenticationHandler
-            services.AddAuthentication("BasicAuthentication")
-                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
-
-            // Add authorization services
-            services.AddAuthorization();
-
+           
             // Add controllers for the API
             services.AddControllers();
 
