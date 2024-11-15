@@ -1,3 +1,5 @@
+// src/components/MainContent/MainContentComponent.test.tsx
+
 import { describe, it, expect, vi, beforeAll } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import MainContent from './MainContentComponent'
@@ -27,7 +29,8 @@ const mockProps: React.ComponentProps<typeof MainContent> = {
     expandedOrg: null,
     handleSelectOrg: vi.fn(),
     handleExpandToggle: vi.fn(),
-    error: { message: '', response: null }
+    error: { message: '', response: null },
+    erRolesError: null,  // Added this line to fix the error
 }
 
 describe('MainContent', () => {

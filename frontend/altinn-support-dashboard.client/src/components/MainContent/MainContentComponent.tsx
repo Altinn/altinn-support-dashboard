@@ -1,29 +1,39 @@
-﻿'use client'
+﻿// src/components/MainContent/MainContentComponent.tsx
 
-import React, { useState } from 'react'
-import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models'
-import { Skeleton, Button, Search, Alert, Heading, Paragraph, Table, TableHeaderCellProps } from '@digdir/designsystemet-react'
-import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons'
+'use client';
+
+import  { useState } from 'react';
+import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
+import {
+    Skeleton,
+    Button,
+    Search,
+    Alert,
+    Heading,
+    Paragraph,
+    Table,
+} from '@digdir/designsystemet-react';
+import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 
 interface MainContentProps {
-    baseUrl: string
-    isLoading: boolean
-    organizations: Organization[]
-    subUnits: Subunit[]
-    selectedOrg: { Name: string; OrganizationNumber: string } | null
-    moreInfo: PersonalContact[]
-    rolesInfo: ERRole[]
-    expandedOrg: string | null
-    handleSelectOrg: (organizationNumber: string, name: string) => void
-    handleExpandToggle: (orgNumber: string) => void
-    error: { message: string; response?: string | null }
+    baseUrl: string;
+    isLoading: boolean;
+    organizations: Organization[];
+    subUnits: Subunit[];
+    selectedOrg: { Name: string; OrganizationNumber: string } | null;
+    moreInfo: PersonalContact[];
+    rolesInfo: ERRole[];
+    expandedOrg: string | null;
+    handleSelectOrg: (organizationNumber: string, name: string) => void;
+    handleExpandToggle: (orgNumber: string) => void;
+    error: { message: string; response?: string | null };
+    erRolesError: string | null;
 }
 
-type SortField = keyof PersonalContact | null
-type SortDirection = TableHeaderCellProps['sort'] | undefined
 
+type SortDirection = 'ascending' | 'descending' | undefined;
 
-export default function Component({
+export default function MainContentComponent({
     baseUrl,
     isLoading,
     organizations,
@@ -35,61 +45,67 @@ export default function Component({
     handleSelectOrg,
     handleExpandToggle,
     error,
+    erRolesError,
 }: MainContentProps) {
-    const [selectedContact, setSelectedContact] = useState<PersonalContact | null>(null)
-    const [roleInfo, setRoleInfo] = useState<any[]>([])
-    const [isRoleView, setIsRoleView] = useState(false)
-    const [showOrgList, setShowOrgList] = useState(true)
-    const [searchQuery, setSearchQuery] = useState('')
+    const [selectedContact, setSelectedContact] = useState<PersonalContact | null>(null);
+    const [roleInfo, setRoleInfo] = useState<any[]>([]);
+    const [isRoleView, setIsRoleView] = useState(false);
+    const [showOrgList, setShowOrgList] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState<keyof PersonalContact | null>(null);
-    const [sortDirection, setSortDirection] = useState<TableHeaderCellProps['sort']>(undefined);
+    const [sortDirection, setSortDirection] = useState<SortDirection>(undefined);
     const [erRoleSortField, setERRoleSortField] = useState<'type' | 'person' | 'sistEndret' | null>(null);
-    const [erRoleSortDirection, setERRoleSortDirection] = useState<TableHeaderCellProps['sort']>(undefined);
+    const [erRoleSortDirection, setERRoleSortDirection] = useState<SortDirection>(undefined);
+    const [roleViewError, setRoleViewError] = useState<string | null>(null);
 
     const authorizedFetch = async (url: string, options: RequestInit = {}) => {
-        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken')
+        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
         const headers = {
             ...options.headers,
             Authorization: `Basic ${token}`,
             'Content-Type': 'application/json',
-        }
+        };
 
-        const response = await fetch(url, { ...options, headers })
+        const response = await fetch(url, { ...options, headers });
         if (!response.ok) {
-            const errorText = await response.text()
-            throw new Error(`${response.statusText}: ${errorText}`)
+            const errorText = await response.text();
+            throw new Error(`${response.statusText}: ${errorText}`);
         }
-        return response
-    }
+        return response;
+    };
 
     const handleViewRoles = async (subject: string, reportee: string) => {
         try {
-            const res = await authorizedFetch(`${baseUrl}/serviceowner/${subject}/roles/${reportee}`)
-            const data = await res.json()
-            setRoleInfo(data)
-            setIsRoleView(true)
-            setShowOrgList(false)
+            const res = await authorizedFetch(`${baseUrl}/serviceowner/${subject}/roles/${reportee}`);
+            const data = await res.json();
+            setRoleInfo(data);
+            setIsRoleView(true);
+            setShowOrgList(false);
+            setRoleViewError(null);
         } catch (error) {
-            console.error(error)
+            console.error(error);
+            setRoleViewError('Roller kunne ikke hentes.');
         }
-    }
+    };
 
     const filterContacts = (contacts: PersonalContact[]) => {
-        if (searchQuery.length < 3) return contacts
+        if (searchQuery.length < 3) return contacts;
         return contacts.filter(
             (contact) =>
                 contact.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 contact.socialSecurityNumber?.includes(searchQuery) ||
                 contact.mobileNumber?.includes(searchQuery) ||
                 contact.eMailAddress?.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-    }
+        );
+    };
 
     const sortContacts = (contacts: PersonalContact[]) => {
         return [...contacts].sort((a, b) => {
             if (sortField === null) return 0;
-            if (a[sortField] < b[sortField]) return sortDirection === 'ascending' ? -1 : 1;
-            if (a[sortField] > b[sortField]) return sortDirection === 'ascending' ? 1 : -1;
+            const aValue = a[sortField] || '';
+            const bValue = b[sortField] || '';
+            if (aValue < bValue) return sortDirection === 'ascending' ? -1 : 1;
+            if (aValue > bValue) return sortDirection === 'ascending' ? 1 : -1;
             return 0;
         });
     };
@@ -100,7 +116,9 @@ export default function Component({
             setSortDirection(undefined);
         } else {
             setSortField(field);
-            setSortDirection(sortField === field && sortDirection === 'ascending' ? 'descending' : 'ascending');
+            setSortDirection(
+                sortField === field && sortDirection === 'ascending' ? 'descending' : 'ascending'
+            );
         }
     };
 
@@ -110,10 +128,11 @@ export default function Component({
             setERRoleSortDirection(undefined);
         } else {
             setERRoleSortField(field);
-            setERRoleSortDirection(erRoleSortField === field && erRoleSortDirection === 'ascending' ? 'descending' : 'ascending');
+            setERRoleSortDirection(
+                erRoleSortField === field && erRoleSortDirection === 'ascending' ? 'descending' : 'ascending'
+            );
         }
     };
-
 
     return (
         <div className="results-section">
@@ -153,8 +172,8 @@ export default function Component({
                                             variant="secondary"
                                             className="expand-button"
                                             onClick={(e) => {
-                                                e.stopPropagation()
-                                                handleExpandToggle(org?.organizationNumber)
+                                                e.stopPropagation();
+                                                handleExpandToggle(org?.organizationNumber);
                                             }}
                                             aria-expanded={expandedOrg === org?.organizationNumber}
                                             aria-label={`${expandedOrg === org?.organizationNumber ? 'Collapse' : 'Expand'
@@ -176,9 +195,13 @@ export default function Component({
                                             ?.map((sub) => (
                                                 <div
                                                     key={sub?.organisasjonsnummer}
-                                                    className={`subunit-card ${selectedOrg?.OrganizationNumber === sub?.organisasjonsnummer ? 'selected' : ''
+                                                    className={`subunit-card ${selectedOrg?.OrganizationNumber === sub?.organisasjonsnummer
+                                                            ? 'selected'
+                                                            : ''
                                                         }`}
-                                                    onClick={() => handleSelectOrg(sub?.organisasjonsnummer, sub?.navn)}
+                                                    onClick={() =>
+                                                        handleSelectOrg(sub?.organisasjonsnummer, sub?.navn)
+                                                    }
                                                 >
                                                     <h4>{sub?.navn}</h4>
                                                     <p>Org Nr: {sub?.organisasjonsnummer}</p>
@@ -198,8 +221,7 @@ export default function Component({
 
                     {!isRoleView ? (
                         <>
-                            <h3>Organisasjonsoversikt</h3>
-                            <div className="search-container">
+                            <div className="search-ssn">
                                 <Search
                                     label="Søk i kontakter"
                                     size="sm"
@@ -211,19 +233,37 @@ export default function Component({
                                     onClear={() => setSearchQuery('')}
                                 />
                             </div>
+                            <h3 className="subheading">Organisasjonsoversikt</h3>
+
                             <Table className="contact-table">
                                 <Table.Head>
                                     <Table.Row>
-                                        <Table.HeaderCell sortable onClick={() => handleSort('name')} sort={sortField === 'name' ? sortDirection : undefined}>
+                                        <Table.HeaderCell
+                                            sortable
+                                            onClick={() => handleSort('name')}
+                                            sort={sortField === 'name' ? sortDirection : undefined}
+                                        >
                                             Navn
                                         </Table.HeaderCell>
-                                        <Table.HeaderCell onClick={() => handleSort('socialSecurityNumber')} sort={sortField === 'socialSecurityNumber' ? sortDirection : undefined}>
+                                        <Table.HeaderCell
+                                            sortable
+                                            onClick={() => handleSort('socialSecurityNumber')}
+                                            sort={sortField === 'socialSecurityNumber' ? sortDirection : undefined}
+                                        >
                                             Fødselsnummer
                                         </Table.HeaderCell>
-                                        <Table.HeaderCell onClick={() => handleSort('mobileNumber')} sort={sortField === 'mobileNumber' ? sortDirection : undefined}>
+                                        <Table.HeaderCell
+                                            sortable
+                                            onClick={() => handleSort('mobileNumber')}
+                                            sort={sortField === 'mobileNumber' ? sortDirection : undefined}
+                                        >
                                             Mobilnummer
                                         </Table.HeaderCell>
-                                        <Table.HeaderCell onClick={() => handleSort('eMailAddress')} sort={sortField === 'eMailAddress' ? sortDirection : undefined}>
+                                        <Table.HeaderCell
+                                            sortable
+                                            onClick={() => handleSort('eMailAddress')}
+                                            sort={sortField === 'eMailAddress' ? sortDirection : undefined}
+                                        >
                                             E-post
                                         </Table.HeaderCell>
                                         <Table.HeaderCell>Roller</Table.HeaderCell>
@@ -240,8 +280,11 @@ export default function Component({
                                                 <Button
                                                     variant="tertiary"
                                                     onClick={() => {
-                                                        setSelectedContact(contact)
-                                                        handleViewRoles(contact?.socialSecurityNumber, selectedOrg?.OrganizationNumber)
+                                                        setSelectedContact(contact);
+                                                        handleViewRoles(
+                                                            contact?.socialSecurityNumber,
+                                                            selectedOrg?.OrganizationNumber
+                                                        );
                                                     }}
                                                 >
                                                     Vis
@@ -251,26 +294,30 @@ export default function Component({
                                     ))}
                                 </Table.Body>
                             </Table>
-                            <h3>ER-Roller</h3>
+
+                            <h3 className="subheading">ER-Roller</h3>
+
                             <Table className="roles-table">
                                 <Table.Head>
                                     <Table.Row>
                                         <Table.HeaderCell
                                             sortable
-                                            sort={erRoleSortField === 'type' ? erRoleSortDirection : undefined}
                                             onClick={() => handleERRoleSort('type')}
+                                            sort={erRoleSortField === 'type' ? erRoleSortDirection : undefined}
                                         >
                                             Rolletype
                                         </Table.HeaderCell>
                                         <Table.HeaderCell
-                                            sort={erRoleSortField === 'person' ? erRoleSortDirection : undefined}
+                                            sortable
                                             onClick={() => handleERRoleSort('person')}
+                                            sort={erRoleSortField === 'person' ? erRoleSortDirection : undefined}
                                         >
                                             Person
                                         </Table.HeaderCell>
                                         <Table.HeaderCell
-                                            sort={erRoleSortField === 'sistEndret' ? erRoleSortDirection : undefined}
+                                            sortable
                                             onClick={() => handleERRoleSort('sistEndret')}
+                                            sort={erRoleSortField === 'sistEndret' ? erRoleSortDirection : undefined}
                                         >
                                             Dato Endret
                                         </Table.HeaderCell>
@@ -278,10 +325,10 @@ export default function Component({
                                 </Table.Head>
                                 <Table.Body>
                                     {rolesInfo
-                                        ?.flatMap(roleGroup =>
-                                            roleGroup?.roller?.map(role => ({
+                                        ?.flatMap((roleGroup) =>
+                                            roleGroup?.roller?.map((role: any) => ({
                                                 ...role,
-                                                sistEndret: roleGroup.sistEndret
+                                                sistEndret: roleGroup.sistEndret,
                                             }))
                                         )
                                         ?.sort((a, b) => {
@@ -313,10 +360,14 @@ export default function Component({
                                                 </Table.Cell>
                                                 <Table.Cell>{role?.sistEndret}</Table.Cell>
                                             </Table.Row>
-                                        ))
-                                    }
+                                        ))}
                                 </Table.Body>
                             </Table>
+                            {erRolesError && (
+                                <Alert severity="danger" className="error-alert">
+                                    <Paragraph>{erRolesError}</Paragraph>
+                                </Alert>
+                            )}
                         </>
                     ) : (
                         <>
@@ -324,8 +375,8 @@ export default function Component({
                             <Button
                                 variant="tertiary"
                                 onClick={() => {
-                                    setIsRoleView(false)
-                                    setShowOrgList(true)
+                                    setIsRoleView(false);
+                                    setShowOrgList(true);
                                 }}
                             >
                                 Tilbake til oversikt
@@ -346,10 +397,15 @@ export default function Component({
                                     ))}
                                 </Table.Body>
                             </Table>
+                            {roleViewError && (
+                                <Alert severity="danger" className="error-alert">
+                                    <Paragraph>{roleViewError}</Paragraph>
+                                </Alert>
+                            )}
                         </>
                     )}
                 </div>
             )}
         </div>
-    )
+    );
 }

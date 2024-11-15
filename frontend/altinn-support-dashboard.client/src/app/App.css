@@ -101,7 +101,10 @@ body, html {
         .sidebar-tt02 .nav-button.selected::after {
             background-color: inherit;
         }
-
+.subheading {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
 /* Hover Effects */
 .nav-button:hover {
     background-color: #d1e3f3;
@@ -240,6 +243,12 @@ body, html {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.search-ssn {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    background-color: #fff;
+
 }
 
 .search-label {

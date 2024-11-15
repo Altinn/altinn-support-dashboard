@@ -180,7 +180,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({ environment 
                     className="language-select"
                 >
                     <option value="nb">Norsk Bokmål</option>
-                    {/* Add more language options if needed */}
+
                 </select>
             </div>
 
@@ -195,7 +195,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({ environment 
 
             <div className="settings-section">
                 <Button variant="secondary" onClick={handleReload}>
-                    Relast side
+                    Last inn på nytt
                 </Button>
                 <br />
                 <Button variant="primary" onClick={handleLogout}>

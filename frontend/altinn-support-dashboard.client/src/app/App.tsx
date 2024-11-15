@@ -1,12 +1,12 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState,  useCallback } from 'react';
 import './App.css';
 import Sidebar from '../components/Sidebar/SidebarComponent';
 import SearchComponent from '../components/TopSearchBar/TopSearchBarComponent';
 import MainContent from '../components/MainContent/MainContentComponent';
 import SettingsContentComponent from '../components/SettingsContent/SettingsContentComponent';
 import { Organization, PersonalContact, Subunit, ERRole } from '../models/models';
-import { Dialog, DialogContent, DialogActions, TextField, Button, CircularProgress, Alert } from '@mui/material';
-import logologin from '../assets/logologin.svg';
+
+
 
 const App: React.FC = () => {
     const [query, setQuery] = useState('');
@@ -17,16 +17,12 @@ const App: React.FC = () => {
     const [rolesInfo, setRolesInfo] = useState<ERRole[]>([]);
     const [expandedOrg, setExpandedOrg] = useState<string | null>(null);
     const [error, setError] = useState<{ message: string; response?: string | null }>({ message: '', response: null });
+    const [erRolesError, setErRolesError] = useState<string | null>(null); // Added state for ER roles error
     const [environment, setEnvironment] = useState('PROD');
     const [isEnvDropdownOpen, setIsEnvDropdownOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState<'dashboard' | 'settings'>('dashboard');
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [openLoginDialog, setOpenLoginDialog] = useState(true);
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [loginError, setLoginError] = useState('');
-    const [isLoggingIn, setIsLoggingIn] = useState(false);
+
 
     const getBaseUrl = useCallback(() => {
         const apiHost = window.location.hostname;
@@ -50,46 +46,16 @@ const App: React.FC = () => {
         return response;
     }, []);
 
-    useEffect(() => {
-        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-        if (token) {
-            setIsAuthenticated(true);
-            setOpenLoginDialog(false);
-        }
-    }, []);
 
-    const handleLogin = async () => {
-        setIsLoggingIn(true);
-        setLoginError('');
-        try {
-            const token = btoa(`${username}:${password}`);
-            const response = await fetch(`${getBaseUrl()}/auth/check`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Basic ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
 
-            if (response.ok) {
-                localStorage.setItem('authToken', token);
-                setIsAuthenticated(true);
-                setOpenLoginDialog(false);
-            } else {
-                const errorResponse = await response.text();
-                throw new Error(`Error: ${response.statusText} - ${errorResponse}`);
-            }
-        } catch (error) {
-            setLoginError('Au da, feil brukernavn eller passord!');
-        } finally {
-            setIsLoggingIn(false);
-        }
-    };
+
+
 
     const handleSearch = useCallback(async () => {
         const trimmedQuery = query.replace(/\s/g, '');
         setIsLoading(true);
         setError({ message: '', response: null });
+        setErRolesError(null); // Reset ER roles error
         try {
             const res = await authorizedFetch(`${getBaseUrl()}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`);
             const data = await res.json();
@@ -133,6 +99,7 @@ const App: React.FC = () => {
         setMoreInfo([]);
         setRolesInfo([]);
         setError({ message: '', response: null });
+        setErRolesError(null); // Reset ER roles error
 
         try {
             // Fetch personal contacts
@@ -149,20 +116,15 @@ const App: React.FC = () => {
                 const roles: { rollegrupper: ERRole[] } = await resRoles.json();
                 setRolesInfo(roles.rollegrupper);
             } catch (rolesError: any) {
-                console.error("Error fetching ER roles:", rolesError);
-                setError(prevError => ({
-                    ...prevError,
-                    message: prevError.message + " ER roller kunne ikke hentes. "
-                }));
-                // Don't set rolesInfo to empty array here, keep the previous state
+                console.error("Error fetching ER-roles:", rolesError);
+                setErRolesError('ER roller kunne ikke hentes.'); // Set ER roles error
             }
         } catch (error: any) {
             console.error("Error fetching data:", error);
             setError(prevError => ({
-                message: prevError.message + "Feil ved henting av data. ",
+                message: prevError.message + " Feil ved henting av data.",
                 response: error.response || null
             }));
-            // Don't clear moreInfo or rolesInfo here, keep the previous state
         }
     }, [authorizedFetch, getBaseUrl, subUnits]);
 
@@ -177,6 +139,7 @@ const App: React.FC = () => {
         setMoreInfo([]);
         setRolesInfo([]);
         setError({ message: '', response: null });
+        setErRolesError(null); // Reset ER roles error
     };
 
     const handleExpandToggle = (orgNumber: string) => {
@@ -184,40 +147,7 @@ const App: React.FC = () => {
     };
 
     return (
-        <>
-            <Dialog open={openLoginDialog} onClose={() => { }} disableEscapeKeyDown>
-                <DialogContent>
-                    <div style={{ textAlign: 'center' }}>
-                        <img src={logologin} alt="Login Logo" style={{ width: '100px', marginBottom: '20px' }} />
-                    </div>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Brukernavn"
-                        type="text"
-                        fullWidth
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Passord"
-                        type="password"
-                        fullWidth
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    {loginError && <Alert severity="error">{loginError}</Alert>}
-                    {isLoggingIn && <CircularProgress />}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleLogin} color="primary" disabled={isLoggingIn}>
-                        Logg inn
-                    </Button>
-                </DialogActions>
-            </Dialog>
 
-            {isAuthenticated && (
                 <div className="app-wrapper">
                     <Sidebar
                         environment={environment}
@@ -243,6 +173,7 @@ const App: React.FC = () => {
                                     handleSelectOrg={handleSelectOrg}
                                     handleExpandToggle={handleExpandToggle}
                                     error={error}
+                                    erRolesError={erRolesError} // Pass ER roles error as a prop
                                 />
                             </>
                         ) : (
@@ -251,8 +182,7 @@ const App: React.FC = () => {
                     </main>
                 </div>
             )}
-        </>
-    );
-};
+
+
 
 export default App;
