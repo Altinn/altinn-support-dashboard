@@ -194,8 +194,6 @@ const App: React.FC = () => {
             setMoreInfo([]);
             setRolesInfo([]);
             setError({ message: '', response: null });
-
-<
             setErRolesError(null); // Reset ER roles error
 
 
