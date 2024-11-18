@@ -18,7 +18,9 @@ describe('SidebarComponent', () => {
         userEmail: 'test@example.com',
         formattedTime: '12:00',
         formattedDate: '2024-11-15',
+
         isDarkMode: false,
+
     };
 
     const renderSidebar = (props = {}) => {

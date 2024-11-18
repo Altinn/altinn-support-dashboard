@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { Box, Typography, Button, Menu, MenuItem, Divider } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
+
 import logo from '../../assets/logo.png';
 
 interface SidebarProps {
@@ -14,7 +16,9 @@ interface SidebarProps {
     userEmail: string;
     formattedTime: string;
     formattedDate: string;
+
     isDarkMode: boolean;
+
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -27,6 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     formattedTime,
     formattedDate,
 }) => {
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -69,6 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                         onClick={() => setCurrentPage('dashboard')}
                     >
                         Oppslag
+
                     </button>
                     <button
                         className={`nav-button ${currentPage === 'settings' ? 'selected' : ''}`}

@@ -12,8 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+
     <Content Remove="wwwroot\dist\assets\index-D-jCIp55.css" />
     <Content Remove="wwwroot\dist\assets\index-DzWjbcEn.js" />
+
     <Content Remove="wwwroot\dist\assets\logo-HzEGxyCu.png" />
     <Content Remove="wwwroot\dist\index.html" />
     <Content Remove="wwwroot\dist\vite.svg" />
@@ -37,8 +39,10 @@
   </ItemGroup>
 
   <ItemGroup>
+
     <None Include="wwwroot\dist\assets\index-D-jCIp55.css" />
     <None Include="wwwroot\dist\assets\index-DzWjbcEn.js" />
+
     <None Include="wwwroot\dist\assets\logo-HzEGxyCu.png" />
     <None Include="wwwroot\dist\index.html" />
     <None Include="wwwroot\dist\vite.svg" />

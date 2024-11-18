@@ -1,16 +1,20 @@
 // src/App.tsx
 
+
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+
 import './App.css';
 import Sidebar from '../components/Sidebar/SidebarComponent';
 import SearchComponent from '../components/TopSearchBar/TopSearchBarComponent';
 import MainContent from '../components/MainContent/MainContentComponent';
 import SettingsContentComponent from '../components/SettingsContent/SettingsContentComponent';
 import { Organization, PersonalContact, Subunit, ERRole } from '../models/models';
+
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import SignOutPage from '../SignOutPage/SignOutPage'; // Adjusted the import path
+
 
 const App: React.FC = () => {
     const [query, setQuery] = useState('');
@@ -26,6 +30,7 @@ const App: React.FC = () => {
     const [isEnvDropdownOpen, setIsEnvDropdownOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState<'dashboard' | 'settings'>('dashboard');
+
 
     // Dark Mode State
     const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
@@ -54,6 +59,7 @@ const App: React.FC = () => {
         [isDarkMode]
     );
 
+
     const getBaseUrl = useCallback(() => {
         const apiHost = window.location.hostname;
         const protocol = window.location.protocol;
@@ -76,8 +82,10 @@ const App: React.FC = () => {
         return response;
     }, []);
 
+
     const [userName, setUserName] = useState('Du er ikke innlogget');
     const [userEmail, setUserEmail] = useState('');
+
 
     useEffect(() => {
         // Fetch user details from Azure App Service
@@ -187,7 +195,9 @@ const App: React.FC = () => {
             setRolesInfo([]);
             setError({ message: '', response: null });
 
+<
             setErRolesError(null); // Reset ER roles error
+
 
             try {
                 // Fetch personal contacts
@@ -216,11 +226,13 @@ const App: React.FC = () => {
                     response: error.response || null,
                 }));
             }
+
         },
         [authorizedFetch, getBaseUrl, subUnits]
     );
 
     const toggleEnvDropdown = () => setIsEnvDropdownOpen((prev) => !prev);
+
 
     const handleEnvChange = (env: string) => {
         setEnvironment(env);
@@ -237,6 +249,7 @@ const App: React.FC = () => {
     const handleExpandToggle = (orgNumber: string) => {
         setExpandedOrg(expandedOrg === orgNumber ? null : orgNumber);
     };
+
 
     // Initialize dark mode based on stored preference or browser preference
     useEffect(() => {
@@ -323,6 +336,7 @@ const App: React.FC = () => {
                 </div>
             </Router>
         </ThemeProvider>
+
     );
 };
 

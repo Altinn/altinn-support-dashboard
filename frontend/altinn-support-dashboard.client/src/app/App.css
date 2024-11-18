@@ -1,6 +1,7 @@
-﻿/* src/App.css */
+
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
 
 * {
     margin: 0;
@@ -213,6 +214,42 @@ html[data-ds-color-mode="dark"] .nav-button {
     text-align: center;
     margin-bottom: 20px;
 }
+/* Sidebar Time and Date Styling */
+.sidebar-time-date {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebar-time {
+    font-size: 2em; /* Make the time big */
+    font-weight: bold;
+    color: #fff;
+}
+
+.sidebar-date {
+    font-size: 1em; /* Make the date smaller */
+    color: #fff;
+}
+
+/* Styles for the no-search message */
+.no-search-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px; /* Adjust as needed */
+    color: #888; /* Light gray color for low-key appearance */
+    font-style: italic;
+    text-align: center;
+    opacity: 0.8; /* Slightly transparent */
+}
+
+    /* Optional: Adjust the font size and spacing */
+    .no-search-message p {
+        margin: 5px 0;
+        font-size: 1.1rem;
+    }
+
 
 .sidebar-time {
     font-size: 2em;

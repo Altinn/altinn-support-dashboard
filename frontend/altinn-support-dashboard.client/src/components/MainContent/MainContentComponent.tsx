@@ -1,6 +1,8 @@
 // src/components/MainContent/MainContentComponent.tsx
 
+
 import React, { useState, useMemo } from 'react';
+
 import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
 import {
     Skeleton,
@@ -33,12 +35,14 @@ interface MainContentProps {
     erRolesError: string | null;
     formattedTime: string;
     formattedDate: string;
+
     isDarkMode: boolean;
 }
 
 type SortDirection = 'asc' | 'desc' | undefined;
 
 const MainContentComponent: React.FC<MainContentProps> = ({
+
     baseUrl,
     isLoading,
     organizations,
@@ -51,7 +55,9 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     handleExpandToggle,
     error,
     erRolesError,
+
 }) => {
+
     const [selectedContact, setSelectedContact] = useState<PersonalContact | null>(null);
     const [roleInfo, setRoleInfo] = useState<any[]>([]);
     const [isRoleView, setIsRoleView] = useState(false);
@@ -64,6 +70,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     const [roleViewError, setRoleViewError] = useState<string | null>(null);
 
     // Quotes array in Norwegian
+
     const quotes = useMemo(
         () => [
             'Dette er en fin dag.',
@@ -189,7 +196,9 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                         </>
                     ) : organizations.length === 0 ? (
                         <div className="no-search-message">
+
                             <Typography variant="h6">"{randomQuote}"</Typography>
+
                         </div>
                     ) : (
                         organizations.map((org) => (
@@ -296,7 +305,9 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                     {!isRoleView ? (
                         <>
                             <div className="search-ssn">
+
                                 <TextField
+
                                     label="Søk i kontakter"
                                     variant="outlined"
                                     size="small"
@@ -504,6 +515,8 @@ const MainContentComponent: React.FC<MainContentProps> = ({
             )}
         </div>
     );
+
 };
 
 export default MainContentComponent;
+
