@@ -12,10 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\dist\assets\index-BMpri8gY.js" />
-    <Content Remove="wwwroot\dist\assets\index-CuUnY-dO.css" />
-    <Content Remove="wwwroot\dist\assets\index-DyHvE3jL.js" />
-    <Content Remove="wwwroot\dist\assets\index-O0e_tG1K.css" />
+
+    <Content Remove="wwwroot\dist\assets\index-D-jCIp55.css" />
+    <Content Remove="wwwroot\dist\assets\index-DzWjbcEn.js" />
+
     <Content Remove="wwwroot\dist\assets\logo-HzEGxyCu.png" />
     <Content Remove="wwwroot\dist\index.html" />
     <Content Remove="wwwroot\dist\vite.svg" />
@@ -39,10 +39,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\dist\assets\index-BMpri8gY.js" />
-    <None Include="wwwroot\dist\assets\index-CuUnY-dO.css" />
-    <None Include="wwwroot\dist\assets\index-DyHvE3jL.js" />
-    <None Include="wwwroot\dist\assets\index-O0e_tG1K.css" />
+
+    <None Include="wwwroot\dist\assets\index-D-jCIp55.css" />
+    <None Include="wwwroot\dist\assets\index-DzWjbcEn.js" />
+
     <None Include="wwwroot\dist\assets\logo-HzEGxyCu.png" />
     <None Include="wwwroot\dist\index.html" />
     <None Include="wwwroot\dist\vite.svg" />

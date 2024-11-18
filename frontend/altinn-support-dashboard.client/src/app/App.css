@@ -1,15 +1,17 @@
-﻿
-@import url('https://altinncdn.no/fonts/inter/inter.css');
+
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
 
 * {
     margin: 0;
     box-sizing: border-box;
 }
 
-body, html {
-    font-family: "Inter", sans-serif;
+body,
+html {
+    font-family: 'Inter', sans-serif;
     height: 100%;
-    background-color: #fefefe;
     overflow: hidden;
 }
 
@@ -20,44 +22,16 @@ body, html {
     overflow: hidden;
 }
 
-/* Sidebar Styling */
-.sidebar {
-    width: 250px;
-    min-width: 250px;
-    color: #fff;
+/* Navigation Buttons */
+.nav {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 20px; /* Sidebar padding */
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    gap: 10px;
 }
 
-.sidebar-prod {
-    background-color: #004a70;
-}
-
-.sidebar-tt02 {
-    background-color: #FF8C00;
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.nav {
-    flex-grow: 1;
-}
-
-/* Navigation Buttons */
 .nav-button {
     position: relative;
-    width: calc(100% + 20px);
+    width: calc(100% + 16px);
     padding: 15px;
     font-size: 18px;
     background-color: transparent;
@@ -65,7 +39,7 @@ body, html {
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    text-align: left;
+    text-align: center;
     margin: 0 -10px 10px -10px;
     transition: background-color 0.3s, color 0.3s;
 }
@@ -89,172 +63,33 @@ body, html {
             border-bottom-right-radius: 0;
         }
 
-.sidebar-tt02 .nav-button {
-    color: #f0f2f5;
-}
-
-    .sidebar-tt02 .nav-button.selected {
-        background-color: #f0f2f5;
-        color: #FF8C00;
+    /* Hover Effects */
+    .nav-button:hover {
+        background-color: #d1e3f3;
     }
 
-        .sidebar-tt02 .nav-button.selected::after {
-            background-color: inherit;
-        }
-.subheading {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-/* Hover Effects */
-.nav-button:hover {
-    background-color: #d1e3f3;
+/* Adjust for Dark Mode */
+html[data-ds-color-mode="dark"] .nav-button {
+    color: #e0e0e0;
 }
 
-.sidebar-tt02 .nav-button:hover {
-    background-color: #FFDAB9;
-}
-
-/* Environment Selector */
-.environment-selector-container {
-    position: relative;
-    margin-bottom: 20px;
-}
-
-.environment-selector {
-    cursor: pointer;
-    background-color: #bad5ec; /* Surface Hover (Accent) */
-    color: #004a70; /* Base Default (Accent) */
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 16px;
-    width: 100%;
-    text-align: center;
-    border: none;
-    position: relative;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    z-index: 10;
-}
-
-.sidebar-tt02 .environment-selector {
-    background-color: #FFDAB9; /* Light orange */
-    color: #FF8C00; /* Orange text */
-}
-
-.environment-selector.open {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    background-color: #a1c5e5;
-}
-
-.sidebar-tt02 .environment-selector.open {
-    background-color: #FFB451;
-}
-
-.environment-selector:hover {
-    background-color: #015097; /* Base Hover (Accent) */
-    color: #fff;
-}
-
-.sidebar-tt02 .environment-selector:hover {
-    background-color: #FFB451; /* Orange */
-    color: #fff;
-}
-
-/* Dropdown Animation */
-.env-dropdown {
-    position: absolute;
-    bottom: 100%; /* Position the dropdown above the button */
-    left: 0;
-    width: 100%;
-    background-color: #fff;
-    border-radius: 0 0 10px 10px;
-    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    opacity: 0;
-    transform: translateY(20px);
-    visibility: hidden;
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-    z-index:8;
-}
-
-    .env-dropdown.open {
-        opacity: 1;
-        transform: translateY(0);
-        visibility: visible;
+    html[data-ds-color-mode="dark"] .nav-button.selected {
+        background-color: #1a1a1a;
+        color: #fff;
     }
 
-.env-dropdown-item {
-    display: block;
-    padding: 10px 20px;
-    width: 100%;
-    text-align: center;
-    background-color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: #333;
-    transition: background-color 0.3s ease;
-}
-
-    .env-dropdown-item:hover {
-        background-color: #f0f0f0; /* Background Subtle (Neutral) */
+    html[data-ds-color-mode="dark"] .nav-button:hover {
+        background-color: #444;
     }
-
-/* Profile Section */
-.profile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    margin-top: auto;
-}
-
-.profile-name {
-    margin-bottom: 10px;
-    font-size: 16px;
-}
-
-.profile-pic {
-    width: 40px;
-    height: 40px;
-    background-image: url('https://tricky-photoshop.com/wp-content/uploads/2017/08/6.jpg');
-    border-radius: 50%;
-    border: 2px solid #004a70; /* Base Default (Accent) */
-    background-size: cover;
-}
-
-.sidebar-tt02 .profile-pic {
-    border-color: #FF8C00; /* Orange border */
-}
 
 /* Main Content Styling */
 .main-content {
     flex-grow: 1;
     padding: 40px;
-    background-color: #f0f2f5;
+    background-color: transparent;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Ensure the content doesn't cause a page-wide scroll */
-}
-
-.search-container {
-    margin-bottom: 20px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.search-ssn {
-    margin-bottom: 20px;
-    margin-top: 20px;
-    background-color: #fff;
-
-}
-
-.search-label {
-    font-size: 16px;
-    margin-bottom: 10px;
-    display: block;
+    overflow: hidden;
 }
 
 /* Organization List and Details */
@@ -271,7 +106,7 @@ body, html {
     flex-direction: column;
     gap: 20px;
     overflow-y: auto;
-    transition: all 0.5s ease; /* Smooth transition for hiding */
+    transition: all 0.5s ease;
 }
 
     .org-list.hidden {
@@ -282,14 +117,12 @@ body, html {
 
 .org-details {
     flex: 2;
-    background-color: #fff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
     max-height: calc(100vh - 100px);
     overflow-x: auto;
-    transition: all 0.5s ease; /* Smooth transition for expanding */
+    transition: all 0.5s ease;
 }
 
     .org-details.full-width {
@@ -297,118 +130,23 @@ body, html {
         width: 100%;
     }
 
-.org-card-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-.org-card {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-    .org-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
-
-    .org-card.selected {
-        border: 2px solid #0163ba; /* Base Default (Accent) */
-        background-color: #a1c5e5;
-    }
-
-.sidebar-tt02 .org-card.selected {
-    border-color: #FF8C00;
-    background-color: #FFDAB9;
-}
-
-.expand-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: black;
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: 18px;
-}
-
+/* Subunits */
 .subunits {
     margin-left: 20px;
     margin-top: 10px;
 }
 
-.subunit-card {
-    margin-left: 20px;
-    padding: 15px;
-    background-color: #f5f5f5;
-    border: 1px solid #0072b1; /* Border Default (Accent) */
-    border-radius: 8px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-    .subunit-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
-
-    .subunit-card h4 {
-        margin: 0 0 5px 0;
-        font-size: 16px;
-        color: #0163ba; /* Text Default (Accent) */
-    }
-
-    .subunit-card p {
-        margin: 0;
-        font-size: 14px;
-    }
-
-    .subunit-card.selected {
-        border: 2px solid #0163ba;
-        background-color: #a1c5e5;
-    }
-
-.sidebar-tt02 .subunit-card {
-    border-color: #FF8C00;
-}
-
-    .sidebar-tt02 .subunit-card h4 {
-        color: #FF8C00;
-    }
-
-    .sidebar-tt02 .subunit-card.selected {
-        border-color: #FF8C00;
-        background-color: #FFDAB9;
-    }
-
-.contact-table, .roles-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    table-layout: auto;
-}
-
-    .contact-table th, .contact-table td,
-    .roles-table th, .roles-table td {
-        padding: 10px;
-        border: 1px solid #ccc;
-        text-align: left;
-    }
-
-    .contact-table th, .roles-table th {
-        background-color: #2f86c9;
-        color: #ffffff;
-    }
-
-.sidebar-tt02 .contact-table th, .sidebar-tt02 .roles-table th {
-    background-color: #FF8C00;
+/* No Search Message */
+.no-search-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    color: #888;
+    font-style: italic;
+    text-align: center;
+    opacity: 0.8;
 }
 
 /* Error Message Styling */
@@ -417,74 +155,47 @@ body, html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    position: fixed; /* Make it float over content */
-    top: 50%; /* Vertically center */
-    left: 50%; /* Horizontally center */
-    transform: translate(-50%, -50%); /* Center it with transform */
-    background-color: #fefefe; /* Soft white background */
-    color: #d9534f; /* Soft red color for the text */
-    font-size: 1rem; /* Slightly smaller text size */
-    padding: 20px; /* Padding inside the box */
-    border-radius: 12px; /* Rounded corners */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Soft shadow for a floating effect */
-    border: 1px solid #f5c6cb; /* Soft red border */
-    max-width: 400px; /* Limit the size of the error box */
-    width: 80%; /* Adjust width relative to the screen */
-    text-align: center; /* Center the text */
-    z-index: 1000; /* Ensure it floats above other content */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fefefe;
+    color: #d9534f;
+    font-size: 1rem;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #f5c6cb;
+    max-width: 400px;
+    width: 80%;
+    text-align: center;
+    z-index: 1000;
 }
-
-    .error-message p {
-        margin: 0 0 10px 0; /* Space between the message and any response */
-    }
 
 .error-response {
     background-color: #f8d7da;
     border: 1px solid #f5c6cb;
     border-radius: 8px;
     padding: 10px;
-    font-size: 0.9rem; /* Slightly smaller font for response */
+    font-size: 0.9rem;
     color: #721c24;
-    white-space: pre-wrap; /* Keep formatting in the response */
-    max-height: 150px; /* Limit the height */
-    overflow-y: auto; /* Add scrolling if the response is long */
-    width: 100%; /* Make sure it fits inside the error box */
+    white-space: pre-wrap;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 100%;
 }
+
 /* Settings Content Styles */
 .settings-content {
     padding: 20px;
     overflow-y: auto;
     max-height: calc(100vh - 100px);
-   
     color: #333;
     border-radius: 10px;
- 
 }
 
 .settings-section {
     margin-bottom: 30px;
-}
-
-    .settings-section h2 {
-        margin-bottom: 10px;
-        font-size: 22px;
-        color: #004a70; /* Accent Color */
-    }
-
-    .settings-section label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-
-.language-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: #fff;
-    color: #333;
 }
 
 .settings-footer {
@@ -498,61 +209,10 @@ body, html {
         color: #666;
     }
 
-/* Style the alert components */
-.settings-content .ds-alert {
-    margin-top: 10px;
-}
-
-/* Ensure the switch aligns properly */
-.settings-content .ds-switch {
-    margin-top: 10px;
-}
-
-/* Improve the appearance of buttons in the settings page */
-.settings-section .ds-button {
-    margin-right: 10px;
-    margin-top: 10px;
-}
-
-/* Dark Mode Styles */
-body.dark-mode {
-    background-color: #121212;
-    color: #e0e0e0;
-}
-
-    body.dark-mode .main-content {
-        background-color: #1e1e1e;
-    }
-
-    body.dark-mode .settings-content {
-        background-color: #1e1e1e;
-        color: #e0e0e0;
-    }
-
-    body.dark-mode .settings-section h2,
-    body.dark-mode .settings-section label {
-        color: #e0e0e0;
-    }
-
-    body.dark-mode .language-select {
-        background-color: #2e2e2e;
-        color: #e0e0e0;
-        border-color: #444;
-    }
-
-    body.dark-mode .settings-footer {
-        border-top-color: #444444;
-    }
-
-        body.dark-mode .settings-footer p {
-            color: #aaa;
-        }
-
-/* Style the settings page headings */
-.settings-content h1 {
-    font-size: 28px;
+/* Sidebar Time and Date Styling */
+.sidebar-time-date {
+    text-align: center;
     margin-bottom: 20px;
-    color: #004a70; /* Accent Color */
 }
 /* Sidebar Time and Date Styling */
 .sidebar-time-date {
@@ -591,44 +251,13 @@ body.dark-mode {
     }
 
 
-body.dark-mode .settings-content h1 {
-    color: #e0e0e0;
+.sidebar-time {
+    font-size: 2em;
+    font-weight: bold;
+    color: #fff;
 }
 
-/* Style the alert components in dark mode */
-body.dark-mode .ds-alert {
-    background-color: #333;
-    border-color: #444;
-    color: #e0e0e0;
+.sidebar-date {
+    font-size: 1em;
+    color: #fff;
 }
-
-    body.dark-mode .ds-alert .ds-heading {
-        color: #e0e0e0;
-    }
-
-/* Style the buttons in dark mode */
-body.dark-mode .ds-button {
-    background-color: #444;
-    color: #e0e0e0;
-}
-
-    body.dark-mode .ds-button:hover {
-        background-color: #555;
-    }
-
-/* Style the switch in dark mode */
-body.dark-mode .ds-switch {
-    color: #e0e0e0;
-}
-
-    body.dark-mode .ds-switch .ds-switch__input:checked + .ds-switch__slider {
-        background-color: #0072b1; /* Accent Color */
-    }
-
-    body.dark-mode .ds-switch .ds-switch__slider {
-        background-color: #555;
-    }
-
-    body.dark-mode .ds-switch .ds-switch__input:focus + .ds-switch__slider {
-        box-shadow: 0 0 2px 2px rgba(0, 114, 177, 0.5);
-    }
