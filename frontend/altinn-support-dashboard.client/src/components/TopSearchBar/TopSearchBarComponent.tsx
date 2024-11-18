@@ -1,40 +1,48 @@
-// SearchComponent.tsx
+ï»¿// src/components/TopSearchBar/TopSearchBarComponent.tsx
 
 import React from 'react';
-import { Search } from '@digdir/designsystemet-react';
-import { MagnifyingGlassIcon } from '@navikt/aksel-icons';
-import '@digdir/designsystemet-theme';
-import '@digdir/designsystemet-css';
+import { TextField, IconButton, InputAdornment, Box, Typography } from '@mui/material';
+import { Search as SearchIcon, Clear as ClearIcon } from '@mui/icons-material';
 
 type SearchComponentProps = {
     query: string;
     setQuery: (query: string) => void;
     handleSearch: () => void;
+    isDarkMode: boolean;
 };
 
-const SearchComponent: React.FC<SearchComponentProps> = ({ query, setQuery, handleSearch }) => (
-    <div className="search-container">
-        <label htmlFor="searchbar" className="search-label">
-            Mobilnummer / E-post / Organisasjonsnummer:
-        </label>
-        <form
-            onSubmit={(e) => {
-                e.preventDefault();
+const SearchComponent: React.FC<SearchComponentProps> = ({ query, setQuery, handleSearch, isDarkMode }) => (
+    <Box sx={{ mb: 3 }}>
+        <Typography variant="h6" gutterBottom>
+            SÃ¸k etter Organisasjoner
+        </Typography>
+        <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Mobilnummer / E-post / Organisasjonsnummer"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
             }}
-        >
-            <Search
-                id="searchbar"
-                label="Søk etter innhold"
-                clearButtonLabel="Fjern søkeinnhold"
-                searchButtonLabel={<MagnifyingGlassIcon fontSize="1.5em" title="Search" />}
-                variant="primary"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onClear={() => setQuery('')} 
-                onSearchClick={handleSearch}
-            />
-        </form>
-    </div>
+            InputProps={{
+                endAdornment: (
+                    <InputAdornment position="end">
+                        {query && (
+                            <IconButton onClick={() => setQuery('')} edge="end">
+                                <ClearIcon />
+                            </IconButton>
+                        )}
+                        <IconButton onClick={handleSearch} edge="end">
+                            <SearchIcon />
+                        </IconButton>
+                    </InputAdornment>
+                ),
+            }}
+        />
+    </Box>
 );
 
 export default SearchComponent;
