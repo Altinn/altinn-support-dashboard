@@ -109,13 +109,13 @@ namespace altinn_support_dashboard.Server.Services
 
     public class BrregConfiguration
     {
-        public EnvironmentConfiguration Production { get; set; }
-        public EnvironmentConfiguration TT02 { get; set; }
+        public EnvironmentConfiguration? Production { get; set; }
+        public EnvironmentConfiguration? TT02 { get; set; }
     }
 
     public class EnvironmentConfiguration
     {
-        public string BaseAddress { get; set; }
+        public string? BaseAddress { get; set; }
         public int Timeout { get; set; } = 100; // Default timeout in seconds
     }
 }

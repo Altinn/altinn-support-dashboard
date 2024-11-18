@@ -33,7 +33,6 @@ public class AltinnApiClient
         {
             var client = _clients[environmentName];
             
-            // Construct the full request URL
             var requestUrl = $"organizations/{orgNumber}";
             Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
 

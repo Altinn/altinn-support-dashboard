@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
+using altinn_support_dashboard.Server.Services;
 
 namespace AltinnSupportDashboard.Controllers
 {
@@ -23,10 +24,12 @@ namespace AltinnSupportDashboard.Controllers
     public class Altinn_Intern_APIController : ControllerBase
     {
         private readonly IAltinnApiService _altinnApiService;
+        private readonly IDataBrregService _dataBrregService;
 
-        public Altinn_Intern_APIController(IAltinnApiService altinnApiService)
+        public Altinn_Intern_APIController(IAltinnApiService altinnApiService, IDataBrregService dataBrregService)
         {
             _altinnApiService = altinnApiService;
+            _dataBrregService = dataBrregService;
         }
 
         [HttpGet("search")]
@@ -88,8 +91,23 @@ namespace AltinnSupportDashboard.Controllers
             try
             {
                 var organizations = await _altinnApiService.GetOrganizationsByPhoneNumber(phoneNumber, environmentName);
-                return Ok(organizations);
+                var result = new List<object>();
+
+                foreach (var org in organizations)
+                {
+                    var underenhetRoot = await _dataBrregService.GetUnderenheter(org.OrganizationNumber, environmentName);
+                    var underenheter = underenhetRoot?._embedded?.underenheter ?? new List<UnderEnhet>();
+
+                    result.Add(new
+                    {
+                        Organization = org,
+                        Underenheter = underenheter
+                    });
+                }
+
+                return Ok(result);
             }
+
             catch (System.Exception ex)
             {
                 return StatusCode(500, $"Intern serverfeil: {ex.Message}");
@@ -107,7 +125,21 @@ namespace AltinnSupportDashboard.Controllers
             try
             {
                 var organizations = await _altinnApiService.GetOrganizationsByEmail(email, environmentName);
-                return Ok(organizations);
+                var result = new List<object>();
+
+                foreach (var org in organizations)
+                {
+                    var underenhetRoot = await _dataBrregService.GetUnderenheter(org.OrganizationNumber, environmentName);
+                    var underenheter = underenhetRoot?._embedded?.underenheter ?? new List<UnderEnhet>();
+
+                    result.Add(new
+                    {
+                        Organization = org,
+                        Underenheter = underenheter
+                    });
+                }
+
+                return Ok(result);
             }
             catch (System.Exception ex)
             {
@@ -152,5 +184,6 @@ namespace AltinnSupportDashboard.Controllers
                 return StatusCode(500, $"Intern serverfeil: {ex.Message}");
             }
         }
+        
     }
 }
