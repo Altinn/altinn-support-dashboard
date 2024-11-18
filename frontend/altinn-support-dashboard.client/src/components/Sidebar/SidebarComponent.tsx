@@ -1,13 +1,11 @@
-// src/components/Sidebar/SidebarComponent.tsx
-
 import React from 'react';
-import { Box, Typography, Avatar, Button, Menu, MenuItem, Divider } from '@mui/material';
+import { Box, Typography, Button, Menu, MenuItem, Divider } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
 import logo from '../../assets/logo.png';
 
 interface SidebarProps {
     environment: string;
-    isEnvDropdownOpen: boolean;
+    isEnvDropdownOpen: boolean; // Added this line
     toggleEnvDropdown: () => void;
     handleEnvChange: (env: string) => void;
     currentPage: 'dashboard' | 'settings';
@@ -21,8 +19,6 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({
     environment,
-    isEnvDropdownOpen,
-    toggleEnvDropdown,
     handleEnvChange,
     currentPage,
     setCurrentPage,
@@ -30,7 +26,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     userEmail,
     formattedTime,
     formattedDate,
-    isDarkMode,
 }) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);

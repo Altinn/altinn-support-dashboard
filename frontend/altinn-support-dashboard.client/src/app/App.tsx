@@ -57,7 +57,7 @@ const App: React.FC = () => {
     const getBaseUrl = useCallback(() => {
         const apiHost = window.location.hostname;
         const protocol = window.location.protocol;
-        return `${protocol}//${apiHost}:7174/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
+        return `${protocol}//${apiHost}/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
     }, [environment]);
 
     const authorizedFetch = useCallback(async (url: string, options: RequestInit = {}) => {
@@ -307,7 +307,6 @@ const App: React.FC = () => {
                                         </>
                                     ) : (
                                         <SettingsContentComponent
-                                            baseUrl={getBaseUrl()}
                                             environment={environment}
                                             isDarkMode={isDarkMode}
                                             setIsDarkMode={setIsDarkMode}

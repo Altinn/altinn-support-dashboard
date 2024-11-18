@@ -11,7 +11,7 @@ type SearchComponentProps = {
     isDarkMode: boolean;
 };
 
-const SearchComponent: React.FC<SearchComponentProps> = ({ query, setQuery, handleSearch, isDarkMode }) => (
+const SearchComponent: React.FC<SearchComponentProps> = ({ query, setQuery, handleSearch }) => (
     <Box sx={{ mb: 3 }}>
         <Typography variant="h6" gutterBottom>
             Søk etter Organisasjoner

@@ -33,6 +33,7 @@ interface MainContentProps {
     erRolesError: string | null;
     formattedTime: string;
     formattedDate: string;
+    isDarkMode: boolean;
 }
 
 type SortDirection = 'asc' | 'desc' | undefined;
@@ -65,15 +66,15 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     // Quotes array in Norwegian
     const quotes = useMemo(
         () => [
-            "Dette er en fin dag.",
-            "Husk at hver dag er en gave.",
-            "Gjør det beste ut av det du har.",
-            "Livet er fullt av muligheter.",
-            "Sammen er vi sterke.",
-            "Ta vare på øyeblikket.",
-            "Smil til verden, og verden smiler til deg.",
-            "Gi aldri opp.",
-            "Livet er hva som skjer mens du planlegger noe annet.",
+            'Dette er en fin dag.',
+            'Husk at hver dag er en gave.',
+            'Gjør det beste ut av det du har.',
+            'Livet er fullt av muligheter.',
+            'Sammen er vi sterke.',
+            'Ta vare på øyeblikket.',
+            'Smil til verden, og verden smiler til deg.',
+            'Gi aldri opp.',
+            'Livet er hva som skjer mens du planlegger noe annet.',
         ],
         []
     );

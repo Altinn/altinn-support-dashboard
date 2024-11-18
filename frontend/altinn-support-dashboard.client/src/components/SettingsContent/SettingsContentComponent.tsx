@@ -1,21 +1,32 @@
-﻿// src/components/SettingsContent/SettingsContentComponent.tsx
-
-import React, { useEffect, useState } from 'react';
-import { Button, Switch, Alert, Typography, Link as MuiLink, Paper, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+﻿import React, { useEffect, useState } from 'react';
+import {
+    Button,
+    Switch,
+    Alert,
+    Typography,
+    Link as MuiLink,
+    Paper,
+    Box,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+} from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select'; // Updated import
 import { FaSlack, FaBookOpen } from 'react-icons/fa';
 
 interface SettingsContentProps {
-    baseUrl: string;
     environment: string;
     isDarkMode: boolean;
     setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+    handleLogout: () => void;
 }
 
 const SettingsContentComponent: React.FC<SettingsContentProps> = ({
-    baseUrl,
     environment,
     isDarkMode,
     setIsDarkMode,
+    handleLogout,
 }) => {
     // Use these to change version number and name
     const versionnumber = '1.8.0';
@@ -32,7 +43,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
         const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
         const headers = {
             ...options.headers,
-            'Authorization': `Basic ${token}`,
+            Authorization: `Basic ${token}`,
             'Content-Type': 'application/json',
         };
 
@@ -49,7 +60,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
         const apiHost = window.location.hostname;
         const protocol = window.location.protocol;
 
-        return `${protocol}//${apiHost}:7174/api/${env}`;
+        return `${protocol}//${apiHost}/api/${env}`;
     };
 
     useEffect(() => {
@@ -83,11 +94,6 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
         checkApiStatus();
     }, []);
 
-    const handleLogout = () => {
-  
-        window.location.href = '/.auth/logout';
-    };
-
     const handleReload = () => {
         window.location.reload();
     };
@@ -99,7 +105,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
         localStorage.setItem('isDarkMode', newDarkModeState.toString());
     };
 
-    const handleLanguageChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleLanguageChange = (event: SelectChangeEvent<string>) => {
         setLanguage(event.target.value as string);
         // Implement language change logic here
     };
