@@ -68,7 +68,17 @@ namespace AltinnSupportDashboard.Controllers
             try
             {
                 var organizationInfo = await _altinnApiService.GetOrganizationInfo(orgNumber, environmentName);
-                return Ok(organizationInfo);
+                var result = new List<object>();
+
+                var underenhetRoot = await _dataBrregService.GetUnderenheter(orgNumber, environmentName);
+                var underenheter = underenhetRoot?._embedded?.underenheter ?? new List<UnderEnhet>();
+
+                result.Add(new
+                {
+                    Organization = organizationInfo,
+                    Underenheter = underenheter
+                });
+                return Ok(result);
             }
             catch (System.Exception ex)
             {
