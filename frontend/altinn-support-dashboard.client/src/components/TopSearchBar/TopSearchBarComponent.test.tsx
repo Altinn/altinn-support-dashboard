@@ -1,6 +1,6 @@
-// TopSearchBarComponent.test.tsx
+// src/components/TopSearchBar/TopSearchBarComponent.test.tsx
 
-import React from 'react';
+import React from 'react'; // Added this line
 import { render, screen } from '@testing-library/react';
 import { expect, describe, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
@@ -11,9 +11,7 @@ describe('SearchComponent', () => {
     it('renders the search input and label', () => {
         renderSearchComponent();
 
-        expect(
-            screen.getByLabelText('Mobilnummer / E-post / Organisasjonsnummer:')
-        ).toBeInTheDocument();
+        expect(screen.getByLabelText('Mobilnummer / E-post / Organisasjonsnummer:')).toBeInTheDocument();
         expect(screen.getByRole('searchbox')).toBeInTheDocument();
     });
 
@@ -47,6 +45,7 @@ const renderSearchComponent = ({
                 query={query}
                 setQuery={handleSetQuery}
                 handleSearch={handleSearch}
+                isDarkMode={false} // Added isDarkMode prop
             />
         );
     };
