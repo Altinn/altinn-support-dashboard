@@ -145,7 +145,7 @@ const App: React.FC = () => {
         const trimmedQuery = query.replace(/\s/g, '');
         setIsLoading(true);
         setError({ message: '', response: null });
-        setErRolesError(null); // Reset ER roles error
+        setErRolesError(null);
         try {
             const res = await authorizedFetch(
                 `${getBaseUrl()}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`
