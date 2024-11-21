@@ -5,8 +5,8 @@ public class Organization
     public string? Name { get; set; }
     public string? OrganizationNumber { get; set; }
     public string? Type { get; set; }
-    public DateTime LastChanged { get; set; }
-    public DateTime LastConfirmed { get; set; }
+    public DateTime? LastChanged { get; set; }
+    public DateTime? LastConfirmed { get; set; }
 
     [JsonPropertyName("_links")]
     public List<OrganizationLink>? Links { get; set; }
