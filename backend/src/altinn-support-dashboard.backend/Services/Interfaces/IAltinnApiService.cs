@@ -10,6 +10,8 @@ namespace altinn_support_dashboard.Server.Services.Interfaces
         Task<List<OrganizationByPhoneMail>> GetOrganizationsByEmail(string email, string environment);
         Task<List<PersonalContact>> GetPersonalContacts(string orgNumber, string environment);
 
+        Task<string> GetOfficialContacts(string orgNumber, string environment);
+
         Task<string> GetPersonRoles(string subject, string reportee, string environment);
     }
 }
