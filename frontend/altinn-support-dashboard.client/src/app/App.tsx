@@ -148,11 +148,14 @@ const App: React.FC = () => {
             );
             const data = await res.json();
             let orgData: Organization[] = Array.isArray(data) ? data : [data];
-            // Removed filtering to include all organization types
-            // orgData = orgData.filter((org) => org.type !== 'BEDR' && org.type !== 'AAFY');
 
+            // Separate main units and directly matched subunits
+            const mainUnits = orgData.filter((org) => org.type !== 'BEDR' && org.type !== 'AAFY');
+            const matchedSubUnits = orgData.filter((org) => org.type === 'BEDR' || org.type === 'AAFY');
+
+            // Fetch subunits for main units
             const allSubUnits: Subunit[] = [];
-            for (const org of orgData) {
+            for (const org of mainUnits) {
                 try {
                     const subunitRes = await authorizedFetch(
                         `${getBaseUrl()}/brreg/${org.organizationNumber}/underenheter`
@@ -173,7 +176,7 @@ const App: React.FC = () => {
                 }
             }
 
-            setOrganizations(orgData);
+            setOrganizations([...mainUnits, ...matchedSubUnits]);
             setSubUnits(allSubUnits);
             setSelectedOrg(null);
         } catch (error: any) {
