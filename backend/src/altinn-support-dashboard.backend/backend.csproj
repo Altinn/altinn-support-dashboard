@@ -18,6 +18,8 @@
     <Content Remove="wwwroot\dist\assets\index-D-jCIp55.css" />
 
     <Content Remove="wwwroot\dist\assets\index-DMldKdW7.css" />
+
+    <Content Remove="wwwroot\dist\assets\index-DzaMf6d2.js" />
     <Content Remove="wwwroot\dist\assets\index-DzWjbcEn.js" />
 
     <Content Remove="wwwroot\dist\assets\logo-HzEGxyCu.png" />
@@ -49,6 +51,8 @@
     <None Include="wwwroot\dist\assets\index-D-jCIp55.css" />
 
     <None Include="wwwroot\dist\assets\index-DMldKdW7.css" />
+
+    <None Include="wwwroot\dist\assets\index-DzaMf6d2.js" />
     <None Include="wwwroot\dist\assets\index-DzWjbcEn.js" />
 
     <None Include="wwwroot\dist\assets\logo-HzEGxyCu.png" />

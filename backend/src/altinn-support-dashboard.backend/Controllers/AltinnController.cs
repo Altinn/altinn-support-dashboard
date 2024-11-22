@@ -152,5 +152,24 @@ namespace AltinnSupportDashboard.Controllers
                 return StatusCode(500, $"Intern serverfeil: {ex.Message}");
             }
         }
+
+        [HttpGet("{orgNumber}/officialcontacts")]
+        public async Task<IActionResult> GetOfficialContacts([FromRoute] string environmentName, string orgNumber)
+        {
+            if (!ValidationService.IsValidOrgNumber(orgNumber))
+            {
+                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+            }
+
+            try
+            {
+                var officialcontacts = await _altinnApiService.GetOfficialContacts(orgNumber, environmentName);
+                return Ok(officialcontacts);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"Intern serverfeil: {ex.Message}");
+            }
+        }
     }
 }

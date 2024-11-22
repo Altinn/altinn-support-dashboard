@@ -103,5 +103,14 @@ namespace altinn_support_dashboard.Server.Services
             return await _client.GetPersonRoles(subject, reportee, environment);
         }
 
+        public async Task<string> GetOfficialContacts(string orgNumber, string environment)
+        {
+            if(!ValidationService.IsValidOrgNumber(orgNumber))
+            {
+                throw new ArgumentException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+            }
+            return await _client.GetOfficialContacts(orgNumber, environment);
+        }
+
     }
 }

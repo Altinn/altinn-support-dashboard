@@ -29,8 +29,8 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
     handleLogout,
 }) => {
     // Use these to change version number and name
-    const versionnumber = '1.8.0';
-    const versionname = 'Test';
+    const versionnumber = '2.0.0';
+    const versionname = 'Produksjonstest';
 
     // State variables for API status of both environments
     const [apiStatusProd, setApiStatusProd] = useState<'connected' | 'disconnected' | 'loading'>('loading');
