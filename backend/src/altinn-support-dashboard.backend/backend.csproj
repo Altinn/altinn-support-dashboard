@@ -15,6 +15,8 @@
 
     <Content Remove="wwwroot\dist\assets\index-B1LMJHCP.js" />
 
+    <Content Remove="wwwroot\dist\assets\index-C4zfh5r7.js" />
+
     <Content Remove="wwwroot\dist\assets\index-D-jCIp55.css" />
 
     <Content Remove="wwwroot\dist\assets\index-DMldKdW7.css" />
@@ -51,6 +53,8 @@
   <ItemGroup>
 
     <None Include="wwwroot\dist\assets\index-B1LMJHCP.js" />
+
+    <None Include="wwwroot\dist\assets\index-C4zfh5r7.js" />
 
     <None Include="wwwroot\dist\assets\index-D-jCIp55.css" />
 

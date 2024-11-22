@@ -36,7 +36,7 @@ interface MainContentProps {
     formattedDate: string;
     isDarkMode: boolean;
     query: string;
-    hasSearched: boolean; // Added hasSearched prop
+    hasSearched: boolean;
 }
 
 interface OfficialContact {
@@ -61,7 +61,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     handleExpandToggle,
     error,
     erRolesError,
-    hasSearched, // Destructure hasSearched
+    hasSearched,
 }) => {
     const [selectedContact, setSelectedContact] = useState<PersonalContact | null>(null);
     const [roleInfo, setRoleInfo] = useState<any[]>([]);
@@ -248,115 +248,129 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                     </div>
                                 )
                             ) : (
-                                organizations.map((org) => (
-                                    <div key={org.organizationNumber} className="org-card-container">
-                                        <Paper
-                                            elevation={
-                                                selectedOrg?.OrganizationNumber === org.organizationNumber ? 6 : 2
-                                            }
-                                            sx={{
-                                                p: 2,
-                                                mb: 1,
-                                                cursor: 'pointer',
-                                                backgroundColor:
-                                                    selectedOrg?.OrganizationNumber === org.organizationNumber
-                                                        ? 'primary.light'
-                                                        : 'background.paper',
-                                                border:
-                                                    selectedOrg?.OrganizationNumber === org.organizationNumber
-                                                        ? '2px solid'
-                                                        : 'none',
-                                                borderColor:
-                                                    selectedOrg?.OrganizationNumber === org.organizationNumber
-                                                        ? 'primary.main'
-                                                        : 'transparent',
-                                                transition: 'transform 0.3s, box-shadow 0.3s',
-                                                '&:hover': {
-                                                    transform: 'translateY(-5px)',
-                                                    boxShadow: 4,
-                                                },
-                                            }}
-                                            onClick={() => handleSelectOrg(org.organizationNumber, org.name)}
-                                        >
-                                            <Typography variant="h6">{org.name}</Typography>
-                                            <Typography variant="body2">Org Nr: {org.organizationNumber}</Typography>
-                                            <Typography variant="body2">Type: {org.type}</Typography>
+                                organizations
+                                    .filter((org) => {
+                                        // Exclude subunits that are already included under their parent organization
+                                        if (
+                                            (org.type === 'BEDR' || org.type === 'AAFY') &&
+                                            subUnits.some((sub) => sub.organisasjonsnummer === org.organizationNumber)
+                                        ) {
+                                            // Subunit is already displayed under parent org
+                                            return false;
+                                        }
+                                        return true;
+                                    })
+                                    .map((org) => (
+                                        <div key={org.organizationNumber} className="org-card-container">
+                                            <Paper
+                                                elevation={
+                                                    selectedOrg?.OrganizationNumber === org.organizationNumber ? 6 : 2
+                                                }
+                                                sx={{
+                                                    p: 2,
+                                                    mb: 1,
+                                                    cursor: 'pointer',
+                                                    backgroundColor:
+                                                        selectedOrg?.OrganizationNumber === org.organizationNumber
+                                                            ? 'primary.light'
+                                                            : 'background.paper',
+                                                    border:
+                                                        selectedOrg?.OrganizationNumber === org.organizationNumber
+                                                            ? '2px solid'
+                                                            : 'none',
+                                                    borderColor:
+                                                        selectedOrg?.OrganizationNumber === org.organizationNumber
+                                                            ? 'primary.main'
+                                                            : 'transparent',
+                                                    transition: 'transform 0.3s, box-shadow 0.3s',
+                                                    '&:hover': {
+                                                        transform: 'translateY(-5px)',
+                                                        boxShadow: 4,
+                                                    },
+                                                }}
+                                                onClick={() => handleSelectOrg(org.organizationNumber, org.name)}
+                                            >
+                                                <Typography variant="h6">{org.name}</Typography>
+                                                <Typography variant="body2">Org Nr: {org.organizationNumber}</Typography>
+                                                <Typography variant="body2">Type: {org.type}</Typography>
 
-                                            {subUnits.some((sub) => sub.overordnetEnhet === org.organizationNumber) && (
-                                                <Button
-                                                    variant="outlined"
-                                                    size="small"
-                                                    sx={{ mt: 1 }}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleExpandToggle(org.organizationNumber);
-                                                    }}
-                                                    aria-expanded={expandedOrg === org.organizationNumber}
-                                                    aria-label={`${expandedOrg === org.organizationNumber ? 'Collapse' : 'Expand'
-                                                        } subunits for ${org.name}`}
-                                                >
-                                                    {expandedOrg === org.organizationNumber ? (
-                                                        <ExpandLess />
-                                                    ) : (
-                                                        <ExpandMore />
-                                                    )}
-                                                </Button>
-                                            )}
-                                        </Paper>
-
-                                        {expandedOrg === org.organizationNumber && (
-                                            <div className="subunits">
-                                                {subUnits
-                                                    .filter((sub) => sub.overordnetEnhet === org.organizationNumber)
-                                                    .map((sub) => (
-                                                        <Paper
-                                                            key={sub.organisasjonsnummer}
-                                                            elevation={
-                                                                selectedOrg?.OrganizationNumber ===
-                                                                    sub.organisasjonsnummer
-                                                                    ? 6
-                                                                    : 1
-                                                            }
-                                                            sx={{
-                                                                p: 2,
-                                                                mb: 1,
-                                                                ml: 4,
-                                                                cursor: 'pointer',
-                                                                backgroundColor:
-                                                                    selectedOrg?.OrganizationNumber ===
-                                                                        sub.organisasjonsnummer
-                                                                        ? 'secondary.light'
-                                                                        : 'background.paper',
-                                                                border:
-                                                                    selectedOrg?.OrganizationNumber ===
-                                                                        sub.organisasjonsnummer
-                                                                        ? '2px solid'
-                                                                        : 'none',
-                                                                borderColor:
-                                                                    selectedOrg?.OrganizationNumber ===
-                                                                        sub.organisasjonsnummer
-                                                                        ? 'secondary.main'
-                                                                        : 'transparent',
-                                                                transition: 'transform 0.3s, box-shadow 0.3s',
-                                                                '&:hover': {
-                                                                    transform: 'translateY(-5px)',
-                                                                    boxShadow: 4,
-                                                                },
+                                                {subUnits.some(
+                                                    (sub) => sub.overordnetEnhet === org.organizationNumber
+                                                ) && (
+                                                        <Button
+                                                            variant="outlined"
+                                                            size="small"
+                                                            sx={{ mt: 1 }}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleExpandToggle(org.organizationNumber);
                                                             }}
-                                                            onClick={() =>
-                                                                handleSelectOrg(sub.organisasjonsnummer, sub.navn)
-                                                            }
+                                                            aria-expanded={expandedOrg === org.organizationNumber}
+                                                            aria-label={`${expandedOrg === org.organizationNumber ? 'Collapse' : 'Expand'
+                                                                } subunits for ${org.name}`}
                                                         >
-                                                            <Typography variant="subtitle1">{sub.navn}</Typography>
-                                                            <Typography variant="body2">
-                                                                Org Nr: {sub.organisasjonsnummer}
-                                                            </Typography>
-                                                        </Paper>
-                                                    ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                ))
+                                                            {expandedOrg === org.organizationNumber ? (
+                                                                <ExpandLess />
+                                                            ) : (
+                                                                <ExpandMore />
+                                                            )}
+                                                        </Button>
+                                                    )}
+                                            </Paper>
+
+                                            {expandedOrg === org.organizationNumber && (
+                                                <div className="subunits">
+                                                    {subUnits
+                                                        .filter((sub) => sub.overordnetEnhet === org.organizationNumber)
+                                                        .map((sub) => (
+                                                            <Paper
+                                                                key={sub.organisasjonsnummer}
+                                                                elevation={
+                                                                    selectedOrg?.OrganizationNumber ===
+                                                                        sub.organisasjonsnummer
+                                                                        ? 6
+                                                                        : 1
+                                                                }
+                                                                sx={{
+                                                                    p: 2,
+                                                                    mb: 1,
+                                                                    ml: 4,
+                                                                    cursor: 'pointer',
+                                                                    backgroundColor:
+                                                                        selectedOrg?.OrganizationNumber ===
+                                                                            sub.organisasjonsnummer
+                                                                            ? 'secondary.light'
+                                                                            : 'background.paper',
+                                                                    border:
+                                                                        selectedOrg?.OrganizationNumber ===
+                                                                            sub.organisasjonsnummer
+                                                                            ? '2px solid'
+                                                                            : 'none',
+                                                                    borderColor:
+                                                                        selectedOrg?.OrganizationNumber ===
+                                                                            sub.organisasjonsnummer
+                                                                            ? 'secondary.main'
+                                                                            : 'transparent',
+                                                                    transition: 'transform 0.3s, box-shadow 0.3s',
+                                                                    '&:hover': {
+                                                                        transform: 'translateY(-5px)',
+                                                                        boxShadow: 4,
+                                                                    },
+                                                                }}
+                                                                onClick={() =>
+                                                                    handleSelectOrg(sub.organisasjonsnummer, sub.navn)
+                                                                }
+                                                            >
+                                                                <Typography variant="subtitle1">{sub.navn}</Typography>
+                                                                <Typography variant="body2">
+                                                                    Org Nr: {sub.organisasjonsnummer}
+                                                                </Typography>
+                                                            </Paper>
+                                                        ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))
                             )}
                         </div>
                     )}
@@ -390,9 +404,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             <TableHead>
                                                 <TableRow>
                                                     <TableCell
-                                                        sortDirection={
-                                                            sortField === 'name' ? sortDirection : false
-                                                        }
+                                                        sortDirection={sortField === 'name' ? sortDirection : false}
                                                         onClick={() => handleSort('name')}
                                                         sx={{ cursor: 'pointer' }}
                                                     >
@@ -400,9 +412,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                     </TableCell>
                                                     <TableCell
                                                         sortDirection={
-                                                            sortField === 'socialSecurityNumber'
-                                                                ? sortDirection
-                                                                : false
+                                                            sortField === 'socialSecurityNumber' ? sortDirection : false
                                                         }
                                                         onClick={() => handleSort('socialSecurityNumber')}
                                                         sx={{ cursor: 'pointer' }}
@@ -470,9 +480,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                 <TableRow>
                                                     <TableCell
                                                         sortDirection={
-                                                            erRoleSortField === 'type'
-                                                                ? erRoleSortDirection
-                                                                : false
+                                                            erRoleSortField === 'type' ? erRoleSortDirection : false
                                                         }
                                                         onClick={() => handleERRoleSort('type')}
                                                         sx={{ cursor: 'pointer' }}
@@ -481,9 +489,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                     </TableCell>
                                                     <TableCell
                                                         sortDirection={
-                                                            erRoleSortField === 'person'
-                                                                ? erRoleSortDirection
-                                                                : false
+                                                            erRoleSortField === 'person' ? erRoleSortDirection : false
                                                         }
                                                         onClick={() => handleERRoleSort('person')}
                                                         sx={{ cursor: 'pointer' }}
@@ -492,9 +498,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                     </TableCell>
                                                     <TableCell
                                                         sortDirection={
-                                                            erRoleSortField === 'sistEndret'
-                                                                ? erRoleSortDirection
-                                                                : false
+                                                            erRoleSortField === 'sistEndret' ? erRoleSortDirection : false
                                                         }
                                                         onClick={() => handleERRoleSort('sistEndret')}
                                                         sx={{ cursor: 'pointer' }}
@@ -569,9 +573,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                         <Typography variant="subtitle1">Mobilnummer</Typography>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Typography variant="subtitle1">
-                                                            Endret Mobilnummer
-                                                        </Typography>
+                                                        <Typography variant="subtitle1">Endret Mobilnummer</Typography>
                                                     </TableCell>
                                                     <TableCell>
                                                         <Typography variant="subtitle1">E-post</Typography>
@@ -585,13 +587,9 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                 {officialContacts.map((contact, index) => (
                                                     <TableRow key={index}>
                                                         <TableCell>{contact.MobileNumber || '-'}</TableCell>
-                                                        <TableCell>
-                                                            {formatDate(contact.MobileNumberChanged)}
-                                                        </TableCell>
+                                                        <TableCell>{formatDate(contact.MobileNumberChanged)}</TableCell>
                                                         <TableCell>{contact.EMailAddress || '-'}</TableCell>
-                                                        <TableCell>
-                                                            {formatDate(contact.EMailAddressChanged)}
-                                                        </TableCell>
+                                                        <TableCell>{formatDate(contact.EMailAddressChanged)}</TableCell>
                                                     </TableRow>
                                                 ))}
                                             </TableBody>
