@@ -19,6 +19,10 @@
 
     <Content Remove="wwwroot\dist\assets\index-DMldKdW7.css" />
 
+
+    <Content Remove="wwwroot\dist\assets\index-DPVZkvQz.js" />
+
+
     <Content Remove="wwwroot\dist\assets\index-DzaMf6d2.js" />
     <Content Remove="wwwroot\dist\assets\index-DzWjbcEn.js" />
 
@@ -51,6 +55,10 @@
     <None Include="wwwroot\dist\assets\index-D-jCIp55.css" />
 
     <None Include="wwwroot\dist\assets\index-DMldKdW7.css" />
+
+
+    <None Include="wwwroot\dist\assets\index-DPVZkvQz.js" />
+
 
     <None Include="wwwroot\dist\assets\index-DzaMf6d2.js" />
     <None Include="wwwroot\dist\assets\index-DzWjbcEn.js" />
