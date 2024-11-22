@@ -1,6 +1,5 @@
 // src/App.tsx
 
-
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
 import './App.css';
@@ -14,7 +13,6 @@ import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import SignOutPage from '../SignOutPage/SignOutPage'; // Adjusted the import path
-
 
 const App: React.FC = () => {
     const [query, setQuery] = useState('');
@@ -30,7 +28,7 @@ const App: React.FC = () => {
     const [isEnvDropdownOpen, setIsEnvDropdownOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState<'dashboard' | 'settings'>('dashboard');
-
+    const [hasSearched, setHasSearched] = useState(false); // Added hasSearched state
 
     // Dark Mode State
     const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
@@ -59,11 +57,10 @@ const App: React.FC = () => {
         [isDarkMode]
     );
 
-
     const getBaseUrl = useCallback(() => {
         const apiHost = window.location.hostname;
         const protocol = window.location.protocol;
-        return `${protocol}//${apiHost}/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
+        return `${protocol}//${apiHost}:7174/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
     }, [environment]);
 
     const authorizedFetch = useCallback(async (url: string, options: RequestInit = {}) => {
@@ -82,10 +79,8 @@ const App: React.FC = () => {
         return response;
     }, []);
 
-
     const [userName, setUserName] = useState('Du er ikke innlogget');
     const [userEmail, setUserEmail] = useState('');
-
 
     useEffect(() => {
         // Fetch user details from Azure App Service
@@ -146,13 +141,15 @@ const App: React.FC = () => {
         setIsLoading(true);
         setError({ message: '', response: null });
         setErRolesError(null); // Reset ER roles error
+        setHasSearched(true); // Set hasSearched to true when search is initiated
         try {
             const res = await authorizedFetch(
                 `${getBaseUrl()}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`
             );
             const data = await res.json();
             let orgData: Organization[] = Array.isArray(data) ? data : [data];
-            orgData = orgData.filter((org) => org.type !== 'BEDR' && org.type !== 'AAFY');
+            // Removed filtering to include all organization types
+            // orgData = orgData.filter((org) => org.type !== 'BEDR' && org.type !== 'AAFY');
 
             const allSubUnits: Subunit[] = [];
             for (const org of orgData) {
@@ -196,7 +193,6 @@ const App: React.FC = () => {
             setError({ message: '', response: null });
             setErRolesError(null); // Reset ER roles error
 
-
             try {
                 // Fetch personal contacts
                 const resPersonalContacts = await authorizedFetch(
@@ -224,13 +220,11 @@ const App: React.FC = () => {
                     response: error.response || null,
                 }));
             }
-
         },
         [authorizedFetch, getBaseUrl, subUnits]
     );
 
     const toggleEnvDropdown = () => setIsEnvDropdownOpen((prev) => !prev);
-
 
     const handleEnvChange = (env: string) => {
         setEnvironment(env);
@@ -242,12 +236,12 @@ const App: React.FC = () => {
         setRolesInfo([]);
         setError({ message: '', response: null });
         setErRolesError(null); // Reset ER roles error
+        setHasSearched(false); // Reset hasSearched when environment changes
     };
 
     const handleExpandToggle = (orgNumber: string) => {
         setExpandedOrg(expandedOrg === orgNumber ? null : orgNumber);
     };
-
 
     // Initialize dark mode based on stored preference or browser preference
     useEffect(() => {
@@ -314,6 +308,8 @@ const App: React.FC = () => {
                                                 formattedTime={formattedTime}
                                                 formattedDate={formattedDate}
                                                 isDarkMode={isDarkMode}
+                                                query={query} // Pass the query prop
+                                                hasSearched={hasSearched} // Pass hasSearched prop
                                             />
                                         </>
                                     ) : (
@@ -334,7 +330,6 @@ const App: React.FC = () => {
                 </div>
             </Router>
         </ThemeProvider>
-
     );
 };
 

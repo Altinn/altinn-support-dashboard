@@ -1,7 +1,6 @@
 // src/components/MainContent/MainContentComponent.tsx
 
-
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
 import {
@@ -35,14 +34,21 @@ interface MainContentProps {
     erRolesError: string | null;
     formattedTime: string;
     formattedDate: string;
-
     isDarkMode: boolean;
+    query: string;
+    hasSearched: boolean; // Added hasSearched prop
+}
+
+interface OfficialContact {
+    MobileNumber: string;
+    MobileNumberChanged: string;
+    EMailAddress: string;
+    EMailAddressChanged: string;
 }
 
 type SortDirection = 'asc' | 'desc' | undefined;
 
 const MainContentComponent: React.FC<MainContentProps> = ({
-
     baseUrl,
     isLoading,
     organizations,
@@ -55,9 +61,8 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     handleExpandToggle,
     error,
     erRolesError,
-
+    hasSearched, // Destructure hasSearched
 }) => {
-
     const [selectedContact, setSelectedContact] = useState<PersonalContact | null>(null);
     const [roleInfo, setRoleInfo] = useState<any[]>([]);
     const [isRoleView, setIsRoleView] = useState(false);
@@ -68,9 +73,10 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     const [erRoleSortField, setERRoleSortField] = useState<'type' | 'person' | 'sistEndret' | null>(null);
     const [erRoleSortDirection, setERRoleSortDirection] = useState<SortDirection>(undefined);
     const [roleViewError, setRoleViewError] = useState<string | null>(null);
+    const [officialContacts, setOfficialContacts] = useState<OfficialContact[]>([]);
+    const [officialContactsError, setOfficialContactsError] = useState<string | null>(null);
 
     // Quotes array in Norwegian
-
     const quotes = useMemo(
         () => [
             'Dette er en fin dag.',
@@ -159,7 +165,9 @@ const MainContentComponent: React.FC<MainContentProps> = ({
 
     const handleERRoleSort = (field: 'type' | 'person' | 'sistEndret') => {
         if (erRoleSortField === field) {
-            setERRoleSortDirection(erRoleSortDirection === 'asc' ? 'desc' : erRoleSortDirection === 'desc' ? undefined : 'asc');
+            setERRoleSortDirection(
+                erRoleSortDirection === 'asc' ? 'desc' : erRoleSortDirection === 'desc' ? undefined : 'asc'
+            );
             if (erRoleSortDirection === 'desc') {
                 setERRoleSortField(null);
             } else {
@@ -171,9 +179,44 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         }
     };
 
+    useEffect(() => {
+        const fetchOfficialContacts = async () => {
+            if (!selectedOrg) return;
+
+            try {
+                const res = await authorizedFetch(
+                    `${baseUrl}/serviceowner/organizations/${selectedOrg.OrganizationNumber}/officialcontacts`
+                );
+                const data = await res.json();
+                setOfficialContacts(data);
+                setOfficialContactsError(null);
+            } catch (error) {
+                console.error(error);
+                setOfficialContactsError('Offisielle kontakter kunne ikke hentes.');
+            }
+        };
+
+        fetchOfficialContacts();
+    }, [selectedOrg]);
+
+    // Function to format date strings
+    const formatDate = (dateString: string) => {
+        if (!dateString || dateString.startsWith('0001-01-01')) {
+            return '-';
+        }
+        const date = new Date(dateString);
+        return date.toLocaleString('no-NO', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    };
+
     return (
         <div className="results-section">
-            {error.message && (
+            {error.message ? (
                 <Alert severity="error" sx={{ mb: 2 }}>
                     <Typography variant="h6" component="div">
                         {error.message}
@@ -184,339 +227,432 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                         </Typography>
                     )}
                 </Alert>
-            )}
+            ) : (
+                <>
+                    {showOrgList && (
+                        <div className={`org-list ${isRoleView ? 'hidden' : ''}`}>
+                            {isLoading ? (
+                                <>
+                                    <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
+                                    <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
+                                    <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
+                                </>
+                            ) : organizations.length === 0 ? (
+                                hasSearched ? (
+                                    <Alert severity="info" sx={{ mb: 2 }}>
+                                        <Typography variant="h6">Ingen organisasjoner funnet</Typography>
+                                    </Alert>
+                                ) : (
+                                    <div className="no-search-message">
+                                        <Typography variant="h6">"{randomQuote}"</Typography>
+                                    </div>
+                                )
+                            ) : (
+                                organizations.map((org) => (
+                                    <div key={org.organizationNumber} className="org-card-container">
+                                        <Paper
+                                            elevation={
+                                                selectedOrg?.OrganizationNumber === org.organizationNumber ? 6 : 2
+                                            }
+                                            sx={{
+                                                p: 2,
+                                                mb: 1,
+                                                cursor: 'pointer',
+                                                backgroundColor:
+                                                    selectedOrg?.OrganizationNumber === org.organizationNumber
+                                                        ? 'primary.light'
+                                                        : 'background.paper',
+                                                border:
+                                                    selectedOrg?.OrganizationNumber === org.organizationNumber
+                                                        ? '2px solid'
+                                                        : 'none',
+                                                borderColor:
+                                                    selectedOrg?.OrganizationNumber === org.organizationNumber
+                                                        ? 'primary.main'
+                                                        : 'transparent',
+                                                transition: 'transform 0.3s, box-shadow 0.3s',
+                                                '&:hover': {
+                                                    transform: 'translateY(-5px)',
+                                                    boxShadow: 4,
+                                                },
+                                            }}
+                                            onClick={() => handleSelectOrg(org.organizationNumber, org.name)}
+                                        >
+                                            <Typography variant="h6">{org.name}</Typography>
+                                            <Typography variant="body2">Org Nr: {org.organizationNumber}</Typography>
+                                            <Typography variant="body2">Type: {org.type}</Typography>
 
-            {showOrgList && (
-                <div className={`org-list ${isRoleView ? 'hidden' : ''}`}>
-                    {isLoading ? (
-                        <>
-                            <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
-                            <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
-                            <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
-                        </>
-                    ) : organizations.length === 0 ? (
-                        <div className="no-search-message">
+                                            {subUnits.some((sub) => sub.overordnetEnhet === org.organizationNumber) && (
+                                                <Button
+                                                    variant="outlined"
+                                                    size="small"
+                                                    sx={{ mt: 1 }}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleExpandToggle(org.organizationNumber);
+                                                    }}
+                                                    aria-expanded={expandedOrg === org.organizationNumber}
+                                                    aria-label={`${expandedOrg === org.organizationNumber ? 'Collapse' : 'Expand'
+                                                        } subunits for ${org.name}`}
+                                                >
+                                                    {expandedOrg === org.organizationNumber ? (
+                                                        <ExpandLess />
+                                                    ) : (
+                                                        <ExpandMore />
+                                                    )}
+                                                </Button>
+                                            )}
+                                        </Paper>
 
-                            <Typography variant="h6">"{randomQuote}"</Typography>
-
+                                        {expandedOrg === org.organizationNumber && (
+                                            <div className="subunits">
+                                                {subUnits
+                                                    .filter((sub) => sub.overordnetEnhet === org.organizationNumber)
+                                                    .map((sub) => (
+                                                        <Paper
+                                                            key={sub.organisasjonsnummer}
+                                                            elevation={
+                                                                selectedOrg?.OrganizationNumber ===
+                                                                    sub.organisasjonsnummer
+                                                                    ? 6
+                                                                    : 1
+                                                            }
+                                                            sx={{
+                                                                p: 2,
+                                                                mb: 1,
+                                                                ml: 4,
+                                                                cursor: 'pointer',
+                                                                backgroundColor:
+                                                                    selectedOrg?.OrganizationNumber ===
+                                                                        sub.organisasjonsnummer
+                                                                        ? 'secondary.light'
+                                                                        : 'background.paper',
+                                                                border:
+                                                                    selectedOrg?.OrganizationNumber ===
+                                                                        sub.organisasjonsnummer
+                                                                        ? '2px solid'
+                                                                        : 'none',
+                                                                borderColor:
+                                                                    selectedOrg?.OrganizationNumber ===
+                                                                        sub.organisasjonsnummer
+                                                                        ? 'secondary.main'
+                                                                        : 'transparent',
+                                                                transition: 'transform 0.3s, box-shadow 0.3s',
+                                                                '&:hover': {
+                                                                    transform: 'translateY(-5px)',
+                                                                    boxShadow: 4,
+                                                                },
+                                                            }}
+                                                            onClick={() =>
+                                                                handleSelectOrg(sub.organisasjonsnummer, sub.navn)
+                                                            }
+                                                        >
+                                                            <Typography variant="subtitle1">{sub.navn}</Typography>
+                                                            <Typography variant="body2">
+                                                                Org Nr: {sub.organisasjonsnummer}
+                                                            </Typography>
+                                                        </Paper>
+                                                    ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            )}
                         </div>
-                    ) : (
-                        organizations.map((org) => (
-                            <div key={org.organizationNumber} className="org-card-container">
-                                <Paper
-                                    elevation={selectedOrg?.OrganizationNumber === org.organizationNumber ? 6 : 2}
-                                    sx={{
-                                        p: 2,
-                                        mb: 1,
-                                        cursor: 'pointer',
-                                        backgroundColor:
-                                            selectedOrg?.OrganizationNumber === org.organizationNumber
-                                                ? 'primary.light'
-                                                : 'background.paper',
-                                        border:
-                                            selectedOrg?.OrganizationNumber === org.organizationNumber
-                                                ? '2px solid'
-                                                : 'none',
-                                        borderColor:
-                                            selectedOrg?.OrganizationNumber === org.organizationNumber
-                                                ? 'primary.main'
-                                                : 'transparent',
-                                        transition: 'transform 0.3s, box-shadow 0.3s',
-                                        '&:hover': {
-                                            transform: 'translateY(-5px)',
-                                            boxShadow: 4,
-                                        },
-                                    }}
-                                    onClick={() => handleSelectOrg(org.organizationNumber, org.name)}
-                                >
-                                    <Typography variant="h6">{org.name}</Typography>
-                                    <Typography variant="body2">Org Nr: {org.organizationNumber}</Typography>
-                                    <Typography variant="body2">Type: {org.type}</Typography>
+                    )}
 
-                                    {subUnits.some((sub) => sub.overordnetEnhet === org.organizationNumber) && (
-                                        <Button
+                    {selectedOrg && (
+                        <div className={`org-details ${isRoleView ? 'full-width' : ''}`}>
+                            <Typography variant="h4" gutterBottom>
+                                {selectedOrg.Name}
+                            </Typography>
+
+                            {!isRoleView ? (
+                                <>
+                                    <div className="search-ssn">
+                                        <TextField
+                                            label="Søk i kontakter"
                                             variant="outlined"
                                             size="small"
-                                            sx={{ mt: 1 }}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleExpandToggle(org.organizationNumber);
-                                            }}
-                                            aria-expanded={expandedOrg === org.organizationNumber}
-                                            aria-label={`${expandedOrg === org.organizationNumber ? 'Collapse' : 'Expand'
-                                                } subunits for ${org.name}`}
-                                        >
-                                            {expandedOrg === org.organizationNumber ? <ExpandLess /> : <ExpandMore />}
-                                        </Button>
-                                    )}
-                                </Paper>
-
-                                {expandedOrg === org.organizationNumber && (
-                                    <div className="subunits">
-                                        {subUnits
-                                            .filter((sub) => sub.overordnetEnhet === org.organizationNumber)
-                                            .map((sub) => (
-                                                <Paper
-                                                    key={sub.organisasjonsnummer}
-                                                    elevation={selectedOrg?.OrganizationNumber === sub.organisasjonsnummer ? 6 : 1}
-                                                    sx={{
-                                                        p: 2,
-                                                        mb: 1,
-                                                        ml: 4,
-                                                        cursor: 'pointer',
-                                                        backgroundColor:
-                                                            selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
-                                                                ? 'secondary.light'
-                                                                : 'background.paper',
-                                                        border:
-                                                            selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
-                                                                ? '2px solid'
-                                                                : 'none',
-                                                        borderColor:
-                                                            selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
-                                                                ? 'secondary.main'
-                                                                : 'transparent',
-                                                        transition: 'transform 0.3s, box-shadow 0.3s',
-                                                        '&:hover': {
-                                                            transform: 'translateY(-5px)',
-                                                            boxShadow: 4,
-                                                        },
-                                                    }}
-                                                    onClick={() => handleSelectOrg(sub.organisasjonsnummer, sub.navn)}
-                                                >
-                                                    <Typography variant="subtitle1">{sub.navn}</Typography>
-                                                    <Typography variant="body2">Org Nr: {sub.organisasjonsnummer}</Typography>
-                                                </Paper>
-                                            ))}
+                                            fullWidth
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            placeholder="Navn / SSN / Telefon / E-post"
+                                            sx={{ mb: 2 }}
+                                        />
                                     </div>
-                                )}
-                            </div>
-                        ))
-                    )}
-                </div>
-            )}
+                                    <Typography variant="h6" gutterBottom>
+                                        Organisasjonsoversikt
+                                    </Typography>
 
-            {selectedOrg && (
-                <div className={`org-details ${isRoleView ? 'full-width' : ''}`}>
-                    <Typography variant="h4" gutterBottom>
-                        {selectedOrg.Name}
-                    </Typography>
-
-                    {!isRoleView ? (
-                        <>
-                            <div className="search-ssn">
-
-                                <TextField
-
-                                    label="Søk i kontakter"
-                                    variant="outlined"
-                                    size="small"
-                                    fullWidth
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder="Navn / SSN / Telefon / E-post"
-                                    sx={{ mb: 2 }}
-                                />
-                            </div>
-                            <Typography variant="h6" gutterBottom>
-                                Organisasjonsoversikt
-                            </Typography>
-
-                            <TableContainer component={Paper} sx={{ mb: 4 }}>
-                                <MuiTable>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell
-                                                sortDirection={sortField === 'name' ? sortDirection : false}
-                                                onClick={() => handleSort('name')}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography variant="subtitle1">Navn</Typography>
-                                            </TableCell>
-                                            <TableCell
-                                                sortDirection={sortField === 'socialSecurityNumber' ? sortDirection : false}
-                                                onClick={() => handleSort('socialSecurityNumber')}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography variant="subtitle1">Fødselsnummer</Typography>
-                                            </TableCell>
-                                            <TableCell
-                                                sortDirection={sortField === 'mobileNumber' ? sortDirection : false}
-                                                onClick={() => handleSort('mobileNumber')}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography variant="subtitle1">Mobilnummer</Typography>
-                                            </TableCell>
-                                            <TableCell
-                                                sortDirection={sortField === 'eMailAddress' ? sortDirection : false}
-                                                onClick={() => handleSort('eMailAddress')}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography variant="subtitle1">E-post</Typography>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Typography variant="subtitle1">Roller</Typography>
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {sortContacts(filterContacts(moreInfo || [])).map((contact) => (
-                                            <TableRow key={contact.personalContactId}>
-                                                <TableCell>{contact.name}</TableCell>
-                                                <TableCell>{contact.socialSecurityNumber}</TableCell>
-                                                <TableCell>{contact.mobileNumber}</TableCell>
-                                                <TableCell>{contact.eMailAddress}</TableCell>
-                                                <TableCell>
-                                                    <Button
-                                                        variant="outlined"
-                                                        size="small"
-                                                        onClick={() => {
-                                                            setSelectedContact(contact);
-                                                            handleViewRoles(
-                                                                contact.socialSecurityNumber,
-                                                                selectedOrg.OrganizationNumber
-                                                            );
-                                                        }}
+                                    <TableContainer component={Paper} sx={{ mb: 4 }}>
+                                        <MuiTable>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell
+                                                        sortDirection={
+                                                            sortField === 'name' ? sortDirection : false
+                                                        }
+                                                        onClick={() => handleSort('name')}
+                                                        sx={{ cursor: 'pointer' }}
                                                     >
-                                                        Vis
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </MuiTable>
-                            </TableContainer>
-
-                            <Typography variant="h6" gutterBottom>
-                                ER-Roller
-                            </Typography>
-
-                            <TableContainer component={Paper} sx={{ mb: 2 }}>
-                                <MuiTable>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell
-                                                sortDirection={erRoleSortField === 'type' ? erRoleSortDirection : false}
-                                                onClick={() => handleERRoleSort('type')}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography variant="subtitle1">Rolletype</Typography>
-                                            </TableCell>
-                                            <TableCell
-                                                sortDirection={erRoleSortField === 'person' ? erRoleSortDirection : false}
-                                                onClick={() => handleERRoleSort('person')}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography variant="subtitle1">Person</Typography>
-                                            </TableCell>
-                                            <TableCell
-                                                sortDirection={erRoleSortField === 'sistEndret' ? erRoleSortDirection : false}
-                                                onClick={() => handleERRoleSort('sistEndret')}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <Typography variant="subtitle1">Dato Endret</Typography>
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rolesInfo
-                                            ?.flatMap((roleGroup) =>
-                                                roleGroup?.roller?.map((role: any) => ({
-                                                    ...role,
-                                                    sistEndret: roleGroup.sistEndret,
-                                                }))
-                                            )
-                                            ?.sort((a, b) => {
-                                                if (erRoleSortField === null) return 0;
-                                                if (erRoleSortField === 'type') {
-                                                    const aType = a.type?.beskrivelse || '';
-                                                    const bType = b.type?.beskrivelse || '';
-                                                    return erRoleSortDirection === 'asc'
-                                                        ? aType.localeCompare(bType)
-                                                        : bType.localeCompare(aType);
-                                                }
-                                                if (erRoleSortField === 'person') {
-                                                    const aName = `${a.person?.navn?.fornavn || ''} ${a.person?.navn?.etternavn || ''}`.trim();
-                                                    const bName = `${b.person?.navn?.fornavn || ''} ${b.person?.navn?.etternavn || ''}`.trim();
-                                                    return erRoleSortDirection === 'asc'
-                                                        ? aName.localeCompare(bName)
-                                                        : bName.localeCompare(aName);
-                                                }
-                                                if (erRoleSortField === 'sistEndret') {
-                                                    const aDate = new Date(a.sistEndret || 0).getTime();
-                                                    const bDate = new Date(b.sistEndret || 0).getTime();
-                                                    return erRoleSortDirection === 'asc' ? aDate - bDate : bDate - aDate;
-                                                }
-                                                return 0;
-                                            })
-                                            ?.map((role, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell>{role.type?.beskrivelse || ''}</TableCell>
-                                                    <TableCell>
-                                                        {`${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''}`.trim()}
+                                                        <Typography variant="subtitle1">Navn</Typography>
                                                     </TableCell>
-                                                    <TableCell>{role.sistEndret || ''}</TableCell>
+                                                    <TableCell
+                                                        sortDirection={
+                                                            sortField === 'socialSecurityNumber'
+                                                                ? sortDirection
+                                                                : false
+                                                        }
+                                                        onClick={() => handleSort('socialSecurityNumber')}
+                                                        sx={{ cursor: 'pointer' }}
+                                                    >
+                                                        <Typography variant="subtitle1">Fødselsnummer</Typography>
+                                                    </TableCell>
+                                                    <TableCell
+                                                        sortDirection={
+                                                            sortField === 'mobileNumber' ? sortDirection : false
+                                                        }
+                                                        onClick={() => handleSort('mobileNumber')}
+                                                        sx={{ cursor: 'pointer' }}
+                                                    >
+                                                        <Typography variant="subtitle1">Mobilnummer</Typography>
+                                                    </TableCell>
+                                                    <TableCell
+                                                        sortDirection={
+                                                            sortField === 'eMailAddress' ? sortDirection : false
+                                                        }
+                                                        onClick={() => handleSort('eMailAddress')}
+                                                        sx={{ cursor: 'pointer' }}
+                                                    >
+                                                        <Typography variant="subtitle1">E-post</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Roller</Typography>
+                                                    </TableCell>
                                                 </TableRow>
-                                            ))}
-                                    </TableBody>
-                                </MuiTable>
-                            </TableContainer>
-                            {erRolesError && (
-                                <Alert severity="error" sx={{ mt: 2 }}>
-                                    {erRolesError}
-                                </Alert>
+                                            </TableHead>
+                                            <TableBody>
+                                                {sortContacts(filterContacts(moreInfo || [])).map((contact) => (
+                                                    <TableRow key={contact.personalContactId}>
+                                                        <TableCell>{contact.name}</TableCell>
+                                                        <TableCell>{contact.socialSecurityNumber}</TableCell>
+                                                        <TableCell>{contact.mobileNumber}</TableCell>
+                                                        <TableCell>{contact.eMailAddress}</TableCell>
+                                                        <TableCell>
+                                                            <Button
+                                                                variant="outlined"
+                                                                size="small"
+                                                                onClick={() => {
+                                                                    setSelectedContact(contact);
+                                                                    handleViewRoles(
+                                                                        contact.socialSecurityNumber,
+                                                                        selectedOrg.OrganizationNumber
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Vis
+                                                            </Button>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </MuiTable>
+                                    </TableContainer>
+
+                                    <Typography variant="h6" gutterBottom>
+                                        ER-Roller
+                                    </Typography>
+
+                                    <TableContainer component={Paper} sx={{ mb: 2 }}>
+                                        <MuiTable>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell
+                                                        sortDirection={
+                                                            erRoleSortField === 'type'
+                                                                ? erRoleSortDirection
+                                                                : false
+                                                        }
+                                                        onClick={() => handleERRoleSort('type')}
+                                                        sx={{ cursor: 'pointer' }}
+                                                    >
+                                                        <Typography variant="subtitle1">Rolletype</Typography>
+                                                    </TableCell>
+                                                    <TableCell
+                                                        sortDirection={
+                                                            erRoleSortField === 'person'
+                                                                ? erRoleSortDirection
+                                                                : false
+                                                        }
+                                                        onClick={() => handleERRoleSort('person')}
+                                                        sx={{ cursor: 'pointer' }}
+                                                    >
+                                                        <Typography variant="subtitle1">Person</Typography>
+                                                    </TableCell>
+                                                    <TableCell
+                                                        sortDirection={
+                                                            erRoleSortField === 'sistEndret'
+                                                                ? erRoleSortDirection
+                                                                : false
+                                                        }
+                                                        onClick={() => handleERRoleSort('sistEndret')}
+                                                        sx={{ cursor: 'pointer' }}
+                                                    >
+                                                        <Typography variant="subtitle1">Dato Endret</Typography>
+                                                    </TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {rolesInfo
+                                                    ?.flatMap((roleGroup) =>
+                                                        roleGroup?.roller?.map((role: any) => ({
+                                                            ...role,
+                                                            sistEndret: roleGroup.sistEndret,
+                                                        }))
+                                                    )
+                                                    ?.sort((a, b) => {
+                                                        if (erRoleSortField === null) return 0;
+                                                        if (erRoleSortField === 'type') {
+                                                            const aType = a.type?.beskrivelse || '';
+                                                            const bType = b.type?.beskrivelse || '';
+                                                            return erRoleSortDirection === 'asc'
+                                                                ? aType.localeCompare(bType)
+                                                                : bType.localeCompare(aType);
+                                                        }
+                                                        if (erRoleSortField === 'person') {
+                                                            const aName = `${a.person?.navn?.fornavn || ''} ${a.person?.navn?.etternavn || ''
+                                                                }`.trim();
+                                                            const bName = `${b.person?.navn?.fornavn || ''} ${b.person?.navn?.etternavn || ''
+                                                                }`.trim();
+                                                            return erRoleSortDirection === 'asc'
+                                                                ? aName.localeCompare(bName)
+                                                                : bName.localeCompare(aName);
+                                                        }
+                                                        if (erRoleSortField === 'sistEndret') {
+                                                            const aDate = new Date(a.sistEndret || 0).getTime();
+                                                            const bDate = new Date(b.sistEndret || 0).getTime();
+                                                            return erRoleSortDirection === 'asc'
+                                                                ? aDate - bDate
+                                                                : bDate - aDate;
+                                                        }
+                                                        return 0;
+                                                    })
+                                                    ?.map((role, index) => (
+                                                        <TableRow key={index}>
+                                                            <TableCell>{role.type?.beskrivelse || ''}</TableCell>
+                                                            <TableCell>
+                                                                {`${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''
+                                                                    }`.trim()}
+                                                            </TableCell>
+                                                            <TableCell>{formatDate(role.sistEndret) || ''}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                            </TableBody>
+                                        </MuiTable>
+                                    </TableContainer>
+                                    {erRolesError && (
+                                        <Alert severity="error" sx={{ mt: 2 }}>
+                                            {erRolesError}
+                                        </Alert>
+                                    )}
+
+                                    <Typography variant="h6" gutterBottom>
+                                        Felles kontaktinformasjon
+                                    </Typography>
+
+                                    <TableContainer component={Paper} sx={{ mb: 2 }}>
+                                        <MuiTable>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Mobilnummer</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">
+                                                            Endret Mobilnummer
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">E-post</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Endret E-post</Typography>
+                                                    </TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {officialContacts.map((contact, index) => (
+                                                    <TableRow key={index}>
+                                                        <TableCell>{contact.MobileNumber || '-'}</TableCell>
+                                                        <TableCell>
+                                                            {formatDate(contact.MobileNumberChanged)}
+                                                        </TableCell>
+                                                        <TableCell>{contact.EMailAddress || '-'}</TableCell>
+                                                        <TableCell>
+                                                            {formatDate(contact.EMailAddressChanged)}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </MuiTable>
+                                    </TableContainer>
+                                    {officialContactsError && (
+                                        <Alert severity="error" sx={{ mt: 2 }}>
+                                            {officialContactsError}
+                                        </Alert>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    <Typography variant="h6" gutterBottom>
+                                        Roller knyttet til {selectedContact?.name}
+                                    </Typography>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => {
+                                            setIsRoleView(false);
+                                            setShowOrgList(true);
+                                        }}
+                                        sx={{ mb: 2 }}
+                                    >
+                                        Tilbake til oversikt
+                                    </Button>
+                                    <TableContainer component={Paper} sx={{ mb: 2 }}>
+                                        <MuiTable>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Rolletype</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Rollenavn</Typography>
+                                                    </TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {roleInfo?.map((role, index) => (
+                                                    <TableRow key={index}>
+                                                        <TableCell>{role.RoleType}</TableCell>
+                                                        <TableCell>{role.RoleName}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </MuiTable>
+                                    </TableContainer>
+                                    {roleViewError && (
+                                        <Alert severity="error" sx={{ mt: 2 }}>
+                                            {roleViewError}
+                                        </Alert>
+                                    )}
+                                </>
                             )}
-                        </>
-                    ) : (
-                        <>
-                            <Typography variant="h6" gutterBottom>
-                                Roller knyttet til {selectedContact?.name}
-                            </Typography>
-                            <Button
-                                variant="outlined"
-                                onClick={() => {
-                                    setIsRoleView(false);
-                                    setShowOrgList(true);
-                                }}
-                                sx={{ mb: 2 }}
-                            >
-                                Tilbake til oversikt
-                            </Button>
-                            <TableContainer component={Paper} sx={{ mb: 2 }}>
-                                <MuiTable>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>
-                                                <Typography variant="subtitle1">Rolletype</Typography>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Typography variant="subtitle1">Rollenavn</Typography>
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {roleInfo?.map((role, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell>{role.RoleType}</TableCell>
-                                                <TableCell>{role.RoleName}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </MuiTable>
-                            </TableContainer>
-                            {roleViewError && (
-                                <Alert severity="error" sx={{ mt: 2 }}>
-                                    {roleViewError}
-                                </Alert>
-                            )}
-                        </>
+                        </div>
                     )}
-                </div>
+                </>
             )}
         </div>
     );
-
 };
 
 export default MainContentComponent;
-

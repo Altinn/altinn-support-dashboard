@@ -1,13 +1,15 @@
+// src/components/Sidebar/SidebarComponent.tsx
 
 import React from 'react';
 import { Box, Typography, Button, Menu, MenuItem, Divider } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
+import { useTheme } from '@mui/material/styles';
 
 import logo from '../../assets/logo.png';
 
 interface SidebarProps {
     environment: string;
-    isEnvDropdownOpen: boolean; // Added this line
+    isEnvDropdownOpen: boolean;
     toggleEnvDropdown: () => void;
     handleEnvChange: (env: string) => void;
     currentPage: 'dashboard' | 'settings';
@@ -16,9 +18,7 @@ interface SidebarProps {
     userEmail: string;
     formattedTime: string;
     formattedDate: string;
-
     isDarkMode: boolean;
-
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -30,7 +30,9 @@ const Sidebar: React.FC<SidebarProps> = ({
     userEmail,
     formattedTime,
     formattedDate,
+    isDarkMode,
 }) => {
+    const theme = useTheme();
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -53,8 +55,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             sx={{
                 width: 250,
                 minWidth: 250,
-                bgcolor: 'primary.main',
-                color: '#fff',
+                bgcolor: isDarkMode ? theme.palette.background.paper : 'primary.main',
+                color: isDarkMode ? theme.palette.text.primary : '#fff',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -72,13 +74,18 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <button
                         className={`nav-button ${currentPage === 'dashboard' ? 'selected' : ''}`}
                         onClick={() => setCurrentPage('dashboard')}
+                        style={{
+                            color: currentPage === 'dashboard' ? theme.palette.secondary.main : '#fff',
+                        }}
                     >
                         Oppslag
-
                     </button>
                     <button
                         className={`nav-button ${currentPage === 'settings' ? 'selected' : ''}`}
                         onClick={() => setCurrentPage('settings')}
+                        style={{
+                            color: currentPage === 'settings' ? theme.palette.secondary.main : '#fff',
+                        }}
                     >
                         Innstillinger
                     </button>
@@ -86,7 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </Box>
 
             <Box>
-                <Divider sx={{ bgcolor: 'grey.500', my: 2 }} />
+                <Divider sx={{ bgcolor: isDarkMode ? 'grey.700' : 'grey.500', my: 2 }} />
                 <Box sx={{ textAlign: 'center', mb: 2 }}>
                     <Typography variant="h6">{formattedTime}</Typography>
                     <Typography variant="body2">{formattedDate}</Typography>
@@ -95,15 +102,21 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <Box sx={{ textAlign: 'center', mb: 2 }}>
                     <Button
                         variant="outlined"
-                        color="secondary"
                         onClick={handleMenuClick}
                         endIcon={<ExpandMore />}
                         sx={{
-                            borderColor: 'secondary.main',
-                            color: '#fff',
+                            // Change the border color based on the selected environment
+                            borderColor:
+                                environment === 'TT02'
+                                    ? theme.palette.warning.main // Orange color for TT02
+                                    : theme.palette.secondary.main, // Blue color for PROD
+                            color: isDarkMode ? theme.palette.text.primary : '#fff',
                             '&:hover': {
-                                borderColor: 'secondary.light',
-                                backgroundColor: 'secondary.dark',
+                                borderColor:
+                                    environment === 'TT02'
+                                        ? theme.palette.warning.light // Lighter orange on hover
+                                        : theme.palette.secondary.light, // Lighter blue on hover
+                                backgroundColor: isDarkMode ? theme.palette.action.hover : 'secondary.dark',
                             },
                         }}
                     >
@@ -128,7 +141,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </Box>
 
                 <Box sx={{ textAlign: 'center' }}>
-                    
                     <Typography variant="subtitle1">{userName}</Typography>
                     <Typography variant="body2">{userEmail}</Typography>
                 </Box>
