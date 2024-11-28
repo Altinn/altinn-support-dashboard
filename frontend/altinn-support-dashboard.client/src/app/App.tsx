@@ -8,7 +8,6 @@ import SearchComponent from '../components/TopSearchBar/TopSearchBarComponent';
 import MainContent from '../components/MainContent/MainContentComponent';
 import SettingsContentComponent from '../components/SettingsContent/SettingsContentComponent';
 import { Organization, PersonalContact, Subunit, ERRole } from '../models/models';
-
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -326,7 +325,6 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route path="/signout" element={<SignOutPage />} />
-                            {/* Redirect any unknown paths to home */}
                             <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>
                     </main>
