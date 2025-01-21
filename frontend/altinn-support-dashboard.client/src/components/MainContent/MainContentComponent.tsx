@@ -272,7 +272,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                     cursor: 'pointer',
                                                     backgroundColor:
                                                         selectedOrg?.OrganizationNumber === org.organizationNumber
-                                                            ? 'primary.light'
+                                                            ? 'secondary'
                                                             : 'background.paper',
                                                     border:
                                                         selectedOrg?.OrganizationNumber === org.organizationNumber
@@ -280,7 +280,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                             : 'none',
                                                     borderColor:
                                                         selectedOrg?.OrganizationNumber === org.organizationNumber
-                                                            ? 'primary.main'
+                                                            ? 'secondary'
                                                             : 'transparent',
                                                     transition: 'transform 0.3s, box-shadow 0.3s',
                                                     '&:hover': {
@@ -339,7 +339,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                                     backgroundColor:
                                                                         selectedOrg?.OrganizationNumber ===
                                                                             sub.organisasjonsnummer
-                                                                            ? 'secondary.light'
+                                                                            ? 'secondary'
                                                                             : 'background.paper',
                                                                     border:
                                                                         selectedOrg?.OrganizationNumber ===
@@ -349,7 +349,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                                     borderColor:
                                                                         selectedOrg?.OrganizationNumber ===
                                                                             sub.organisasjonsnummer
-                                                                            ? 'secondary.main'
+                                                                            ? 'secondary'
                                                                             : 'transparent',
                                                                     transition: 'transform 0.3s, box-shadow 0.3s',
                                                                     '&:hover': {
@@ -376,10 +376,15 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                     )}
 
                     {selectedOrg && (
-                        <div className={`org-details ${isRoleView ? 'full-width' : ''}`}>
+                            <div className={`org-details ${isRoleView ? 'full-width' : ''}`}>
+                                <Typography variant="subtitle1"  gutterBottom>
+                                    Org Nr: {selectedOrg.OrganizationNumber}
+                                </Typography>
                             <Typography variant="h4" gutterBottom>
-                                {selectedOrg.Name}
-                            </Typography>
+                                    {selectedOrg.Name} 
+                                </Typography>
+                                
+
 
                             {!isRoleView ? (
                                 <>

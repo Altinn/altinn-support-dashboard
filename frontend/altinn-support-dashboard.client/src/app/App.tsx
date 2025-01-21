@@ -4,8 +4,10 @@ import Sidebar from '../components/Sidebar/SidebarComponent';
 import SearchComponent from '../components/TopSearchBar/TopSearchBarComponent';
 import MainContent from '../components/MainContent/MainContentComponent';
 import SettingsContentComponent from '../components/SettingsContent/SettingsContentComponent';
+
 import ManualRoleSearchComponent from '../components/ManualRoleSearch/ManualRoleSearchComponent';
 import SignOutPage from '../SignOutPage/SignOutPage';
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { grey } from '@mui/material/colors';
@@ -130,7 +132,9 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route path="/signout" element={<SignOutPage />} />
+
                             <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
                         </Routes>
                     </main>
                 </div>
