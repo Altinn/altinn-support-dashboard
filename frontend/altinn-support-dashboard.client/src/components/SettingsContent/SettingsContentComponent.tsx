@@ -19,14 +19,12 @@ interface SettingsContentProps {
     environment: string;
     isDarkMode: boolean;
     setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
-    handleLogout: () => void;
 }
 
 const SettingsContentComponent: React.FC<SettingsContentProps> = ({
     environment,
     isDarkMode,
     setIsDarkMode,
-    handleLogout,
 }) => {
     // Use these to change version number and name
     const versionnumber = '2.2.0';
@@ -110,6 +108,9 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
         // Implement language change logic here
     };
 
+    const handleLogout = () => {
+        window.location.href = '/.auth/logout?post_logout_redirect_uri=/signout';
+    };
     return (
         <Box sx={{ p: 3 }}>
             <Typography variant="h4" gutterBottom>

@@ -60,9 +60,7 @@ const App: React.FC = () => {
         [isDarkMode]
     );
 
-    const handleLogout = () => {
-        window.location.href = '/.auth/logout?post_logout_redirect_uri=/signout';
-    };
+
 
     return (
         <ThemeProvider theme={theme}>
@@ -123,7 +121,7 @@ const App: React.FC = () => {
                                         environment={environment}
                                         isDarkMode={isDarkMode}
                                         setIsDarkMode={setIsDarkMode}
-                                        handleLogout={handleLogout}
+                     
                                     />
                                 }
                             />
