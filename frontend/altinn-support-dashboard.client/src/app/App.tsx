@@ -11,14 +11,14 @@ import SignOutPage from '../SignOutPage/SignOutPage';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { grey } from '@mui/material/colors';
-import { useDarkMode, useEnvironment, useUserDetails, useCurrentDateTime, useOrganizationSearch } from './hooks';
-import { getBaseUrl, authorizedFetch } from './utils';
+import { useDarkMode, useEnvironment, useUserDetails, useOrganizationSearch } from '../hooks/hooks';
+import { getBaseUrl, authorizedFetch } from '../utils/utils';
 
 const App: React.FC = () => {
     const { isDarkMode, setIsDarkMode } = useDarkMode();
     const { environment, isEnvDropdownOpen, toggleEnvDropdown, handleEnvChange } = useEnvironment();
     const { userName, userEmail } = useUserDetails();
-    const { formattedDate, formattedTime } = useCurrentDateTime();
+
     const {
         query,
         setQuery,
@@ -74,8 +74,6 @@ const App: React.FC = () => {
                         handleEnvChange={handleEnvChange}
                         userName={userName}
                         userEmail={userEmail}
-                        formattedTime={formattedTime}
-                        formattedDate={formattedDate}
                         isDarkMode={isDarkMode}
                     />
                     <main className="main-content">

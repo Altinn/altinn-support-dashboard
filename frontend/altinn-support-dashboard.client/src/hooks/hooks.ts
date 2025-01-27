@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Organization, PersonalContact, Subunit, ERRole } from '../models/models';
-import { getBaseUrl, authorizedFetch, getFormattedDateTime, fetchUserDetails } from './utils';
+import { getBaseUrl, authorizedFetch, getFormattedDateTime, fetchUserDetails } from '../utils/utils';
 
 export function useDarkMode() {
     const [isDarkMode, setIsDarkMode] = useState<boolean>(false);

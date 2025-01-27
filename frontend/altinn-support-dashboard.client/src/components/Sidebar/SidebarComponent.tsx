@@ -5,6 +5,7 @@ import { Box, Typography, Button, Menu, MenuItem, Divider } from '@mui/material'
 import { ExpandMore } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
+import { useCurrentDateTime } from '../../hooks/hooks'
 
 import logo from '../../assets/logo.png';
 
@@ -15,8 +16,6 @@ interface SidebarProps {
     handleEnvChange: (env: string) => void;
     userName: string;
     userEmail: string;
-    formattedTime: string;
-    formattedDate: string;
     isDarkMode: boolean;
 }
 
@@ -25,11 +24,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     handleEnvChange,
     userName,
     userEmail,
-    formattedTime,
-    formattedDate,
     isDarkMode,
 }) => {
     const theme = useTheme();
+    const { formattedDate, formattedTime } = useCurrentDateTime();
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -46,6 +44,8 @@ const Sidebar: React.FC<SidebarProps> = ({
         handleEnvChange(env);
         handleMenuClose();
     };
+
+
 
     return (
         <Box
