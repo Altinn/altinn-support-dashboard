@@ -32,13 +32,11 @@ interface Role {
 
 interface ManualRoleSearchComponentProps {
     baseUrl: string;
-    isDarkMode: boolean;
     authorizedFetch: (url: string, options?: RequestInit) => Promise<Response>;
 }
 
 const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({
     baseUrl,
-    isDarkMode,
     authorizedFetch,
 }) => {
     const [rollehaver, setRollehaver] = useState('');

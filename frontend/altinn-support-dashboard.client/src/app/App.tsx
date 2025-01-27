@@ -101,9 +101,6 @@ const App: React.FC = () => {
                                             handleExpandToggle={handleExpandToggle}
                                             error={error}
                                             erRolesError={erRolesError}
-                                            formattedTime={formattedTime}
-                                            formattedDate={formattedDate}
-                                            isDarkMode={isDarkMode}
                                             query={query}
                                             hasSearched={hasSearched}
                                         />
@@ -115,7 +112,6 @@ const App: React.FC = () => {
                                 element={
                                     <ManualRoleSearchComponent
                                         baseUrl={getBaseUrl(environment)}
-                                        isDarkMode={isDarkMode}
                                         authorizedFetch={authorizedFetch}
                                     />
                                 }
