@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { UseManualRoleSearch } from '../../hooks/hooks';
+import { Role } from '../../models/models'
 import {
     TextField,
     Button,
@@ -107,46 +108,56 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({
                 </Alert>
             )}
 
-            {roles.length > 0 && (
-                <TableContainer
-                    component={Paper}
-                    sx={{
-                        maxHeight: '80vh', // Adjust the height as needed
-                        overflowY: 'auto',
-                    }}
-                >
-                    <MuiTable stickyHeader>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>
-                                    <Typography variant="subtitle1">Rolletype</Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle1">Rollenavn</Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle1">Beskrivelse</Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle1">Rolledefinisjonskode</Typography>
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {roles.map((role, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>{role.RoleType}</TableCell>
-                                    <TableCell>{role.RoleName}</TableCell>
-                                    <TableCell>{role.RoleDescription}</TableCell>
-                                    <TableCell>{role.RoleDefinitionCode}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </MuiTable>
-                </TableContainer>
-            )}
+            {roles.length > 0 &&
+                <RoleTable roles={roles} />
+            }
         </Box>
     );
 };
 
 export default ManualRoleSearchComponent;
+
+interface RoleTableProps {
+    roles: Role[]
+}
+
+const RoleTable: React.FC<RoleTableProps> = ({ roles })  => {
+    return (
+        <TableContainer
+            component={Paper}
+            sx={{
+                maxHeight: '80vh', // Adjust the height as needed
+                overflowY: 'auto',
+            }}
+        >
+            <MuiTable stickyHeader>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>
+                            <Typography variant="subtitle1">Rolletype</Typography>
+                        </TableCell>
+                        <TableCell>
+                            <Typography variant="subtitle1">Rollenavn</Typography>
+                        </TableCell>
+                        <TableCell>
+                            <Typography variant="subtitle1">Beskrivelse</Typography>
+                        </TableCell>
+                        <TableCell>
+                            <Typography variant="subtitle1">Rolledefinisjonskode</Typography>
+                        </TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {roles.map((role, index) => (
+                        <TableRow key={index}>
+                            <TableCell>{role.RoleType}</TableCell>
+                            <TableCell>{role.RoleName}</TableCell>
+                            <TableCell>{role.RoleDescription}</TableCell>
+                            <TableCell>{role.RoleDefinitionCode}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </MuiTable>
+        </TableContainer>
+    )
+}
