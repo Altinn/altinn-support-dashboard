@@ -73,3 +73,13 @@ export interface ERRole {
         fratraadt: boolean;
     }[];
 }
+
+export interface Role {
+    RoleId?: number;
+    RoleType: string;
+    RoleDefinitionId: number;
+    RoleName: string;
+    RoleDescription: string;
+    RoleDefinitionCode: string;
+    _links?: any;
+}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Organization, PersonalContact, Subunit, ERRole } from '../models/models';
+import { Organization, PersonalContact, Subunit, ERRole, Role } from '../models/models';
 import { getBaseUrl, authorizedFetch, getFormattedDateTime, fetchUserDetails } from '../utils/utils';
 
 export function useDarkMode() {
@@ -142,6 +142,7 @@ export function useOrganizationSearch(environment: string) {
         setExpandedOrg((prev) => (prev === orgNumber ? null : orgNumber));
     };
 
+
     return {
         query,
         setQuery,
@@ -160,3 +161,50 @@ export function useOrganizationSearch(environment: string) {
         handleExpandToggle
     };
 }
+
+export const UseManualRoleSearch = (baseUrl: string) => {
+    const [roles, setRoles] = useState<Role[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchRoles = async (rollehaver: string, rollegiver: string): Promise<void> => {
+        setIsLoading(true);
+
+        try {
+            const res = await authorizedFetch(
+                `${baseUrl}/serviceowner/${rollehaver}/roles/${rollegiver}`
+            );
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(errorText || 'Ukjent feil oppstod.');
+            }
+
+            const data = await res.json();
+            let rolesArray: Role[] = [];
+
+            if (Array.isArray(data)) {
+                rolesArray = data;
+            } else if (data && data._embedded) {
+                const embeddedKeys = Object.keys(data._embedded);
+                if (embeddedKeys.length > 0) {
+                    const firstKey = embeddedKeys[0];
+                    rolesArray = data._embedded[firstKey];
+                }
+            }
+
+            if (rolesArray.length > 0) {
+                setRoles(rolesArray);
+            } else {
+                setRoles([]);
+            }
+        } catch (error: any) {
+            console.error(error);
+            setError(error.message || 'Noe gikk galt ved henting av roller.');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    return { fetchRoles, roles, isLoading, error }
+};

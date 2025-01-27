@@ -12,7 +12,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { useDarkMode, useEnvironment, useUserDetails, useOrganizationSearch } from '../hooks/hooks';
-import { getBaseUrl, authorizedFetch } from '../utils/utils';
+import { getBaseUrl } from '../utils/utils';
 
 const App: React.FC = () => {
     const { isDarkMode, setIsDarkMode } = useDarkMode();
@@ -108,7 +108,7 @@ const App: React.FC = () => {
                                 element={
                                     <ManualRoleSearchComponent
                                         baseUrl={getBaseUrl(environment)}
-                                        authorizedFetch={authorizedFetch}
+
                                     />
                                 }
                             />

@@ -1,6 +1,7 @@
 ﻿// src/components/ManualRoleSearch/ManualRoleSearchComponent.tsx
 
 import React, { useState } from 'react';
+import { UseManualRoleSearch } from '../../hooks/hooks';
 import {
     TextField,
     Button,
@@ -20,72 +21,21 @@ import {
 } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
-interface Role {
-    RoleId?: number;
-    RoleType: string;
-    RoleDefinitionId: number;
-    RoleName: string;
-    RoleDescription: string;
-    RoleDefinitionCode: string;
-    _links?: any;
-}
-
 interface ManualRoleSearchComponentProps {
     baseUrl: string;
-    authorizedFetch: (url: string, options?: RequestInit) => Promise<Response>;
 }
 
 const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({
     baseUrl,
-    authorizedFetch,
 }) => {
     const [rollehaver, setRollehaver] = useState('');
     const [rollegiver, setRollegiver] = useState('');
-    const [roles, setRoles] = useState<Role[]>([]);
-    const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
+    const { fetchRoles, roles, isLoading, error } = UseManualRoleSearch(baseUrl);
 
     const handleSearch = async () => {
-        setError(null);
-        setIsLoading(true);
         setHasSearched(true);
-        setRoles([]);
-
-        try {
-            const res = await authorizedFetch(
-                `${baseUrl}/serviceowner/${rollehaver}/roles/${rollegiver}`
-            );
-
-            if (!res.ok) {
-                const errorText = await res.text();
-                throw new Error(errorText || 'Ukjent feil oppstod.');
-            }
-
-            const data = await res.json();
-            let rolesArray: Role[] = [];
-
-            if (Array.isArray(data)) {
-                rolesArray = data;
-            } else if (data && data._embedded) {
-                const embeddedKeys = Object.keys(data._embedded);
-                if (embeddedKeys.length > 0) {
-                    const firstKey = embeddedKeys[0];
-                    rolesArray = data._embedded[firstKey];
-                }
-            }
-
-            if (rolesArray.length > 0) {
-                setRoles(rolesArray);
-            } else {
-                setRoles([]);
-            }
-        } catch (error: any) {
-            console.error(error);
-            setError(error.message || 'Noe gikk galt ved henting av roller.');
-        } finally {
-            setIsLoading(false);
-        }
+        await fetchRoles(rollehaver, rollegiver);
     };
 
     return (
