@@ -125,7 +125,7 @@ describe('ManualRoleSearchComponent', () => {
                 RoleDefinitionId: 2,
             },
         ];
-        (UseManualRoleSearch as vi.Mock).mockReturnValue({
+        (UseManualRoleSearch as jest.Mock).mockReturnValue({
             ...defaultHookReturn,
             roles: mockRoles,
             isLoading: false,
