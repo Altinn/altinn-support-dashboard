@@ -32,9 +32,6 @@ interface MainContentProps {
     handleExpandToggle: (orgNumber: string) => void;
     error: { message: string; response?: string | null };
     erRolesError: string | null;
-    formattedTime: string;
-    formattedDate: string;
-    isDarkMode: boolean;
     query: string;
     hasSearched: boolean;
 }
@@ -230,13 +227,13 @@ const MainContentComponent: React.FC<MainContentProps> = ({
             ) : (
                 <>
                     {showOrgList && (
-                        <div className={`org-list ${isRoleView ? 'hidden' : ''}`}>
+                        <div  className={`org-list ${isRoleView ? 'hidden' : ''}`}>
                             {isLoading ? (
-                                <>
+                                <div role="progressbar">
                                     <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
                                     <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
                                     <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
-                                </>
+                                </div>
                             ) : organizations.length === 0 ? (
                                 hasSearched ? (
                                     <Alert severity="info" sx={{ mb: 2 }}>

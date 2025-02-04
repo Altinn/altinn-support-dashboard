@@ -37,9 +37,6 @@ const mockProps: React.ComponentProps<typeof MainContentComponent> = {
     handleExpandToggle: vi.fn(),
     error: { message: '', response: null },
     erRolesError: null,
-    formattedTime: '12:00',
-    formattedDate: '2024-11-15',
-    isDarkMode: false,
     query: '',
     hasSearched: false,
 };

@@ -1,9 +1,11 @@
-// src/components/Sidebar/SidebarComponent.tsx
+﻿// src/components/Sidebar/SidebarComponent.tsx
 
 import React from 'react';
 import { Box, Typography, Button, Menu, MenuItem, Divider } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
+import { NavLink } from 'react-router-dom';
+import { useCurrentDateTime } from '../../hooks/hooks'
 
 import logo from '../../assets/logo.png';
 
@@ -12,27 +14,20 @@ interface SidebarProps {
     isEnvDropdownOpen: boolean;
     toggleEnvDropdown: () => void;
     handleEnvChange: (env: string) => void;
-    currentPage: 'dashboard' | 'settings';
-    setCurrentPage: (page: 'dashboard' | 'settings') => void;
     userName: string;
     userEmail: string;
-    formattedTime: string;
-    formattedDate: string;
     isDarkMode: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
     environment,
     handleEnvChange,
-    currentPage,
-    setCurrentPage,
     userName,
     userEmail,
-    formattedTime,
-    formattedDate,
     isDarkMode,
 }) => {
     const theme = useTheme();
+    const { formattedDate, formattedTime } = useCurrentDateTime();
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -49,6 +44,8 @@ const Sidebar: React.FC<SidebarProps> = ({
         handleEnvChange(env);
         handleMenuClose();
     };
+
+
 
     return (
         <Box
@@ -71,24 +68,36 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </Box>
 
                 <nav className="nav">
-                    <button
-                        className={`nav-button ${currentPage === 'dashboard' ? 'selected' : ''}`}
-                        onClick={() => setCurrentPage('dashboard')}
-                        style={{
-                            color: currentPage === 'dashboard' ? theme.palette.secondary.main : '#fff',
-                        }}
+                    <NavLink
+                        to="/dashboard"
+                        className={({ isActive }) => `nav-button ${isActive ? 'selected' : ''}`}
+                        style={({ isActive }) => ({
+                            color: isActive ? theme.palette.secondary.main : '#fff',
+                            textDecoration: 'none',
+                        })}
                     >
                         Oppslag
-                    </button>
-                    <button
-                        className={`nav-button ${currentPage === 'settings' ? 'selected' : ''}`}
-                        onClick={() => setCurrentPage('settings')}
-                        style={{
-                            color: currentPage === 'settings' ? theme.palette.secondary.main : '#fff',
-                        }}
+                    </NavLink>
+                    <NavLink
+                        to="/manualrolesearch"
+                        className={({ isActive }) => `nav-button ${isActive ? 'selected' : ''}`}
+                        style={({ isActive }) => ({
+                            color: isActive ? theme.palette.secondary.main : '#fff',
+                            textDecoration: 'none',
+                        })}
+                    >
+                        Manuelt Rollesøk
+                    </NavLink>
+                    <NavLink
+                        to="/settings"
+                        className={({ isActive }) => `nav-button ${isActive ? 'selected' : ''}`}
+                        style={({ isActive }) => ({
+                            color: isActive ? theme.palette.secondary.main : '#fff',
+                            textDecoration: 'none',
+                        })}
                     >
                         Innstillinger
-                    </button>
+                    </NavLink>
                 </nav>
             </Box>
 
@@ -150,3 +159,4 @@ const Sidebar: React.FC<SidebarProps> = ({
 };
 
 export default Sidebar;
+    
