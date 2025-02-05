@@ -90,7 +90,7 @@ export function useOrganizationSearch(environment: string) {
                             navn: sub.navn,
                             organisasjonsnummer: sub.organisasjonsnummer,
                             overordnetEnhet: sub.overordnetEnhet,
-                            type: sub.organisasjonsform?.kode
+                            type: sub.organisasjonsform?.kode,
                         }));
                         allSubUnits.push(...subunits);
                     }
@@ -133,7 +133,7 @@ export function useOrganizationSearch(environment: string) {
             } catch (error: any) {
                 setError((prevError) => ({
                     message: prevError.message + ' Feil ved henting av data.',
-                    response: error.response || null
+                    response: error.response || null,
                 }));
             }
         },
@@ -159,16 +159,20 @@ export function useOrganizationSearch(environment: string) {
         hasSearched,
         handleSearch,
         handleSelectOrg,
-        handleExpandToggle
+        handleExpandToggle,
     };
 }
 
+// Modified UseManualRoleSearch: Clear previous error and roles before a new search so that if an error occurs, the table is hidden.
 export const UseManualRoleSearch = (baseUrl: string) => {
     const [roles, setRoles] = useState<Role[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const fetchRoles = async (rollehaver: string, rollegiver: string): Promise<void> => {
+        // Clear any previous error and roles on new search.
+        setError(null);
+        setRoles([]);
         setIsLoading(true);
         try {
             const res = await authorizedFetch(`${baseUrl}/serviceowner/${rollehaver}/roles/${rollegiver}`);
@@ -194,10 +198,16 @@ export const UseManualRoleSearch = (baseUrl: string) => {
             }
         } catch (error: any) {
             setError(error.message || 'Noe gikk galt ved henting av roller.');
+            setRoles([]); // Clear roles to hide table on error.
         } finally {
             setIsLoading(false);
         }
     };
 
-    return { fetchRoles, roles, isLoading, error };
+    const clearRoles = () => {
+        setRoles([]);
+        setError(null);
+    };
+
+    return { fetchRoles, roles, isLoading, error, clearRoles };
 };

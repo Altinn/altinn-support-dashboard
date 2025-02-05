@@ -1,7 +1,7 @@
 export function getBaseUrl(environment: string): string {
     const apiHost = window.location.hostname;
     const protocol = window.location.protocol;
-    return `${protocol}//${apiHost}/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
+    return `${protocol}//${apiHost}:7174/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
 }
 
 export async function authorizedFetch(url: string, options: RequestInit = {}): Promise<Response> {
@@ -61,7 +61,7 @@ export async function fetchUserDetails(): Promise<{ name: string; email: string 
 
             return {
                 name: nameClaim ? nameClaim.val : 'Ukjent Bruker',
-                email: emailClaim ? emailClaim.val : 'Ingen e-post funnet'
+                email: emailClaim ? emailClaim.val : 'Ingen e-post funnet',
             };
         }
 

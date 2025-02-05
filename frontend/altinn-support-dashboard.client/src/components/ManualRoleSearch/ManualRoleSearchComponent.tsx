@@ -1,6 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { UseManualRoleSearch } from '../../hooks/hooks';
-import { Role } from '../../models/models'
+import { Role } from '../../models/models';
 import {
     TextField,
     Button,
@@ -24,17 +24,28 @@ interface ManualRoleSearchComponentProps {
     baseUrl: string;
 }
 
-const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({
-    baseUrl,
-}) => {
-    const [rollehaver, setRollehaver] = useState('');
-    const [rollegiver, setRollegiver] = useState('');
+const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({ baseUrl }) => {
+    // Persist input fields using localStorage.
+    const [rollehaver, setRollehaver] = useState<string>(localStorage.getItem('rollehaver') || '');
+    const [rollegiver, setRollegiver] = useState<string>(localStorage.getItem('rollegiver') || '');
     const [hasSearched, setHasSearched] = useState(false);
-    const { fetchRoles, roles, isLoading, error } = UseManualRoleSearch(baseUrl);
+    const { fetchRoles, roles, isLoading, error, clearRoles } = UseManualRoleSearch(baseUrl);
 
     const handleSearch = async () => {
         setHasSearched(true);
-        await fetchRoles(rollehaver, rollegiver);
+        // Remove spaces to combine input parts.
+        const cleanRollehaver = rollehaver.replace(/\s/g, '');
+        const cleanRollegiver = rollegiver.replace(/\s/g, '');
+        await fetchRoles(cleanRollehaver, cleanRollegiver);
+    };
+
+    const handleClearSearch = () => {
+        setRollehaver('');
+        setRollegiver('');
+        localStorage.setItem('rollehaver', '');
+        localStorage.setItem('rollegiver', '');
+        setHasSearched(false);
+        clearRoles();
     };
 
     return (
@@ -48,7 +59,10 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({
                     label="Rollehaver"
                     variant="outlined"
                     value={rollehaver}
-                    onChange={(e) => setRollehaver(e.target.value)}
+                    onChange={(e) => {
+                        setRollehaver(e.target.value);
+                        localStorage.setItem('rollehaver', e.target.value);
+                    }}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
@@ -66,7 +80,10 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({
                     label="Rollegiver"
                     variant="outlined"
                     value={rollegiver}
-                    onChange={(e) => setRollegiver(e.target.value)}
+                    onChange={(e) => {
+                        setRollegiver(e.target.value);
+                        localStorage.setItem('rollegiver', e.target.value);
+                    }}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
@@ -90,25 +107,29 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({
                 </Button>
             </Box>
 
+            {(hasSearched || rollehaver.trim() !== '' || rollegiver.trim() !== '') && (
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+                    <Button variant="outlined" onClick={handleClearSearch}>
+                        Tøm søk
+                    </Button>
+                </Box>
+            )}
+
             {error && (
                 <Alert severity="error" sx={{ mb: 2 }}>
                     {error}
                 </Alert>
             )}
 
-            {isLoading && (
-                <Typography variant="body1">Laster roller...</Typography>
-            )}
+            {isLoading && <Typography variant="body1">Laster roller...</Typography>}
 
-            {!isLoading && hasSearched && roles.length === 0 && (
+            {!isLoading && hasSearched && roles.length === 0 && !error && (
                 <Alert severity="info" sx={{ mb: 2 }}>
                     Ingen roller funnet.
                 </Alert>
             )}
 
-            {roles.length > 0 &&
-                <RoleTable roles={roles} />
-            }
+            {roles.length > 0 && !error && <RoleTable roles={roles} />}
         </Box>
     );
 };
@@ -116,15 +137,15 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({
 export default ManualRoleSearchComponent;
 
 interface RoleTableProps {
-    roles: Role[]
+    roles: Role[];
 }
 
-const RoleTable: React.FC<RoleTableProps> = ({ roles })  => {
+const RoleTable: React.FC<RoleTableProps> = ({ roles }) => {
     return (
         <TableContainer
             component={Paper}
             sx={{
-                maxHeight: '80vh', // Adjust the height as needed
+                maxHeight: '80vh',
                 overflowY: 'auto',
             }}
         >
@@ -157,5 +178,5 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles })  => {
                 </TableBody>
             </MuiTable>
         </TableContainer>
-    )
-}
+    );
+};
