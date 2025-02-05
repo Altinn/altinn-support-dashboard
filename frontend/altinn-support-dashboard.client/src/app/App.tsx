@@ -4,7 +4,6 @@ import Sidebar from '../components/Sidebar/SidebarComponent';
 import SearchComponent from '../components/TopSearchBar/TopSearchBarComponent';
 import MainContent from '../components/MainContent/MainContentComponent';
 import SettingsContentComponent from '../components/SettingsContent/SettingsContentComponent';
-
 import ManualRoleSearchComponent from '../components/ManualRoleSearch/ManualRoleSearchComponent';
 import SignOutPage from '../SignOutPage/SignOutPage';
 
@@ -34,8 +33,14 @@ const App: React.FC = () => {
         hasSearched,
         handleSearch,
         handleSelectOrg,
-        handleExpandToggle
+        handleExpandToggle,
     } = useOrganizationSearch(environment);
+
+    // Define a clear search handler that resets the query
+    const handleClearSearch = () => {
+        setQuery('');
+        // Optionally, add any additional reset logic here.
+    };
 
     const theme = React.useMemo(
         () =>
@@ -43,24 +48,22 @@ const App: React.FC = () => {
                 palette: {
                     mode: isDarkMode ? 'dark' : 'light',
                     primary: {
-                        main: '#004a70'
+                        main: '#004a70',
                     },
                     secondary: {
-                        main: '#0163ba'
+                        main: '#0163ba',
                     },
                     background: {
                         default: isDarkMode ? grey[900] : '#f0f2f5',
-                        paper: isDarkMode ? grey[800] : '#ffffff'
-                    }
+                        paper: isDarkMode ? grey[800] : '#ffffff',
+                    },
                 },
                 typography: {
-                    fontFamily: 'Inter, sans-serif'
-                }
+                    fontFamily: 'Inter, sans-serif',
+                },
             }),
         [isDarkMode]
     );
-
-
 
     return (
         <ThemeProvider theme={theme}>
@@ -83,7 +86,14 @@ const App: React.FC = () => {
                                 path="/dashboard"
                                 element={
                                     <>
-                                        <SearchComponent query={query} setQuery={setQuery} handleSearch={handleSearch} isDarkMode={isDarkMode} />
+                                        <SearchComponent
+                                            query={query}
+                                            setQuery={setQuery}
+                                            handleSearch={handleSearch}
+                                            handleClearSearch={handleClearSearch}
+                                            hasSearched={hasSearched}
+                                            isDarkMode={isDarkMode}
+                                        />
                                         <MainContent
                                             baseUrl={getBaseUrl(environment)}
                                             isLoading={isLoading}
@@ -105,12 +115,7 @@ const App: React.FC = () => {
                             />
                             <Route
                                 path="/manualrolesearch"
-                                element={
-                                    <ManualRoleSearchComponent
-                                        baseUrl={getBaseUrl(environment)}
-
-                                    />
-                                }
+                                element={<ManualRoleSearchComponent baseUrl={getBaseUrl(environment)} />}
                             />
                             <Route
                                 path="/settings"
@@ -119,14 +124,11 @@ const App: React.FC = () => {
                                         environment={environment}
                                         isDarkMode={isDarkMode}
                                         setIsDarkMode={setIsDarkMode}
-                     
                                     />
                                 }
                             />
                             <Route path="/signout" element={<SignOutPage />} />
-
                             <Route path="*" element={<Navigate to="/dashboard" replace />} />
-
                         </Routes>
                     </main>
                 </div>
