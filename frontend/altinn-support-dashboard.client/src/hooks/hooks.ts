@@ -81,7 +81,9 @@ export function useOrganizationSearch(environment: string) {
             const allSubUnits: Subunit[] = [];
             for (const org of mainUnits) {
                 try {
-                    const subunitRes = await authorizedFetch(`${getBaseUrl(environment)}/brreg/${org.organizationNumber}/underenheter`);
+                    const subunitRes = await authorizedFetch(
+                        `${getBaseUrl(environment)}/brreg/${org.organizationNumber}/underenheter`
+                    );
                     const subunitData = await subunitRes.json();
                     if (subunitData?._embedded?.underenheter) {
                         const subunits = subunitData._embedded.underenheter.map((sub: any) => ({
@@ -142,7 +144,6 @@ export function useOrganizationSearch(environment: string) {
         setExpandedOrg((prev) => (prev === orgNumber ? null : orgNumber));
     };
 
-
     return {
         query,
         setQuery,
@@ -169,20 +170,14 @@ export const UseManualRoleSearch = (baseUrl: string) => {
 
     const fetchRoles = async (rollehaver: string, rollegiver: string): Promise<void> => {
         setIsLoading(true);
-
         try {
-            const res = await authorizedFetch(
-                `${baseUrl}/serviceowner/${rollehaver}/roles/${rollegiver}`
-            );
-
+            const res = await authorizedFetch(`${baseUrl}/serviceowner/${rollehaver}/roles/${rollegiver}`);
             if (!res.ok) {
                 const errorText = await res.text();
                 throw new Error(errorText || 'Ukjent feil oppstod.');
             }
-
             const data = await res.json();
             let rolesArray: Role[] = [];
-
             if (Array.isArray(data)) {
                 rolesArray = data;
             } else if (data && data._embedded) {
@@ -192,19 +187,17 @@ export const UseManualRoleSearch = (baseUrl: string) => {
                     rolesArray = data._embedded[firstKey];
                 }
             }
-
             if (rolesArray.length > 0) {
                 setRoles(rolesArray);
             } else {
                 setRoles([]);
             }
         } catch (error: any) {
-            console.error(error);
             setError(error.message || 'Noe gikk galt ved henting av roller.');
         } finally {
             setIsLoading(false);
         }
-    }
+    };
 
-    return { fetchRoles, roles, isLoading, error }
+    return { fetchRoles, roles, isLoading, error };
 };

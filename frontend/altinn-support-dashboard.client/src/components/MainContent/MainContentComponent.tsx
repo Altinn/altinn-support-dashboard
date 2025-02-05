@@ -1,7 +1,4 @@
-// src/components/MainContent/MainContentComponent.tsx
-
 import React, { useState, useMemo, useEffect } from 'react';
-
 import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
 import {
     Skeleton,
@@ -41,6 +38,8 @@ interface OfficialContact {
     MobileNumberChanged: string;
     EMailAddress: string;
     EMailAddressChanged: string;
+    fratraadt?: boolean;
+    erDoed?: boolean;
 }
 
 type SortDirection = 'asc' | 'desc' | undefined;
@@ -73,7 +72,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     const [officialContacts, setOfficialContacts] = useState<OfficialContact[]>([]);
     const [officialContactsError, setOfficialContactsError] = useState<string | null>(null);
 
-    // Quotes array in Norwegian
     const quotes = useMemo(
         () => [
             'Dette er en fin dag.',
@@ -89,7 +87,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         []
     );
 
-    // Get a random quote
     const randomQuote = useMemo(() => {
         return quotes[Math.floor(Math.random() * quotes.length)];
     }, [quotes]);
@@ -101,7 +98,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
             Authorization: `Basic ${token}`,
             'Content-Type': 'application/json',
         };
-
         const response = await fetch(url, { ...options, headers });
         if (!response.ok) {
             const errorText = await response.text();
@@ -119,7 +115,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
             setShowOrgList(false);
             setRoleViewError(null);
         } catch (error) {
-            console.error(error);
             setRoleViewError('Roller kunne ikke hentes.');
         }
     };
@@ -176,10 +171,14 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         }
     };
 
+    // Clear the search field when a new organization is selected.
+    useEffect(() => {
+        setSearchQuery('');
+    }, [selectedOrg]);
+
     useEffect(() => {
         const fetchOfficialContacts = async () => {
             if (!selectedOrg) return;
-
             try {
                 const res = await authorizedFetch(
                     `${baseUrl}/serviceowner/organizations/${selectedOrg.OrganizationNumber}/officialcontacts`
@@ -188,15 +187,12 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                 setOfficialContacts(data);
                 setOfficialContactsError(null);
             } catch (error) {
-                console.error(error);
                 setOfficialContactsError('Offisielle kontakter kunne ikke hentes.');
             }
         };
-
         fetchOfficialContacts();
-    }, [selectedOrg]);
+    }, [selectedOrg, baseUrl]);
 
-    // Function to format date strings
     const formatDate = (dateString: string) => {
         if (!dateString || dateString.startsWith('0001-01-01')) {
             return '-';
@@ -210,6 +206,42 @@ const MainContentComponent: React.FC<MainContentProps> = ({
             minute: '2-digit',
         });
     };
+
+    // Compute filtered and sorted contacts for the organisasjonsoversikt table.
+    const filteredContacts = filterContacts(moreInfo || []);
+    const sortedContacts = sortContacts(filteredContacts);
+
+    // Compute flattened and sorted ER-roller.
+    const flatERRoles =
+        rolesInfo?.flatMap((roleGroup) =>
+            roleGroup?.roller?.map((role: any) => ({
+                ...role,
+                sistEndret: roleGroup.sistEndret,
+            }))
+        ) || [];
+    const sortedERRoles = [...flatERRoles].sort((a, b) => {
+        if (erRoleSortField === null) return 0;
+        if (erRoleSortField === 'type') {
+            const aType = a.type?.beskrivelse || '';
+            const bType = b.type?.beskrivelse || '';
+            return erRoleSortDirection === 'asc'
+                ? aType.localeCompare(bType)
+                : bType.localeCompare(aType);
+        }
+        if (erRoleSortField === 'person') {
+            const aName = `${a.person?.navn?.fornavn || ''} ${a.person?.navn?.etternavn || ''}`.trim();
+            const bName = `${b.person?.navn?.fornavn || ''} ${b.person?.navn?.etternavn || ''}`.trim();
+            return erRoleSortDirection === 'asc'
+                ? aName.localeCompare(bName)
+                : bName.localeCompare(aName);
+        }
+        if (erRoleSortField === 'sistEndret') {
+            const aDate = new Date(a.sistEndret || 0).getTime();
+            const bDate = new Date(b.sistEndret || 0).getTime();
+            return erRoleSortDirection === 'asc' ? aDate - bDate : bDate - aDate;
+        }
+        return 0;
+    });
 
     return (
         <div className="results-section">
@@ -227,7 +259,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
             ) : (
                 <>
                     {showOrgList && (
-                        <div  className={`org-list ${isRoleView ? 'hidden' : ''}`}>
+                        <div className={`org-list ${isRoleView ? 'hidden' : ''}`}>
                             {isLoading ? (
                                 <div role="progressbar">
                                     <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
@@ -247,12 +279,10 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                             ) : (
                                 organizations
                                     .filter((org) => {
-                                        // Exclude subunits that are already included under their parent organization
                                         if (
                                             (org.type === 'BEDR' || org.type === 'AAFY') &&
                                             subUnits.some((sub) => sub.organisasjonsnummer === org.organizationNumber)
                                         ) {
-                                            // Subunit is already displayed under parent org
                                             return false;
                                         }
                                         return true;
@@ -279,7 +309,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                         selectedOrg?.OrganizationNumber === org.organizationNumber
                                                             ? 'secondary'
                                                             : 'transparent',
-                                                    transition: 'transform 0.3s, box-shadow 0.3s',
+                                                    transition: 'transform 0.3s, boxShadow 0.3s',
                                                     '&:hover': {
                                                         transform: 'translateY(-5px)',
                                                         boxShadow: 4,
@@ -290,31 +320,27 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                 <Typography variant="h6">{org.name}</Typography>
                                                 <Typography variant="body2">Org Nr: {org.organizationNumber}</Typography>
                                                 <Typography variant="body2">Type: {org.type}</Typography>
-
-                                                {subUnits.some(
-                                                    (sub) => sub.overordnetEnhet === org.organizationNumber
-                                                ) && (
-                                                        <Button
-                                                            variant="outlined"
-                                                            size="small"
-                                                            sx={{ mt: 1 }}
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleExpandToggle(org.organizationNumber);
-                                                            }}
-                                                            aria-expanded={expandedOrg === org.organizationNumber}
-                                                            aria-label={`${expandedOrg === org.organizationNumber ? 'Collapse' : 'Expand'
-                                                                } subunits for ${org.name}`}
-                                                        >
-                                                            {expandedOrg === org.organizationNumber ? (
-                                                                <ExpandLess />
-                                                            ) : (
-                                                                <ExpandMore />
-                                                            )}
-                                                        </Button>
-                                                    )}
+                                                {subUnits.some((sub) => sub.overordnetEnhet === org.organizationNumber) && (
+                                                    <Button
+                                                        variant="outlined"
+                                                        size="small"
+                                                        sx={{ mt: 1 }}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleExpandToggle(org.organizationNumber);
+                                                        }}
+                                                        aria-expanded={expandedOrg === org.organizationNumber}
+                                                        aria-label={`${expandedOrg === org.organizationNumber ? 'Collapse' : 'Expand'
+                                                            } subunits for ${org.name}`}
+                                                    >
+                                                        {expandedOrg === org.organizationNumber ? (
+                                                            <ExpandLess />
+                                                        ) : (
+                                                            <ExpandMore />
+                                                        )}
+                                                    </Button>
+                                                )}
                                             </Paper>
-
                                             {expandedOrg === org.organizationNumber && (
                                                 <div className="subunits">
                                                     {subUnits
@@ -323,8 +349,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                             <Paper
                                                                 key={sub.organisasjonsnummer}
                                                                 elevation={
-                                                                    selectedOrg?.OrganizationNumber ===
-                                                                        sub.organisasjonsnummer
+                                                                    selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
                                                                         ? 6
                                                                         : 1
                                                                 }
@@ -334,21 +359,18 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                                     ml: 4,
                                                                     cursor: 'pointer',
                                                                     backgroundColor:
-                                                                        selectedOrg?.OrganizationNumber ===
-                                                                            sub.organisasjonsnummer
+                                                                        selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
                                                                             ? 'secondary'
                                                                             : 'background.paper',
                                                                     border:
-                                                                        selectedOrg?.OrganizationNumber ===
-                                                                            sub.organisasjonsnummer
+                                                                        selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
                                                                             ? '2px solid'
                                                                             : 'none',
                                                                     borderColor:
-                                                                        selectedOrg?.OrganizationNumber ===
-                                                                            sub.organisasjonsnummer
+                                                                        selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
                                                                             ? 'secondary'
                                                                             : 'transparent',
-                                                                    transition: 'transform 0.3s, box-shadow 0.3s',
+                                                                    transition: 'transform 0.3s, boxShadow 0.3s',
                                                                     '&:hover': {
                                                                         transform: 'translateY(-5px)',
                                                                         boxShadow: 4,
@@ -371,18 +393,14 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                             )}
                         </div>
                     )}
-
                     {selectedOrg && (
-                            <div className={`org-details ${isRoleView ? 'full-width' : ''}`}>
-                                <Typography variant="subtitle1"  gutterBottom>
-                                    Org Nr: {selectedOrg.OrganizationNumber}
-                                </Typography>
+                        <div className={`org-details ${isRoleView ? 'full-width' : ''}`}>
+                            <Typography variant="subtitle1" gutterBottom>
+                                Org Nr: {selectedOrg.OrganizationNumber}
+                            </Typography>
                             <Typography variant="h4" gutterBottom>
-                                    {selectedOrg.Name} 
-                                </Typography>
-                                
-
-
+                                {selectedOrg.Name}
+                            </Typography>
                             {!isRoleView ? (
                                 <>
                                     <div className="search-ssn">
@@ -400,7 +418,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                     <Typography variant="h6" gutterBottom>
                                         Organisasjonsoversikt
                                     </Typography>
-
                                     <TableContainer component={Paper} sx={{ mb: 4 }}>
                                         <MuiTable>
                                             <TableHead>
@@ -445,37 +462,47 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {sortContacts(filterContacts(moreInfo || [])).map((contact) => (
-                                                    <TableRow key={contact.personalContactId}>
-                                                        <TableCell>{contact.name}</TableCell>
-                                                        <TableCell>{contact.socialSecurityNumber}</TableCell>
-                                                        <TableCell>{contact.mobileNumber}</TableCell>
-                                                        <TableCell>{contact.eMailAddress}</TableCell>
-                                                        <TableCell>
-                                                            <Button
-                                                                variant="outlined"
-                                                                size="small"
-                                                                onClick={() => {
-                                                                    setSelectedContact(contact);
-                                                                    handleViewRoles(
-                                                                        contact.socialSecurityNumber,
-                                                                        selectedOrg.OrganizationNumber
-                                                                    );
-                                                                }}
-                                                            >
-                                                                Vis
-                                                            </Button>
+                                                {sortedContacts.length > 0 ? (
+                                                    sortedContacts.map((contact) => (
+                                                        <TableRow key={contact.personalContactId}>
+                                                            <TableCell>{contact.name}</TableCell>
+                                                            <TableCell>{contact.socialSecurityNumber}</TableCell>
+                                                            <TableCell>{contact.mobileNumber}</TableCell>
+                                                            <TableCell>{contact.eMailAddress}</TableCell>
+                                                            <TableCell>
+                                                                <Button
+                                                                    variant="outlined"
+                                                                    size="small"
+                                                                    onClick={() => {
+                                                                        setSelectedContact(contact);
+                                                                        handleViewRoles(
+                                                                            contact.socialSecurityNumber,
+                                                                            selectedOrg.OrganizationNumber
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    Vis
+                                                                </Button>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                ) : (
+                                                    <TableRow>
+                                                        <TableCell colSpan={5}>
+                                                            <Typography variant="body2" color="textSecondary" align="center">
+                                                                {searchQuery.trim().length >= 3
+                                                                    ? `Fant ingen resultater for '${searchQuery}'`
+                                                                    : 'Her var det tomt'}
+                                                            </Typography>
                                                         </TableCell>
                                                     </TableRow>
-                                                ))}
+                                                )}
                                             </TableBody>
                                         </MuiTable>
                                     </TableContainer>
-
                                     <Typography variant="h6" gutterBottom>
                                         ER-Roller
                                     </Typography>
-
                                     <TableContainer component={Paper} sx={{ mb: 2 }}>
                                         <MuiTable>
                                             <TableHead>
@@ -507,53 +534,40 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                     >
                                                         <Typography variant="subtitle1">Dato Endret</Typography>
                                                     </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Status</Typography>
+                                                    </TableCell>
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {rolesInfo
-                                                    ?.flatMap((roleGroup) =>
-                                                        roleGroup?.roller?.map((role: any) => ({
-                                                            ...role,
-                                                            sistEndret: roleGroup.sistEndret,
-                                                        }))
-                                                    )
-                                                    ?.sort((a, b) => {
-                                                        if (erRoleSortField === null) return 0;
-                                                        if (erRoleSortField === 'type') {
-                                                            const aType = a.type?.beskrivelse || '';
-                                                            const bType = b.type?.beskrivelse || '';
-                                                            return erRoleSortDirection === 'asc'
-                                                                ? aType.localeCompare(bType)
-                                                                : bType.localeCompare(aType);
-                                                        }
-                                                        if (erRoleSortField === 'person') {
-                                                            const aName = `${a.person?.navn?.fornavn || ''} ${a.person?.navn?.etternavn || ''
-                                                                }`.trim();
-                                                            const bName = `${b.person?.navn?.fornavn || ''} ${b.person?.navn?.etternavn || ''
-                                                                }`.trim();
-                                                            return erRoleSortDirection === 'asc'
-                                                                ? aName.localeCompare(bName)
-                                                                : bName.localeCompare(aName);
-                                                        }
-                                                        if (erRoleSortField === 'sistEndret') {
-                                                            const aDate = new Date(a.sistEndret || 0).getTime();
-                                                            const bDate = new Date(b.sistEndret || 0).getTime();
-                                                            return erRoleSortDirection === 'asc'
-                                                                ? aDate - bDate
-                                                                : bDate - aDate;
-                                                        }
-                                                        return 0;
-                                                    })
-                                                    ?.map((role, index) => (
+                                                {sortedERRoles.length > 0 ? (
+                                                    sortedERRoles.map((role, index) => (
                                                         <TableRow key={index}>
                                                             <TableCell>{role.type?.beskrivelse || ''}</TableCell>
                                                             <TableCell>
-                                                                {`${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''
-                                                                    }`.trim()}
+                                                                {`${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''}`.trim()}
                                                             </TableCell>
                                                             <TableCell>{formatDate(role.sistEndret) || ''}</TableCell>
+                                                            <TableCell>
+                                                                {(role.fratraadt || role.person?.erDoed) && (
+                                                                    <>
+                                                                        {role.fratraadt && 'Fratrådt'}
+                                                                        {role.fratraadt && role.person?.erDoed && ', '}
+                                                                        {role.person?.erDoed && 'Død'}
+                                                                    </>
+                                                                )}
+                                                            </TableCell>
                                                         </TableRow>
-                                                    ))}
+                                                    ))
+                                                ) : (
+                                                    <TableRow>
+                                                        <TableCell colSpan={4}>
+                                                            <Typography variant="body2" color="textSecondary" align="center">
+                                                                Her var det tomt
+                                                            </Typography>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )}
                                             </TableBody>
                                         </MuiTable>
                                     </TableContainer>
@@ -562,11 +576,9 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             {erRolesError}
                                         </Alert>
                                     )}
-
                                     <Typography variant="h6" gutterBottom>
                                         Felles kontaktinformasjon
                                     </Typography>
-
                                     <TableContainer component={Paper} sx={{ mb: 2 }}>
                                         <MuiTable>
                                             <TableHead>
@@ -583,17 +595,41 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                     <TableCell>
                                                         <Typography variant="subtitle1">Endret E-post</Typography>
                                                     </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Status</Typography>
+                                                    </TableCell>
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {officialContacts.map((contact, index) => (
-                                                    <TableRow key={index}>
-                                                        <TableCell>{contact.MobileNumber || '-'}</TableCell>
-                                                        <TableCell>{formatDate(contact.MobileNumberChanged)}</TableCell>
-                                                        <TableCell>{contact.EMailAddress || '-'}</TableCell>
-                                                        <TableCell>{formatDate(contact.EMailAddressChanged)}</TableCell>
+                                                {officialContacts.length > 0 ? (
+                                                    officialContacts.map((contact, index) => (
+                                                        <TableRow key={index}>
+                                                            <TableCell>{contact.MobileNumber || '-'}</TableCell>
+                                                            <TableCell>{formatDate(contact.MobileNumberChanged)}</TableCell>
+                                                            <TableCell>{contact.EMailAddress || '-'}</TableCell>
+                                                            <TableCell>{formatDate(contact.EMailAddressChanged)}</TableCell>
+                                                            <TableCell>
+                                                                {(contact.fratraadt || contact.erDoed) ? (
+                                                                    <>
+                                                                        {contact.fratraadt && 'Fratrådt'}
+                                                                        {contact.fratraadt && contact.erDoed && ', '}
+                                                                        {contact.erDoed && 'Død'}
+                                                                    </>
+                                                                ) : (
+                                                                    '-'
+                                                                )}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                ) : (
+                                                    <TableRow>
+                                                        <TableCell colSpan={5}>
+                                                            <Typography variant="body2" color="textSecondary" align="center">
+                                                                Her var det tomt
+                                                            </Typography>
+                                                        </TableCell>
                                                     </TableRow>
-                                                ))}
+                                                )}
                                             </TableBody>
                                         </MuiTable>
                                     </TableContainer>
@@ -631,12 +667,22 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {roleInfo?.map((role, index) => (
-                                                    <TableRow key={index}>
-                                                        <TableCell>{role.RoleType}</TableCell>
-                                                        <TableCell>{role.RoleName}</TableCell>
+                                                {roleInfo && roleInfo.length > 0 ? (
+                                                    roleInfo.map((role, index) => (
+                                                        <TableRow key={index}>
+                                                            <TableCell>{role.RoleType}</TableCell>
+                                                            <TableCell>{role.RoleName}</TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                ) : (
+                                                    <TableRow>
+                                                        <TableCell colSpan={2}>
+                                                            <Typography variant="body2" color="textSecondary" align="center">
+                                                                Her var det tomt
+                                                            </Typography>
+                                                        </TableCell>
                                                     </TableRow>
-                                                ))}
+                                                )}
                                             </TableBody>
                                         </MuiTable>
                                     </TableContainer>

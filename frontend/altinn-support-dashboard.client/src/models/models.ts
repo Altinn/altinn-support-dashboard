@@ -70,7 +70,17 @@ export interface ERRole {
             };
             erDoed: boolean;
         };
+        enhet?: {
+            organisasjonsnummer: string;
+            organisasjonsform: {
+                kode: string;
+                beskrivelse: string;
+            };
+            navn: string[];
+            erSlettet: boolean;
+        };
         fratraadt: boolean;
+        rekkefolge?: number;
     }[];
 }
 
