@@ -28,7 +28,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
 }) => {
     // Use these to change version number and name
 
-    const versionnumber = '2.4.3';
+    const versionnumber = '2.4.7';
 
     const versionname = 'Live';
 

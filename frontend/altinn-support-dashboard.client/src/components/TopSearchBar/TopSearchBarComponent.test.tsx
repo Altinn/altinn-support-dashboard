@@ -1,6 +1,4 @@
-// src/components/TopSearchBar/TopSearchBarComponent.test.tsx
-
-import React from 'react'; // Added this line
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { expect, describe, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
@@ -11,8 +9,9 @@ describe('SearchComponent', () => {
     it('renders the search input and label', () => {
         renderSearchComponent();
 
-        expect(screen.getByLabelText('Mobilnummer / E-post / Organisasjonsnummer:')).toBeInTheDocument();
-        expect(screen.getByRole('searchbox')).toBeInTheDocument();
+        // We use getByPlaceholderText since our TextField has a placeholder.
+        expect(screen.getByPlaceholderText('Mobilnummer / E-post / Organisasjonsnummer')).toBeInTheDocument();
+        expect(screen.getByRole('textbox')).toBeInTheDocument();
     });
 
     it('calls setQuery when input value changes', async () => {
@@ -21,7 +20,7 @@ describe('SearchComponent', () => {
 
         renderSearchComponent({ handleSearch: mockHandleSearch, mockSetQuery });
 
-        const input = screen.getByRole('searchbox');
+        const input = screen.getByRole('textbox');
         await userEvent.type(input, 'test query');
 
         expect(mockSetQuery).toHaveBeenLastCalledWith('test query');
@@ -31,6 +30,8 @@ describe('SearchComponent', () => {
 const renderSearchComponent = ({
     handleSearch = vi.fn(),
     mockSetQuery = vi.fn(),
+    handleClearSearch = vi.fn(),
+    hasSearched = false,
 } = {}) => {
     const Wrapper: React.FC = () => {
         const [query, setQuery] = React.useState('');
@@ -45,10 +46,13 @@ const renderSearchComponent = ({
                 query={query}
                 setQuery={handleSetQuery}
                 handleSearch={handleSearch}
-                isDarkMode={false} // Added isDarkMode prop
+                handleClearSearch={handleClearSearch}
+                hasSearched={hasSearched}
+                isDarkMode={false}
             />
         );
     };
 
     render(<Wrapper />);
 };
+
