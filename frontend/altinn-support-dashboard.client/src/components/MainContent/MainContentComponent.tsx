@@ -171,7 +171,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         }
     };
 
-    // Clear the search field when a new organization is selected.
+    // When a new organization is selected, clear the contact search filter.
     useEffect(() => {
         setSearchQuery('');
     }, [selectedOrg]);
@@ -243,6 +243,18 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         return 0;
     });
 
+    // Handler for clearing the contact search filter and returning to the start phase.
+    const handleClearSearch = () => {
+        setSearchQuery('');
+        // Reset sorting if needed.
+        setSortField(null);
+        setSortDirection(undefined);
+        // Optionally, clear any selected contact or role view.
+        setSelectedContact(null);
+        setIsRoleView(false);
+        setRoleViewError(null);
+    };
+
     return (
         <div className="results-section">
             {error.message ? (
@@ -290,9 +302,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                     .map((org) => (
                                         <div key={org.organizationNumber} className="org-card-container">
                                             <Paper
-                                                elevation={
-                                                    selectedOrg?.OrganizationNumber === org.organizationNumber ? 6 : 2
-                                                }
+                                                elevation={selectedOrg?.OrganizationNumber === org.organizationNumber ? 6 : 2}
                                                 sx={{
                                                     p: 2,
                                                     mb: 1,
@@ -302,13 +312,9 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                             ? 'secondary'
                                                             : 'background.paper',
                                                     border:
-                                                        selectedOrg?.OrganizationNumber === org.organizationNumber
-                                                            ? '2px solid'
-                                                            : 'none',
+                                                        selectedOrg?.OrganizationNumber === org.organizationNumber ? '2px solid' : 'none',
                                                     borderColor:
-                                                        selectedOrg?.OrganizationNumber === org.organizationNumber
-                                                            ? 'secondary'
-                                                            : 'transparent',
+                                                        selectedOrg?.OrganizationNumber === org.organizationNumber ? 'secondary' : 'transparent',
                                                     transition: 'transform 0.3s, boxShadow 0.3s',
                                                     '&:hover': {
                                                         transform: 'translateY(-5px)',
@@ -333,11 +339,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                         aria-label={`${expandedOrg === org.organizationNumber ? 'Collapse' : 'Expand'
                                                             } subunits for ${org.name}`}
                                                     >
-                                                        {expandedOrg === org.organizationNumber ? (
-                                                            <ExpandLess />
-                                                        ) : (
-                                                            <ExpandMore />
-                                                        )}
+                                                        {expandedOrg === org.organizationNumber ? <ExpandLess /> : <ExpandMore />}
                                                     </Button>
                                                 )}
                                             </Paper>
@@ -348,11 +350,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                         .map((sub) => (
                                                             <Paper
                                                                 key={sub.organisasjonsnummer}
-                                                                elevation={
-                                                                    selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
-                                                                        ? 6
-                                                                        : 1
-                                                                }
+                                                                elevation={selectedOrg?.OrganizationNumber === sub.organisasjonsnummer ? 6 : 1}
                                                                 sx={{
                                                                     p: 2,
                                                                     mb: 1,
@@ -363,27 +361,19 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                                             ? 'secondary'
                                                                             : 'background.paper',
                                                                     border:
-                                                                        selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
-                                                                            ? '2px solid'
-                                                                            : 'none',
+                                                                        selectedOrg?.OrganizationNumber === sub.organisasjonsnummer ? '2px solid' : 'none',
                                                                     borderColor:
-                                                                        selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
-                                                                            ? 'secondary'
-                                                                            : 'transparent',
+                                                                        selectedOrg?.OrganizationNumber === sub.organisasjonsnummer ? 'secondary' : 'transparent',
                                                                     transition: 'transform 0.3s, boxShadow 0.3s',
                                                                     '&:hover': {
                                                                         transform: 'translateY(-5px)',
                                                                         boxShadow: 4,
                                                                     },
                                                                 }}
-                                                                onClick={() =>
-                                                                    handleSelectOrg(sub.organisasjonsnummer, sub.navn)
-                                                                }
+                                                                onClick={() => handleSelectOrg(sub.organisasjonsnummer, sub.navn)}
                                                             >
                                                                 <Typography variant="subtitle1">{sub.navn}</Typography>
-                                                                <Typography variant="body2">
-                                                                    Org Nr: {sub.organisasjonsnummer}
-                                                                </Typography>
+                                                                <Typography variant="body2">Org Nr: {sub.organisasjonsnummer}</Typography>
                                                             </Paper>
                                                         ))}
                                                 </div>
@@ -403,7 +393,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                             </Typography>
                             {!isRoleView ? (
                                 <>
-                                    <div className="search-ssn">
+                                    <div className="search-ssn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <TextField
                                             label="Søk i kontakter"
                                             variant="outlined"
@@ -414,6 +404,11 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             placeholder="Navn / SSN / Telefon / E-post"
                                             sx={{ mb: 2 }}
                                         />
+                                        {searchQuery.trim() !== '' && (
+                                            <Button variant="outlined" onClick={handleClearSearch} sx={{ height: 'fit-content', mb: 2 }}>
+                                                Clear Search
+                                            </Button>
+                                        )}
                                     </div>
                                     <Typography variant="h6" gutterBottom>
                                         Organisasjonsoversikt
@@ -430,27 +425,21 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                         <Typography variant="subtitle1">Navn</Typography>
                                                     </TableCell>
                                                     <TableCell
-                                                        sortDirection={
-                                                            sortField === 'socialSecurityNumber' ? sortDirection : false
-                                                        }
+                                                        sortDirection={sortField === 'socialSecurityNumber' ? sortDirection : false}
                                                         onClick={() => handleSort('socialSecurityNumber')}
                                                         sx={{ cursor: 'pointer' }}
                                                     >
                                                         <Typography variant="subtitle1">Fødselsnummer</Typography>
                                                     </TableCell>
                                                     <TableCell
-                                                        sortDirection={
-                                                            sortField === 'mobileNumber' ? sortDirection : false
-                                                        }
+                                                        sortDirection={sortField === 'mobileNumber' ? sortDirection : false}
                                                         onClick={() => handleSort('mobileNumber')}
                                                         sx={{ cursor: 'pointer' }}
                                                     >
                                                         <Typography variant="subtitle1">Mobilnummer</Typography>
                                                     </TableCell>
                                                     <TableCell
-                                                        sortDirection={
-                                                            sortField === 'eMailAddress' ? sortDirection : false
-                                                        }
+                                                        sortDirection={sortField === 'eMailAddress' ? sortDirection : false}
                                                         onClick={() => handleSort('eMailAddress')}
                                                         sx={{ cursor: 'pointer' }}
                                                     >
@@ -475,10 +464,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                                     size="small"
                                                                     onClick={() => {
                                                                         setSelectedContact(contact);
-                                                                        handleViewRoles(
-                                                                            contact.socialSecurityNumber,
-                                                                            selectedOrg.OrganizationNumber
-                                                                        );
+                                                                        handleViewRoles(contact.socialSecurityNumber, selectedOrg.OrganizationNumber);
                                                                     }}
                                                                 >
                                                                     Vis
@@ -508,27 +494,21 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             <TableHead>
                                                 <TableRow>
                                                     <TableCell
-                                                        sortDirection={
-                                                            erRoleSortField === 'type' ? erRoleSortDirection : false
-                                                        }
+                                                        sortDirection={erRoleSortField === 'type' ? erRoleSortDirection : false}
                                                         onClick={() => handleERRoleSort('type')}
                                                         sx={{ cursor: 'pointer' }}
                                                     >
                                                         <Typography variant="subtitle1">Rolletype</Typography>
                                                     </TableCell>
                                                     <TableCell
-                                                        sortDirection={
-                                                            erRoleSortField === 'person' ? erRoleSortDirection : false
-                                                        }
+                                                        sortDirection={erRoleSortField === 'person' ? erRoleSortDirection : false}
                                                         onClick={() => handleERRoleSort('person')}
                                                         sx={{ cursor: 'pointer' }}
                                                     >
                                                         <Typography variant="subtitle1">Person</Typography>
                                                     </TableCell>
                                                     <TableCell
-                                                        sortDirection={
-                                                            erRoleSortField === 'sistEndret' ? erRoleSortDirection : false
-                                                        }
+                                                        sortDirection={erRoleSortField === 'sistEndret' ? erRoleSortDirection : false}
                                                         onClick={() => handleERRoleSort('sistEndret')}
                                                         sx={{ cursor: 'pointer' }}
                                                     >
