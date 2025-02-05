@@ -1,10 +1,8 @@
-
 export function getBaseUrl(environment: string): string {
     const apiHost = window.location.hostname;
     const protocol = window.location.protocol;
     return `${protocol}//${apiHost}/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
 }
-
 
 export async function authorizedFetch(url: string, options: RequestInit = {}): Promise<Response> {
     const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
@@ -21,7 +19,6 @@ export async function authorizedFetch(url: string, options: RequestInit = {}): P
     }
     return response;
 }
-
 
 export const getFormattedDateTime = (date: Date) => {
     const optionsTime: Intl.DateTimeFormatOptions = {
@@ -51,7 +48,6 @@ export function capitalizeFirstCharacter(word: string) {
 export function filterUserClaims(user: any, claimType: string) {
     return user.user_claims.find((claim: { typ: string; val: string }) => claim.typ === claimType);
 }
-
 
 export async function fetchUserDetails(): Promise<{ name: string; email: string }> {
     try {
