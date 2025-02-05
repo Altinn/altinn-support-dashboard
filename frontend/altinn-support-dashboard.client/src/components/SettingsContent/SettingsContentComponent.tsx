@@ -27,7 +27,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
     setIsDarkMode,
 }) => {
     // Use these to change version number and name
-    const versionnumber = '2.4.0';
+    const versionnumber = '2.4.3';
     const versionname = 'Live';
 
     // State variables for API status of both environments
