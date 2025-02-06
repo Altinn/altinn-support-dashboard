@@ -29,8 +29,9 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
     setIsDarkMode,
 }) => {
     const versionnumber = '2.4.7';
+    const envName = (typeof process !== 'undefined' && process.env && process.env.REACT_APP_ENV_NAME) || '';
     let versionname;
-    switch (process.env.REACT_APP_ENV_NAME) {
+    switch (envName) {
         case 'production':
             versionname = 'Produksjonsmiljø';
             break;
@@ -38,7 +39,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
             versionname = 'Testmiljø';
             break;
         default:
-            versionname = 'Utviklingsmiljø';
+            versionname = 'Lokalt utviklingmiljø';
     }
     const [apiStatusProd, setApiStatusProd] = useState<'connected' | 'disconnected' | 'loading'>('loading');
     const [apiStatusTT02, setApiStatusTT02] = useState<'connected' | 'disconnected' | 'loading'>('loading');
