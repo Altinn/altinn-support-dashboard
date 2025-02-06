@@ -1,3 +1,4 @@
+// MainContentComponent.tsx
 import React, { useState, useMemo, useEffect } from 'react';
 import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
 import {
@@ -171,7 +172,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         }
     };
 
-    // When a new organization is selected, clear the contact search filter.
     useEffect(() => {
         setSearchQuery('');
     }, [selectedOrg]);
@@ -207,11 +207,9 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         });
     };
 
-    // Compute filtered and sorted contacts for the organisasjonsoversikt table.
     const filteredContacts = filterContacts(moreInfo || []);
     const sortedContacts = sortContacts(filteredContacts);
 
-    // Compute flattened and sorted ER-roller.
     const flatERRoles =
         rolesInfo?.flatMap((roleGroup) =>
             roleGroup?.roller?.map((role: any) => ({
@@ -243,13 +241,10 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         return 0;
     });
 
-    // Handler for clearing the contact search filter and returning to the start phase.
     const handleClearSearch = () => {
         setSearchQuery('');
-        // Reset sorting if needed.
         setSortField(null);
         setSortDirection(undefined);
-        // Optionally, clear any selected contact or role view.
         setSelectedContact(null);
         setIsRoleView(false);
         setRoleViewError(null);

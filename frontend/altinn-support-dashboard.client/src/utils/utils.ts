@@ -1,7 +1,13 @@
+// utils/utils.ts
 export function getBaseUrl(environment: string): string {
     const apiHost = window.location.hostname;
     const protocol = window.location.protocol;
-    return `${protocol}//${apiHost}/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
+    const localDev =
+        typeof process !== 'undefined' && process.env.REACT_APP_LOCAL_DEV
+            ? process.env.REACT_APP_LOCAL_DEV === 'true' || process.env.REACT_APP_LOCAL_DEV === '1'
+            : window.location.hostname === 'localhost';
+    const portSegment = localDev ? ':7174' : '';
+    return `${protocol}//${apiHost}${portSegment}/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
 }
 
 export async function authorizedFetch(url: string, options: RequestInit = {}): Promise<Response> {
@@ -11,7 +17,6 @@ export async function authorizedFetch(url: string, options: RequestInit = {}): P
         Authorization: `Basic ${token}`,
         'Content-Type': 'application/json',
     };
-
     const response = await fetch(url, { ...options, headers });
     if (!response.ok) {
         const errorText = await response.text();
@@ -27,16 +32,12 @@ export const getFormattedDateTime = (date: Date) => {
         second: '2-digit',
     };
     const formattedTime = date.toLocaleTimeString('no-NO', optionsTime);
-
     const weekday = date.toLocaleDateString('no-NO', { weekday: 'long' });
     const day = date.getDate();
     const month = date.toLocaleDateString('no-NO', { month: 'long' });
     const year = date.getFullYear();
-
-    // Capitalize weekday and month
     const capitalizedWeekday = capitalizeFirstCharacter(weekday);
     const capitalizedMonth = capitalizeFirstCharacter(month);
-
     const formattedDate = `${capitalizedWeekday}, ${day}. ${capitalizedMonth} ${year}`;
     return { formattedTime, formattedDate };
 };
@@ -53,18 +54,15 @@ export async function fetchUserDetails(): Promise<{ name: string; email: string 
     try {
         const response = await fetch('/.auth/me');
         const data = await response.json();
-
         if (Array.isArray(data) && data.length > 0) {
             const user = data[0];
             const nameClaim = filterUserClaims(user, 'name');
             const emailClaim = filterUserClaims(user, 'preferred_username');
-
             return {
                 name: nameClaim ? nameClaim.val : 'Ukjent Bruker',
                 email: emailClaim ? emailClaim.val : 'Ingen e-post funnet',
             };
         }
-
         return { name: 'Ukjent Bruker', email: 'Ingen e-post funnet' };
     } catch (error) {
         console.error('Error fetching user info:', error);
