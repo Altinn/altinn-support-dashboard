@@ -1,3 +1,4 @@
+// App.tsx
 import React from 'react';
 import './App.css';
 import Sidebar from '../components/Sidebar/SidebarComponent';
@@ -36,10 +37,8 @@ const App: React.FC = () => {
         handleExpandToggle,
     } = useOrganizationSearch(environment);
 
-    // Define a clear search handler that resets the query
     const handleClearSearch = () => {
         setQuery('');
-        // Optionally, add any additional reset logic here.
     };
 
     const theme = React.useMemo(

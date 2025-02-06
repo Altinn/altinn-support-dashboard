@@ -1,3 +1,4 @@
+// hooks/hooks.ts
 import { useState, useEffect, useCallback } from 'react';
 import { Organization, PersonalContact, Subunit, ERRole, Role } from '../models/models';
 import { getBaseUrl, authorizedFetch, getFormattedDateTime, fetchUserDetails } from '../utils/utils';
@@ -163,14 +164,12 @@ export function useOrganizationSearch(environment: string) {
     };
 }
 
-// Modified UseManualRoleSearch: Clear previous error and roles before a new search so that if an error occurs, the table is hidden.
 export const UseManualRoleSearch = (baseUrl: string) => {
     const [roles, setRoles] = useState<Role[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const fetchRoles = async (rollehaver: string, rollegiver: string): Promise<void> => {
-        // Clear any previous error and roles on new search.
         setError(null);
         setRoles([]);
         setIsLoading(true);
@@ -198,7 +197,7 @@ export const UseManualRoleSearch = (baseUrl: string) => {
             }
         } catch (error: any) {
             setError(error.message || 'Noe gikk galt ved henting av roller.');
-            setRoles([]); // Clear roles to hide table on error.
+            setRoles([]);
         } finally {
             setIsLoading(false);
         }

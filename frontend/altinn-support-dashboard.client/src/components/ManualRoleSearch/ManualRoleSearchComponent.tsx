@@ -1,4 +1,5 @@
-﻿import React, { useState } from 'react';
+﻿// ManualRoleSearchComponent.tsx
+import React, { useState } from 'react';
 import { UseManualRoleSearch } from '../../hooks/hooks';
 import { Role } from '../../models/models';
 import {
@@ -25,7 +26,6 @@ interface ManualRoleSearchComponentProps {
 }
 
 const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({ baseUrl }) => {
-    // Persist input fields using localStorage.
     const [rollehaver, setRollehaver] = useState<string>(localStorage.getItem('rollehaver') || '');
     const [rollegiver, setRollegiver] = useState<string>(localStorage.getItem('rollegiver') || '');
     const [hasSearched, setHasSearched] = useState(false);
@@ -33,7 +33,6 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({ b
 
     const handleSearch = async () => {
         setHasSearched(true);
-        // Remove spaces to combine input parts.
         const cleanRollehaver = rollehaver.replace(/\s/g, '');
         const cleanRollegiver = rollegiver.replace(/\s/g, '');
         await fetchRoles(cleanRollehaver, cleanRollegiver);
@@ -53,7 +52,6 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({ b
             <Typography variant="h6" gutterBottom>
                 Manuelt Rollesøk
             </Typography>
-
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 2 }}>
                 <TextField
                     label="Rollehaver"
@@ -106,7 +104,6 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({ b
                     Søk
                 </Button>
             </Box>
-
             {(hasSearched || rollehaver.trim() !== '' || rollegiver.trim() !== '') && (
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
                     <Button variant="outlined" onClick={handleClearSearch}>
@@ -114,21 +111,17 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({ b
                     </Button>
                 </Box>
             )}
-
             {error && (
                 <Alert severity="error" sx={{ mb: 2 }}>
                     {error}
                 </Alert>
             )}
-
             {isLoading && <Typography variant="body1">Laster roller...</Typography>}
-
             {!isLoading && hasSearched && roles.length === 0 && !error && (
                 <Alert severity="info" sx={{ mb: 2 }}>
                     Ingen roller funnet.
                 </Alert>
             )}
-
             {roles.length > 0 && !error && <RoleTable roles={roles} />}
         </Box>
     );

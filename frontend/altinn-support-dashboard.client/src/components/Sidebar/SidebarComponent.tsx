@@ -1,12 +1,10 @@
-﻿// src/components/Sidebar/SidebarComponent.tsx
-
+﻿// SidebarComponent.tsx
 import React from 'react';
 import { Box, Typography, Button, Menu, MenuItem, Divider } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
-import { useCurrentDateTime } from '../../hooks/hooks'
-
+import { useCurrentDateTime } from '../../hooks/hooks';
 import logo from '../../assets/logo.png';
 
 interface SidebarProps {
@@ -45,8 +43,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         handleMenuClose();
     };
 
-
-
     return (
         <Box
             sx={{
@@ -66,7 +62,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <Box sx={{ textAlign: 'center', mb: 3 }}>
                     <img src={logo} alt="Logo" width="150px" />
                 </Box>
-
                 <nav className="nav">
                     <NavLink
                         to="/dashboard"
@@ -100,31 +95,28 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </NavLink>
                 </nav>
             </Box>
-
             <Box>
                 <Divider sx={{ bgcolor: isDarkMode ? 'grey.700' : 'grey.500', my: 2 }} />
                 <Box sx={{ textAlign: 'center', mb: 2 }}>
                     <Typography variant="h6">{formattedTime}</Typography>
                     <Typography variant="body2">{formattedDate}</Typography>
                 </Box>
-
                 <Box sx={{ textAlign: 'center', mb: 2 }}>
                     <Button
                         variant="outlined"
                         onClick={handleMenuClick}
                         endIcon={<ExpandMore />}
                         sx={{
-                            // Change the border color based on the selected environment
                             borderColor:
                                 environment === 'TT02'
-                                    ? theme.palette.warning.main // Orange color for TT02
-                                    : theme.palette.secondary.main, // Blue color for PROD
+                                    ? theme.palette.warning.main
+                                    : theme.palette.secondary.main,
                             color: isDarkMode ? theme.palette.text.primary : '#fff',
                             '&:hover': {
                                 borderColor:
                                     environment === 'TT02'
-                                        ? theme.palette.warning.light // Lighter orange on hover
-                                        : theme.palette.secondary.light, // Lighter blue on hover
+                                        ? theme.palette.warning.light
+                                        : theme.palette.secondary.light,
                                 backgroundColor: isDarkMode ? theme.palette.action.hover : 'secondary.dark',
                             },
                         }}
@@ -148,7 +140,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                         <MenuItem onClick={() => handleEnvironmentChange('TT02')}>TT02</MenuItem>
                     </Menu>
                 </Box>
-
                 <Box sx={{ textAlign: 'center' }}>
                     <Typography variant="subtitle1">{userName}</Typography>
                     <Typography variant="body2">{userEmail}</Typography>
@@ -159,4 +150,3 @@ const Sidebar: React.FC<SidebarProps> = ({
 };
 
 export default Sidebar;
-    
