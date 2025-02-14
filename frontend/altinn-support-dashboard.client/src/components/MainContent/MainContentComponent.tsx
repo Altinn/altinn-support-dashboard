@@ -14,6 +14,7 @@ import {
     TableRow,
     Paper,
     TextField,
+    Box
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
 
@@ -406,7 +407,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                         )}
                                     </div>
                                     <Typography variant="h6" gutterBottom>
-                                        Organisasjonsoversikt
+                                        Din kontaktinformasjon
                                     </Typography>
                                     <TableContainer component={Paper} sx={{ mb: 4 }}>
                                         <MuiTable>
@@ -481,8 +482,71 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             </TableBody>
                                         </MuiTable>
                                     </TableContainer>
+                                    <Box sx={{ mb: 4 }}>
+                                        <Typography variant="h6" gutterBottom>
+                                            Revisor og Regnskapsfører
+                                        </Typography>
+                                        <TableContainer component={Paper}>
+                                            <MuiTable>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle1">Rolle</Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle1">Navn</Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle1">Status</Typography>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {sortedERRoles.filter(roleGroup => 
+                                                        roleGroup.type?.kode === 'REVI' || 
+                                                        roleGroup.type?.kode === 'REGN'
+                                                    ).length > 0 ? (
+                                                        sortedERRoles
+                                                            .filter(roleGroup => 
+                                                                roleGroup.type?.kode === 'REVI' || 
+                                                                roleGroup.type?.kode === 'REGN'
+                                                            )
+                                                            .flatMap(roleGroup => 
+                                                                roleGroup.roller.map((role, roleIndex) => (
+                                                                    <TableRow key={`${roleGroup.type.kode}-${roleIndex}`}>
+                                                                        <TableCell>{role.type?.beskrivelse || ''}</TableCell>
+                                                                        <TableCell>
+                                                                            {role.person ? 
+                                                                                `${role.person.navn?.fornavn || ''} ${role.person.navn?.etternavn || ''}`.trim() :
+                                                                                role.enhet ? role.enhet.navn[0] : ''}
+                                                                        </TableCell>
+                                                                        <TableCell>
+                                                                            {(role.fratraadt || (role.person && role.person.erDoed)) && (
+                                                                                <>
+                                                                                    {role.fratraadt && 'Fratrådt'}
+                                                                                    {role.fratraadt && role.person?.erDoed && ', '}
+                                                                                    {role.person?.erDoed && 'Død'}
+                                                                                </>
+                                                                            )}
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                ))
+                                                            )
+                                                    ) : (
+                                                        <TableRow>
+                                                            <TableCell colSpan={3}>
+                                                                <Typography variant="body2" color="textSecondary" align="center">
+                                                                    Ingen revisor eller regnskapsfører registrert
+                                                                </Typography>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    )}
+                                                </TableBody>
+                                            </MuiTable>
+                                        </TableContainer>
+                                    </Box>
                                     <Typography variant="h6" gutterBottom>
-                                        ER-Roller
+                                        Varslingsadresser for virksomheten
                                     </Typography>
                                     <TableContainer component={Paper} sx={{ mb: 2 }}>
                                         <MuiTable>
@@ -516,24 +580,28 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             </TableHead>
                                             <TableBody>
                                                 {sortedERRoles.length > 0 ? (
-                                                    sortedERRoles.map((role, index) => (
-                                                        <TableRow key={index}>
-                                                            <TableCell>{role.type?.beskrivelse || ''}</TableCell>
-                                                            <TableCell>
-                                                                {`${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''}`.trim()}
-                                                            </TableCell>
-                                                            <TableCell>{formatDate(role.sistEndret) || ''}</TableCell>
-                                                            <TableCell>
-                                                                {(role.fratraadt || role.person?.erDoed) && (
-                                                                    <>
-                                                                        {role.fratraadt && 'Fratrådt'}
-                                                                        {role.fratraadt && role.person?.erDoed && ', '}
-                                                                        {role.person?.erDoed && 'Død'}
-                                                                    </>
-                                                                )}
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))
+                                                    sortedERRoles.flatMap((roleGroup) => 
+                                                        roleGroup.roller.map((role, roleIndex) => (
+                                                            <TableRow key={`${roleGroup.type.kode}-${roleIndex}`}>
+                                                                <TableCell>{role.type?.beskrivelse || ''}</TableCell>
+                                                                <TableCell>
+                                                                    {role.person ? 
+                                                                        `${role.person.navn?.fornavn || ''} ${role.person.navn?.etternavn || ''}`.trim() :
+                                                                        role.enhet ? role.enhet.navn[0] : ''}
+                                                                </TableCell>
+                                                                <TableCell>{formatDate(roleGroup.sistEndret) || ''}</TableCell>
+                                                                <TableCell>
+                                                                    {(role.fratraadt || (role.person && role.person.erDoed)) && (
+                                                                        <>
+                                                                            {role.fratraadt && 'Fratrådt'}
+                                                                            {role.fratraadt && role.person?.erDoed && ', '}
+                                                                            {role.person?.erDoed && 'Død'}
+                                                                        </>
+                                                                    )}
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        ))
+                                                    )
                                                 ) : (
                                                     <TableRow>
                                                         <TableCell colSpan={4}>
