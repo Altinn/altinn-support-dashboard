@@ -477,7 +477,13 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                             <Typography variant="subtitle1">Rolle</Typography>
                                                         </TableCell>
                                                         <TableCell>
-                                                            <Typography variant="subtitle1">Navn</Typography>
+                                                            <Typography variant="subtitle1">Virksomhet</Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle1">Org.nummer</Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle1">Sist endret</Typography>
                                                         </TableCell>
                                                         <TableCell>
                                                             <Typography variant="subtitle1">Status</Typography>
@@ -485,39 +491,33 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
-                                                    {sortedERRoles?.rollegrupper?.filter(roleGroup => 
-                                                        roleGroup.type?.kode === 'REVI' || 
-                                                        roleGroup.type?.kode === 'REGN'
-                                                    ).length > 0 ? (
-                                                        sortedERRoles.rollegrupper
-                                                            .filter(roleGroup => 
-                                                                roleGroup.type?.kode === 'REVI' || 
-                                                                roleGroup.type?.kode === 'REGN'
-                                                            )
-                                                            .flatMap(roleGroup => 
-                                                                roleGroup.roller.map((role, roleIndex) => (
-                                                                    <TableRow key={`${roleGroup.type.kode}-${roleIndex}`}>
-                                                                        <TableCell>{role.type?.beskrivelse || ''}</TableCell>
-                                                                        <TableCell>
-                                                                            {role.person ? 
-                                                                                `${role.person.navn?.fornavn || ''} ${role.person.navn?.etternavn || ''}`.trim() :
-                                                                                role.enhet ? role.enhet.navn[0] : ''}
-                                                                        </TableCell>
-                                                                        <TableCell>
-                                                                            {(role.fratraadt || (role.person && role.person.erDoed)) && (
-                                                                                <>
-                                                                                    {role.fratraadt && 'Fratrådt'}
-                                                                                    {role.fratraadt && role.person?.erDoed && ', '}
-                                                                                    {role.person?.erDoed && 'Død'}
-                                                                                </>
-                                                                            )}
-                                                                        </TableCell>
-                                                                    </TableRow>
-                                                                ))
-                                                            )
-                                                    ) : (
+                                                    {rolesInfo?.rollegrupper
+                                                        ?.filter(roleGroup => 
+                                                            roleGroup.type?.kode === 'REVI' || 
+                                                            roleGroup.type?.kode === 'REGN'
+                                                        )
+                                                        .flatMap(roleGroup => 
+                                                            roleGroup.roller.map((role, roleIndex) => (
+                                                                <TableRow key={`${roleGroup.type.kode}-${roleIndex}`}>
+                                                                    <TableCell>{role.type?.beskrivelse || ''}</TableCell>
+                                                                    <TableCell>
+                                                                        {role.enhet?.navn[0] || ''}
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        {role.enhet?.organisasjonsnummer || ''}
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        {formatDate(roleGroup.sistEndret) || ''}
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        {role.enhet?.erSlettet ? 'Slettet' : 
+                                                                         role.fratraadt ? 'Fratrådt' : 'Aktiv'}
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))
+                                                        ) || (
                                                         <TableRow>
-                                                            <TableCell colSpan={3}>
+                                                            <TableCell colSpan={5}>
                                                                 <Typography variant="body2" color="textSecondary" align="center">
                                                                     Ingen revisor eller regnskapsfører registrert
                                                                 </Typography>
@@ -528,6 +528,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             </MuiTable>
                                         </TableContainer>
                                     </Box>
+
                                     <Typography variant="h6" gutterBottom>
                                         Varslingsadresser for virksomheten
                                     </Typography>
@@ -535,26 +536,17 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                         <MuiTable>
                                             <TableHead>
                                                 <TableRow>
-                                                    <TableCell
-                                                        sortDirection={erRoleSortField === 'type' ? erRoleSortDirection : false}
-                                                        onClick={() => handleERRoleSort('type')}
-                                                        sx={{ cursor: 'pointer' }}
-                                                    >
-                                                        <Typography variant="subtitle1">Rolletype</Typography>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Rolle</Typography>
                                                     </TableCell>
-                                                    <TableCell
-                                                        sortDirection={erRoleSortField === 'person' ? erRoleSortDirection : false}
-                                                        onClick={() => handleERRoleSort('person')}
-                                                        sx={{ cursor: 'pointer' }}
-                                                    >
-                                                        <Typography variant="subtitle1">Person</Typography>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Navn</Typography>
                                                     </TableCell>
-                                                    <TableCell
-                                                        sortDirection={erRoleSortField === 'sistEndret' ? erRoleSortDirection : false}
-                                                        onClick={() => handleERRoleSort('sistEndret')}
-                                                        sx={{ cursor: 'pointer' }}
-                                                    >
-                                                        <Typography variant="subtitle1">Dato Endret</Typography>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Fødselsdato</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Sist endret</Typography>
                                                     </TableCell>
                                                     <TableCell>
                                                         <Typography variant="subtitle1">Status</Typography>
@@ -562,19 +554,26 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {sortedERRoles?.rollegrupper?.length > 0 ? (
-                                                    sortedERRoles.rollegrupper.flatMap((roleGroup) => 
+                                                {rolesInfo?.rollegrupper
+                                                    ?.filter(roleGroup => 
+                                                        roleGroup.type?.kode === 'DAGL' || 
+                                                        roleGroup.type?.kode === 'KONT'
+                                                    )
+                                                    .flatMap(roleGroup => 
                                                         roleGroup.roller.map((role, roleIndex) => (
                                                             <TableRow key={`${roleGroup.type.kode}-${roleIndex}`}>
                                                                 <TableCell>{role.type?.beskrivelse || ''}</TableCell>
                                                                 <TableCell>
                                                                     {role.person ? 
                                                                         `${role.person.navn?.fornavn || ''} ${role.person.navn?.etternavn || ''}`.trim() :
-                                                                        role.enhet ? role.enhet.navn[0] : ''}
+                                                                        ''}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {role.person?.fodselsdato ? formatDate(role.person.fodselsdato) : ''}
                                                                 </TableCell>
                                                                 <TableCell>{formatDate(roleGroup.sistEndret) || ''}</TableCell>
                                                                 <TableCell>
-                                                                    {(role.fratraadt || (role.person && role.person.erDoed)) && (
+                                                                    {(role.fratraadt || role.person?.erDoed) && (
                                                                         <>
                                                                             {role.fratraadt && 'Fratrådt'}
                                                                             {role.fratraadt && role.person?.erDoed && ', '}
@@ -584,12 +583,11 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                                 </TableCell>
                                                             </TableRow>
                                                         ))
-                                                    )
-                                                ) : (
+                                                    ) || (
                                                     <TableRow>
-                                                        <TableCell colSpan={4}>
+                                                        <TableCell colSpan={5}>
                                                             <Typography variant="body2" color="textSecondary" align="center">
-                                                                Her var det tomt
+                                                                Ingen kontaktpersoner registrert
                                                             </Typography>
                                                         </TableCell>
                                                     </TableRow>
@@ -597,11 +595,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             </TableBody>
                                         </MuiTable>
                                     </TableContainer>
-                                    {erRolesError && (
-                                        <Alert severity="error" sx={{ mt: 2 }}>
-                                            {erRolesError}
-                                        </Alert>
-                                    )}
                                     <Typography variant="h6" gutterBottom>
                                         Felles kontaktinformasjon
                                     </Typography>
