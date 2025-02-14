@@ -51,7 +51,7 @@ export interface Subunit {
     overordnetEnhet: string;
 }
 
-export interface ERRole {
+export interface ERRoleGroup {
     type: {
         kode: string;
         beskrivelse: string;
@@ -62,7 +62,7 @@ export interface ERRole {
             kode: string;
             beskrivelse: string;
         };
-        person: {
+        person?: {
             fodselsdato: string;
             navn: {
                 fornavn: string;
@@ -83,6 +83,12 @@ export interface ERRole {
         fratraadt: boolean;
         rekkefolge?: number;
     }[];
+}
+
+export interface ERRole {
+    rollegrupper: ERRoleGroup[];
+    links: any;
+    apiRoller: any;
 }
 
 export interface Role {

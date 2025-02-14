@@ -25,7 +25,7 @@ interface MainContentProps {
     subUnits: Subunit[];
     selectedOrg: { Name: string; OrganizationNumber: string } | null;
     moreInfo: PersonalContact[];
-    rolesInfo: ERRole[];
+    rolesInfo: ERRole;
     expandedOrg: string | null;
     handleSelectOrg: (organizationNumber: string, name: string) => void;
     handleExpandToggle: (orgNumber: string) => void;
@@ -68,8 +68,8 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState<keyof PersonalContact | null>(null);
     const [sortDirection, setSortDirection] = useState<SortDirection>(undefined);
-    const [erRoleSortField, setERRoleSortField] = useState<'type' | 'person' | 'sistEndret' | null>(null);
-    const [erRoleSortDirection, setERRoleSortDirection] = useState<SortDirection>(undefined);
+    const [erRoleSortField, setERRoleSortField] = useState<string>('type');
+    const [erRoleSortDirection, setERRoleSortDirection] = useState<'asc' | 'desc'>('asc');
     const [roleViewError, setRoleViewError] = useState<string | null>(null);
     const [officialContacts, setOfficialContacts] = useState<OfficialContact[]>([]);
     const [officialContactsError, setOfficialContactsError] = useState<string | null>(null);
@@ -157,7 +157,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         }
     };
 
-    const handleERRoleSort = (field: 'type' | 'person' | 'sistEndret') => {
+    const handleERRoleSort = (field: string) => {
         if (erRoleSortField === field) {
             setERRoleSortDirection(
                 erRoleSortDirection === 'asc' ? 'desc' : erRoleSortDirection === 'desc' ? undefined : 'asc'
@@ -212,35 +212,18 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     const sortedContacts = sortContacts(filteredContacts);
 
     const flatERRoles =
-        rolesInfo?.flatMap((roleGroup) =>
-            roleGroup?.roller?.map((role: any) => ({
+        rolesInfo?.rollegrupper?.flatMap((roleGroup) =>
+            roleGroup?.roller?.map((role) => ({
                 ...role,
                 sistEndret: roleGroup.sistEndret,
+                groupType: roleGroup.type,
             }))
         ) || [];
-    const sortedERRoles = [...flatERRoles].sort((a, b) => {
-        if (erRoleSortField === null) return 0;
-        if (erRoleSortField === 'type') {
-            const aType = a.type?.beskrivelse || '';
-            const bType = b.type?.beskrivelse || '';
-            return erRoleSortDirection === 'asc'
-                ? aType.localeCompare(bType)
-                : bType.localeCompare(aType);
-        }
-        if (erRoleSortField === 'person') {
-            const aName = `${a.person?.navn?.fornavn || ''} ${a.person?.navn?.etternavn || ''}`.trim();
-            const bName = `${b.person?.navn?.fornavn || ''} ${b.person?.navn?.etternavn || ''}`.trim();
-            return erRoleSortDirection === 'asc'
-                ? aName.localeCompare(bName)
-                : bName.localeCompare(aName);
-        }
-        if (erRoleSortField === 'sistEndret') {
-            const aDate = new Date(a.sistEndret || 0).getTime();
-            const bDate = new Date(b.sistEndret || 0).getTime();
-            return erRoleSortDirection === 'asc' ? aDate - bDate : bDate - aDate;
-        }
-        return 0;
-    });
+
+    const sortedERRoles = useMemo(() => {
+        if (!rolesInfo?.rollegrupper) return null;
+        return rolesInfo;
+    }, [rolesInfo]);
 
     const handleClearSearch = () => {
         setSearchQuery('');
@@ -502,11 +485,11 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
-                                                    {sortedERRoles.filter(roleGroup => 
+                                                    {sortedERRoles?.rollegrupper?.filter(roleGroup => 
                                                         roleGroup.type?.kode === 'REVI' || 
                                                         roleGroup.type?.kode === 'REGN'
                                                     ).length > 0 ? (
-                                                        sortedERRoles
+                                                        sortedERRoles.rollegrupper
                                                             .filter(roleGroup => 
                                                                 roleGroup.type?.kode === 'REVI' || 
                                                                 roleGroup.type?.kode === 'REGN'
@@ -579,8 +562,8 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {sortedERRoles.length > 0 ? (
-                                                    sortedERRoles.flatMap((roleGroup) => 
+                                                {sortedERRoles?.rollegrupper?.length > 0 ? (
+                                                    sortedERRoles.rollegrupper.flatMap((roleGroup) => 
                                                         roleGroup.roller.map((role, roleIndex) => (
                                                             <TableRow key={`${roleGroup.type.kode}-${roleIndex}`}>
                                                                 <TableCell>{role.type?.beskrivelse || ''}</TableCell>
