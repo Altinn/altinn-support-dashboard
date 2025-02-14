@@ -6,6 +6,7 @@ import { useTheme } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
 import { useCurrentDateTime } from '../../hooks/hooks';
 import logo from '../../assets/logo.png';
+import whiteLogo from '/asd_128_white.png';
 
 interface SidebarProps {
     environment: string;
@@ -28,11 +29,44 @@ const Sidebar: React.FC<SidebarProps> = ({
     const { formattedDate, formattedTime } = useCurrentDateTime();
     const [isCollapsed, setIsCollapsed] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [isDragging, setIsDragging] = React.useState(false);
+    const [dragStartX, setDragStartX] = React.useState(0);
     const open = Boolean(anchorEl);
 
     const handleCollapse = () => {
         setIsCollapsed(!isCollapsed);
     };
+
+    const handleDragStart = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+        setDragStartX(e.clientX);
+    };
+
+    const handleDragMove = (e: MouseEvent) => {
+        if (!isDragging) return;
+        
+        const dragDistance = e.clientX - dragStartX;
+        if (Math.abs(dragDistance) > 50) { // Threshold for triggering expand/collapse
+            setIsCollapsed(dragDistance < 0);
+            setIsDragging(false);
+        }
+    };
+
+    const handleDragEnd = () => {
+        setIsDragging(false);
+    };
+
+    React.useEffect(() => {
+        if (isDragging) {
+            window.addEventListener('mousemove', handleDragMove);
+            window.addEventListener('mouseup', handleDragEnd);
+        }
+        return () => {
+            window.removeEventListener('mousemove', handleDragMove);
+            window.removeEventListener('mouseup', handleDragEnd);
+        };
+    }, [isDragging, dragStartX]);
 
     const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -61,12 +95,36 @@ const Sidebar: React.FC<SidebarProps> = ({
                 boxShadow: 3,
                 height: '100vh',
                 transition: 'width 0.3s ease, min-width 0.3s ease',
+                position: 'relative',
             }}
         >
+            <Box
+                onMouseDown={handleDragStart}
+                sx={{
+                    position: 'absolute',
+                    right: -6,
+                    top: '50%',
+                    transform: `translateY(-50%) ${isDragging ? 'scale(1.2)' : ''}`,
+                    width: 12,
+                    height: 12,
+                    borderRadius: '50%',
+                    bgcolor: isDarkMode ? theme.palette.primary.main : '#fff',
+                    cursor: 'ew-resize',
+                    border: isDarkMode ? `2px solid ${theme.palette.background.default}` : '2px solid #004a70',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                        transform: 'translateY(-50%) scale(1.2)',
+                        boxShadow: '0 0 8px rgba(0,0,0,0.2)',
+                    },
+                    ...(isDragging && {
+                        boxShadow: '0 0 12px rgba(0,0,0,0.3)',
+                    }),
+                }}
+            />
             <Box>
                 <Box sx={{ textAlign: 'center', mb: 3 }}>
                     <img 
-                        src={logo} 
+                        src={isCollapsed ? whiteLogo : logo} 
                         alt="Logo" 
                         style={{
                             width: isCollapsed ? '40px' : '150px',
