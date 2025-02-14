@@ -1,7 +1,7 @@
 // SidebarComponent.tsx
 import React from 'react';
-import { Box, Typography, Button, Menu, MenuItem, Divider, IconButton, Tooltip } from '@mui/material';
-import { ExpandMore, Menu as MenuIcon, Dashboard, Search, Settings, ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { Box, Typography, Button, Menu, MenuItem, Divider, Tooltip } from '@mui/material';
+import { ExpandMore, Dashboard, Search, Settings, ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
 import { useCurrentDateTime } from '../../hooks/hooks';
@@ -136,14 +136,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <NavLink
                         to="/dashboard"
                         className={({ isActive }) => `nav-button ${isActive ? 'selected' : ''}`}
-                        style={({ isActive }) => ({
+                        style={{
                             textDecoration: 'none',
                             position: 'relative',
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
                             margin: isCollapsed ? '0 0 10px 0' : undefined
-                        })}
+                        }}
                     >
                         {!isCollapsed ? (
                             'Oppslag'
@@ -156,14 +156,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <NavLink
                         to="/manualrolesearch"
                         className={({ isActive }) => `nav-button ${isActive ? 'selected' : ''}`}
-                        style={({ isActive }) => ({
+                        style={{
                             textDecoration: 'none',
                             position: 'relative',
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
                             margin: isCollapsed ? '0 0 10px 0' : undefined
-                        })}
+                        }}
                     >
                         {!isCollapsed ? (
                             'Manuelt Rollesøk'
@@ -176,14 +176,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <NavLink
                         to="/settings"
                         className={({ isActive }) => `nav-button ${isActive ? 'selected' : ''}`}
-                        style={({ isActive }) => ({
+                        style={{
                             textDecoration: 'none',
                             position: 'relative',
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
                             margin: isCollapsed ? '0 0 10px 0' : undefined
-                        })}
+                        }}
                     >
                         {!isCollapsed ? (
                             'Innstillinger'
