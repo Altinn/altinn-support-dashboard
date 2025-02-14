@@ -406,7 +406,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                         )}
                                     </div>
                                     <Typography variant="h6" gutterBottom>
-                                        Organisasjonsoversikt
+                                        Din kontaktinformasjon
                                     </Typography>
                                     <TableContainer component={Paper} sx={{ mb: 4 }}>
                                         <MuiTable>
@@ -482,7 +482,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                         </MuiTable>
                                     </TableContainer>
                                     <Typography variant="h6" gutterBottom>
-                                        ER-Roller
+                                        Varslingsadresser for virksomheten
                                     </Typography>
                                     <TableContainer component={Paper} sx={{ mb: 2 }}>
                                         <MuiTable>
@@ -500,7 +500,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                         onClick={() => handleERRoleSort('person')}
                                                         sx={{ cursor: 'pointer' }}
                                                     >
-                                                        <Typography variant="subtitle1">Person</Typography>
+                                                        <Typography variant="subtitle1">Person/Virksomhet</Typography>
                                                     </TableCell>
                                                     <TableCell
                                                         sortDirection={erRoleSortField === 'sistEndret' ? erRoleSortDirection : false}
@@ -520,17 +520,19 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                         <TableRow key={index}>
                                                             <TableCell>{role.type?.beskrivelse || ''}</TableCell>
                                                             <TableCell>
-                                                                {`${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''}`.trim()}
+                                                                {role.person ? 
+                                                                    `${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''}`.trim()
+                                                                : role.enhet ? 
+                                                                    `${role.enhet.navn?.[0] || ''} (${role.enhet.organisasjonsnummer})`
+                                                                : ''}
                                                             </TableCell>
-                                                            <TableCell>{formatDate(role.sistEndret) || ''}</TableCell>
                                                             <TableCell>
-                                                                {(role.fratraadt || role.person?.erDoed) && (
-                                                                    <>
-                                                                        {role.fratraadt && 'Fratrådt'}
-                                                                        {role.fratraadt && role.person?.erDoed && ', '}
-                                                                        {role.person?.erDoed && 'Død'}
-                                                                    </>
-                                                                )}
+                                                                {role.sistEndret ? formatDate(role.sistEndret) : ''}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {role.fratraadt ? 'Fratrådt' : 'Aktiv'}
+                                                                {role.person?.erDoed ? ' (Død)' : ''}
+                                                                {role.enhet?.erSlettet ? ' (Slettet)' : ''}
                                                             </TableCell>
                                                         </TableRow>
                                                     ))
@@ -538,7 +540,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                     <TableRow>
                                                         <TableCell colSpan={4}>
                                                             <Typography variant="body2" color="textSecondary" align="center">
-                                                                Her var det tomt
+                                                                Ingen roller funnet
                                                             </Typography>
                                                         </TableCell>
                                                     </TableRow>
