@@ -73,12 +73,32 @@ html[data-ds-color-mode="dark"] .nav-button {
 }
 
 html[data-ds-color-mode="dark"] .nav-button.selected {
-    background-color: #1a1a1a;
-    color: #fff;
+    background-color: #1e1e1e;
+    color: #4dabff;
 }
 
 html[data-ds-color-mode="dark"] .nav-button:hover {
-    background-color: #444;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-ds-color-mode="dark"] .no-search-message {
+    color: #b0b0b0;
+}
+
+html[data-ds-color-mode="dark"] .error-message {
+    background-color: #2d2d2d;
+    color: #ff5c5c;
+    border-color: #ff5c5c;
+}
+
+html[data-ds-color-mode="dark"] .error-response {
+    background-color: rgba(255, 92, 92, 0.1);
+    border-color: #ff5c5c;
+    color: #ff8080;
+}
+
+html[data-ds-color-mode="dark"] .settings-content {
+    color: #e0e0e0;
 }
 
 /* Main Content Styling */
@@ -146,6 +166,11 @@ html[data-ds-color-mode="dark"] .nav-button:hover {
     font-style: italic;
     text-align: center;
     opacity: 0.8;
+}
+
+.no-search-message p {
+    margin: 5px 0;
+    font-size: 1.1rem;
 }
 
 /* Error Message Styling */
@@ -236,11 +261,6 @@ html[data-ds-color-mode="dark"] .nav-button:hover {
     font-style: italic;
     text-align: center;
     opacity: 0.8; /* Slightly transparent */
-}
-
-.no-search-message p {
-    margin: 5px 0;
-    font-size: 1.1rem;
 }
 
 /* Smooth transitions for sidebar collapse/expand */
