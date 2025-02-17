@@ -488,6 +488,63 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                         <MuiTable>
                                             <TableHead>
                                                 <TableRow>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Mobilnummer</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Endret Mobilnummer</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">E-post</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Endret E-post</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="subtitle1">Status</Typography>
+                                                    </TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {officialContacts.length > 0 ? (
+                                                    officialContacts.map((contact, index) => (
+                                                        <TableRow key={index}>
+                                                            <TableCell>{contact.MobileNumber || '-'}</TableCell>
+                                                            <TableCell>{formatDate(contact.MobileNumberChanged)}</TableCell>
+                                                            <TableCell>{contact.EMailAddress || '-'}</TableCell>
+                                                            <TableCell>{formatDate(contact.EMailAddressChanged)}</TableCell>
+                                                            <TableCell>
+                                                                {(contact.fratraadt || contact.erDoed) ? (
+                                                                    <>
+                                                                        {contact.fratraadt && 'Fratrådt'}
+                                                                        {contact.fratraadt && contact.erDoed && ', '}
+                                                                        {contact.erDoed && 'Død'}
+                                                                    </>
+                                                                ) : (
+                                                                    '-'
+                                                                )}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                ) : (
+                                                    <TableRow>
+                                                        <TableCell colSpan={5}>
+                                                            <Typography variant="body2" color="textSecondary" align="center">
+                                                                Her var det tomt
+                                                            </Typography>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )}
+                                            </TableBody>
+                                        </MuiTable>
+                                    </TableContainer>
+                                    <Typography variant="h6" gutterBottom>
+                                        ER-roller
+                                    </Typography>
+                                    <TableContainer component={Paper} sx={{ mb: 2 }}>
+                                        <MuiTable>
+                                            <TableHead>
+                                                <TableRow>
                                                     <TableCell
                                                         sortDirection={erRoleSortField === 'type' ? erRoleSortDirection : false}
                                                         onClick={() => handleERRoleSort('type')}
@@ -553,63 +610,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             {erRolesError}
                                         </Alert>
                                     )}
-                                    <Typography variant="h6" gutterBottom>
-                                        Felles kontaktinformasjon
-                                    </Typography>
-                                    <TableContainer component={Paper} sx={{ mb: 2 }}>
-                                        <MuiTable>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell>
-                                                        <Typography variant="subtitle1">Mobilnummer</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="subtitle1">Endret Mobilnummer</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="subtitle1">E-post</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="subtitle1">Endret E-post</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="subtitle1">Status</Typography>
-                                                    </TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {officialContacts.length > 0 ? (
-                                                    officialContacts.map((contact, index) => (
-                                                        <TableRow key={index}>
-                                                            <TableCell>{contact.MobileNumber || '-'}</TableCell>
-                                                            <TableCell>{formatDate(contact.MobileNumberChanged)}</TableCell>
-                                                            <TableCell>{contact.EMailAddress || '-'}</TableCell>
-                                                            <TableCell>{formatDate(contact.EMailAddressChanged)}</TableCell>
-                                                            <TableCell>
-                                                                {(contact.fratraadt || contact.erDoed) ? (
-                                                                    <>
-                                                                        {contact.fratraadt && 'Fratrådt'}
-                                                                        {contact.fratraadt && contact.erDoed && ', '}
-                                                                        {contact.erDoed && 'Død'}
-                                                                    </>
-                                                                ) : (
-                                                                    '-'
-                                                                )}
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                ) : (
-                                                    <TableRow>
-                                                        <TableCell colSpan={5}>
-                                                            <Typography variant="body2" color="textSecondary" align="center">
-                                                                Her var det tomt
-                                                            </Typography>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )}
-                                            </TableBody>
-                                        </MuiTable>
-                                    </TableContainer>
+
                                     {officialContactsError && (
                                         <Alert severity="error" sx={{ mt: 2 }}>
                                             {officialContactsError}
