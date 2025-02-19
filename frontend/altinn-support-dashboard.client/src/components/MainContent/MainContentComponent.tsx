@@ -1,6 +1,5 @@
-// MainContentComponent.tsx
+// MainContent/MainContentComponent.tsx
 import React, { useState, useMemo, useEffect } from 'react';
-import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
 import {
     Skeleton,
     Button,
@@ -17,33 +16,16 @@ import {
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
 
-interface MainContentProps {
-    baseUrl: string;
-    isLoading: boolean;
-    organizations: Organization[];
-    subUnits: Subunit[];
-    selectedOrg: { Name: string; OrganizationNumber: string } | null;
-    moreInfo: PersonalContact[];
-    rolesInfo: ERRole[];
-    expandedOrg: string | null;
-    handleSelectOrg: (organizationNumber: string, name: string) => void;
-    handleExpandToggle: (orgNumber: string) => void;
-    error: { message: string; response?: string | null };
-    erRolesError: string | null;
-    query: string;
-    hasSearched: boolean;
-}
-
-interface OfficialContact {
-    MobileNumber: string;
-    MobileNumberChanged: string;
-    EMailAddress: string;
-    EMailAddressChanged: string;
-    fratraadt?: boolean;
-    erDoed?: boolean;
-}
-
-type SortDirection = 'asc' | 'desc' | undefined;
+import {
+    MainContentProps,
+    OfficialContact,
+    SortDirection,
+    PersonalContact,
+} from './models/mainContentTypes';
+import authorizedFetch from './hooks/useAuthorizedFetch';
+import { formatDate } from './utils/dateUtils';
+import { filterContacts, sortContacts, sortERRoles } from './utils/contactUtils';
+import { ERRolesSortField } from './models/mainContentTypes';
 
 const MainContentComponent: React.FC<MainContentProps> = ({
     baseUrl,
@@ -67,7 +49,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState<keyof PersonalContact | null>(null);
     const [sortDirection, setSortDirection] = useState<SortDirection>(undefined);
-    const [erRoleSortField, setERRoleSortField] = useState<'type' | 'person' | 'sistEndret' | null>(null);
+    const [erRoleSortField, setERRoleSortField] = useState<ERRolesSortField>(null);
     const [erRoleSortDirection, setERRoleSortDirection] = useState<SortDirection>(undefined);
     const [roleViewError, setRoleViewError] = useState<string | null>(null);
     const [officialContacts, setOfficialContacts] = useState<OfficialContact[]>([]);
@@ -92,21 +74,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         return quotes[Math.floor(Math.random() * quotes.length)];
     }, [quotes]);
 
-    const authorizedFetch = async (url: string, options: RequestInit = {}) => {
-        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-        const headers = {
-            ...options.headers,
-            Authorization: `Basic ${token}`,
-            'Content-Type': 'application/json',
-        };
-        const response = await fetch(url, { ...options, headers });
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`${response.statusText}: ${errorText}`);
-        }
-        return response;
-    };
-
     const handleViewRoles = async (subject: string, reportee: string) => {
         try {
             const res = await authorizedFetch(`${baseUrl}/serviceowner/${subject}/roles/${reportee}`);
@@ -120,27 +87,26 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         }
     };
 
-    const filterContacts = (contacts: PersonalContact[]) => {
-        if (searchQuery.length < 3) return contacts;
-        return contacts.filter(
-            (contact) =>
-                contact.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                contact.socialSecurityNumber?.includes(searchQuery) ||
-                contact.mobileNumber?.includes(searchQuery) ||
-                contact.eMailAddress?.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    };
+    useEffect(() => {
+        setSearchQuery('');
+    }, [selectedOrg]);
 
-    const sortContacts = (contacts: PersonalContact[]) => {
-        return [...contacts].sort((a, b) => {
-            if (sortField === null) return 0;
-            const aValue = a[sortField] || '';
-            const bValue = b[sortField] || '';
-            if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-            if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-            return 0;
-        });
-    };
+    useEffect(() => {
+        const fetchOfficialContacts = async () => {
+            if (!selectedOrg) return;
+            try {
+                const res = await authorizedFetch(
+                    `${baseUrl}/serviceowner/organizations/${selectedOrg.OrganizationNumber}/officialcontacts`
+                );
+                const data = await res.json();
+                setOfficialContacts(data);
+                setOfficialContactsError(null);
+            } catch (error) {
+                setOfficialContactsError('Offisielle kontakter kunne ikke hentes.');
+            }
+        };
+        fetchOfficialContacts();
+    }, [selectedOrg, baseUrl]);
 
     const handleSort = (field: keyof PersonalContact) => {
         if (sortField === field) {
@@ -172,43 +138,8 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         }
     };
 
-    useEffect(() => {
-        setSearchQuery('');
-    }, [selectedOrg]);
-
-    useEffect(() => {
-        const fetchOfficialContacts = async () => {
-            if (!selectedOrg) return;
-            try {
-                const res = await authorizedFetch(
-                    `${baseUrl}/serviceowner/organizations/${selectedOrg.OrganizationNumber}/officialcontacts`
-                );
-                const data = await res.json();
-                setOfficialContacts(data);
-                setOfficialContactsError(null);
-            } catch (error) {
-                setOfficialContactsError('Offisielle kontakter kunne ikke hentes.');
-            }
-        };
-        fetchOfficialContacts();
-    }, [selectedOrg, baseUrl]);
-
-    const formatDate = (dateString: string) => {
-        if (!dateString || dateString.startsWith('0001-01-01')) {
-            return '-';
-        }
-        const date = new Date(dateString);
-        return date.toLocaleString('no-NO', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    };
-
-    const filteredContacts = filterContacts(moreInfo || []);
-    const sortedContacts = sortContacts(filteredContacts);
+    const filteredContacts = filterContacts(moreInfo || [], searchQuery);
+    const sortedContacts = sortContacts(filteredContacts, sortField, sortDirection);
 
     const flatERRoles =
         rolesInfo?.flatMap((roleGroup) =>
@@ -217,29 +148,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                 sistEndret: roleGroup.sistEndret,
             }))
         ) || [];
-    const sortedERRoles = [...flatERRoles].sort((a, b) => {
-        if (erRoleSortField === null) return 0;
-        if (erRoleSortField === 'type') {
-            const aType = a.type?.beskrivelse || '';
-            const bType = b.type?.beskrivelse || '';
-            return erRoleSortDirection === 'asc'
-                ? aType.localeCompare(bType)
-                : bType.localeCompare(aType);
-        }
-        if (erRoleSortField === 'person') {
-            const aName = `${a.person?.navn?.fornavn || ''} ${a.person?.navn?.etternavn || ''}`.trim();
-            const bName = `${b.person?.navn?.fornavn || ''} ${b.person?.navn?.etternavn || ''}`.trim();
-            return erRoleSortDirection === 'asc'
-                ? aName.localeCompare(bName)
-                : bName.localeCompare(aName);
-        }
-        if (erRoleSortField === 'sistEndret') {
-            const aDate = new Date(a.sistEndret || 0).getTime();
-            const bDate = new Date(b.sistEndret || 0).getTime();
-            return erRoleSortDirection === 'asc' ? aDate - bDate : bDate - aDate;
-        }
-        return 0;
-    });
+    const sortedERRoles = sortERRoles(flatERRoles, erRoleSortField, erRoleSortDirection);
 
     const handleClearSearch = () => {
         setSearchQuery('');
@@ -577,11 +486,11 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                         <TableRow key={index}>
                                                             <TableCell>{role.type?.beskrivelse || ''}</TableCell>
                                                             <TableCell>
-                                                                {role.person ? 
-                                                                    `${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''}`.trim()
-                                                                : role.enhet ? 
-                                                                    `${role.enhet.navn?.[0] || ''} (${role.enhet.organisasjonsnummer})`
-                                                                : ''}
+                                                                {role.person
+                                                                    ? `${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''}`.trim()
+                                                                    : role.enhet
+                                                                    ? `${role.enhet.navn?.[0] || ''} (${role.enhet.organisasjonsnummer})`
+                                                                    : ''}
                                                             </TableCell>
                                                             <TableCell>
                                                                 {role.sistEndret ? formatDate(role.sistEndret) : ''}

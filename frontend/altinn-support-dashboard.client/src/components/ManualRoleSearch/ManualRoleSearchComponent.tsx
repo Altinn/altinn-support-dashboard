@@ -1,7 +1,7 @@
-﻿// ManualRoleSearchComponent.tsx
+﻿// ManualRoleSearch/ManualRoleSearchComponent.tsx
 import React, { useState } from 'react';
-import { UseManualRoleSearch } from '../../hooks/hooks';
-import { Role } from '../../models/models';
+import { UseManualRoleSearch } from './hooks/useManualRoleSearch';
+import { Role } from './models/manualRoleSearchTypes';
 import {
     TextField,
     Button,
@@ -20,14 +20,15 @@ import {
     InputAdornment,
 } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { getLocalStorageValue, setLocalStorageValue } from './utils/storageUtils';
 
 interface ManualRoleSearchComponentProps {
     baseUrl: string;
 }
 
 const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({ baseUrl }) => {
-    const [rollehaver, setRollehaver] = useState<string>(localStorage.getItem('rollehaver') || '');
-    const [rollegiver, setRollegiver] = useState<string>(localStorage.getItem('rollegiver') || '');
+    const [rollehaver, setRollehaver] = useState<string>(getLocalStorageValue('rollehaver'));
+    const [rollegiver, setRollegiver] = useState<string>(getLocalStorageValue('rollegiver'));
     const [hasSearched, setHasSearched] = useState(false);
     const { fetchRoles, roles, isLoading, error, clearRoles } = UseManualRoleSearch(baseUrl);
 
@@ -41,8 +42,8 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({ b
     const handleClearSearch = () => {
         setRollehaver('');
         setRollegiver('');
-        localStorage.setItem('rollehaver', '');
-        localStorage.setItem('rollegiver', '');
+        setLocalStorageValue('rollehaver', '');
+        setLocalStorageValue('rollegiver', '');
         setHasSearched(false);
         clearRoles();
     };
@@ -59,7 +60,7 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({ b
                     value={rollehaver}
                     onChange={(e) => {
                         setRollehaver(e.target.value);
-                        localStorage.setItem('rollehaver', e.target.value);
+                        setLocalStorageValue('rollehaver', e.target.value);
                     }}
                     InputProps={{
                         endAdornment: (
@@ -80,7 +81,7 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({ b
                     value={rollegiver}
                     onChange={(e) => {
                         setRollegiver(e.target.value);
-                        localStorage.setItem('rollegiver', e.target.value);
+                        setLocalStorageValue('rollegiver', e.target.value);
                     }}
                     InputProps={{
                         endAdornment: (
