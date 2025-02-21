@@ -1,4 +1,3 @@
-// models/models.ts
 export interface Organization {
     name: string;
     organizationNumber: string;

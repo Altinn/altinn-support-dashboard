@@ -1,4 +1,3 @@
-// Sidebar/SidebarComponent.tsx
 import React from 'react';
 import { Box, Typography, Button, Menu, MenuItem, Divider, Tooltip } from '@mui/material';
 import { ExpandMore, Dashboard, Search, Settings, ChevronLeft, ChevronRight } from '@mui/icons-material';
@@ -10,15 +9,12 @@ import whiteLogo from '/asd_128_white.png';
 import { SidebarProps } from './models/sidebarTypes';
 import { useSidebarDrag } from './hooks/useSidebarDrag';
 
-const Sidebar: React.FC<SidebarProps> = ({
+const Sidebar: React.FC<Omit<SidebarProps, "isEnvDropdownOpen" | "toggleEnvDropdown">> = ({
     environment,
     handleEnvChange,
     userName,
     userEmail,
     isDarkMode,
-    // Even if these props exist per the interface, they aren’t used in this component:
-    isEnvDropdownOpen,
-    toggleEnvDropdown,
 }) => {
     const theme = useTheme();
     const { formattedDate, formattedTime } = useCurrentDateTime();

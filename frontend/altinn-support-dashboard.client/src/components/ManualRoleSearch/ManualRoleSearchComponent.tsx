@@ -1,6 +1,4 @@
-﻿// ManualRoleSearch/ManualRoleSearchComponent.tsx
-import React, { useState } from 'react';
-import { UseManualRoleSearch } from './hooks/useManualRoleSearch';
+﻿import { UseManualRoleSearch } from './hooks/useManualRoleSearch';
 import { Role } from './models/manualRoleSearchTypes';
 import {
     TextField,

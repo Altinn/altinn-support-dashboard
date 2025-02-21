@@ -1,5 +1,4 @@
-// MainContent/utils/contactUtils.ts
-import { PersonalContact } from '../../models/models';
+import { PersonalContact } from '../../../models/models';
 import { ERRolesSortField } from '../models/mainContentTypes';
 
 export const filterContacts = (contacts: PersonalContact[], searchQuery: string): PersonalContact[] => {

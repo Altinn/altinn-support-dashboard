@@ -1,5 +1,4 @@
-﻿// SearchComponent.tsx
-import React from 'react';
+﻿import React from 'react';
 import { TextField, IconButton, InputAdornment, Box, Typography, Button } from '@mui/material';
 import { Search as SearchIcon, Clear as ClearIcon } from '@mui/icons-material';
 

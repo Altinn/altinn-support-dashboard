@@ -1,4 +1,3 @@
-// SettingsContent/hooks/useApiStatus.ts
 import { useState, useEffect } from 'react';
 import { getBaseUrl } from '../../../utils/utils';
 import { authorizedFetch } from '../utils/apiUtils';

@@ -1,4 +1,3 @@
-// ManualRoleSearch/hooks/useManualRoleSearch.ts
 import { useState } from 'react';
 import { Role } from '../models/manualRoleSearchTypes';
 

@@ -1,5 +1,4 @@
-﻿// SettingsContent/SettingsContentComponent.tsx
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
     Button,
     Switch,

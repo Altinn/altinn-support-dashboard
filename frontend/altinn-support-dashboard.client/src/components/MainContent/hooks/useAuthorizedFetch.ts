@@ -1,4 +1,3 @@
-// MainContent/hooks/useAuthorizedFetch.ts
 const authorizedFetch = async (url: string, options: RequestInit = {}) => {
     const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     const headers = {

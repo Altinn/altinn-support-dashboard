@@ -1,6 +1,4 @@
-// MainContent/models/mainContentTypes.ts
-export { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
-
+export { Organization, Subunit, PersonalContact, ERRole } from '../../../models/models';
 export interface MainContentProps {
     baseUrl: string;
     isLoading: boolean;

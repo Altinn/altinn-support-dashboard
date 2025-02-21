@@ -1,4 +1,3 @@
-// SettingsContent/utils/apiUtils.ts
 export const authorizedFetch = async (url: string, options: RequestInit = {}) => {
     const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     const headers = {

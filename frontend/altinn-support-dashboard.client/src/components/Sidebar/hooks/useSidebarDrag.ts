@@ -1,4 +1,3 @@
-// Sidebar/hooks/useSidebarDrag.ts
 import { useState, useEffect, MouseEvent } from 'react';
 
 export const useSidebarDrag = () => {

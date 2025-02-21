@@ -1,4 +1,3 @@
-// Sidebar/models/sidebarTypes.ts
 export interface SidebarProps {
     environment: string;
     isEnvDropdownOpen: boolean;

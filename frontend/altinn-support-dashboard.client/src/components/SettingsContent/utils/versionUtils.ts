@@ -1,4 +1,3 @@
-// SettingsContent/utils/versionUtils.ts
 export const getVersionInfo = () => {
     const versionNumber = '2.4.7';
     const envName =

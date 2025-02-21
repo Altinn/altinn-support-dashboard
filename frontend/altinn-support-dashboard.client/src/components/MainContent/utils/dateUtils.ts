@@ -1,4 +1,3 @@
-// MainContent/utils/dateUtils.ts
 export const formatDate = (dateString: string): string => {
     if (!dateString || dateString.startsWith('0001-01-01')) {
         return '-';

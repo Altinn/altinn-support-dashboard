@@ -1,4 +1,3 @@
-// MainContent/MainContentComponent.tsx
 import React, { useState, useMemo, useEffect } from 'react';
 import {
     Skeleton,
@@ -25,6 +24,7 @@ import {
 import authorizedFetch from './hooks/useAuthorizedFetch';
 import { formatDate } from './utils/dateUtils';
 import { filterContacts, sortContacts, sortERRoles } from './utils/contactUtils';
+import { formatRolePersonInfo, formatRoleTypeInfo } from './utils/personUtils';
 import { ERRolesSortField } from './models/mainContentTypes';
 
 const MainContentComponent: React.FC<MainContentProps> = ({
@@ -109,12 +109,14 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     }, [selectedOrg, baseUrl]);
 
     const handleSort = (field: keyof PersonalContact) => {
-        if (sortField === field) {
-            setSortDirection(sortDirection === 'asc' ? 'desc' : sortDirection === 'desc' ? undefined : 'asc');
-            if (sortDirection === 'desc') {
+        if (field === sortField) {
+            if (sortDirection === 'asc') {
+                setSortDirection('desc');
+            } else if (sortDirection === 'desc') {
                 setSortField(null);
+                setSortDirection(undefined);
             } else {
-                setSortField(field);
+                setSortDirection('asc');
             }
         } else {
             setSortField(field);
@@ -122,15 +124,15 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         }
     };
 
-    const handleERRoleSort = (field: 'type' | 'person' | 'sistEndret') => {
-        if (erRoleSortField === field) {
-            setERRoleSortDirection(
-                erRoleSortDirection === 'asc' ? 'desc' : erRoleSortDirection === 'desc' ? undefined : 'asc'
-            );
-            if (erRoleSortDirection === 'desc') {
+    const handleERRoleSort = (field: ERRolesSortField) => {
+        if (field === erRoleSortField) {
+            if (erRoleSortDirection === 'asc') {
+                setERRoleSortDirection('desc');
+            } else if (erRoleSortDirection === 'desc') {
                 setERRoleSortField(null);
+                setERRoleSortDirection(undefined);
             } else {
-                setERRoleSortField(field);
+                setERRoleSortDirection('asc');
             }
         } else {
             setERRoleSortField(field);
@@ -146,6 +148,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
             roleGroup?.roller?.map((role: any) => ({
                 ...role,
                 sistEndret: roleGroup.sistEndret,
+                type: roleGroup.type,
             }))
         ) || [];
     const sortedERRoles = sortERRoles(flatERRoles, erRoleSortField, erRoleSortDirection);
@@ -483,18 +486,13 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             <TableBody>
                                                 {sortedERRoles.length > 0 ? (
                                                     sortedERRoles.map((role, index) => (
-                                                        <TableRow key={index}>
-                                                            <TableCell>{role.type?.beskrivelse || ''}</TableCell>
-                                                            <TableCell>
-                                                                {role.person
-                                                                    ? `${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''}`.trim()
-                                                                    : role.enhet
-                                                                    ? `${role.enhet.navn?.[0] || ''} (${role.enhet.organisasjonsnummer})`
-                                                                    : ''}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                {role.sistEndret ? formatDate(role.sistEndret) : ''}
-                                                            </TableCell>
+                                                        <TableRow
+                                                            key={index}
+                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                        >
+                                                            <TableCell>{formatRoleTypeInfo(role)}</TableCell>
+                                                            <TableCell>{formatRolePersonInfo(role)}</TableCell>
+                                                            <TableCell>{formatDate(role.sistEndret)}</TableCell>
                                                             <TableCell>
                                                                 {role.fratraadt ? 'Fratrådt' : 'Aktiv'}
                                                                 {role.person?.erDoed ? ' (Død)' : ''}
@@ -556,10 +554,14 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             <TableBody>
                                                 {roleInfo && roleInfo.length > 0 ? (
                                                     roleInfo.map((role, index) => (
-                                                        <TableRow key={index}>
-                                                            <TableCell>{role.RoleType}</TableCell>
-                                                            <TableCell>{role.RoleName}</TableCell>
-                                                        </TableRow>
+                                                        <div key={index}>
+                                                            <Typography variant="subtitle1">
+                                                                {formatRoleTypeInfo(role)}: {formatRolePersonInfo(role)}
+                                                            </Typography>
+                                                            <Typography variant="body2">
+                                                                Status: {role.Status || 'Aktiv'}
+                                                            </Typography>
+                                                        </div>
                                                     ))
                                                 ) : (
                                                     <TableRow>

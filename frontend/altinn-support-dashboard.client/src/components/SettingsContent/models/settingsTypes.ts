@@ -1,4 +1,3 @@
-// SettingsContent/models/settingsTypes.ts
 import React from 'react';
 
 export interface SettingsContentProps {
