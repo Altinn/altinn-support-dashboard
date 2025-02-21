@@ -1,6 +1,4 @@
-﻿// src/pages/SignOutPage.tsx
-
-import React from 'react';
+﻿import React from 'react';
 import { Typography, Button, Container } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';

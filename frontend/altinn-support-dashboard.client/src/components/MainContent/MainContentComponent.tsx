@@ -1,6 +1,4 @@
-// MainContentComponent.tsx
 import React, { useState, useMemo, useEffect } from 'react';
-import { Organization, Subunit, PersonalContact, ERRole } from '../../models/models';
 import {
     Skeleton,
     Button,
@@ -17,33 +15,17 @@ import {
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
 
-interface MainContentProps {
-    baseUrl: string;
-    isLoading: boolean;
-    organizations: Organization[];
-    subUnits: Subunit[];
-    selectedOrg: { Name: string; OrganizationNumber: string } | null;
-    moreInfo: PersonalContact[];
-    rolesInfo: ERRole[];
-    expandedOrg: string | null;
-    handleSelectOrg: (organizationNumber: string, name: string) => void;
-    handleExpandToggle: (orgNumber: string) => void;
-    error: { message: string; response?: string | null };
-    erRolesError: string | null;
-    query: string;
-    hasSearched: boolean;
-}
-
-interface OfficialContact {
-    MobileNumber: string;
-    MobileNumberChanged: string;
-    EMailAddress: string;
-    EMailAddressChanged: string;
-    fratraadt?: boolean;
-    erDoed?: boolean;
-}
-
-type SortDirection = 'asc' | 'desc' | undefined;
+import {
+    MainContentProps,
+    OfficialContact,
+    SortDirection,
+    PersonalContact,
+} from './models/mainContentTypes';
+import authorizedFetch from './hooks/useAuthorizedFetch';
+import { formatDate } from './utils/dateUtils';
+import { filterContacts, sortContacts, sortERRoles } from './utils/contactUtils';
+import { formatRolePersonInfo, formatRoleTypeInfo } from './utils/personUtils';
+import { ERRolesSortField } from './models/mainContentTypes';
 
 const MainContentComponent: React.FC<MainContentProps> = ({
     baseUrl,
@@ -67,7 +49,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState<keyof PersonalContact | null>(null);
     const [sortDirection, setSortDirection] = useState<SortDirection>(undefined);
-    const [erRoleSortField, setERRoleSortField] = useState<'type' | 'person' | 'sistEndret' | null>(null);
+    const [erRoleSortField, setERRoleSortField] = useState<ERRolesSortField>(null);
     const [erRoleSortDirection, setERRoleSortDirection] = useState<SortDirection>(undefined);
     const [roleViewError, setRoleViewError] = useState<string | null>(null);
     const [officialContacts, setOfficialContacts] = useState<OfficialContact[]>([]);
@@ -92,21 +74,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         return quotes[Math.floor(Math.random() * quotes.length)];
     }, [quotes]);
 
-    const authorizedFetch = async (url: string, options: RequestInit = {}) => {
-        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-        const headers = {
-            ...options.headers,
-            Authorization: `Basic ${token}`,
-            'Content-Type': 'application/json',
-        };
-        const response = await fetch(url, { ...options, headers });
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`${response.statusText}: ${errorText}`);
-        }
-        return response;
-    };
-
     const handleViewRoles = async (subject: string, reportee: string) => {
         try {
             const res = await authorizedFetch(`${baseUrl}/serviceowner/${subject}/roles/${reportee}`);
@@ -117,58 +84,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
             setRoleViewError(null);
         } catch (error) {
             setRoleViewError('Roller kunne ikke hentes.');
-        }
-    };
-
-    const filterContacts = (contacts: PersonalContact[]) => {
-        if (searchQuery.length < 3) return contacts;
-        return contacts.filter(
-            (contact) =>
-                contact.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                contact.socialSecurityNumber?.includes(searchQuery) ||
-                contact.mobileNumber?.includes(searchQuery) ||
-                contact.eMailAddress?.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    };
-
-    const sortContacts = (contacts: PersonalContact[]) => {
-        return [...contacts].sort((a, b) => {
-            if (sortField === null) return 0;
-            const aValue = a[sortField] || '';
-            const bValue = b[sortField] || '';
-            if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-            if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-            return 0;
-        });
-    };
-
-    const handleSort = (field: keyof PersonalContact) => {
-        if (sortField === field) {
-            setSortDirection(sortDirection === 'asc' ? 'desc' : sortDirection === 'desc' ? undefined : 'asc');
-            if (sortDirection === 'desc') {
-                setSortField(null);
-            } else {
-                setSortField(field);
-            }
-        } else {
-            setSortField(field);
-            setSortDirection('asc');
-        }
-    };
-
-    const handleERRoleSort = (field: 'type' | 'person' | 'sistEndret') => {
-        if (erRoleSortField === field) {
-            setERRoleSortDirection(
-                erRoleSortDirection === 'asc' ? 'desc' : erRoleSortDirection === 'desc' ? undefined : 'asc'
-            );
-            if (erRoleSortDirection === 'desc') {
-                setERRoleSortField(null);
-            } else {
-                setERRoleSortField(field);
-            }
-        } else {
-            setERRoleSortField(field);
-            setERRoleSortDirection('asc');
         }
     };
 
@@ -193,53 +108,50 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         fetchOfficialContacts();
     }, [selectedOrg, baseUrl]);
 
-    const formatDate = (dateString: string) => {
-        if (!dateString || dateString.startsWith('0001-01-01')) {
-            return '-';
+    const handleSort = (field: keyof PersonalContact) => {
+        if (field === sortField) {
+            if (sortDirection === 'asc') {
+                setSortDirection('desc');
+            } else if (sortDirection === 'desc') {
+                setSortField(null);
+                setSortDirection(undefined);
+            } else {
+                setSortDirection('asc');
+            }
+        } else {
+            setSortField(field);
+            setSortDirection('asc');
         }
-        const date = new Date(dateString);
-        return date.toLocaleString('no-NO', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
     };
 
-    const filteredContacts = filterContacts(moreInfo || []);
-    const sortedContacts = sortContacts(filteredContacts);
+    const handleERRoleSort = (field: ERRolesSortField) => {
+        if (field === erRoleSortField) {
+            if (erRoleSortDirection === 'asc') {
+                setERRoleSortDirection('desc');
+            } else if (erRoleSortDirection === 'desc') {
+                setERRoleSortField(null);
+                setERRoleSortDirection(undefined);
+            } else {
+                setERRoleSortDirection('asc');
+            }
+        } else {
+            setERRoleSortField(field);
+            setERRoleSortDirection('asc');
+        }
+    };
+
+    const filteredContacts = filterContacts(moreInfo || [], searchQuery);
+    const sortedContacts = sortContacts(filteredContacts, sortField, sortDirection);
 
     const flatERRoles =
         rolesInfo?.flatMap((roleGroup) =>
             roleGroup?.roller?.map((role: any) => ({
                 ...role,
                 sistEndret: roleGroup.sistEndret,
+                type: roleGroup.type,
             }))
         ) || [];
-    const sortedERRoles = [...flatERRoles].sort((a, b) => {
-        if (erRoleSortField === null) return 0;
-        if (erRoleSortField === 'type') {
-            const aType = a.type?.beskrivelse || '';
-            const bType = b.type?.beskrivelse || '';
-            return erRoleSortDirection === 'asc'
-                ? aType.localeCompare(bType)
-                : bType.localeCompare(aType);
-        }
-        if (erRoleSortField === 'person') {
-            const aName = `${a.person?.navn?.fornavn || ''} ${a.person?.navn?.etternavn || ''}`.trim();
-            const bName = `${b.person?.navn?.fornavn || ''} ${b.person?.navn?.etternavn || ''}`.trim();
-            return erRoleSortDirection === 'asc'
-                ? aName.localeCompare(bName)
-                : bName.localeCompare(aName);
-        }
-        if (erRoleSortField === 'sistEndret') {
-            const aDate = new Date(a.sistEndret || 0).getTime();
-            const bDate = new Date(b.sistEndret || 0).getTime();
-            return erRoleSortDirection === 'asc' ? aDate - bDate : bDate - aDate;
-        }
-        return 0;
-    });
+    const sortedERRoles = sortERRoles(flatERRoles, erRoleSortField, erRoleSortDirection);
 
     const handleClearSearch = () => {
         setSearchQuery('');
@@ -574,18 +486,13 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             <TableBody>
                                                 {sortedERRoles.length > 0 ? (
                                                     sortedERRoles.map((role, index) => (
-                                                        <TableRow key={index}>
-                                                            <TableCell>{role.type?.beskrivelse || ''}</TableCell>
-                                                            <TableCell>
-                                                                {role.person ? 
-                                                                    `${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''}`.trim()
-                                                                : role.enhet ? 
-                                                                    `${role.enhet.navn?.[0] || ''} (${role.enhet.organisasjonsnummer})`
-                                                                : ''}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                {role.sistEndret ? formatDate(role.sistEndret) : ''}
-                                                            </TableCell>
+                                                        <TableRow
+                                                            key={index}
+                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                        >
+                                                            <TableCell>{formatRoleTypeInfo(role)}</TableCell>
+                                                            <TableCell>{formatRolePersonInfo(role)}</TableCell>
+                                                            <TableCell>{formatDate(role.sistEndret)}</TableCell>
                                                             <TableCell>
                                                                 {role.fratraadt ? 'Fratrådt' : 'Aktiv'}
                                                                 {role.person?.erDoed ? ' (Død)' : ''}
@@ -647,10 +554,14 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             <TableBody>
                                                 {roleInfo && roleInfo.length > 0 ? (
                                                     roleInfo.map((role, index) => (
-                                                        <TableRow key={index}>
-                                                            <TableCell>{role.RoleType}</TableCell>
-                                                            <TableCell>{role.RoleName}</TableCell>
-                                                        </TableRow>
+                                                        <div key={index}>
+                                                            <Typography variant="subtitle1">
+                                                                {formatRoleTypeInfo(role)}: {formatRolePersonInfo(role)}
+                                                            </Typography>
+                                                            <Typography variant="body2">
+                                                                Status: {role.Status || 'Aktiv'}
+                                                            </Typography>
+                                                        </div>
                                                     ))
                                                 ) : (
                                                     <TableRow>
