@@ -17,7 +17,7 @@ import { FaSlack, FaBookOpen } from 'react-icons/fa';
 import { getBaseUrl } from '../../utils/utils';
 import { SettingsContentProps } from './models/settingsTypes';
 import { getVersionInfo } from './utils/versionUtils';
-import { useApiStatus } from './hooks/useApiStatus';
+
 
 const SettingsContentComponent: React.FC<SettingsContentProps> = ({
     environment,
@@ -25,7 +25,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
     setIsDarkMode,
 }) => {
     const { versionNumber, versionName } = getVersionInfo();
-    const { apiStatusProd, apiStatusTT02 } = useApiStatus();
+
     const [language, setLanguage] = useState<string>('nb');
 
     const handleReload = () => {
@@ -51,33 +51,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
             <Typography variant="h4" gutterBottom>
                 Innstillinger
             </Typography>
-            <Paper sx={{ p: 2, mb: 3 }}>
-                <Typography variant="h6" gutterBottom>
-                    API Status
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 4 }}>
-                    <Box>
-                        <Typography variant="subtitle1">Production</Typography>
-                        {apiStatusProd === 'loading' ? (
-                            <Typography variant="body2">Laster API status...</Typography>
-                        ) : apiStatusProd === 'connected' ? (
-                            <Alert severity="success">API tilkoblet</Alert>
-                        ) : (
-                            <Alert severity="error">API ikke tilkoblet</Alert>
-                        )}
-                    </Box>
-                    <Box>
-                        <Typography variant="subtitle1">TT02</Typography>
-                        {apiStatusTT02 === 'loading' ? (
-                            <Typography variant="body2">Laster API status...</Typography>
-                        ) : apiStatusTT02 === 'connected' ? (
-                            <Alert severity="success">API tilkoblet</Alert>
-                        ) : (
-                            <Alert severity="error">API ikke tilkoblet</Alert>
-                        )}
-                    </Box>
-                </Box>
-            </Paper>
+
             <Paper sx={{ p: 2, mb: 3 }}>
                 <Typography variant="h6" gutterBottom>
                     Språkvalg
