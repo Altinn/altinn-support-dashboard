@@ -1,4 +1,6 @@
 import type { Organization, Subunit, PersonalContact, ERRole } from '../../../models/models';
+export type { PersonalContact };
+
 export interface MainContentProps {
     baseUrl: string;
     isLoading: boolean;
@@ -27,5 +29,4 @@ export interface OfficialContact {
 
 export type SortDirection = 'asc' | 'desc' | undefined;
 
-// This type will be used for the ER-role sort fields.
 export type ERRolesSortField = 'type' | 'person' | 'sistEndret' | null;

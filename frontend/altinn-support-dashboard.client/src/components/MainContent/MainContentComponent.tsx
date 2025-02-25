@@ -25,7 +25,6 @@ import {
 import authorizedFetch from './hooks/useAuthorizedFetch';
 import { formatDate } from './utils/dateUtils';
 import { filterContacts, sortContacts, sortERRoles } from './utils/contactUtils';
-import { formatRolePersonInfo, formatRoleTypeInfo } from './utils/personUtils';
 import { ERRolesSortField } from './models/mainContentTypes';
 
 const MainContentComponent: React.FC<MainContentProps> = ({
