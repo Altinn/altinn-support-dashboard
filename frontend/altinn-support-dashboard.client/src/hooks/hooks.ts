@@ -51,6 +51,7 @@ export function useCurrentDateTime() {
     return { currentDateTime, formattedTime, formattedDate };
 }
 
+
 export function useOrganizationSearch(environment: string) {
     const [query, setQuery] = useState('');
     const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -162,6 +163,7 @@ export function useOrganizationSearch(environment: string) {
         handleExpandToggle,
     };
 }
+
 
 export const UseManualRoleSearch = (baseUrl: string) => {
     const [roles, setRoles] = useState<Role[]>([]);

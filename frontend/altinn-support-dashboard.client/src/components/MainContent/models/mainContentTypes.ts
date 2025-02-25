@@ -1,4 +1,4 @@
-export { Organization, Subunit, PersonalContact, ERRole } from '../../../models/models';
+import type { Organization, Subunit, PersonalContact, ERRole } from '../../../models/models';
 export interface MainContentProps {
     baseUrl: string;
     isLoading: boolean;

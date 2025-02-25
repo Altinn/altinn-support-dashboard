@@ -12,6 +12,7 @@ import {
     TableRow,
     Paper,
     TextField,
+    Box
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
 
@@ -78,12 +79,14 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         try {
             const res = await authorizedFetch(`${baseUrl}/serviceowner/${subject}/roles/${reportee}`);
             const data = await res.json();
-            setRoleInfo(data);
+            const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
+            setRoleInfo(parsedData);
             setIsRoleView(true);
             setShowOrgList(false);
             setRoleViewError(null);
         } catch (error) {
             setRoleViewError('Roller kunne ikke hentes.');
+            setRoleInfo([]);
         }
     };
 
@@ -99,10 +102,11 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                     `${baseUrl}/serviceowner/organizations/${selectedOrg.OrganizationNumber}/officialcontacts`
                 );
                 const data = await res.json();
-                setOfficialContacts(data);
+                setOfficialContacts(Array.isArray(data) ? data : [data]);
                 setOfficialContactsError(null);
             } catch (error) {
                 setOfficialContactsError('Offisielle kontakter kunne ikke hentes.');
+                setOfficialContacts([]);
             }
         };
         fetchOfficialContacts();
@@ -145,12 +149,15 @@ const MainContentComponent: React.FC<MainContentProps> = ({
 
     const flatERRoles =
         rolesInfo?.flatMap((roleGroup) =>
-            roleGroup?.roller?.map((role: any) => ({
+            roleGroup?.roller?.map((role) => ({
                 ...role,
                 sistEndret: roleGroup.sistEndret,
                 type: roleGroup.type,
+                enhet: role.enhet,
+                person: role.person,
+                fratraadt: role.fratraadt
             }))
-        ) || [];
+        ).filter(Boolean) || [];
     const sortedERRoles = sortERRoles(flatERRoles, erRoleSortField, erRoleSortDirection);
 
     const handleClearSearch = () => {
@@ -396,60 +403,84 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                     <Typography variant="h6" gutterBottom>
                                         Varslingsadresser for virksomheten
                                     </Typography>
-                                    <TableContainer component={Paper} sx={{ mb: 2 }}>
-                                        <MuiTable>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell>
-                                                        <Typography variant="subtitle1">Mobilnummer</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="subtitle1">Endret Mobilnummer</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="subtitle1">E-post</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="subtitle1">Endret E-post</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="subtitle1">Status</Typography>
-                                                    </TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {officialContacts.length > 0 ? (
-                                                    officialContacts.map((contact, index) => (
-                                                        <TableRow key={index}>
-                                                            <TableCell>{contact.MobileNumber || '-'}</TableCell>
-                                                            <TableCell>{formatDate(contact.MobileNumberChanged)}</TableCell>
-                                                            <TableCell>{contact.EMailAddress || '-'}</TableCell>
-                                                            <TableCell>{formatDate(contact.EMailAddressChanged)}</TableCell>
-                                                            <TableCell>
-                                                                {(contact.fratraadt || contact.erDoed) ? (
-                                                                    <>
-                                                                        {contact.fratraadt && 'Fratrådt'}
-                                                                        {contact.fratraadt && contact.erDoed && ', '}
-                                                                        {contact.erDoed && 'Død'}
-                                                                    </>
-                                                                ) : (
-                                                                    '-'
-                                                                )}
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                ) : (
+                                    <Box sx={{ 
+                                        display: 'flex', 
+                                        gap: 3, 
+                                        mb: 2,
+                                        '& .MuiTableContainer-root': {
+                                            flex: 1,
+                                            maxWidth: 'calc(50% - 1.5rem)'
+                                        },
+                                        '& .MuiTableCell-root': {
+                                            padding: '8px 16px'
+                                        }
+                                    }}>
+                                        <TableContainer component={Paper}>
+                                            <MuiTable size="small">
+                                                <TableHead>
                                                     <TableRow>
-                                                        <TableCell colSpan={5}>
-                                                            <Typography variant="body2" color="textSecondary" align="center">
-                                                                Her var det tomt
-                                                            </Typography>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle2">Mobilnummer</Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle2">Endret Mobilnummer</Typography>
                                                         </TableCell>
                                                     </TableRow>
-                                                )}
-                                            </TableBody>
-                                        </MuiTable>
-                                    </TableContainer>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {officialContacts && officialContacts.length > 0 ? (
+                                                        officialContacts.map((contact, index) => (
+                                                            <TableRow key={index}>
+                                                                <TableCell>{contact.MobileNumber || '-'}</TableCell>
+                                                                <TableCell>{formatDate(contact.MobileNumberChanged)}</TableCell>
+                                                            </TableRow>
+                                                        ))
+                                                    ) : (
+                                                        <TableRow>
+                                                            <TableCell colSpan={2}>
+                                                                <Typography variant="body2" color="textSecondary" align="center">
+                                                                    Her var det tomt
+                                                                </Typography>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    )}
+                                                </TableBody>
+                                            </MuiTable>
+                                        </TableContainer>
+
+                                        <TableContainer component={Paper}>
+                                            <MuiTable size="small">
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle2">E-post</Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle2">Endret E-post</Typography>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {officialContacts && officialContacts.length > 0 ? (
+                                                        officialContacts.map((contact, index) => (
+                                                            <TableRow key={index}>
+                                                                <TableCell>{contact.EMailAddress || '-'}</TableCell>
+                                                                <TableCell>{formatDate(contact.EMailAddressChanged)}</TableCell>
+                                                            </TableRow>
+                                                        ))
+                                                    ) : (
+                                                        <TableRow>
+                                                            <TableCell colSpan={2}>
+                                                                <Typography variant="body2" color="textSecondary" align="center">
+                                                                    Her var det tomt
+                                                                </Typography>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    )}
+                                                </TableBody>
+                                            </MuiTable>
+                                        </TableContainer>
+                                    </Box>
                                     <Typography variant="h6" gutterBottom>
                                         ER-roller
                                     </Typography>
@@ -484,14 +515,17 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {sortedERRoles.length > 0 ? (
+                                                {sortedERRoles && sortedERRoles.length > 0 ? (
                                                     sortedERRoles.map((role, index) => (
-                                                        <TableRow
-                                                            key={index}
-                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                        >
-                                                            <TableCell>{formatRoleTypeInfo(role)}</TableCell>
-                                                            <TableCell>{formatRolePersonInfo(role)}</TableCell>
+                                                        <TableRow key={index}>
+                                                            <TableCell>{role.type?.beskrivelse || ''}</TableCell>
+                                                            <TableCell>
+                                                                {role.person ? 
+                                                                    `${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''}`.trim()
+                                                                : role.enhet ? 
+                                                                    `${role.enhet.navn?.[0] || ''} (${role.enhet.organisasjonsnummer})`
+                                                                : ''}
+                                                            </TableCell>
                                                             <TableCell>{formatDate(role.sistEndret)}</TableCell>
                                                             <TableCell>
                                                                 {role.fratraadt ? 'Fratrådt' : 'Aktiv'}
@@ -554,20 +588,16 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             <TableBody>
                                                 {roleInfo && roleInfo.length > 0 ? (
                                                     roleInfo.map((role, index) => (
-                                                        <div key={index}>
-                                                            <Typography variant="subtitle1">
-                                                                {formatRoleTypeInfo(role)}: {formatRolePersonInfo(role)}
-                                                            </Typography>
-                                                            <Typography variant="body2">
-                                                                Status: {role.Status || 'Aktiv'}
-                                                            </Typography>
-                                                        </div>
+                                                        <TableRow key={index}>
+                                                            <TableCell>{role.RoleType}</TableCell>
+                                                            <TableCell>{role.RoleName}</TableCell>
+                                                        </TableRow>
                                                     ))
                                                 ) : (
                                                     <TableRow>
                                                         <TableCell colSpan={2}>
                                                             <Typography variant="body2" color="textSecondary" align="center">
-                                                                Her var det tomt
+                                                                Ingen roller funnet
                                                             </Typography>
                                                         </TableCell>
                                                     </TableRow>

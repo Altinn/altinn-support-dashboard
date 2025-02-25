@@ -48,13 +48,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
                 ),
             }}
         />
-        {(hasSearched || query.trim() !== '') && (
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-                <Button variant="outlined" onClick={handleClearSearch}>
-                    Clear Search
-                </Button>
-            </Box>
-        )}
+
     </Box>
 );
 
