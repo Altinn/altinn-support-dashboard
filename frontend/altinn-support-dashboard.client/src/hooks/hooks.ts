@@ -1,4 +1,3 @@
-// hooks/hooks.ts
 import { useState, useEffect, useCallback } from 'react';
 import { Organization, PersonalContact, Subunit, ERRole, Role } from '../models/models';
 import { getBaseUrl, authorizedFetch, getFormattedDateTime, fetchUserDetails } from '../utils/utils';
@@ -51,6 +50,7 @@ export function useCurrentDateTime() {
     const { formattedTime, formattedDate } = getFormattedDateTime(currentDateTime);
     return { currentDateTime, formattedTime, formattedDate };
 }
+
 
 export function useOrganizationSearch(environment: string) {
     const [query, setQuery] = useState('');
@@ -163,6 +163,7 @@ export function useOrganizationSearch(environment: string) {
         handleExpandToggle,
     };
 }
+
 
 export const UseManualRoleSearch = (baseUrl: string) => {
     const [roles, setRoles] = useState<Role[]>([]);

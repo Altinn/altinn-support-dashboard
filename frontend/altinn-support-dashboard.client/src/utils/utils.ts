@@ -1,4 +1,3 @@
-// utils/utils.ts
 export function getBaseUrl(environment: string): string {
     const apiHost = window.location.hostname;
     const protocol = window.location.protocol;

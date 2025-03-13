@@ -1,5 +1,4 @@
-﻿// SearchComponent.tsx
-import React from 'react';
+﻿import React from 'react';
 import { TextField, IconButton, InputAdornment, Box, Typography, Button } from '@mui/material';
 import { Search as SearchIcon, Clear as ClearIcon } from '@mui/icons-material';
 
@@ -49,13 +48,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
                 ),
             }}
         />
-        {(hasSearched || query.trim() !== '') && (
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-                <Button variant="outlined" onClick={handleClearSearch}>
-                    Clear Search
-                </Button>
-            </Box>
-        )}
+
     </Box>
 );
 

@@ -1,4 +1,3 @@
-// SidebarComponent.tsx
 import React from 'react';
 import { Box, Typography, Button, Menu, MenuItem, Divider, Tooltip } from '@mui/material';
 import { ExpandMore, Dashboard, Search, Settings, ChevronLeft, ChevronRight } from '@mui/icons-material';
@@ -7,18 +6,10 @@ import { NavLink } from 'react-router-dom';
 import { useCurrentDateTime } from '../../hooks/hooks';
 import logo from '../../assets/logo.png';
 import whiteLogo from '/asd_128_white.png';
+import { SidebarProps } from './models/sidebarTypes';
+import { useSidebarDrag } from './hooks/useSidebarDrag';
 
-interface SidebarProps {
-    environment: string;
-    isEnvDropdownOpen: boolean;
-    toggleEnvDropdown: () => void;
-    handleEnvChange: (env: string) => void;
-    userName: string;
-    userEmail: string;
-    isDarkMode: boolean;
-}
-
-const Sidebar: React.FC<SidebarProps> = ({
+const Sidebar: React.FC<Omit<SidebarProps, "isEnvDropdownOpen" | "toggleEnvDropdown">> = ({
     environment,
     handleEnvChange,
     userName,
@@ -27,46 +18,12 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
     const theme = useTheme();
     const { formattedDate, formattedTime } = useCurrentDateTime();
-    const [isCollapsed, setIsCollapsed] = React.useState(false);
+
+    // Use the custom drag hook for collapse functionality.
+    const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [isDragging, setIsDragging] = React.useState(false);
-    const [dragStartX, setDragStartX] = React.useState(0);
     const open = Boolean(anchorEl);
-
-    const handleCollapse = () => {
-        setIsCollapsed(!isCollapsed);
-    };
-
-    const handleDragStart = (e: React.MouseEvent) => {
-        e.preventDefault();
-        setIsDragging(true);
-        setDragStartX(e.clientX);
-    };
-
-    const handleDragMove = (e: MouseEvent) => {
-        if (!isDragging) return;
-        
-        const dragDistance = e.clientX - dragStartX;
-        if (Math.abs(dragDistance) > 50) { // Threshold for triggering expand/collapse
-            setIsCollapsed(dragDistance < 0);
-            setIsDragging(false);
-        }
-    };
-
-    const handleDragEnd = () => {
-        setIsDragging(false);
-    };
-
-    React.useEffect(() => {
-        if (isDragging) {
-            window.addEventListener('mousemove', handleDragMove);
-            window.addEventListener('mouseup', handleDragEnd);
-        }
-        return () => {
-            window.removeEventListener('mousemove', handleDragMove);
-            window.removeEventListener('mouseup', handleDragEnd);
-        };
-    }, [isDragging, dragStartX]);
 
     const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -98,13 +55,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                 position: 'relative',
             }}
         >
+            {/* Draggable handle for resizing/collapse */}
             <Box
                 onMouseDown={handleDragStart}
                 sx={{
                     position: 'absolute',
                     right: -6,
                     top: '50%',
-                    transform: `translateY(-50%) ${isDragging ? 'scale(1.2)' : ''}`,
+                    transform: `translateY(-50%)`,
                     width: 12,
                     height: 12,
                     borderRadius: '50%',
@@ -116,9 +74,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                         transform: 'translateY(-50%) scale(1.2)',
                         boxShadow: '0 0 8px rgba(0,0,0,0.2)',
                     },
-                    ...(isDragging && {
-                        boxShadow: '0 0 12px rgba(0,0,0,0.3)',
-                    }),
                 }}
             />
             <Box>
@@ -205,7 +160,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     }}
                 >
                     <Button
-                        onClick={handleCollapse}
+                        onClick={toggleCollapse}
                         startIcon={!isCollapsed ? <ChevronLeft /> : undefined}
                         sx={{ 
                             color: 'inherit',
