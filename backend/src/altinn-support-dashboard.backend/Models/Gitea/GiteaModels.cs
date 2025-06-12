@@ -4,6 +4,32 @@ using System.Text.Json.Serialization;
 namespace altinn_support_dashboard.Server.Models.Gitea
 {
     /// <summary>
+    /// Enum for tilgangsnivåer i Gitea
+    /// </summary>
+    public enum Permission
+    {
+        /// <summary>
+        /// Lesetilgang
+        /// </summary>
+        Read,
+        
+        /// <summary>
+        /// Skrivetilgang
+        /// </summary>
+        Write,
+        
+        /// <summary>
+        /// Administratortilgang
+        /// </summary>
+        Admin,
+        
+        /// <summary>
+        /// Ingen tilgang
+        /// </summary>
+        None
+    }
+    
+    /// <summary>
     /// Representerer en Gitea-bruker
     /// </summary>
     public class GiteaUser
@@ -148,6 +174,18 @@ namespace altinn_support_dashboard.Server.Models.Gitea
 
         [JsonPropertyName("trust_model")]
         public string TrustModel { get; set; } = "default";
+    }
+    
+    /// <summary>
+    /// Modell for overføring av repository til ny eier
+    /// </summary>
+    public class GiteaRepositoryTransfer
+    {
+        [JsonPropertyName("new_owner")]
+        public required string NewOwner { get; set; }
+        
+        [JsonPropertyName("team_ids")]
+        public List<int>? TeamIds { get; set; } = new List<int>();
     }
 
     /// <summary>

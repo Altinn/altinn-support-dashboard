@@ -95,13 +95,13 @@ namespace altinn_support_dashboard.Server.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Feil ved sjekk av organisasjon for {environmentName}");
+                _logger.LogError(ex, $"Feil ved sjekk om organisasjon eksisterer for {environmentName}");
                 return false;
             }
         }
 
         /// <summary>
-        /// Oppretter en ny organisasjon med standardteam og repository
+        /// Oppretter en ny organisasjon med standardteam og datamodels repository
         /// </summary>
         public async Task<OrganizationCreationResult> CreateOrganizationAsync(string environmentName, OrganizationCreationRequest request)
         {
@@ -398,11 +398,15 @@ namespace altinn_support_dashboard.Server.Services
                 var repo = await _giteaApiClient.CreateRepository(environmentName, repoRequest);
 
                 // Overfør eierskap til den nye organisasjonen
+                var transferRequest = new GiteaRepositoryTransfer
+                {
+                    NewOwner = orgName
+                };
                 var transferredRepo = await _giteaApiClient.TransferRepository(
                     environmentName, 
                     user.Username, 
                     "datamodels", 
-                    orgName);
+                    transferRequest);
 
                 return new OrganizationCreationResult
                 {

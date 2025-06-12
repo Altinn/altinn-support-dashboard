@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -109,13 +109,13 @@ namespace altinn_support_dashboard.Server.Services
 
     public class BrregConfiguration
     {
-        public EnvironmentConfiguration Production { get; set; }
-        public EnvironmentConfiguration TT02 { get; set; }
+        public required EnvironmentConfiguration Production { get; set; }
+        public required EnvironmentConfiguration TT02 { get; set; }
     }
 
     public class EnvironmentConfiguration
     {
-        public string BaseAddress { get; set; }
+        public required string BaseAddress { get; set; }
         public int Timeout { get; set; } = 100; // Default timeout in seconds
     }
 }

@@ -30,13 +30,13 @@ namespace altinn_support_dashboard.Server.Services.Interfaces
         /// <param name="orgName">Organisasjonens kortnavn</param>
         /// <returns>True hvis organisasjonen eksisterer</returns>
         Task<bool> OrganizationExistsAsync(string environmentName, string orgName);
-
+        
         /// <summary>
-        /// Oppretter en ny organisasjon med standardteam og repository
+        /// Oppretter en ny organisasjon med standard team og repository
         /// </summary>
         /// <param name="environmentName">Miljønavnet</param>
-        /// <param name="request">Forespørsel om organisasjonsoppretting</param>
-        /// <returns>Resultat av organisasjonsopprettingen</returns>
+        /// <param name="request">Informasjon om organisasjonen som skal opprettes</param>
+        /// <returns>Resultat av opprettelsen med opprettede teams og status</returns>
         Task<OrganizationCreationResult> CreateOrganizationAsync(string environmentName, OrganizationCreationRequest request);
     }
 }

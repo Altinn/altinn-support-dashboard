@@ -156,30 +156,69 @@ namespace altinn_support_dashboard.Server.Clients
         }
 
         /// <summary>
-        /// Oppretter en ny organisasjon
+        /// Validerer at organisasjonsnavn følger standard format
+        /// </summary>
+        private bool IsValidOrgShortName(string shortName)
+        {
+            // Må starte med en liten bokstav og være 2-5 tegn
+            return System.Text.RegularExpressions.Regex.IsMatch(shortName, @"^[a-z][a-z0-9-]{0,3}[a-z0-9]$");
+        }
+        
+        /// <summary>
+        /// Validerer at nettadresse følger tillatt format
+        /// </summary>
+        private bool IsValidWebsite(string website)
+        {
+            return System.Text.RegularExpressions.Regex.IsMatch(website, @"^[a-zA-Z0-9\-._/:]*$");
+        }
+
+        /// <summary>
+        /// Oppretter en ny organisasjon i Gitea
         /// </summary>
         public async Task<GiteaOrganization> CreateOrganization(string environmentName, GiteaOrganizationCreate organization)
         {
             try
             {
-                var client = _clients[environmentName];
-                var content = new StringContent(JsonSerializer.Serialize(organization, _jsonOptions), Encoding.UTF8, "application/json");
-                
-                var response = await client.PostAsync("api/v1/orgs", content);
-                
-                var responseContent = await response.Content.ReadAsStringAsync();
-                
-                if (response.IsSuccessStatusCode)
+                if (!_clients.TryGetValue(environmentName, out var client))
                 {
-                    return JsonSerializer.Deserialize<GiteaOrganization>(responseContent, _jsonOptions);
+                    throw new Exception($"Ingen klient konfigurert for miljø {environmentName}");
                 }
                 
-                _logger.LogError($"Feil ved opprettelse av organisasjon: {responseContent}");
-                throw new HttpRequestException($"Kunne ikke opprette organisasjon. Status: {response.StatusCode}, Feilmelding: {responseContent}");
+                // Validering av organisasjonsnavn
+                if (!IsValidOrgShortName(organization.Username))
+                {
+                    _logger.LogError($"Ugyldig organisasjonsnavn: '{organization.Username}'. Navnet må starte med en liten bokstav og slutte med en liten bokstav eller tall, 2-5 tegn.");
+                    throw new ArgumentException($"Ugyldig organisasjonsnavn. Navnet må starte med en liten bokstav og slutte med en liten bokstav eller tall, 2-5 tegn.");
+                }
+                
+                // Validering av nettside
+                if (!string.IsNullOrEmpty(organization.Website) && !IsValidWebsite(organization.Website))
+                {
+                    _logger.LogError($"Ugyldig nettadresse: '{organization.Website}'. Kun bokstaver, tall og tegnene '-', '_', '.', '/', ':' er tillatt.");
+                    throw new ArgumentException($"Ugyldig nettadresse. Kun bokstaver, tall og tegnene '-', '_', '.', '/', ':' er tillatt.");
+                }
+                
+                var requestContent = new StringContent(
+                    JsonSerializer.Serialize(organization, _jsonOptions),
+                    Encoding.UTF8,
+                    "application/json"
+                );
+
+                var response = await client.PostAsync("api/v1/orgs", requestContent);
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorJson = await response.Content.ReadAsStringAsync();
+                    _logger.LogError($"Feil ved opprettelse av organisasjon: {response.StatusCode}, {errorJson}");
+                    throw new HttpRequestException($"Kunne ikke opprette organisasjon. Status: {response.StatusCode}, Feilmelding: {errorJson}");
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<GiteaOrganization>(content, _jsonOptions);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is ArgumentException) && !(ex is HttpRequestException))
             {
-                _logger.LogError(ex, $"Feil ved opprettelse av organisasjon for {environmentName}");
+                _logger.LogError(ex, $"Uventet feil ved opprettelse av organisasjon for {environmentName}");
                 throw;
             }
         }
@@ -245,13 +284,16 @@ namespace altinn_support_dashboard.Server.Clients
         /// <summary>
         /// Overfører eierskap av et repository
         /// </summary>
-        public async Task<GiteaRepository> TransferRepository(string environmentName, string owner, string repo, string newOwner)
+        public async Task<GiteaRepository> TransferRepository(string environmentName, string owner, string repo, GiteaRepositoryTransfer transfer)
         {
             try
             {
-                var client = _clients[environmentName];
-                var transferOption = new { new_owner = newOwner };
-                var content = new StringContent(JsonSerializer.Serialize(transferOption, _jsonOptions), Encoding.UTF8, "application/json");
+                if (!_clients.TryGetValue(environmentName, out var client))
+                {
+                    throw new Exception($"Ingen klient konfigurert for miljø {environmentName}");
+                }
+                
+                var content = new StringContent(JsonSerializer.Serialize(transfer, _jsonOptions), Encoding.UTF8, "application/json");
                 
                 var response = await client.PostAsync($"api/v1/repos/{owner}/{repo}/transfer", content);
                 
@@ -267,7 +309,7 @@ namespace altinn_support_dashboard.Server.Clients
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Feil ved overføring av repository for {environmentName}");
+                _logger.LogError(ex, $"Feil ved overføring av repository {owner}/{repo} til {transfer.NewOwner} for {environmentName}");
                 throw;
             }
         }

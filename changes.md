@@ -1,5 +1,15 @@
 # Endringslogg
 
+## 2025-06-12 14:30
+### Fikset byggfeil i backend for organisasjonsopprettelse
+
+**Hva**: Korrigerte kritiske og ikke-kritiske byggfeil i backend-koden.
+**Hvordan**: 
+- Fikset parameterfeil i GiteaService.TransferRepository-metoden ved å bruke GiteaRepositoryTransfer-objekt
+- La til `required`-modifikator på ikke-nullbare egenskaper i modellklassene
+- Fikset foreldede kodeadvarsler (ISystemClock) ved å bruke pragma-direktiver
+**Hvorfor**: For å sikre at backend-prosjektet bygger og kjører uten kritiske feil, slik at API-endepunktene for organisasjonsopprettelse er tilgjengelige og testbare.
+
 ## 2025-06-12 13:25
 ### Forbedret PAT token validering mot Gitea API
 
