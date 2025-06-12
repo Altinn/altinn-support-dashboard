@@ -1,4 +1,4 @@
-﻿public class GiteaApiClient
+public class GiteaApiClient
 {
     private readonly HttpClient _httpClient;
 
