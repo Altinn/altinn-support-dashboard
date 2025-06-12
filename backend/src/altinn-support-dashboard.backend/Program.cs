@@ -75,6 +75,7 @@ namespace AltinnSupportDashboard
                     services.AddScoped<IDataBrregService, DataBrregService>();
                     services.AddScoped<AltinnApiClient>();
                     services.AddScoped<IAltinnApiService, AltinnApiService>();
+                    services.AddScoped<GiteaApiClient>();
                 });
     }
 }
