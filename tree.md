@@ -9,18 +9,34 @@ altinn-support-dashboard/
 ├── .vs/
 ├── LICENSE
 ├── README.md
+├── changes.md
+├── tree.md
 ├── altinn-support-dashboard.sln
 ├── backend/
 │   ├── src/
 │   │   └── altinn-support-dashboard.backend/
 │   │       ├── Clients/
 │   │       │   ├── AltinnApiClient.cs
-│   │       │   └── DataBrregClient.cs
+│   │       │   ├── DataBrregClient.cs
+│   │       │   └── GiteaApiClient.cs
 │   │       ├── Controllers/
+│   │       │   ├── AltinnController.cs
+│   │       │   └── GiteaController.cs
 │   │       ├── Models/
+│   │       │   ├── BrregConfiguration.cs
+│   │       │   ├── GiteaConfiguration.cs
+│   │       │   └── Gitea/
+│   │       │       └── GiteaModels.cs
 │   │       ├── Program.cs
 │   │       ├── Security/
 │   │       ├── Services/
+│   │       │   ├── AltinnApiService.cs
+│   │       │   ├── DataBrregService.cs
+│   │       │   ├── GiteaService.cs
+│   │       │   └── Interfaces/
+│   │       │       ├── IAltinnApiService.cs
+│   │       │       ├── IDataBrregService.cs
+│   │       │       └── IGiteaService.cs
 │   │       ├── Startup.cs
 │   │       ├── Validation/
 │   │       ├── appsettings.json

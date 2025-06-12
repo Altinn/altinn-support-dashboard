@@ -1,8 +1,15 @@
 
+using altinn_support_dashboard.Server.Clients;
+using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Services;
+using altinn_support_dashboard.Server.Services.Interfaces;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
 
 
 namespace AltinnSupportDashboard
@@ -18,6 +25,18 @@ namespace AltinnSupportDashboard
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // Configure HttpClient
+            services.AddHttpClient();
+
+            // Configure Gitea settings
+            services.Configure<GiteaConfiguration>(Configuration.GetSection("Gitea"));
+            services.Configure<BrregApiConfiguration>(Configuration.GetSection("Brreg"));
+
+            // Register clients and services
+            services.AddSingleton<GiteaApiClient>();
+            services.AddScoped<IGiteaService, GiteaService>();
+            services.AddScoped<IDataBrregService, DataBrregService>();
+            services.AddScoped<IAltinnApiService, AltinnApiService>();
            
             // Add controllers for the API
             services.AddControllers();
@@ -25,7 +44,11 @@ namespace AltinnSupportDashboard
             // Register Swagger for API documentation
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Altinn Support Dashboard API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { 
+                    Title = "Altinn Support Dashboard API", 
+                    Version = "v1",
+                    Description = "API for å administrere Altinn Support Dashboard og opprette organisasjoner i Altinn Studio"
+                });
             });
 
 
@@ -34,7 +57,6 @@ namespace AltinnSupportDashboard
             {
                 options.AddPolicy("AllowAll", builder =>
                 {
-
                     builder.AllowAnyOrigin()   // Allow all origins
                            .AllowAnyMethod()   // Allow all methods (GET, POST, PUT, DELETE, etc.)
                            .AllowAnyHeader();  // Allow all headers (Authorization, Content-Type, etc.)
