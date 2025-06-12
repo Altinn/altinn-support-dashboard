@@ -1,5 +1,18 @@
 # Endringslogg
 
+## 2025-06-12 13:25
+### Forbedret PAT token validering mot Gitea API
+
+Fixet problemer med PAT token validering i backend:
+
+- Implementert mer robust token validering basert på RepoCleanup-verktøyet
+- La til sjekk av token-lengde (skal være nøyaktig 40 tegn)
+- Korrigert URL-strukturen for API-kall til Gitea
+- Lagt til bedre logging og feilhåndtering for enklere feilfinning
+- Oppdatert Gitea-konfigurasjon i appsettings.json med korrekte base-URLer
+
+Disse endringene sikrer at PAT token valideres på samme måte som i RepoCleanup, og løser problemet med at alle tokens ble godkjent uavhengig av gyldighet.
+
 ## 2025-06-12 13:10
 ### Fikset byggefeil i backend for organisasjonsopprettelse
 

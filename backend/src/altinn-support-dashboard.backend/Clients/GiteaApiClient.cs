@@ -70,12 +70,58 @@ namespace altinn_support_dashboard.Server.Clients
         {
             try
             {
+                // Sjekk om token har riktig format (40 tegn)
+                if (string.IsNullOrEmpty(token) || token.Length != 40)
+                {
+                    _logger.LogWarning("Ugyldig token format. Token må være 40 tegn lang.");
+                    return false;
+                }
+                
                 var client = _clientFactory.CreateClient();
-                client.BaseAddress = _clients[environmentName].BaseAddress;
+                string baseUrl = null;
+                
+                // Finn riktig base URL basert på valgt miljø
+                if (environmentName.Equals("development", StringComparison.OrdinalIgnoreCase))
+                {
+                    baseUrl = _giteaConfiguration.Development.BaseUrl;
+                }
+                else if (environmentName.Equals("production", StringComparison.OrdinalIgnoreCase))
+                {
+                    baseUrl = _giteaConfiguration.Production.BaseUrl;
+                }
+                else
+                {
+                    _logger.LogError($"Ukjent miljø: {environmentName}");
+                    return false;
+                }
+                
+                if (string.IsNullOrEmpty(baseUrl))
+                {
+                    _logger.LogError($"Manglende baseUrl for miljø: {environmentName}");
+                    return false;
+                }
+
+                // Sikre at baseUrl ender med /
+                if (!baseUrl.EndsWith("/"))
+                {
+                    baseUrl += "/";
+                }
+                
+                client.BaseAddress = new Uri(baseUrl);
                 client.DefaultRequestHeaders.Add("Authorization", $"token {token}");
 
+                // Sjekk om brukeren har tilgang ved å hente brukerinformasjon
+                // Bruker samme API-endepunkt som RepoCleanup-verktøyet
                 var response = await client.GetAsync("api/v1/user");
-                return response.IsSuccessStatusCode;
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogWarning($"Token validering feilet. Statuskode: {response.StatusCode}");
+                    return false;
+                }
+                
+                _logger.LogInformation("Token er gyldig");
+                return true;
             }
             catch (Exception ex)
             {
