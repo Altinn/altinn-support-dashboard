@@ -4,6 +4,8 @@ using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using AltinnSupportDashboard.Clients;
+using AltinnSupportDashboard.Interfaces;
+using AltinnSupportDashboard.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -76,7 +78,11 @@ namespace AltinnSupportDashboard
                     services.AddScoped<IDataBrregService, DataBrregService>();
                     services.AddScoped<AltinnApiClient>();
                     services.AddScoped<IAltinnApiService, AltinnApiService>();
-                    services.AddScoped<GiteaApiClient>();
+                    
+                    // Register Gitea services
+                    services.AddHttpClient<GiteaApiClient>();
+                    services.AddScoped<IGiteaApiClient, GiteaApiClient>();
+                    services.AddScoped<IGiteaService, GiteaService>();
                 });
     }
 }
