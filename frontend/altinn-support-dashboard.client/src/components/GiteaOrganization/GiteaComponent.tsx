@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Typography,
     Container,
@@ -35,20 +35,88 @@ const getGiteaBaseUrl = (env: GiteaEnvironment): string => {
     }
 };
 
+const getPatSettingsUrl = (env: GiteaEnvironment): string => {
+    switch (env) {
+        case 'development':
+            return 'https://dev.altinn.studio/repos/user/settings/applications';
+        case 'staging':
+            return 'https://staging.altinn.studio/repos/user/settings/applications';
+        case 'production':
+            return 'https://altinn.studio/user/settings/applications';
+        case 'local':
+            return 'http://studio.localhost/repos/user/settings/applications';
+        default:
+            return 'https://dev.altinn.studio/repos/user/settings/applications';
+    }
+};
+
+// Storage key for the PAT token (environment-specific)
+const getStorageKey = (env: GiteaEnvironment) => `gitea-pat-token-${env}`;
+
+// Function to securely save PAT token to localStorage
+const saveTokenToStorage = (token: string, env: GiteaEnvironment) => {
+    try {
+        // Basic encryption would be better, but for simplicity we're just storing it
+        // A production app should use a more secure approach
+        localStorage.setItem(getStorageKey(env), token);
+    } catch (e) {
+        console.error('Failed to save token to localStorage', e);
+    }
+};
+
+// Function to retrieve PAT token from localStorage
+const getTokenFromStorage = (env: GiteaEnvironment): string => {
+    try {
+        const token = localStorage.getItem(getStorageKey(env));
+        return token || '';
+    } catch (e) {
+        console.error('Failed to retrieve token from localStorage', e);
+        return '';
+    }
+};
+
+// Clear token from localStorage
+const clearTokenFromStorage = (env: GiteaEnvironment) => {
+    try {
+        localStorage.removeItem(getStorageKey(env));
+    } catch (e) {
+        console.error('Failed to clear token from localStorage', e);
+    }
+};
+
 const GiteaComponent: React.FC<GiteaComponentProps> = () => {
     const [shortName, setShortName] = useState('');
     const [fullName, setFullName] = useState('');
     const [website, setWebsite] = useState('');
-    const [patToken, setPatToken] = useState('');
     const [environment, setEnvironment] = useState<GiteaEnvironment>('development');
     const [giteaBaseUrl, setGiteaBaseUrl] = useState(getGiteaBaseUrl('development'));
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const [rememberToken, setRememberToken] = useState(true);
+    
+    // Initialize patToken from localStorage if available
+    const [patToken, setPatToken] = useState('');
+    
+    // Load token from localStorage when component mounts or environment changes
+    useEffect(() => {
+        const savedToken = getTokenFromStorage(environment);
+        if (savedToken) {
+            setPatToken(savedToken);
+        }
+    }, [environment]);
     
     const handleEnvironmentChange = (env: GiteaEnvironment) => {
         setEnvironment(env);
         setGiteaBaseUrl(getGiteaBaseUrl(env));
+        
+        // Load token for the selected environment
+        const savedToken = getTokenFromStorage(env);
+        if (savedToken) {
+            setPatToken(savedToken);
+        } else {
+            setPatToken('');
+        }
     };
 
     const handleCreateOrganization = async () => {
@@ -80,13 +148,28 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
             const data = await response.json();
 
             if (!response.ok) {
-                setError(data.message || 'Failed to create organization');
+                if (data.message === "Could not authenticate with the provided token.") {
+                    const patUrl = getPatSettingsUrl(environment);
+                    setError(
+                        'Ved manglende token eller rettigheter til å utføre operasjonen kan du ikke fortsette. ' +
+                        'Du må sette opp et personlig token i Altinn Studio: ' +
+                        `<a href="${patUrl}" target="_blank" rel="noopener noreferrer">` +
+                        'Klikk her for å sette opp PAT i Altinn Studio</a>'
+                    );
+                } else {
+                    setError(data.message || 'Failed to create organization');
+                }
             } else {
                 setSuccess(`Successfully created organization ${shortName} with default teams and repository`);
                 // Reset form fields after successful creation
                 setShortName('');
                 setFullName('');
                 setWebsite('');
+                
+                // Save token if remember option is checked
+                if (rememberToken) {
+                    saveTokenToStorage(patToken, environment);
+                }
             }
         } catch (err) {
             setError('An error occurred while communicating with the server');
@@ -116,7 +199,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                             Det har skjedd en feil
                         </Heading>
                         <Paragraph>
-                            {error}
+                            <span dangerouslySetInnerHTML={{ __html: error }} />
                         </Paragraph>
                     </Alert>
                 )}
@@ -171,11 +254,49 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                             <Textfield
                                 required
                                 label="Personal Access Token (PAT)"
-                                description="Personal Access Token (PAT) for the Gitea"
+                                description="Personal Access Token (PAT) for Gitea"
                                 value={patToken}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPatToken(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    const newToken = e.target.value;
+                                    setPatToken(newToken);
+                                    
+                                    // Optionally save as user types - but better to save only on success
+                                    // if (rememberToken && newToken) {
+                                    //     saveTokenToStorage(newToken, environment);
+                                    // }
+                                }}
                                 type="password"
+                                autoComplete="off"
                             />
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <input
+                                        type="checkbox"
+                                        id="remember-token"
+                                        checked={rememberToken}
+                                        onChange={(e) => setRememberToken(e.target.checked)}
+                                        style={{ marginRight: '8px' }}
+                                    />
+                                    <label htmlFor="remember-token">
+                                        Husk token i nettleseren (Merk: lagres i localStorage)
+                                    </label>
+                                </div>
+                                {getTokenFromStorage(environment) && (
+                                    <Button 
+                                        variant="secondary" 
+                                        size="small"
+                                        onClick={() => {
+                                            clearTokenFromStorage(environment);
+                                            // Only clear the input field if we're not preserving a token for another operation
+                                            if (!rememberToken) {
+                                                setPatToken('');
+                                            }
+                                        }}
+                                    >
+                                        Slett lagret token
+                                    </Button>
+                                )}
+                            </Box>
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
