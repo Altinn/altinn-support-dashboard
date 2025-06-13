@@ -1,5 +1,16 @@
 # Endringslogg
 
+## 2025-06-13 14:35
+### Lagre og hente Gitea-miljø i session storage
+
+**Hva**: Implementert lagring av valgt Gitea-miljø i session storage ved PAT-validering.
+**Hvordan**:
+- Oppdatert `usePatTokenValidation` hook til å lagre valgt miljø i session storage når token valideres
+- Implementert miljøgjenkjenning i `OrganizationCreationComponent` som henter miljø fra session storage
+- Bruker miljøet som ble valgt under PAT-validering for alle API-kall til Gitea
+**Hvorfor**: For å sikre at organisasjonsopprettelse bruker samme Gitea-miljø som PAT-tokenet ble validert for, selv om brukergrensesnittet har et annet miljø valgt.
+
+
 ## 2025-06-13 14:30
 ### Fikset lint-feil og TypeScript-typer i organisasjonsopprettelse
 

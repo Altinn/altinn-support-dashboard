@@ -103,6 +103,9 @@ export const usePatTokenValidation = (environment: string) => {
         // Lagre token i sikker storage (session storage for nå)
         // OBS: I en produksjonsmiljø bør vi vurdere sikrere alternativer
         sessionStorage.setItem(`pat_token_${environment}`, token);
+        
+        // Lagre det valgte miljøet i session storage for bruk i organisasjonsopprettelse
+        sessionStorage.setItem('selected_gitea_environment', environment);
         return true;
       } else {
         setPatState({

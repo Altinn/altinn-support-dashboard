@@ -16,11 +16,23 @@ interface OrganizationCreationProps {
 
 const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ environment }) => {
     const navigate = useNavigate();
+    
+    // Hent miljø fra session storage hvis det er lagret fra PAT-validering
+    // Dette sikrer at vi bruker samme miljø som ble brukt til å validere PAT-token
+    const [activeEnvironment, setActiveEnvironment] = useState<string>(environment);
+    
+    useEffect(() => {
+        const storedEnvironment = sessionStorage.getItem('selected_gitea_environment');
+        if (storedEnvironment) {
+            setActiveEnvironment(storedEnvironment);
+        }
+    }, []);
+    
     const { 
         isCreating, 
         createOrganization, 
         hasValidPatToken 
-    } = useOrganizationCreation(environment);
+    } = useOrganizationCreation(activeEnvironment);
     
     const [formData, setFormData] = useState<OrganizationFormData>({
         shortName: '',
