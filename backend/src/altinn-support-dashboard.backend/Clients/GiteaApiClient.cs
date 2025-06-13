@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using AltinnSupportDashboard.Interfaces;
+using AltinnSupportDashboard.Models.Gitea;
 
 namespace AltinnSupportDashboard.Clients
 {
@@ -117,6 +119,128 @@ namespace AltinnSupportDashboard.Clients
             }
             
             return results.ToString();
+        }
+        
+        /// <summary>
+        /// Creates a default datamodels repository for an organization
+        /// </summary>
+        /// <param name="patToken">Personal Access Token for authentication</param>
+        /// <param name="giteaBaseUrl">Base URL of the Gitea API</param>
+        /// <param name="orgName">Organization name</param>
+        /// <returns>API response as string</returns>
+        public async Task<string> CreateDefaultRepositoryAsync(string patToken, string giteaBaseUrl, string orgName)
+        {
+            var repoOption = new CreateRepositoryOptionModel
+            {
+                Name = "datamodels",
+                Description = "Default repository for data models",
+                Private = false,
+                AutoInit = true,
+                License = "mit",
+                Readme = "Default"
+            };
+            
+            return await CreateRepositoryAsync(patToken, giteaBaseUrl, orgName, repoOption, true);
+        }
+        
+        /// <summary>
+        /// Creates a team in an organization with specific options
+        /// </summary>
+        /// <param name="patToken">Personal Access Token</param>
+        /// <param name="giteaBaseUrl">Base URL of the Gitea instance</param>
+        /// <param name="orgName">Organization name</param>
+        /// <param name="teamOption">Team creation options</param>
+        /// <returns>API response as string</returns>
+        public async Task<string> CreateTeamAsync(string patToken, string giteaBaseUrl, string orgName, CreateTeamOptionModel teamOption)
+        {
+            // In Gitea API v1, the team creation endpoint is POST /api/v1/orgs/{org}/teams
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{giteaBaseUrl}/api/v1/orgs/{orgName}/teams");
+            request.Headers.Add("Authorization", $"token {patToken}");
+            
+            // The model now contains the Units property, so we can directly serialize it
+            // This matches the CLI implementation that works
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+            
+            var content = JsonSerializer.Serialize(teamOption, jsonOptions);
+            request.Content = new StringContent(content, Encoding.UTF8, "application/json");
+            
+            // For debugging
+            Console.WriteLine($"Team creation payload: {content}");
+            
+            var response = await _httpClient.SendAsync(request);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            
+            // Log any error response for debugging
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Team creation failed with status: {response.StatusCode}, Response: {responseContent}");
+            }
+            
+            return responseContent;
+        }
+        
+        /// <summary>
+        /// Creates a repository with specified options
+        /// </summary>
+        /// <param name="patToken">Personal Access Token</param>
+        /// <param name="giteaBaseUrl">Base URL of the Gitea instance</param>
+        /// <param name="orgName">Organization name</param>
+        /// <param name="repositoryOption">Repository creation options</param>
+        /// <param name="prefixWithOrgName">Whether to prefix the repository name with the organization name</param>
+        /// <returns>API response as string</returns>
+        public async Task<string> CreateRepositoryAsync(
+            string patToken, 
+            string giteaBaseUrl, 
+            string orgName, 
+            CreateRepositoryOptionModel repositoryOption, 
+            bool prefixWithOrgName = true)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{giteaBaseUrl}/api/v1/orgs/{orgName}/repos");
+            request.Headers.Add("Authorization", $"token {patToken}");
+            
+            // If prefixWithOrgName is true, add the org name as a prefix to the repository name
+            // This matches the behavior of the CLI tool's CreateRepoForOrgsCommandHandler
+            string repoName = prefixWithOrgName ? $"{orgName}-{repositoryOption.Name}" : repositoryOption.Name;
+            
+            // Create the repository data object - removing license if it's null or empty
+            // to avoid the "license not found" error
+            object repoData;
+            
+            if (string.IsNullOrWhiteSpace(repositoryOption.License))
+            {
+                repoData = new
+                {
+                    name = repoName,
+                    description = repositoryOption.Description,
+                    @private = repositoryOption.Private,
+                    auto_init = repositoryOption.AutoInit,
+                    readme = repositoryOption.Readme ?? "Default"
+                };
+            }
+            else
+            {
+                repoData = new
+                {
+                    name = repoName,
+                    description = repositoryOption.Description,
+                    @private = repositoryOption.Private,
+                    auto_init = repositoryOption.AutoInit,
+                    license = repositoryOption.License,
+                    readme = repositoryOption.Readme ?? "Default"
+                };
+            }
+            
+            var content = JsonSerializer.Serialize(repoData);
+            request.Content = new StringContent(content, Encoding.UTF8, "application/json");
+            
+            var response = await _httpClient.SendAsync(request);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            
+            return responseContent;
         }
     }
 }

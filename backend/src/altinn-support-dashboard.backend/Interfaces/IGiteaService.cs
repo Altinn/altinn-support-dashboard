@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AltinnSupportDashboard.Models.Gitea;
 
 namespace AltinnSupportDashboard.Interfaces
 {
@@ -36,5 +38,59 @@ namespace AltinnSupportDashboard.Interfaces
             string username, 
             string fullname, 
             string website);
+            
+        /// <summary>
+        /// Creates a single team in an organization
+        /// </summary>
+        /// <param name="patToken">Personal Access Token</param>
+        /// <param name="giteaBaseUrl">Base URL of the Gitea instance</param>
+        /// <param name="orgName">Organization name</param>
+        /// <param name="teamOption">Team creation options</param>
+        /// <returns>Operation result with success status, message, and response data</returns>
+        Task<(bool success, string message, object result)> CreateTeamAsync(
+            string patToken,
+            string giteaBaseUrl,
+            string orgName,
+            CreateTeamOptionModel teamOption);
+            
+        /// <summary>
+        /// Creates all default teams for an organization
+        /// </summary>
+        /// <param name="patToken">Personal Access Token</param>
+        /// <param name="giteaBaseUrl">Base URL of the Gitea instance</param>
+        /// <param name="orgName">Organization name</param>
+        /// <returns>Operation result with success status, message, and response data</returns>
+        Task<(bool success, string message, IList<object> results)> CreateDefaultTeamsAsync(
+            string patToken,
+            string giteaBaseUrl,
+            string orgName);
+            
+        /// <summary>
+        /// Creates a repository with specified options
+        /// </summary>
+        /// <param name="patToken">Personal Access Token</param>
+        /// <param name="giteaBaseUrl">Base URL of the Gitea instance</param>
+        /// <param name="orgName">Organization name</param>
+        /// <param name="repositoryOption">Repository creation options</param>
+        /// <param name="prefixWithOrgName">Whether to prefix the repository name with the organization name</param>
+        /// <returns>Operation result with success status, message, and response data</returns>
+        Task<(bool success, string message, object result)> CreateRepositoryAsync(
+            string patToken,
+            string giteaBaseUrl,
+            string orgName,
+            CreateRepositoryOptionModel repositoryOption,
+            bool prefixWithOrgName = true);
+            
+        /// <summary>
+        /// Gets a list of default team options
+        /// </summary>
+        /// <returns>List of default team options</returns>
+        IList<CreateTeamOptionModel> GetDefaultTeamOptions();
+        
+        /// <summary>
+        /// Gets default repository option for datamodels repository
+        /// </summary>
+        /// <returns>Repository options configured for datamodels repository</returns>
+        CreateRepositoryOptionModel GetDefaultRepositoryOption();
     }
 }
