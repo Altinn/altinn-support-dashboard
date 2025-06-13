@@ -395,9 +395,11 @@ namespace altinn_support_dashboard.Server.Services
                 var user = await _giteaApiClient.GetAuthenticatedUser(environmentName);
 
                 // Opprett repository under den autentiserte brukeren
+                string repoName = $"{orgName}-datamodels";
                 var repoRequest = new GiteaRepositoryCreate
                 {
-                    Name = "datamodels",
+                    Name = repoName,
+                    Description = $"Standard datamodell-repository for {orgName}",
                     AutoInit = true,
                     DefaultBranch = "main",
                     Private = false
@@ -413,7 +415,7 @@ namespace altinn_support_dashboard.Server.Services
                 var transferredRepo = await _giteaApiClient.TransferRepository(
                     environmentName, 
                     user.Username, 
-                    "datamodels", 
+                    repoName, 
                     transferRequest);
 
                 return new OrganizationCreationResult

@@ -1,5 +1,15 @@
 # Endringslogg
 
+## 2025-06-13 10:12
+### Oppdatert navngivningsformat for standard datamodell-repository
+
+**Hva**: Endret navngivning av standard datamodell-repository til "{kortnavn}-datamodels" format med beskrivelse.
+**Hvordan**: 
+- Oppdatert CreateDefaultRepository-metoden til å bruke organisasjonens kortnavn i reponavnet
+- Lagt til Description-felt i GiteaRepositoryCreate-modellen
+- Implementert beskrivende tekst for standard repository 
+**Hvorfor**: For å forbedre sporbarhet og søkbarhet av datamodell-repositories på tvers av organisasjoner i Gitea.
+
 ## 2025-06-13 10:05
 ### Lagt til nødvendig Units-felt for Gitea team-opprettelse
 

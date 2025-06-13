@@ -171,6 +171,9 @@ namespace altinn_support_dashboard.Server.Models.Gitea
     {
         [JsonPropertyName("name")]
         public required string Name { get; set; }
+        
+        [JsonPropertyName("description")]
+        public string? Description { get; set; }
 
         [JsonPropertyName("auto_init")]
         public bool AutoInit { get; set; } = true;
