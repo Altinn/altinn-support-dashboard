@@ -1,5 +1,24 @@
 # Endringslogg
 
+## 2025-06-13 10:05
+### Lagt til nødvendig Units-felt for Gitea team-opprettelse
+
+**Hva**: Korrigerte manglende Units-felt i team-opprettelsesprosessen.
+**Hvordan**: 
+- La til Units-felt i GiteaTeamCreate-modellen basert på RepoCleanup implementasjon
+- Inkluderte standardverdier for repository-tilganger (code, issues, wiki, pulls, etc.)
+**Hvorfor**: Gitea API krever at Units-feltet spesifiseres for å definere hvilke repository-komponenter teamet skal ha tilgang til. Mangel på dette feltet forårsaket 500 Internal Server Error.
+
+## 2025-06-13 09:55
+### Fikset team-opprettelse i Gitea organisasjonsprosess
+
+**Hva**: Korrigerte feil ved opprettelse av team under organisasjonsopprettelse i Gitea.
+**Hvordan**: 
+- La til manglende `units_permission` felt i GiteaTeamCreate-modellen
+- Satte korrekte verdier for UnitsPermission og CanCreateOrgRepo for alle standardteam
+- Fulgte samme mønster som i RepoCleanup-verktøyet for å sikre kompatibilitet
+**Hvorfor**: Gitea API krever units_permission-feltet for team-opprettelse, og mangelen på dette feltet forårsaket 500 Internal Server Error ved opprettelse av Datamodels-teamet.
+
 ## 2025-06-12 14:30
 ### Fikset byggfeil i backend for organisasjonsopprettelse
 

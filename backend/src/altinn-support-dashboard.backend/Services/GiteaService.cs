@@ -308,30 +308,38 @@ namespace altinn_support_dashboard.Server.Services
                 new GiteaTeamCreate
                 {
                     Name = "Deploy-Production",
-                    Description = "Members can deploy to production",
+                    Description = "Team med tilgang til å deploye til produksjonsmiljø",
                     Permission = "read",
-                    IncludesAllRepositories = false
+                    UnitsPermission = "read",
+                    IncludesAllRepositories = false,
+                    CanCreateOrgRepo = false
                 },
                 new GiteaTeamCreate
                 {
                     Name = "Deploy-TT02",
-                    Description = "Members can deploy to TT02",
+                    Description = "Team med tilgang til å deploye til testmiljø",
                     Permission = "read",
-                    IncludesAllRepositories = false
+                    UnitsPermission = "read",
+                    IncludesAllRepositories = false,
+                    CanCreateOrgRepo = false
                 },
                 new GiteaTeamCreate
                 {
                     Name = "Devs",
                     Description = "All application developers",
                     Permission = "write",
-                    IncludesAllRepositories = true
+                    UnitsPermission = "write",
+                    IncludesAllRepositories = true,
+                    CanCreateOrgRepo = true
                 },
                 new GiteaTeamCreate
                 {
                     Name = "Datamodels",
                     Description = "Team for those who can work on an organizations shared data models",
                     Permission = "write",
-                    IncludesAllRepositories = false
+                    UnitsPermission = "write",
+                    IncludesAllRepositories = false,
+                    CanCreateOrgRepo = false
                 }
             };
 

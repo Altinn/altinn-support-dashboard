@@ -129,9 +129,18 @@ namespace altinn_support_dashboard.Server.Models.Gitea
 
         [JsonPropertyName("permission")]
         public required string Permission { get; set; }
+        
+        [JsonPropertyName("units_permission")]
+        public required string UnitsPermission { get; set; }
 
         [JsonPropertyName("includes_all_repositories")]
         public bool IncludesAllRepositories { get; set; }
+
+        [JsonPropertyName("can_create_org_repo")]
+        public bool CanCreateOrgRepo { get; set; }
+        
+        [JsonPropertyName("units")]
+        public List<string> Units { get; set; } = new List<string> { "repo.code", "repo.issues", "repo.ext_issues", "repo.wiki", "repo.pulls", "repo.releases", "repo.ext_wiki" };
     }
 
     /// <summary>
