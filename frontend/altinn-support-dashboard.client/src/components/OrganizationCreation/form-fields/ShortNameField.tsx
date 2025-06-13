@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Textfield, Paragraph, Tooltip } from '@digdir/designsystemet-react';
-import { useOrganizationCreation } from '../hooks/useOrganizationCreation';
 
 interface ShortNameFieldProps {
     value: string;
     onChange: (value: string) => void;
     error?: string;
-    environment: string;
+    isCheckingName: boolean;
+    nameExists: boolean | null;
+    checkNameExists: (name: string) => Promise<boolean>;
 }
 
 export const ShortNameField: React.FC<ShortNameFieldProps> = ({ 
     value, 
     onChange, 
     error,
-    environment
+    isCheckingName,
+    nameExists,
+    checkNameExists
 }) => {
-    const { isCheckingName, checkNameExists, nameExists } = useOrganizationCreation(environment);
     const [debouncedValue, setDebouncedValue] = useState(value);
     
     // Debounce input for name check
@@ -29,17 +31,30 @@ export const ShortNameField: React.FC<ShortNameFieldProps> = ({
     
     // Check if name exists after debounce
     useEffect(() => {
-        if (debouncedValue && debouncedValue.length >= 2) {
-            checkNameExists(debouncedValue);
-        }
+        const checkName = async () => {
+            if (debouncedValue && debouncedValue.length >= 2) {
+                await checkNameExists(debouncedValue);
+            }
+        };
+        
+        checkName();
     }, [debouncedValue, checkNameExists]);
     
-    const getHelperText = () => {
-        if (error) return error;
-        if (isCheckingName) return "Sjekker om navnet er tilgjengelig...";
-        if (nameExists === true) return "Dette navnet er allerede i bruk";
-        if (nameExists === false && value.length >= 2) return "Navnet er tilgjengelig";
-        return "2-5 tegn, små bokstaver/tall. Kan inneholde bindestrek (-)";
+    // Helper for status messages below the input
+    const getStatusMessage = () => {
+        if (error) {
+            return { text: error, color: "#D41E1E" }; // Red for error
+        }
+        if (isCheckingName) {
+            return { text: "Sjekker om navnet er tilgjengelig...", color: "#6A6A6A" }; // Gray for checking
+        }
+        if (nameExists === true) {
+            return { text: `Organisasjonen '${value}' eksisterer allerede i Altinn Studio.`, color: "#D41E1E" }; // Red for exists
+        }
+        if (nameExists === false && value.length >= 2) {
+            return { text: "Navnet er tilgjengelig", color: "#2D8659" }; // Green for available
+        }
+        return { text: "2-5 tegn, små bokstaver/tall. Kan inneholde bindestrek (-)", color: "#6A6A6A" }; // Gray for default
     };
     
     return (
@@ -56,12 +71,18 @@ export const ShortNameField: React.FC<ShortNameFieldProps> = ({
             <Textfield
                 value={value}
                 onChange={(e) => onChange(e.target.value.toLowerCase())}
-                size="medium"
                 style={{ width: '100%' }}
-                errorMessage={error || (nameExists ? "Dette navnet er allerede i bruk" : undefined)}
-                helperText={!error && !nameExists ? getHelperText() : undefined}
+                hideLabel
                 disabled={isCheckingName}
             />
+            <div style={{ 
+                fontSize: '14px', 
+                marginTop: '4px', 
+                color: getStatusMessage().color,
+                transition: 'color 0.3s ease'
+            }}>
+                {getStatusMessage().text}
+            </div>
         </div>
     );
 };

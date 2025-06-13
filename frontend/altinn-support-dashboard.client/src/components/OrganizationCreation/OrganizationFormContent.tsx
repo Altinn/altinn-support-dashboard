@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { 
     Heading, 
     Paragraph
@@ -9,8 +9,9 @@ import { FullNameField } from './form-fields/FullNameField';
 import { WebsiteUrlField } from './form-fields/WebsiteUrlField';
 import { EmailDomainField } from './form-fields/EmailDomainField';
 import { OrgNumberField } from './form-fields/OrgNumberField';
-import { OwnersField } from './form-fields/OwnersField';
 import { LogoUploadField } from './form-fields/LogoUploadField';
+import { EnvironmentInfoField } from './form-fields/EnvironmentInfoField';
+import { useOrganizationCreation } from './hooks/useOrganizationCreation';
 
 interface OrganizationFormContentProps {
     formData: OrganizationFormData;
@@ -25,6 +26,27 @@ export const OrganizationFormContent: React.FC<OrganizationFormContentProps> = (
     errors,
     environment
 }) => {
+    // Bruk én instans av useOrganizationCreation-hooken for hele skjemaet
+    const { 
+        activeEnvironment,
+        isCheckingName, 
+        nameExists,
+        hasValidPatToken,
+        checkNameExists 
+    } = useOrganizationCreation(environment);
+    
+    // Memoiser checkNameExists-funksjonen for å redusere unødvendige API-kall
+    const debouncedCheckNameExists = useCallback(
+        async (name: string): Promise<boolean> => {
+            // Kjør bare API-kall hvis navnet er langt nok
+            if (name && name.length >= 2) {
+                return await checkNameExists(name);
+            }
+            return false;
+        },
+        [checkNameExists]
+    );
+    
     const handleInputChange = (field: keyof OrganizationFormData, value: string | string[] | File | null) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
@@ -45,7 +67,9 @@ export const OrganizationFormContent: React.FC<OrganizationFormContentProps> = (
                     value={formData.shortName}
                     onChange={(value: string) => handleInputChange('shortName', value)}
                     error={errors.shortName}
-                    environment={environment}
+                    isCheckingName={isCheckingName}
+                    nameExists={nameExists}
+                    checkNameExists={debouncedCheckNameExists}
                 />
                 
                 <FullNameField 
@@ -60,10 +84,9 @@ export const OrganizationFormContent: React.FC<OrganizationFormContentProps> = (
                     error={errors.websiteUrl}
                 />
                 
-                <OwnersField 
-                    value={formData.owners}
-                    onChange={(value: string[]) => handleInputChange('owners', value)}
-                    error={errors.owners}
+                <EnvironmentInfoField 
+                    activeEnvironment={activeEnvironment}
+                    hasValidPatToken={hasValidPatToken()}
                 />
                 
                 <EmailDomainField 

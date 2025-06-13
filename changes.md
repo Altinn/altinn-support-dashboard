@@ -1,5 +1,42 @@
 # Endringslogg
 
+## 2025-06-13 16:49
+### Forbedret visning av feiltilstander og miljøinformasjon i organisasjonsopprettelse
+
+**Hva**: Forbedret brukeropplevelsen for organisasjonsopprettelse med tydeligere feilmeldinger og miljøinformasjon.
+**Hvordan**: 
+- Forbedret visning av kortnavn-validering med fargekoding (rød for feil, grønn for tilgjengelig)
+- Erstattet unødvendig "Eiere"-felt med ny "Miljøinformasjon"-komponent
+- Implementert statusindikator for PAT-token med visuell tilbakemelding (grønn hake/rødt kryss)
+- Viser tydelig hvilket miljø (dev, test, prod) organisasjonen vil opprettes i
+- Lagt til informativ tekst om at PAT-tokenet vil være eier av organisasjonen
+- Sikret konsekvent feilhåndtering med nullsjekk for shortNameError
+**Hvorfor**: For å gi brukerne umiddelbar og tydelig tilbakemelding på feil, særlig når organisasjonsnavn allerede eksisterer, samt forenkle grensesnittet ved å fjerne unødvendige felt og vise relevant miljøkontekst.
+
+## 2025-06-13 16:10
+### Fikset feil i API-URL konstruksjon for organisasjonsopprettelse
+
+**Hva**: Fikset problem med dobbel "api" i URL-bane som forårsaket feil i API-kall.
+**Hvordan**: 
+- Erstattet bruk av `getBaseUrl()` med en lokal `getCorrectBaseUrl()` funksjon i `useOrganizationCreation.ts`
+- Fjernet den ekstra "api/Production" segmentet som ble lagt til i URL-ene
+- Sikret konsistent URL-format for alle API-kall i organisasjonsopprettelsesprosessen
+**Hvorfor**: For å løse problemet der frontend gjorde API-kall til feil endepunkt (f.eks. `https://localhost:7174/api/Production/api/gitea/development/organizations/fd/exists`) som førte til feil i kommunikasjonen med backend.
+
+
+## 2025-06-13 14:58
+### Fikset problem med overdreven API-kall ved organisasjonsopprettelse
+
+**Hva**: Løst problem med gjentatte API-kall til Gitea for organisasjonsnavn-validering ved hver tastetrykk i skjemaet.
+**Hvordan**: 
+- Omstrukturert `useOrganizationCreation` hook med effektiv debouncing og memoization
+- Lagt til sjekk som forhindrer API-kall hvis navn er for kort eller identisk med forrige sjekk
+- Implementert bedre håndtering av HTTP 404-svar fra Gitea API
+- Endret `ShortNameField` til å motta sjekke-funksjonaliteten som props i stedet for å opprette egen hook-instans
+- Fikset JSON-parsing og feilhåndtering for tomme svar
+**Hvorfor**: For å forhindre overdrevent mange API-kall som ble utført når brukeren skrev i skjemaet, forbedre ytelsen og redusere belastningen på Gitea API-serveren.
+
+
 ## 2025-06-13 14:35
 ### Lagre og hente Gitea-miljø i session storage
 
