@@ -129,6 +129,26 @@ const Sidebar: React.FC<Omit<SidebarProps, "isEnvDropdownOpen" | "toggleEnvDropd
                         )}
                     </NavLink>
                     <NavLink
+                        to="/gitea"
+                        className={({ isActive }) => `nav-button ${isActive ? 'selected' : ''}`}
+                        style={{
+                            textDecoration: 'none',
+                            position: 'relative',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            margin: isCollapsed ? '0 0 10px 0' : undefined
+                        }}
+                    >
+                        {!isCollapsed ? (
+                            'Gitea'
+                        ) : (
+                            <Tooltip title="Gitea" placement="right" arrow>
+                                <Search sx={{ color: 'inherit', fontSize: 24 }} />
+                            </Tooltip>
+                        )}
+                    </NavLink>
+                    <NavLink
                         to="/settings"
                         className={({ isActive }) => `nav-button ${isActive ? 'selected' : ''}`}
                         style={{
