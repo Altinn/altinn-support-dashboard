@@ -8,12 +8,12 @@ namespace AltinnSupportDashboard.Models.Gitea
     public class CreateOrganizationRequestModel
     {
         /// <summary>
-        /// The short username for the organization
+        /// The short name for the organization
         /// Must start with a lowercase letter, contain only lowercase letters, numbers, or hyphens, and end with a letter or number
         /// </summary>
-        [Required(ErrorMessage = "Organization username is required")]
-        [RegularExpression("^[a-z]+[a-z0-9-]*[a-z0-9]$", ErrorMessage = "Username must start with a lowercase letter, contain only lowercase letters, numbers, or hyphens, and end with a letter or number")]
-        public string Username { get; set; }
+        [Required(ErrorMessage = "Organization short name is required")]
+        [RegularExpression("^[a-z]+[a-z0-9-]*[a-z0-9]$", ErrorMessage = "Short name must start with a lowercase letter, contain only lowercase letters, numbers, or hyphens, and end with a letter or number")]
+        public string ShortName { get; set; }
         
         /// <summary>
         /// The full name of the organization
