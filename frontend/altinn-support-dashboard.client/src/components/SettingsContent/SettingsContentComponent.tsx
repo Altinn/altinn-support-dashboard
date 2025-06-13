@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Switch,
     Typography,
@@ -8,6 +8,7 @@ import {
     FormControl,
     InputLabel,
     Select as MuiSelect,
+    Button as MuiButton,
     MenuItem,
 } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
@@ -82,7 +83,13 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
     };
 
     return (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ 
+            p: 2, 
+            height: '100%',
+            overflow: 'auto',
+            maxHeight: 'calc(100vh - 80px)', // Subtract header height
+            overflowX: 'hidden'
+        }}>
             <Heading level={2} data-size="md">Generelle innstillinger</Heading>
 
             {/* Organisation Setup Section */}
@@ -200,18 +207,18 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
             
             {/* Action Buttons */}
             <Box sx={{ mb: 3 }}>
-                <Button 
+                <MuiButton 
                     variant="secondary"
                     onClick={handleReload} 
                     style={{ marginRight: '12px' }}
                 >
                     Last inn på nytt
-                </Button>
-                <Button 
+                </MuiButton>
+                <MuiButton 
                     onClick={handleLogout}
                 >
                     Logg ut
-                </Button>
+                </MuiButton>
             </Box>
             
             {/* App Info Footer */}

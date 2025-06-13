@@ -1,5 +1,15 @@
 # Endringslogg
 
+## 2025-06-13 12:45
+### Lagt til skrollbar innstillingsside
+
+**Hva**: Implementert skrollefunksjonalitet på innstillingssiden.
+**Hvordan**: 
+- Lagt til CSS-egenskaper for container: height, overflow, maxHeight
+- Justert for riktig høyde basert på viewport med hensyn til header
+- Skjuler horisontal skrolling for en renere brukeropplevelse
+**Hvorfor**: For å gjøre siden brukervennlig når innholdet er for stort for skjermhøyden, spesielt viktig med økende antall innstillingsalternativer.
+
 ## 2025-06-13 12:30
 ### Lagt til miljøvelger for Gitea validering
 
