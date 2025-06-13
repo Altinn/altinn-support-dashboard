@@ -84,6 +84,19 @@ const clearTokenFromStorage = (env: GiteaEnvironment) => {
     }
 };
 
+// Format website URL to ensure it has a protocol prefix, implement backend later
+const formatWebsiteUrl = (url: string): string => {
+    if (!url) return '';
+    
+    // If URL already has a protocol, return as is
+    if (url.match(/^https?:\/\//i)) {
+        return url;
+    }
+    
+    // Otherwise, prepend https://
+    return `https://${url}`;
+};
+
 const GiteaComponent: React.FC<GiteaComponentProps> = () => {
     const [shortName, setShortName] = useState('');
     const [fullName, setFullName] = useState('');
@@ -141,7 +154,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                     giteaBaseUrl,
                     shortName,
                     fullname: fullName,
-                    website: website || undefined
+                    website: formatWebsiteUrl(website) || undefined
                 }),
             });
 
@@ -244,8 +257,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                         <Grid item xs={12}>
                             <Textfield
                                 label="Website"
-                                description="Website of the organization"
-                                type="url"
+                                description="Website of the organization (med eller uten https://)"
                                 value={website}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWebsite(e.target.value)}
                             />
