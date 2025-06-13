@@ -5,6 +5,7 @@ import SearchComponent from '../components/TopSearchBar/TopSearchBarComponent';
 import MainContent from '../components/MainContent/MainContentComponent';
 import SettingsContentComponent from '../components/SettingsContent/SettingsContentComponent';
 import ManualRoleSearchComponent from '../components/ManualRoleSearch/ManualRoleSearchComponent';
+import OrganizationCreationComponent from '../components/OrganizationCreation/OrganizationCreationComponent';
 import SignOutPage from '../SignOutPage/SignOutPage';
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -162,6 +163,14 @@ const App: React.FC = () => {
                             <Route
                                 path="/manualrolesearch"
                                 element={<ManualRoleSearchComponent baseUrl={getBaseUrl(environment)} />}
+                            />
+                            <Route
+                                path="/process"
+                                element={
+                                    <OrganizationCreationComponent
+                                        environment={environment}
+                                    />
+                                }
                             />
                             <Route
                                 path="/settings"

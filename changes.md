@@ -1,5 +1,41 @@
 # Endringslogg
 
+## 2025-06-13 14:30
+### Fikset lint-feil og TypeScript-typer i organisasjonsopprettelse
+
+**Hva**: Fikset flere lint-feil og TypeScript typefeil i organisasjonsopprettelseskomponentene.
+**Hvordan**: 
+- Oppdatert `validateForm` funksjon i `validationUtils.ts` med valgfri `isSubmitted` parameter
+- Forbedret betinget validering som bare validerer valgfrie felt hvis skjemaet er sendt eller feltene har verdier
+- Lagt til riktige HTTP-headere (Authorization med PAT-token) i API-kall i `useOrganizationCreation`
+- Erstattet `any` type med `unknown` for bedre feilhåndtering
+- Fikset prop-typer i `WebsiteUrlField` og `OwnersField` komponenter
+- Implementert skjemavalidering basert på formSubmitted-tilstand i `OrganizationCreationComponent`
+**Hvorfor**: For å sikre at kodebasen bygger uten feil, forbedre typesikkerhet, og implementere riktig validering og API-kall med autentisering.
+
+## 2025-06-13 14:15
+### Implementert frontend for organisasjonsopprettelse
+
+**Hva**: Utviklet komplette brukergrensesnitt-komponenter for opprettelse av organisasjoner i Altinn Studio.
+**Hvordan**:
+- Opprettet ny sideroute `/process` med OrganizationCreationComponent
+- Implementert skjema med følgende valideringsstyrte felt:
+  - Kortnavn (2-5 tegn, små bokstaver, må være unikt)
+  - Fullt navn (kan ikke være kun store bokstaver)
+  - Nettside URL (valgfri, må være gyldig URL-format)
+  - Eiere (liste av Gitea-brukernavn)
+  - E-postdomene (for automatisk tilgangskontroll)
+  - Organisasjonsnummer (med Brreg-oppslag)
+  - Logo-opplasting (med bildeforhåndsvisning)
+- Utviklet custom hooks for API-integrasjon:
+  - `useOrganizationCreation` for skjemahåndtering og API-integrasjon
+  - `useBrregSearch` for søk mot Brønnøysundregistrene
+- Lagt til integrert validering med umiddelbar tilbakemelding til brukeren
+- Koblet PAT-validering mot Gitea for sikker organisasjonsopprettelse
+**Hvorfor**: For å gi brukere en intuitiv, brukervennlig måte å opprette nye organisasjoner i Altinn Studio, med validering og sikker kobling til Gitea API.
+
+
+
 ## 2025-06-13 13:20
 ### Lagt til "Generer et nytt PAT-token" knapp med direkte lenke
 
