@@ -1,5 +1,27 @@
 # Endringslogg
 
+## 2025-06-13 12:30
+### Lagt til miljøvelger for Gitea validering
+
+**Hva**: Implementert en miljøvelger for å velge hvilket Gitea-miljø man ønsker å validere PAT-token mot.
+**Hvordan**: 
+- Lagt til en NativeSelect-komponent fra Digdir Designsystem for miljøvalg
+- Koblet miljøvalg direkte til validering av PAT-token
+- Sørget for at token og validering nullstilles ved miljøbytte
+- Implementert med "Development" som default og eneste alternativ for nå
+**Hvorfor**: For å kunne velge riktig Gitea-miljø ved validering av PAT-token og sikre at token er gyldig i det aktuelle miljøet.
+
+## 2025-06-13 11:45
+### Lagt til PAT-token validering i innstillinger
+
+**Hva**: Implementert et nytt organisasjonsoppsett-område i innstillingssiden for å registrere og validere PAT-token.
+**Hvordan**: 
+- Opprettet en ny seksjon i innstillingssiden med Digdir Designsystem
+- Lagt til custom hook for PAT-token validering
+- Implementert sikker lagring av PAT-token i session storage
+- Validering av token mot backend før brukeren kan gå videre med organisasjonsoppretting
+**Hvorfor**: For å sikre at brukere har gyldig autentisering før de forsøker å opprette organisasjoner i Gitea.
+
 ## 2025-06-13 10:12
 ### Oppdatert navngivningsformat for standard datamodell-repository
 
