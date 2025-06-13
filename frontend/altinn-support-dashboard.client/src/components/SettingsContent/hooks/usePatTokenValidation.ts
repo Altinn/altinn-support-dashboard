@@ -1,17 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PatTokenState, PatTokenValidationResponse } from '../models/settingsTypes';
+import { getBaseUrl } from '../../../utils/utils';
 
 /**
  * Hook for håndtering av PAT-token validering og lagring
  */
 export const usePatTokenValidation = (environment: string) => {
-  const [patState, setPatState] = useState<PatTokenState>({
-    token: '',
-    isValid: false,
-    isValidating: false,
-    username: undefined,
-    errorMessage: undefined,
+  // Initialiser state med eventuell lagret token fra sessionStorage
+  const [patState, setPatState] = useState<PatTokenState>(() => {
+    const savedToken = sessionStorage.getItem(`pat_token_${environment}`);
+    return {
+      token: savedToken || '',
+      isValid: !!savedToken, // Antar at en lagret token er gyldig
+      isValidating: false,
+      username: undefined,
+      errorMessage: undefined,
+    };
   });
+  
+  // Oppdater state hvis environment endres
+  useEffect(() => {
+    const savedToken = sessionStorage.getItem(`pat_token_${environment}`);
+    if (savedToken) {
+      setPatState({
+        token: savedToken,
+        isValid: true,
+        isValidating: false,
+        username: undefined,
+        errorMessage: undefined,
+      });
+    } else {
+      // Reset state hvis ingen token funnet for dette miljøet
+      setPatState({
+        token: '',
+        isValid: false,
+        isValidating: false,
+        username: undefined,
+        errorMessage: undefined,
+      });
+    }
+  }, [environment]);
 
   /**
    * Validerer PAT-token mot API
@@ -31,8 +59,11 @@ export const usePatTokenValidation = (environment: string) => {
     try {
       setPatState({ ...patState, token, isValidating: true });
       
-      // Kall API-endepunkt for å validere token
-      const response = await fetch(`/api/gitea/${environment}/validate-token`, {
+      // Hent riktig base URL for API-kall
+      const baseUrl = getBaseUrl(environment);
+      
+      // Kall API-endepunkt for å validere token med riktig port
+      const response = await fetch(`${baseUrl.replace(`/${environment === 'TT02' ? 'TT02' : 'Production'}`, '')}/gitea/${environment}/validate-token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

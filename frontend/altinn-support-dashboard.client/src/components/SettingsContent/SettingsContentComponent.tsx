@@ -11,6 +11,7 @@ import {
     Button as MuiButton,
     MenuItem,
 } from '@mui/material';
+import { EyeIcon, EyeClosedIcon, QuestionmarkIcon } from '@navikt/aksel-icons';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { FaSlack, FaBookOpen } from 'react-icons/fa';
 import { SettingsContentProps } from './models/settingsTypes';
@@ -41,15 +42,14 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
     
     const [language, setLanguage] = useState<string>('nb');
     const [patInput, setPatInput] = useState<string>('');
-
-    // Sjekk om det allerede finnes en lagret token og hent den ved oppstart
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    
+    // Last inn lagret PAT token fra sessionStorage ved oppstart
     useEffect(() => {
-        const storedToken = sessionStorage.getItem(`pat_token_${environment}`);
-        if (storedToken) {
-            setPatInput(storedToken);
-            validateToken(storedToken);
+        if (patState.token) {
+            setPatInput(patState.token);
         }
-    }, [environment, validateToken]);
+    }, [patState.token]);
 
     const handleReload = () => {
         window.location.reload();
@@ -90,7 +90,8 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
             maxHeight: 'calc(100vh - 80px)', // Subtract header height
             overflowX: 'hidden'
         }}>
-            <Heading level={2} data-size="md">Generelle innstillinger</Heading>
+            <Heading level={2} data-size="md">Innstillinger</Heading>
+            <br />
 
             {/* Organisation Setup Section */}
             <Paper sx={{ p: 3, mb: 4 }}>
@@ -116,7 +117,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
                                 setPatInput('');
                             }}
                         >
-                            <option value="development">Development</option>
+                            <option value="development">Development (dev.altinn.studio)</option>
                         </Select>
                     </div>
                 </Box>
@@ -125,21 +126,80 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
                     <Paragraph data-size="sm" style={{ fontWeight: 'bold', marginBottom: '8px' }}>
                         Personal Access Token (PAT)
                     </Paragraph>
-                    <Textfield
-       
-                        value={patInput}
-                        onChange={handlePatInputChange}
-                        type="password"
-                        size="medium"
-                        style={{ width: '100%', marginBottom: '16px' }}
-                        error={patState.errorMessage ? true : false}
-                        errorMessage={patState.errorMessage}
-                        disabled={patState.isValidating}
-                    />
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', marginBottom: '16px' }}>
+                        <Textfield
+                            value={patInput}
+                            onChange={handlePatInputChange}
+                            type={showPassword ? 'text' : 'password'}
+                            size="medium"
+                            style={{ flex: 1 }}
+                            errorMessage={patState.errorMessage}
+                            disabled={patState.isValidating}
+                        />
+                        <Button
+                            variant="tertiary"
+                            onClick={() => setShowPassword(!showPassword)}
+                            style={{ 
+                                marginTop: '2px', 
+                                padding: '6px', 
+                                minWidth: 'unset',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                height: '32px'
+                            }}
+                            aria-label={showPassword ? 'Skjul passord' : 'Vis passord'}
+                        >
+                            {showPassword ? 
+                                <EyeIcon title="Skjul passord" fontSize="1.2rem" /> : 
+                                <EyeClosedIcon title="Vis passord" fontSize="1.2rem" />}
+                        </Button>
+                    </div>
                     
-                    <Tooltip content="PAT-token brukes for å opprette organisasjoner, teams og repositories i Gitea. Denne må opprettes i Gitea med admin-tilgang." placement="top">
-                        <Paragraph>Hva er en PAT-token?</Paragraph>
-                    </Tooltip>
+                    <div style={{ display: 'flex', alignItems: 'center', marginTop: '8px', gap: '8px' }}>
+                        <Tooltip content="PAT-token brukes for å opprette organisasjoner, teams og repositories i Gitea. Denne må opprettes med admin-tilgang." placement="top">
+                            <Button 
+                                variant="tertiary" 
+                                style={{ 
+                                    padding: '4px 8px', 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '4px',
+                                    fontSize: '14px'
+                                }}
+                            >
+                                Hva er en PAT-token?
+                            </Button>
+                        </Tooltip>
+                        <Button 
+                            variant="tertiary" 
+                            style={{ 
+                                padding: '4px 8px', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '4px',
+                                fontSize: '14px'
+                            }}
+                            onClick={() => {
+                                const baseUrl = giteaEnv === 'development' 
+                                    ? 'https://dev.altinn.studio' 
+                                    : 'https://altinn.studio';
+                                window.open(`${baseUrl}/repos/user/settings/applications`, '_blank', 'noopener,noreferrer');
+                            }}
+                        >
+                            Generer et nytt PAT-token
+                        </Button>
+                    </div>
+                    {patState.isValid && (
+                        <Alert data-color="success" style={{ marginTop: '16px' }}>
+                            PAT-token er validert.
+                        </Alert>
+                    )}
+                    {!patState.isValid && patState.errorMessage && (
+                        <Alert data-color="danger" style={{ marginTop: '16px' }}>
+                            {patState.errorMessage}
+                        </Alert>
+                    )}
                 </Box>
                 
                 <Box sx={{ display: 'flex', gap: '16px' }}>
@@ -166,11 +226,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
                     </Button>
                 </Box>
                 
-                {patState.isValid && (
-                    <Alert severity="success" style={{ marginTop: '16px' }}>
-                        PAT-token er validert! Logget inn som: {patState.username}
-                    </Alert>
-                )}
+
             </Paper>
 
             {/* Språkvalg Section */}

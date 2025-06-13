@@ -1,5 +1,69 @@
 # Endringslogg
 
+## 2025-06-13 13:20
+### Lagt til "Generer et nytt PAT-token" knapp med direkte lenke
+
+**Hva**: Erstattet informasjonsknapp med en knapp som sender brukeren direkte til siden for å genere PAT-token.
+**Hvordan**: 
+- Implementert Button-komponent med onClick-handler
+- Lagt til logikk som tilpasser URL basert på valgt miljø (development/production)
+- Åpner i ny fane med window.open() og sikre parametere
+- URL tilpasses slik at dev.altinn.studio brukes for development-miljø og altinn.studio for produksjon
+**Hvorfor**: For å gjøre det enklere for brukeren å generere et nytt PAT-token uten å måtte lete seg fram til riktig side selv.
+
+## 2025-06-13 13:16
+### Lagt til "Hvordan får jeg et PAT-token?" hjelpeknapp
+
+**Hva**: Lagt til en ekstra hjelpeknapp som forklarer hvordan man får tak i et PAT-token.
+**Hvordan**: 
+- Lagt til et nytt Button-komponent med samme stil som den eksisterende hjelpeknappen
+- Implementert en Tooltip med trinnvis forklaring på hvordan man får tak i token
+- Plassert knappene ved siden av hverandre med passende mellomrom
+**Hvorfor**: For å gi brukeren lettere tilgang til informasjon om hvordan de får tak i PAT-token, uten å måtte lete etter dette i ekstern dokumentasjon.
+
+## 2025-06-13 12:53
+### Forbedret "Hva er PAT-token?" hjelpeknapp
+
+**Hva**: Redesignet "Hva er en PAT-token?" hjelp til en mer knappelignende komponent.
+**Hvordan**: 
+- Brukt Digdir Button-komponent med tertiary variant
+- Lagt til QuestionmarkIcon fra Aksel-ikonpakken
+- Stylet knappen for bedre synlighet og konsistent utseende
+- Beholdt tooltipfunksjonalitet som forklarer PAT-token
+**Hvorfor**: For å gi brukeren en mer intuitiv måte å få hjelp på, og forbedre det visuelle uttrykket på innstillingssiden.
+
+## 2025-06-13 12:50
+### Forbedret visning/skjuling av PAT-token med separat knapp
+
+**Hva**: Videreutviklet funksjonalitet for å vise eller skjule PAT-token teksten.
+**Hvordan**: 
+- Flyttet øye-ikonet fra innsiden av input-feltet til en egen knapp
+- Brukt Digdir Designsystem Button-komponent med tertiary variant
+- Implementert tilstandsstyring med showPassword state
+- Stylet knappen for bedre plassering og sømfri integrering ved siden av inputfeltet
+**Hvorfor**: For å gjøre knappen mer synlig og tilgjengelig for brukeren, samt forbedre UX ved å separere funksjonaliteten fra input-feltet.
+
+## 2025-06-13 12:58
+### Fikset token-valideringsloop og forbedret PAT-lagringshåndtering
+
+**Hva**: Fikset et problem der token-validering gikk i en kontinuerlig loop og forbedret håndtering av lagret PAT-token.
+**Hvordan**: 
+- Refaktorert usePatTokenValidation-hook til å initialisere state fra sessionStorage
+- Unngår unødvendig validering av allerede lagrede tokens
+- Implementert intelligent miljø og token-håndtering i hook
+- Forenklet kode i SettingsContentComponent ved å fjerne redundant logikk
+**Hvorfor**: For å forhindre kontinuerlige API-kall til backend som påvirket ytelsen og skapte unødvendig serverbelastning.
+
+## 2025-06-13 12:55
+### Fikset API-URL port for PAT-validering
+
+**Hva**: Korrigerte URL-konstruksjon for validering av PAT-token mot riktig port.
+**Hvordan**: 
+- Implementert bruk av getBaseUrl-funksjonen i usePatTokenValidation-hook
+- Endret URL-konstruksjonen til å bruke port 7174 for lokalutvikling
+- Sikret at URL er formatert riktig for Gitea-valideringsendepunktet
+**Hvorfor**: API-kall for validering av PAT-token gikk til feil port (5173 istedenfor 7174) og derfor feilet med 404 Not Found.
+
 ## 2025-06-13 12:45
 ### Lagt til skrollbar innstillingsside
 
