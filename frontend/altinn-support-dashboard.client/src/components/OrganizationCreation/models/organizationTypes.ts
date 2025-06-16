@@ -3,9 +3,8 @@ export interface OrganizationFormData {
     fullName: string;
     websiteUrl: string;
     owners: string[];
-    emailDomain: string;
+    description: string;
     orgNumber: string;
-    logoFile?: File | null;
 }
 
 export interface OrganizationFormErrors {
@@ -13,9 +12,8 @@ export interface OrganizationFormErrors {
     fullName?: string;
     websiteUrl?: string;
     owners?: string;
-    emailDomain?: string;
+    description?: string;
     orgNumber?: string;
-    logoFile?: string;
     general?: string;
 }
 
@@ -45,6 +43,7 @@ export interface BrregEnhetsdetaljer {
     navn: string;
     hjemmeside?: string;
     epostadresse?: string; // Legger til epostadresse fra Brreg API
+    aktivitet?: string[]; // Aktivitet beskrivelse fra Brreg API
     slettedato?: string;
     registreringsdatoEnhetsregisteret?: string;
     registrertIFrivillighetsregisteret?: boolean;

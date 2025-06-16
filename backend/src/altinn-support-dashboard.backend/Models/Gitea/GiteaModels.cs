@@ -79,6 +79,9 @@ namespace altinn_support_dashboard.Server.Models.Gitea
         [JsonPropertyName("full_name")]
         public required string FullName { get; set; }
 
+        [JsonPropertyName("description")]
+        public string? Description { get; set; }
+
         [JsonPropertyName("website")]
         public required string Website { get; set; }
 
@@ -208,10 +211,9 @@ namespace altinn_support_dashboard.Server.Models.Gitea
         public required string ShortName { get; set; }
         public required string FullName { get; set; }
         public string WebsiteUrl { get; set; } = string.Empty;
-        public string EmailDomain { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public string OrgNumber { get; set; } = string.Empty;
         public List<string> Owners { get; set; } = new List<string>();
-        public string LogoFile { get; set; } = string.Empty;
     }
 
     /// <summary>

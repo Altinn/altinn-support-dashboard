@@ -1,5 +1,27 @@
 # Endringslogg
 
+## 2025-06-16 17:50
+### Forbedret brukerflyt etter vellykket organisasjonsopprettelse
+
+**Hva**: Lagt til en forbedret suksessvisning etter vellykket organisasjonsopprettelse.
+**Hvordan**: 
+- Skjult skjemaet når en organisasjon blir opprettet vellykket
+- Lagt til en sentral suksessmelding med bekreftelse på at organisasjonen er opprettet
+- Lagt til en "Opprett ny organisasjon"-knapp som nullstiller skjemaet
+- Implementert resetForm-funksjon som tømmer alle skjemafelt og tilbakestiller state
+**Hvorfor**: For å gi en bedre brukeropplevelse og tydeligere signalisere at opprettelsen var vellykket, samt gjøre det enkelt å starte på nytt med en ny organisasjon uten å måtte tømme skjemaet manuelt.
+
+## 2025-06-16 17:42
+### Fikset overføring av beskrivelsesfeltet til Gitea API
+
+**Hva**: Løst problem med at beskrivelsesfeltet ikke ble sendt til Gitea ved opprettelse av organisasjon.
+**Hvordan**: 
+- Oppdatert `GiteaOrganizationCreate` modell med støtte for `Description`-felt
+- Endret `OrganizationCreationRequest` til å erstatte `EmailDomain` med `Description`
+- Modifisert `CreateOrganization` metoden i GiteaService til å sende med beskrivelsen
+- Fjernet ubrukt `LogoFile`-felt som ikke lenger er nødvendig
+**Hvorfor**: For å sikre at den automatisk utfylte beskrivelsen fra Brønnøysundregistrene når helt fram til Gitea og lagres med organisasjonen.
+
 ## 2025-06-16 16:40
 ### Fikset PAT-token autentisering og Brreg API-integrasjon
 

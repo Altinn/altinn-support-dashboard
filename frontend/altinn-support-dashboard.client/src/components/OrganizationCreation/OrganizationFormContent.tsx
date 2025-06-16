@@ -8,9 +8,8 @@ import { OrganizationFormData, OrganizationFormErrors, BrregEnhetsdetaljer } fro
 import { ShortNameField } from './form-fields/ShortNameField';
 import { FullNameField } from './form-fields/FullNameField';
 import { WebsiteUrlField } from './form-fields/WebsiteUrlField';
-import { EmailDomainField } from './form-fields/EmailDomainField';
 import { OrgNumberField } from './form-fields/OrgNumberField';
-import { LogoUploadField } from './form-fields/LogoUploadField';
+import { DescriptionField } from './form-fields/DescriptionField';
 import { EnvironmentInfoField } from './form-fields/EnvironmentInfoField';
 import { useOrganizationCreation } from './hooks/useOrganizationCreation';
 
@@ -58,7 +57,7 @@ export const OrganizationFormContent: React.FC<OrganizationFormContentProps> = (
             ...prev,
             fullName: '',
             websiteUrl: '',
-            emailDomain: '',
+            description: '',
             orgNumber: ''
         }));
     };
@@ -110,16 +109,28 @@ export const OrganizationFormContent: React.FC<OrganizationFormContentProps> = (
                             updates.websiteUrl = website;
                         }
                         
-                        // Auto-fill epostadresse (extract domain for emailDomain)
+                        // Auto-fill description with aktivitet from Brreg
+                        let description = '';
+                        
+                        // Legg til aktivitetsbeskrivelse hvis tilgjengelig
+                        if (orgDetails.aktivitet && orgDetails.aktivitet.length > 0) {
+                            description = orgDetails.aktivitet.join(' ').trim();
+                        }
+                        
+                        // Legg til epostdomene informasjon hvis tilgjengelig
                         if (orgDetails.epostadresse && orgDetails.epostadresse !== 'null') {
                             const emailParts = orgDetails.epostadresse.split('@');
                             if (emailParts.length > 1) {
-                                updates.emailDomain = emailParts[1];
-                            } else {
-                                // If the email doesn't have an @ symbol, don't use it
-                                console.warn('Invalid email format from Brreg:', orgDetails.epostadresse);
+                                const domain = emailParts[1];
+                                if (description) {
+                                    description += `\n\nE-postdomene: ${domain}`;
+                                } else {
+                                    description = `E-postdomene: ${domain}`;
+                                }
                             }
                         }
+                        
+                        updates.description = description;
                         
                         // Update form data with all collected fields
                         setFormData((prev: OrganizationFormData) => ({ ...prev, ...updates }));
@@ -156,6 +167,12 @@ export const OrganizationFormContent: React.FC<OrganizationFormContentProps> = (
                     error={errors.fullName}
                 />
                 
+                <DescriptionField 
+                    value={formData.description}
+                    onChange={(value: string) => handleInputChange('description', value)}
+                    error={errors.description}
+                />
+                
                 <WebsiteUrlField 
                     value={formData.websiteUrl}
                     onChange={(value: string) => handleInputChange('websiteUrl', value)}
@@ -165,20 +182,6 @@ export const OrganizationFormContent: React.FC<OrganizationFormContentProps> = (
                 <EnvironmentInfoField 
                     activeEnvironment={activeEnvironment}
                     hasValidPatToken={hasValidPatToken()}
-                />
-                
-                <EmailDomainField 
-                    value={formData.emailDomain}
-                    onChange={(value: string) => handleInputChange('emailDomain', value)}
-                    error={errors.emailDomain}
-                />
-                
-                <Divider style={{ margin: '16px 0' }} />
-                
-                <LogoUploadField 
-                    value={formData.logoFile}
-                    onChange={(value: File | null) => handleInputChange('logoFile', value)}
-                    error={errors.logoFile}
                 />
             </div>
         </div>

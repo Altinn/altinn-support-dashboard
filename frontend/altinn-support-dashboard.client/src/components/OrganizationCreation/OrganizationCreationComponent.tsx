@@ -39,9 +39,8 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
         fullName: '',
         websiteUrl: '',
         owners: [],
-        emailDomain: '',
-        orgNumber: '',
-        logoFile: null
+        description: '',
+        orgNumber: ''
     });
 
     const [errors, setErrors] = useState<OrganizationFormErrors>({});
@@ -138,6 +137,22 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
     const goToSettings = () => {
         navigate('/settings');
     };
+    
+    // Reset form for å opprette en ny organisasjon
+    const resetForm = () => {
+        setFormData({
+            shortName: '',
+            fullName: '',
+            websiteUrl: '',
+            owners: [],
+            description: '',
+            orgNumber: ''
+        });
+        setCreationSuccess(null);
+        setCreationMessage('');
+        setFormSubmitted(false);
+        setErrors({});
+    };
 
     return (
         <div style={{ 
@@ -174,7 +189,26 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
                 </div>
             )}
             
-            {hasValidToken && (
+            {hasValidToken && creationSuccess === true && (
+                <div style={{ padding: '24px', marginTop: '24px', background: '#fff', borderRadius: '4px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                        <Heading level={3} data-size="sm">Organisasjon opprettet</Heading>
+                        <p style={{ margin: '16px 0' }}>
+                            Organisasjonen er nå opprettet i Altinn Studio, og standard teams er konfigurert.
+                        </p>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button
+                            onClick={resetForm}
+                            style={{ minWidth: '180px' }}
+                        >
+                            Opprett ny organisasjon
+                        </Button>
+                    </div>
+                </div>
+            )}
+            
+            {hasValidToken && creationSuccess !== true && (
                 <div style={{ padding: '24px', marginTop: '24px', background: '#fff', borderRadius: '4px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
                     <form onSubmit={handleSubmit}>
                         <OrganizationFormContent 

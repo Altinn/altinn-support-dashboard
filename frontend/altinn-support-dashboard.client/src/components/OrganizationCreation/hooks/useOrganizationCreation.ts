@@ -209,10 +209,9 @@ export const useOrganizationCreation = (environment: string) => {
                     shortName: formData.shortName,
                     fullName: formData.fullName,
                     websiteUrl: formData.websiteUrl,
-                    emailDomain: formData.emailDomain,
+                    description: formData.description,
                     orgNumber: formData.orgNumber,
                     owners: formData.owners,
-                    // Logo behandles separat om nødvendig
                 }),
             });
 

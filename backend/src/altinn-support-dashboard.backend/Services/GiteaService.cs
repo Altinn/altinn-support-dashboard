@@ -272,6 +272,7 @@ namespace altinn_support_dashboard.Server.Services
                 {
                     Username = request.ShortName,
                     FullName = request.FullName,
+                    Description = request.Description, // Legg til beskrivelse fra forespørselen
                     Website = request.WebsiteUrl,
                     Visibility = "public",
                     RepoAdminChangeTeamAccess = false

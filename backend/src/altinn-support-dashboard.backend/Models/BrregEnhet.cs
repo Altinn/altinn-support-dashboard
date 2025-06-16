@@ -32,6 +32,9 @@ namespace altinn_support_dashboard.Server.Models
 
         [JsonPropertyName("telefon")]
         public string Telefon { get; set; }
+
+        [JsonPropertyName("aktivitet")]
+        public List<string> Aktivitet { get; set; }
     }
 
     /// <summary>

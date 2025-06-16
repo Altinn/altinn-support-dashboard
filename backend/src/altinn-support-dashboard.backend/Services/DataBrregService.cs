@@ -100,6 +100,7 @@ namespace altinn_support_dashboard.Server.Services
                     navn = enhet.Navn,
                     hjemmeside = enhet.Hjemmeside,
                     epostadresse = enhet.Epostadresse,
+                    aktivitet = enhet.Aktivitet,
                     registreringsdatoEnhetsregisteret = enhet.RegistreringsdatoEnhetsregisteret,
                     forretningsadresse = enhet.Forretningsadresse != null ? new 
                     {
