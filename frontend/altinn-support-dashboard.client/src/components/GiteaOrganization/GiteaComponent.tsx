@@ -320,21 +320,13 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                                     label="Environment"
                                     onChange={(e) => handleEnvironmentChange(e.target.value as GiteaEnvironment)}
                                 >
-                                    <MenuItem value="development">Development</MenuItem>
-                                    <MenuItem value="staging">Staging</MenuItem>
-                                    <MenuItem value="production">Production</MenuItem>
-                                    <MenuItem value="local">Local</MenuItem>
+                                    <MenuItem value="development">Development (dev.altinn.studio)</MenuItem>
+                                    <MenuItem value="staging">Staging (staging.altinn.studio)</MenuItem>
+                                    <MenuItem value="production">Production (altinn.studio)</MenuItem>
+                                    <MenuItem value="local">Local (studio.localhost)</MenuItem>
                                 </Select>
                                 <FormHelperText>Select the Gitea environment to use</FormHelperText>
                             </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Textfield
-                                label="Gitea Base URL"
-                                description="Base URL of the Gitea instance"
-                                value={giteaBaseUrl}
-                                onChange={(e) => setGiteaBaseUrl(e.target.value)}
-                            />
                         </Grid>
                         <Grid item xs={12}>
                             <Button
