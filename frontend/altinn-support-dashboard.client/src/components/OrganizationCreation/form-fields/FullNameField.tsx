@@ -24,6 +24,7 @@ export const FullNameField: React.FC<FullNameFieldProps> = ({
             </div>
             
             <Textfield
+                id="fullName"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 size="medium"

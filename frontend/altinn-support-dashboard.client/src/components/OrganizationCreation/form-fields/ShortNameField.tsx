@@ -69,10 +69,11 @@ export const ShortNameField: React.FC<ShortNameFieldProps> = ({
             </div>
             
             <Textfield
+                id="shortName"
                 value={value}
                 onChange={(e) => onChange(e.target.value.toLowerCase())}
                 style={{ width: '100%' }}
-                hideLabel
+                aria-label="Kortnavn"
                 disabled={isCheckingName}
             />
             <div style={{ 

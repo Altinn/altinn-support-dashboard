@@ -4,7 +4,8 @@ import {
     Heading, 
     Button, 
     Alert,
-    Paragraph
+    Paragraph,
+    ErrorSummary
 } from '@digdir/designsystemet-react';
 import { OrganizationFormData, OrganizationFormErrors } from './models/organizationTypes';
 import { useOrganizationCreation } from './hooks/useOrganizationCreation';
@@ -259,20 +260,48 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
                         />
                                                 {validationFailed && (
                             <div style={{ marginTop: '24px' }}>
-                                <Alert data-color="warning">
-                                    <Heading
-                                        data-size="xs"
-                                        level={2}
-                                        style={{ marginBottom: 'var(--ds-size-2)' }}
-                                    >
-                                        Skjemaet har feil eller manglende felter
-                                    </Heading>
-                                    <Paragraph>
-                                        {validationMessage.split('\n').map((line, index) => (
-                                            line ? <div key={index}>{line}</div> : null
-                                        ))}
-                                    </Paragraph>
-                                </Alert>
+                                <ErrorSummary>
+                                    <ErrorSummary.Heading>
+                                        For å opprette organisasjon må du fylle inn:
+                                    </ErrorSummary.Heading>
+                                    <ErrorSummary.List>
+                                        {errors.shortName && (
+                                            <ErrorSummary.Item>
+                                                <ErrorSummary.Link href="#shortName">
+                                                    Kortnavn: {errors.shortName}
+                                                </ErrorSummary.Link>
+                                            </ErrorSummary.Item>
+                                        )}
+                                        {errors.fullName && (
+                                            <ErrorSummary.Item>
+                                                <ErrorSummary.Link href="#fullName">
+                                                    Fullt navn: {errors.fullName}
+                                                </ErrorSummary.Link>
+                                            </ErrorSummary.Item>
+                                        )}
+                                        {errors.websiteUrl && (
+                                            <ErrorSummary.Item>
+                                                <ErrorSummary.Link href="#websiteUrl">
+                                                    Nettside: {errors.websiteUrl}
+                                                </ErrorSummary.Link>
+                                            </ErrorSummary.Item>
+                                        )}
+                                        {errors.description && (
+                                            <ErrorSummary.Item>
+                                                <ErrorSummary.Link href="#description">
+                                                    Beskrivelse: {errors.description}
+                                                </ErrorSummary.Link>
+                                            </ErrorSummary.Item>
+                                        )}
+                                        {errors.orgNumber && (
+                                            <ErrorSummary.Item>
+                                                <ErrorSummary.Link href="#orgNumber">
+                                                    Organisasjonsnummer: {errors.orgNumber}
+                                                </ErrorSummary.Link>
+                                            </ErrorSummary.Item>
+                                        )}
+                                    </ErrorSummary.List>
+                                </ErrorSummary>
                             </div>
                         )}
                         <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
