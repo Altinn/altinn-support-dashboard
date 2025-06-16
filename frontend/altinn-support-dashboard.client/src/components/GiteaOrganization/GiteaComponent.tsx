@@ -203,7 +203,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                 </Typography>
 
                 {error && (
-                    <Alert data-color="danger" style={{ marginBottom: '1.5rem' }} data-size="sm">
+                    <Alert severity="warning" style={{ marginBottom: '1.5rem' }} data-size="sm">
                         <Heading
                             size='sm'
                             level={3}
@@ -218,7 +218,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                 )}
 
                 {success && (
-                    <Alert data-color="success" style={{ marginBottom: '1.5rem' }} data-size="sm">
+                    <Alert severity="success" style={{ marginBottom: '1.5rem' }} data-size="sm">
                         <Heading
                             size="sm"
                             level={3}
