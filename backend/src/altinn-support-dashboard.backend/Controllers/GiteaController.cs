@@ -50,6 +50,11 @@ namespace AltinnSupportDashboard.Controllers
         /// <returns>True if the environment is valid, otherwise false</returns>
         private bool IsValidEnvironment(string environmentName)
         {
+            if (string.IsNullOrWhiteSpace(environmentName))
+            {
+                return false;
+            }
+            
             string normalizedEnv = environmentName.ToLower();
             return normalizedEnv == "development" ||
                    normalizedEnv == "staging" ||
