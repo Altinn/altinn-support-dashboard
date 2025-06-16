@@ -1,5 +1,16 @@
 # Endringslogg
 
+## 2025-06-16 19:05
+### Forbedret validering med ErrorSummary komponent
+
+**Hva**: Erstattet standard Alert-komponenten med en ErrorSummary-komponent for å vise valideringsfeil i skjemaet for organisasjonsoppretting.
+**Hvordan**: 
+- Implementert ErrorSummary fra Digdir Designsystem istedenfor Alert
+- Lagt til id-attributter på skjemafeltene for å muliggjøre direkte linking til felter med feil
+- Koblet skjemafeltenes feilmeldinger direkte til ErrorSummary-komponentens lenker
+- Sørget for at komponentene bruker riktige props og attributter i henhold til designsystemet
+**Hvorfor**: For å gi brukeren en mer presis tilbakemelding med klikkbare lenker direkte til de feltene som inneholder feil, som øker brukervennligheten og følger beste praksis for universell utforming.
+
 ## 2025-06-16 18:47
 ### Lagt til validerings-varsel ved skjemainnsending
 

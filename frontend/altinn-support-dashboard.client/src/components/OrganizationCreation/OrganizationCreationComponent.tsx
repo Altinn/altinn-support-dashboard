@@ -4,7 +4,6 @@ import {
     Heading, 
     Button, 
     Alert,
-    Paragraph,
     ErrorSummary
 } from '@digdir/designsystemet-react';
 import { OrganizationFormData, OrganizationFormErrors } from './models/organizationTypes';
@@ -51,7 +50,6 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
     const [creationSuccess, setCreationSuccess] = useState<boolean | null>(null);
     const [creationMessage, setCreationMessage] = useState<string>('');
     const [validationFailed, setValidationFailed] = useState<boolean>(false);
-    const [validationMessage, setValidationMessage] = useState<string>('');
 
     // Sjekk om PAT-token er gyldig ved lasting
     const hasValidToken = hasValidPatToken();
@@ -116,26 +114,7 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
             // Setter valideringsfeil-tilstand
             setValidationFailed(true);
             
-            // Lag en brukervennlig valideringsmelding
-            let errorMessage = 'Følgende felter må fylles ut eller korrigeres:\n';
-            
-            if (validationErrors.shortName) {
-                errorMessage += `- Kortnavn: ${validationErrors.shortName}\n`;
-            }
-            if (validationErrors.fullName) {
-                errorMessage += `- Fullt navn: ${validationErrors.fullName}\n`;
-            }
-            if (validationErrors.websiteUrl) {
-                errorMessage += `- Nettside: ${validationErrors.websiteUrl}\n`;
-            }
-            if (validationErrors.description) {
-                errorMessage += `- Beskrivelse: ${validationErrors.description}\n`;
-            }
-            if (validationErrors.orgNumber) {
-                errorMessage += `- Organisasjonsnummer: ${validationErrors.orgNumber}\n`;
-            }
-            
-            setValidationMessage(errorMessage);
+            // ErrorSummary viser valideringsfeilene basert på errors-objektet
             
             // Scroll til bunnen av skjemaet hvor feilmeldingene vises
             setTimeout(() => {
@@ -150,7 +129,6 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
         
         // Reset validation error state when validation passes
         setValidationFailed(false);
-        setValidationMessage('');
         
         console.log('Attempting to create organization with:', formData);
         

@@ -129,7 +129,7 @@ export const OrgNumberField: React.FC<OrgNumberFieldProps> = ({
         <div>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                 <Paragraph data-size="sm" style={{ fontWeight: 'bold' }}>
-                    Organisasjonsnummer *
+                    Organisasjonsnummer
                 </Paragraph>
                 <Tooltip content="Organisasjonens organisasjonsnummer i Brønnøysundregistrene (9 siffer). Informasjon hentes automatisk når du skriver inn et gyldig organisasjonsnummer." placement="top">
                     <span style={{ marginLeft: '8px', cursor: 'help', fontSize: '14px' }}>ℹ️</span>
