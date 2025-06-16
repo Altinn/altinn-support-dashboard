@@ -134,7 +134,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
 
     const handleCreateOrganization = async () => {
         if (!shortName || !fullName || !patToken) {
-            setError('Please fill in all required fields');
+            setError('Alle felt må fylles ut');
             return;
         }
 
@@ -173,7 +173,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                     setError(data.message || 'Failed to create organization');
                 }
             } else {
-                setSuccess(`Successfully created organization ${shortName} with default teams and repository`);
+                setSuccess(`Organisasjonen ${shortName} ble opprettet med standard team og repository`);
                 // Reset form fields after successful creation
                 setShortName('');
                 setFullName('');
@@ -196,37 +196,37 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
         <Container maxWidth="md" sx={{ mt: 4 }}>
             <Paper elevation={3} sx={{ p: 4 }}>
                 <Typography variant="h4" gutterBottom>
-                    Gitea Organization Management
+                    Gitea Organisasjons oppretter
                 </Typography>
                 <Typography variant="body1" paragraph>
-                    Create a new organization in Gitea with default teams and repository.
+                    Opprett en ny organisasjon i Gitea med standard team og repository.
                 </Typography>
 
                 {error && (
-                    <Alert data-color="danger" style={{ marginBottom: '1.5rem' }}>
+                    <Alert data-color="danger" style={{ marginBottom: '1.5rem' }} data-size="sm">
                         <Heading
-                            data-size="xs"
+                            size='sm'
                             level={3}
                             style={{ marginBottom: 'var(--ds-size-2)' }}
                         >
                             Det har skjedd en feil
                         </Heading>
-                        <Paragraph>
+                        <Paragraph size="sm">
                             <span dangerouslySetInnerHTML={{ __html: error }} />
                         </Paragraph>
                     </Alert>
                 )}
 
                 {success && (
-                    <Alert data-color="success" style={{ marginBottom: '1.5rem' }}>
+                    <Alert data-color="success" style={{ marginBottom: '1.5rem' }} data-size="sm">
                         <Heading
-                            data-size="xs"
+                            size="sm"
                             level={3}
                             style={{ marginBottom: 'var(--ds-size-2)' }}
                         >
                             Organisasjon opprettet
                         </Heading>
-                        <Paragraph>
+                        <Paragraph size="sm">
                             {success}
                         </Paragraph>
                     </Alert>
@@ -237,8 +237,8 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                         <Grid item xs={12} sm={6}>
                             <Textfield
                                 required
-                                label="Organization Short Name"
-                                description="Short name of the organization"
+                                label="Kortnavn for organisasjonen"
+                                description="Kortnavn for organisasjonen"
                                 type="text"
                                 value={shortName}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setShortName(e.target.value)}
@@ -247,8 +247,8 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                         <Grid item xs={12} sm={6}>
                             <Textfield
                                 required
-                                label="Organization Full Name"
-                                description="Full name of the organization"
+                                label="Fullt offisielt navn på virksomheten"
+                                description="Fullt navn (unngå blokkbokstaver)"
                                 type="text"
                                 value={fullName}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFullName(e.target.value)}
@@ -256,8 +256,8 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <Textfield
-                                label="Website"
-                                description="Website of the organization (med eller uten https://)"
+                                label="Nettstedsadresse"
+                                description="URL til nettsiden til organisasjonen"
                                 prefix="https://"
                                 value={website}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWebsite(e.target.value)}
@@ -313,11 +313,11 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
-                                <InputLabel id="environment-select-label">Environment</InputLabel>
+                                <InputLabel id="environment-select-label">Miljø</InputLabel>
                                 <Select
                                     labelId="environment-select-label"
                                     value={environment}
-                                    label="Environment"
+                                    label="Miljø"
                                     onChange={(e) => handleEnvironmentChange(e.target.value as GiteaEnvironment)}
                                 >
                                     <MenuItem value="development">Development (dev.altinn.studio)</MenuItem>
@@ -325,7 +325,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                                     <MenuItem value="production">Production (altinn.studio)</MenuItem>
                                     <MenuItem value="local">Local (studio.localhost)</MenuItem>
                                 </Select>
-                                <FormHelperText>Select the Gitea environment to use</FormHelperText>
+                                <FormHelperText>Velg Gitea miljøet du ønsker å bruke</FormHelperText>
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
@@ -333,7 +333,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                                 variant="primary"
                                 onClick={handleCreateOrganization}
                             >
-                                {isLoading ? <CircularProgress size={24} /> : 'Create Organization'}
+                                {isLoading ? <CircularProgress size={24} /> : 'Opprett organisasjon'}
                             </Button>
                         </Grid>
                     </Grid>
