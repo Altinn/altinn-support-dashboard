@@ -33,11 +33,5 @@ namespace AltinnSupportDashboard.Models.Gitea
         /// </summary>
         [Required(ErrorMessage = "PAT token is required")]
         public string PatToken { get; set; }
-        
-        /// <summary>
-        /// Base URL of the Gitea instance
-        /// </summary>
-        [Required(ErrorMessage = "Gitea base URL is required")]
-        public string GiteaBaseUrl { get; set; } = "https://dev.altinn.studio/repos";
     }
 }
