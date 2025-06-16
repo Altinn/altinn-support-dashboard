@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paragraph, Tooltip } from '@digdir/designsystemet-react';
+import { Paragraph, Tooltip} from '@digdir/designsystemet-react';
 
 interface DescriptionFieldProps {
     value: string;

@@ -65,13 +65,13 @@ export const OrganizationFormContent: React.FC<OrganizationFormContentProps> = (
     return (
         <div>
             <Heading level={3} data-size="xs" style={{ marginBottom: '16px' }}>
-                Oppsøk organisasjon
+                Slå opp organisasjon
             </Heading>
             
             <Paragraph data-size="sm" style={{ marginBottom: '24px' }}>
                 Fyll inn organisasjonsnummer for å automatisk hente informasjon fra Brønnøysundregistrene.
                 Dette vil forenkle utfyllingen av skjemaet ved å automatisk fylle ut organisasjonens navn, 
-                nettside og e-postdomene hvis tilgjengelig.
+                nettside og beskrivelse hvis tilgjengelig.
             </Paragraph>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
@@ -115,19 +115,6 @@ export const OrganizationFormContent: React.FC<OrganizationFormContentProps> = (
                         // Legg til aktivitetsbeskrivelse hvis tilgjengelig
                         if (orgDetails.aktivitet && orgDetails.aktivitet.length > 0) {
                             description = orgDetails.aktivitet.join(' ').trim();
-                        }
-                        
-                        // Legg til epostdomene informasjon hvis tilgjengelig
-                        if (orgDetails.epostadresse && orgDetails.epostadresse !== 'null') {
-                            const emailParts = orgDetails.epostadresse.split('@');
-                            if (emailParts.length > 1) {
-                                const domain = emailParts[1];
-                                if (description) {
-                                    description += `\n\nE-postdomene: ${domain}`;
-                                } else {
-                                    description = `E-postdomene: ${domain}`;
-                                }
-                            }
                         }
                         
                         updates.description = description;

@@ -165,7 +165,7 @@ const App: React.FC = () => {
                                 element={<ManualRoleSearchComponent baseUrl={getBaseUrl(environment)} />}
                             />
                             <Route
-                                path="/process"
+                                path="/new-org"
                                 element={
                                     <OrganizationCreationComponent
                                         environment={environment}

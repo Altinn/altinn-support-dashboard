@@ -54,7 +54,7 @@ export const OrgNumberField: React.FC<OrgNumberFieldProps> = ({
             const orgDetails = await getEnhetsdetaljer(orgNumber);
             
             if (!orgDetails) {
-                setErrorMessage('Fant ikke organisasjon med dette organisasjonsnummeret');
+                setErrorMessage('Fant ikke organisasjon med dette organisasjonsnummeret, men du kan fortsatt opprette organisasjon');
                 setSuccess(false);
                 return;
             }
@@ -153,13 +153,13 @@ export const OrgNumberField: React.FC<OrgNumberFieldProps> = ({
                 </div>
                 
                 {(success || errorMessage) && (
-                    <div style={{ marginLeft: '8px', marginTop: '24px' }}>
+                    <div >
                         <Button
                             data-size="sm"
-                            data-variant="tertiary"
+                           
                             onClick={handleReset}
                             aria-label="Fjern organisasjon og nullstill skjema"
-                            style={{ color: 'var(--color-danger-500)' }}
+                
                         >
                             Fjern
                         </Button>
@@ -183,7 +183,7 @@ export const OrgNumberField: React.FC<OrgNumberFieldProps> = ({
             
             {errorMessage && !success && (
                 <div style={{ marginTop: '8px' }}>
-                    <Alert data-color="info">
+                    <Alert data-color="warning">
                         <Heading level={2} data-size="xs" style={{ marginBottom: 'var(--ds-size-2)' }}>
                             Organisasjon ikke funnet
                         </Heading>

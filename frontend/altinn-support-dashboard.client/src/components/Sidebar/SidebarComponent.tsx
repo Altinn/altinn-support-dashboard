@@ -129,7 +129,7 @@ const Sidebar: React.FC<Omit<SidebarProps, "isEnvDropdownOpen" | "toggleEnvDropd
                         )}
                     </NavLink>
                     <NavLink
-                        to="/process"
+                        to="/new-org"
                         className={({ isActive }) => `nav-button ${isActive ? 'selected' : ''}`}
                         style={{
                             textDecoration: 'none',

@@ -1,5 +1,15 @@
 # Endringslogg
 
+## 2025-06-16 18:27
+### Fjernet e-postdomene fra autoutfylling av beskrivelse
+
+**Hva**: Fjernet koden som la til e-postdomene i organisasjonsbeskrivelsen ved autoutfylling fra Brønnøysundregistrene.
+**Hvordan**: 
+- Fjernet kodeblokken som hentet ut e-postdomene fra organisasjonens e-postadresse
+- Fjernet logikken som la til e-postdomene-informasjon i beskrivelsesfeltet
+- Beholdt kun aktivitetsinformasjon fra Brreg i beskrivelsesfeltet
+**Hvorfor**: For å sikre at beskrivelsen kun inneholder relevant aktivitetsinformasjon fra Brønnøysundregistrene, og ikke inkluderer e-postdomene som ikke bør være en del av organisasjonens offisielle beskrivelse i Gitea.
+
 ## 2025-06-16 17:59
 ### Fikset håndtering av nettadresser i organisasjonsskjema
 
