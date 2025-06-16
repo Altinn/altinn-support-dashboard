@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paragraph, Tooltip} from '@digdir/designsystemet-react';
+import { Paragraph, Tooltip, Textarea} from '@digdir/designsystemet-react';
 
 interface DescriptionFieldProps {
     value: string;
@@ -30,7 +30,7 @@ export const DescriptionField: React.FC<DescriptionFieldProps> = ({
             )}
             
             <div>
-                <textarea
+                <Textarea
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     style={{

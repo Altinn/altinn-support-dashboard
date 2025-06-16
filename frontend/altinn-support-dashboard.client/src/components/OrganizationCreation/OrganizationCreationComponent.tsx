@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { 
     Heading, 
     Button, 
-    Alert
+    Alert,
+    Paragraph
 } from '@digdir/designsystemet-react';
 import { OrganizationFormData, OrganizationFormErrors } from './models/organizationTypes';
 import { useOrganizationCreation } from './hooks/useOrganizationCreation';
@@ -48,6 +49,8 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
     const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
     const [creationSuccess, setCreationSuccess] = useState<boolean | null>(null);
     const [creationMessage, setCreationMessage] = useState<string>('');
+    const [validationFailed, setValidationFailed] = useState<boolean>(false);
+    const [validationMessage, setValidationMessage] = useState<string>('');
 
     // Sjekk om PAT-token er gyldig ved lasting
     const hasValidToken = hasValidPatToken();
@@ -108,8 +111,45 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
                 requiredFieldsPresent: requiredFieldsPresent(formData),
                 validationErrors
             });
+            
+            // Setter valideringsfeil-tilstand
+            setValidationFailed(true);
+            
+            // Lag en brukervennlig valideringsmelding
+            let errorMessage = 'Følgende felter må fylles ut eller korrigeres:\n';
+            
+            if (validationErrors.shortName) {
+                errorMessage += `- Kortnavn: ${validationErrors.shortName}\n`;
+            }
+            if (validationErrors.fullName) {
+                errorMessage += `- Fullt navn: ${validationErrors.fullName}\n`;
+            }
+            if (validationErrors.websiteUrl) {
+                errorMessage += `- Nettside: ${validationErrors.websiteUrl}\n`;
+            }
+            if (validationErrors.description) {
+                errorMessage += `- Beskrivelse: ${validationErrors.description}\n`;
+            }
+            if (validationErrors.orgNumber) {
+                errorMessage += `- Organisasjonsnummer: ${validationErrors.orgNumber}\n`;
+            }
+            
+            setValidationMessage(errorMessage);
+            
+            // Scroll til bunnen av skjemaet hvor feilmeldingene vises
+            setTimeout(() => {
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 100);
+            
             return;
         }
+        
+        // Reset validation error state when validation passes
+        setValidationFailed(false);
+        setValidationMessage('');
         
         console.log('Attempting to create organization with:', formData);
         
@@ -217,7 +257,24 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
                             errors={errors}
                             environment={environment}
                         />
-                        
+                                                {validationFailed && (
+                            <div style={{ marginTop: '24px' }}>
+                                <Alert data-color="warning">
+                                    <Heading
+                                        data-size="xs"
+                                        level={2}
+                                        style={{ marginBottom: 'var(--ds-size-2)' }}
+                                    >
+                                        Skjemaet har feil eller manglende felter
+                                    </Heading>
+                                    <Paragraph>
+                                        {validationMessage.split('\n').map((line, index) => (
+                                            line ? <div key={index}>{line}</div> : null
+                                        ))}
+                                    </Paragraph>
+                                </Alert>
+                            </div>
+                        )}
                         <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
                             <Button
                                 type="submit"
@@ -227,6 +284,7 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
                                 {isCreating ? 'Oppretter...' : 'Opprett organisasjon'}
                             </Button>
                         </div>
+                        
                     </form>
                 </div>
             )}

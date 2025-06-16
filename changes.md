@@ -1,5 +1,16 @@
 # Endringslogg
 
+## 2025-06-16 18:47
+### Lagt til validerings-varsel ved skjemainnsending
+
+**Hva**: Lagt til en ny varselmelding som vises når brukeren forsøker å sende inn skjemaet med manglende eller ugyldige felter.
+**Hvordan**: 
+- Implementert validerings-varsel med Digdir Alert-komponent
+- Lagt til logikk for å samle og vise alle valideringsfeil i en oversiktlig liste
+- Automatisk scrolling til varselet når det vises
+- Forbedret brukermelding med spesifikke detaljer om hva som må rettes
+**Hvorfor**: For å gi brukeren tydeligere tilbakemelding når skjemaet ikke kan sendes inn, og hjelpe dem med å identifisere og løse problemer med innsendingen.
+
 ## 2025-06-16 18:27
 ### Fjernet e-postdomene fra autoutfylling av beskrivelse
 
