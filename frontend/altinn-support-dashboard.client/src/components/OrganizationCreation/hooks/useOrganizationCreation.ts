@@ -208,7 +208,9 @@ export const useOrganizationCreation = (environment: string) => {
                 body: JSON.stringify({
                     shortName: formData.shortName,
                     fullName: formData.fullName,
-                    websiteUrl: formData.websiteUrl,
+                    websiteUrl: formData.websiteUrl.startsWith('https://') 
+                        ? formData.websiteUrl 
+                        : formData.websiteUrl ? `https://${formData.websiteUrl}` : '',
                     description: formData.description,
                     orgNumber: formData.orgNumber,
                     owners: formData.owners,

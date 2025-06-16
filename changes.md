@@ -1,5 +1,15 @@
 # Endringslogg
 
+## 2025-06-16 17:59
+### Fikset håndtering av nettadresser i organisasjonsskjema
+
+**Hva**: Forbedret håndtering av nettadresser (URL) for å sikre at "https://" alltid sendes til backend.
+**Hvordan**: 
+- Oppdatert `createOrganization`-metoden i useOrganizationCreation hook
+- Lagt til logikk som sjekker om URL-en allerede har "https://"-prefiks
+- Hvis ikke, legges prefikset automatisk til før innsending til backend
+**Hvorfor**: For å sikre konsistent format på nettadresser i systemet, uavhengig av hvordan brukeren skriver inn adressen i skjemaet. Dette gir bedre datakvalitet og forhindrer potensielle problemer med lenker i Gitea.
+
 ## 2025-06-16 17:50
 ### Forbedret brukerflyt etter vellykket organisasjonsopprettelse
 
