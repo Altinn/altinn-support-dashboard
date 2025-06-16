@@ -258,6 +258,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                             <Textfield
                                 label="Website"
                                 description="Website of the organization (med eller uten https://)"
+                                prefix="https://"
                                 value={website}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWebsite(e.target.value)}
                             />
