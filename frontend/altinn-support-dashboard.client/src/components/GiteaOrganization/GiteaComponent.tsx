@@ -133,7 +133,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
     };
 
     const handleCreateOrganization = async () => {
-        if (!shortName || !fullName || !patToken) {
+        if (!shortName || !fullName || !patToken || !website) {
             setError('Alle felt må fylles ut');
             return;
         }
