@@ -195,17 +195,17 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
     return (
         <Container maxWidth="md" sx={{ mt: 4 }}>
             <Paper elevation={3} sx={{ p: 4 }}>
-                <Typography variant="h4" gutterBottom>
+                <Heading size="lg" level={2}>
                     Gitea Organisasjons oppretter
-                </Typography>
-                <Typography variant="body1" paragraph>
+                </Heading>
+                <Paragraph>
                     Opprett en ny organisasjon i Gitea med standard team og repository.
-                </Typography>
+                </Paragraph>
 
                 {error && (
                     <Alert severity="warning" style={{ marginBottom: '1.5rem' }} data-size="sm">
                         <Heading
-                            size='sm'
+                            size="sm"
                             level={3}
                             style={{ marginBottom: 'var(--ds-size-2)' }}
                         >
