@@ -31,6 +31,7 @@ namespace AltinnSupportDashboard
             // Configure Gitea settings
             services.Configure<GiteaConfiguration>(Configuration.GetSection("Gitea"));
             services.Configure<BrregApiConfiguration>(Configuration.GetSection("Brreg"));
+            services.Configure<BrregConfiguration>(Configuration.GetSection("BrregConfiguration"));
 
             // Register clients and services
             services.AddSingleton<GiteaApiClient>();

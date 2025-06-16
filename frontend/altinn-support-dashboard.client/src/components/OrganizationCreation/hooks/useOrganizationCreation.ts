@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { OrganizationFormData, OrganizationCreationResponse, BrregSearchResponse } from "../models/organizationTypes";
+import { OrganizationFormData, OrganizationCreationResponse, BrregSearchResponse, BrregEnhetsdetaljer } from "../models/organizationTypes";
 
 // Hjelpefunksjon for å få riktig base URL uten dobbel "api" i path
 const getCorrectBaseUrl = (): string => {
@@ -33,9 +33,12 @@ export const useOrganizationCreation = (environment: string) => {
     const [nameExists, setNameExists] = useState<boolean | null>(null);
     const [shortNameError, setShortNameError] = useState<string | null>(null);
     const [brregResults, setBrregResults] = useState<BrregSearchResponse | null>(null);
+    const [isFetchingOrgDetails, setIsFetchingOrgDetails] = useState<boolean>(false);
+    const [orgDetails, setOrgDetails] = useState<BrregEnhetsdetaljer | null>(null);
 
-    // Bruk en ref for å holde styr på forrige organisasjonsnavn som ble sjekket
+    // Refs for å holde styr på forrige organisasjonsnavn som ble sjekket og forrige orgnummer
     const lastCheckedName = useRef<string>('');
+    const lastCheckedOrgNumber = useRef<string>('');
     
     /**
      * Sjekker om et kortnavn allerede eksisterer, med debounce-funksjonalitet
@@ -241,18 +244,100 @@ export const useOrganizationCreation = (environment: string) => {
         return token !== null;
     }, [activeEnvironment]);
 
-    return {
-        activeEnvironment,
-        isCreating,
-        isCheckingName,
-        isSearchingBrreg,
-        nameExists,
-        shortNameError,
-        brregResults,
-        checkNameExists,
-        searchBrreg,
-        validateOrgNumber,
-        createOrganization,
-        hasValidPatToken
-    };
+    // Refs for å håndtere caching og låsing av organisasjonsnummer
+    const hasSuccessfullyFetchedDetails = useRef<boolean>(false);
+    const cachedOrgDetails = useRef<BrregEnhetsdetaljer | null>(null);
+    const cachedOrgNumber = useRef<string>("");
+    // Ref for å spore orgnumre som har feilet ved oppslag
+    const failedOrgNumbers = useRef<{[orgNumber: string]: boolean}>({});
+    
+    /**
+     * Nullstiller all tilstand relatert til organisasjonssøk
+     * Kalles når brukeren ønsker å tømme skjemaet eller starte på nytt
+     */
+    const resetOrgFetchState = useCallback(() => {
+        hasSuccessfullyFetchedDetails.current = false;
+        cachedOrgDetails.current = null;
+        cachedOrgNumber.current = "";
+        lastCheckedOrgNumber.current = "";
+        failedOrgNumbers.current = {}; // Nullstiller registeret over feilede orgnumre
+        setOrgDetails(null);
+        console.log("Cache, låsestatus og feilliste for organisasjonssøk nullstilt");
+    }, []);
+
+    /**
+     * Henter detaljert informasjon om en organisasjon basert på organisasjonsnummer
+     * @param orgNumber Organisasjonsnummeret som skal søkes på
+     * @returns Detaljert informasjon om organisasjonen hvis funnet
+     */
+    const getEnhetsdetaljer = useCallback(async (orgNumber: string): Promise<BrregEnhetsdetaljer | null> => {
+        if (!orgNumber || orgNumber.length !== 9) {
+            return null;
+        }
+        
+        if (cachedOrgNumber.current === orgNumber && cachedOrgDetails.current) {
+            console.log("Bruker cachet data for orgnr:", orgNumber);
+            return cachedOrgDetails.current;
+        }
+        
+        // Sjekk om dette orgnummeret har feilet tidligere
+        if (failedOrgNumbers.current[orgNumber]) {
+            console.log(`Hopper over API-kall - orgnr ${orgNumber} har feilet tidligere`);
+            return null;
+        }
+        
+        if (hasSuccessfullyFetchedDetails.current && cachedOrgNumber.current !== orgNumber) {
+            console.log("Hopper over API-kall - allerede låst på orgnr:", cachedOrgNumber.current);
+            return cachedOrgDetails.current;
+        }
+        
+        if (isFetchingOrgDetails) {
+            console.log("API-kall allerede pågår, hopper over");
+            return null;
+        }
+        
+        setIsFetchingOrgDetails(true);
+        
+        try {
+            const url = `${getCorrectBaseUrl()}/api/Production/brreg/enhet/${orgNumber}`;
+            console.log(`Henter organisasjonsdetaljer fra: ${url}`);
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error ${response.status}`);
+            }
+            const data = await response.json();
+            setOrgDetails(data);
+            cachedOrgDetails.current = data;
+            cachedOrgNumber.current = orgNumber;
+            hasSuccessfullyFetchedDetails.current = true;
+            console.log("Organisasjonsdata hentet og låst - organisasjonsnummerfelt vil nå låses");
+            return data;
+        } catch (error) {
+            console.error("Feil ved henting av organisasjonsdetaljer:", error);
+            // Marker dette orgnummeret som feilet for å unngå gjentatte kall
+            failedOrgNumbers.current[orgNumber] = true;
+            return null;
+        } finally {
+            setIsFetchingOrgDetails(false);
+        }
+    }, [isFetchingOrgDetails]); // Bare avhengig av isFetchingOrgDetails for å unngå doble API-kall
+
+return {
+    activeEnvironment,
+    isCreating,
+    isCheckingName,
+    isSearchingBrreg,
+    isFetchingOrgDetails,
+    nameExists,
+    shortNameError,
+    brregResults,
+    orgDetails,
+    checkNameExists,
+    searchBrreg,
+    validateOrgNumber,
+    createOrganization,
+    getEnhetsdetaljer,
+    resetOrgFetchState,
+    hasValidPatToken
+};
 };

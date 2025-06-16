@@ -60,9 +60,43 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
         setErrors(validationErrors);
     }, [formData, formSubmitted]);
 
+    // Debug funksjon som kan kalles fra konsollen for å feilsøke skjemadata og validering
+    React.useEffect(() => {
+        // Bruk window som var for å unngå TypeScript-feil med global window
+        const win = window as unknown as Record<string, unknown>;
+        
+        // Legg til debuggingsfunksjon på window-objektet
+        win.debugFormState = () => {
+            console.group('Organisasjon Form Debug');
+            console.log('FormData:', formData);
+            console.log('Errors:', errors);
+            const validationErrors = validateForm(formData, true);
+            console.log('Current validation errors:', validationErrors);
+            console.log('Is form submitted:', formSubmitted);
+            console.log('Has errors:', hasErrors(validationErrors));
+            console.log('Required fields present:', requiredFieldsPresent(formData));
+            console.log('Can submit:', !hasErrors(validationErrors) && requiredFieldsPresent(formData));
+            console.log('Is creating:', isCreating);
+            console.groupEnd();
+        };
+
+        // Kjør debuggingsfunksjon ved mounting for å se status
+        const debugFn = win.debugFormState as () => void;
+        debugFn();
+        
+        // Logg når component mountes - hjelper med debugging
+        console.log('OrganizationCreationComponent mounted/updated');
+    }, [formData, errors, formSubmitted, isCreating]);
+    
     // Håndter form-innsending
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        console.log('Form submit attempt');
+        // Bruk type-safe metode for å hente debuggingsfunksjon
+        const win = window as unknown as Record<string, unknown>;
+        const debugFn = win.debugFormState as (() => void) | undefined;
+        if (debugFn) debugFn();
         
         // Valider skjemaet
         const validationErrors = validateForm(formData, true);
@@ -70,13 +104,31 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
         setFormSubmitted(true);
         
         if (hasErrors(validationErrors) || !requiredFieldsPresent(formData)) {
+            console.warn('Form submission blocked:', { 
+                hasErrors: hasErrors(validationErrors),
+                requiredFieldsPresent: requiredFieldsPresent(formData),
+                validationErrors
+            });
             return;
         }
         
-        // Opprett organisasjonen
-        const result = await createOrganization(formData);
-        setCreationSuccess(result.success);
-        setCreationMessage(result.message);
+        console.log('Attempting to create organization with:', formData);
+        
+        // Kall på createOrganization fra useOrganizationCreation hook
+        // Denne håndterer isCreating state internt
+        try {
+            const result = await createOrganization(formData);
+            console.log('Organization creation result:', result);
+            setCreationSuccess(result.success);
+            setCreationMessage(result.message);
+            
+            // Scroll til toppen ved resultat
+            window.scrollTo(0, 0);
+        } catch (error) {
+            console.error('Failed to create organization:', error);
+            setCreationSuccess(false);
+            setCreationMessage('En feil oppstod under opprettelsen av organisasjonen');
+        }
         
         // Scroll til toppen ved resultat
         window.scrollTo(0, 0);

@@ -24,14 +24,21 @@ export const WebsiteUrlField: React.FC<WebsiteUrlFieldProps> = ({
             </div>
             
             <Textfield
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
+                value={value.replace(/^https?:\/\//, '')}
+                onChange={(e) => {
+                    // Store the value without prefix in the form state
+                    // The validation will handle adding the prefix when needed
+                    const inputValue = e.target.value;
+                    onChange(inputValue);
+                    console.log('WebsiteUrl changed:', inputValue);
+                }}
                 size="small"
+                prefix="https://"
                 style={{ width: '100%' }}
                 error={!!error}
                 errorText={error}
-                description={!error ? "F.eks. https://www.eksempel.no" : undefined}
-                placeholder="https://www.domene.no"
+                description={!error ? "F.eks. eksempel.no" : undefined}
+                placeholder="www.domene.no"
             />
         </div>
     );

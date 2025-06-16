@@ -113,6 +113,19 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
+                // Hent token fra Authorization header
+                string authHeader = Request.Headers["Authorization"].ToString();
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+                {
+                    return Unauthorized("Manglende eller ugyldig authorization header");
+                }
+
+                // Hent ut tokenet fra Bearer-formatet
+                string token = authHeader.Substring("Bearer ".Length).Trim();
+                
+                // Sett token på klienten før API-kall
+                _giteaService.SetToken(environmentName, token);
+                
                 bool exists = await _giteaService.OrganizationExistsAsync(environmentName, orgName);
                 return Ok(exists);
             }
@@ -152,6 +165,23 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
+                // Hent token fra Authorization header
+                string authHeader = Request.Headers["Authorization"].ToString();
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+                {
+                    return Unauthorized(new OrganizationCreationResult
+                    {
+                        Success = false,
+                        Message = "Manglende eller ugyldig authorization header"
+                    });
+                }
+
+                // Hent ut tokenet fra Bearer-formatet
+                string token = authHeader.Substring("Bearer ".Length).Trim();
+                
+                // Sett token på klienten før API-kall
+                _giteaService.SetToken(environmentName, token);
+
                 var result = await _giteaService.CreateOrganizationAsync(environmentName, request);
                 
                 if (!result.Success)

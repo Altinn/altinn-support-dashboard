@@ -66,7 +66,11 @@ export const validateWebsiteUrl = (websiteUrl: string): string | undefined => {
     }
 
     try {
-        new URL(websiteUrl);
+        // Legg til https:// prefix hvis det mangler
+        const url = websiteUrl.startsWith('http://') || websiteUrl.startsWith('https://') 
+            ? websiteUrl 
+            : `https://${websiteUrl}`;
+        new URL(url);
         return undefined;
     } catch {
         return "Ugyldig URL-format";
@@ -102,7 +106,7 @@ export const validateOrgNumber = (orgNumber: string): string | undefined => {
     }
 
     // Norsk organisasjonsnummer: 9 siffer
-    if (!/^\d{9}$/.test(orgNumber)) {
+    if (orgNumber.trim() !== "" && !/^\d{9}$/.test(orgNumber)) {
         return "Organisasjonsnummer må bestå av 9 siffer";
     }
 
@@ -207,5 +211,6 @@ export const hasErrors = (errors: OrganizationFormErrors): boolean => {
  * @returns True hvis alle påkrevde felt er fylt ut, false ellers
  */
 export const requiredFieldsPresent = (formData: OrganizationFormData): boolean => {
+    // orgNumber er valgfritt, så vi sjekker bare shortName og fullName
     return !!(formData.shortName && formData.fullName);
 };

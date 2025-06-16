@@ -1,5 +1,19 @@
 # Endringslogg
 
+## 2025-06-16 16:40
+### Fikset PAT-token autentisering og Brreg API-integrasjon
+
+**Hva**: Løst problem med "Forbidden, {\"message\":\"Only signed in user is allowed to call APIs.\"}" feil ved API-kall til Gitea, og fikset uendelige løkker i Brreg API-integrasjonen.
+**Hvordan**: 
+- Implementert korrekt ekstraksjon av PAT-token fra Authorization header i backend-kontrollere
+- Konvertert fra "Bearer {token}" til Gitea-formatet "token {token}"
+- Brukt SetToken-metoden fra IGiteaService før API-kall
+- Fikset useEffect-avhengigheter og callback-memoization i OrgNumberField-komponenten
+- Implementert refs for å spore tidligere organisasjonsnumre og forhindre gjentatte API-kall
+- Konvertert organisasjonsnavn fra store bokstaver til "Proper Case" for å unngå valideringsfeil
+- Forbedret WebsiteUrlField til å håndtere https://-prefiks
+**Hvorfor**: For å løse autentiseringsfeil mot Gitea API, forhindre uendelige API-kall til Brreg, og sikre at skjemaet valideres korrekt ved innsending. Endringene sikrer sømløs organisasjonsopprettelse fra start til slutt.
+
 ## 2025-06-13 16:49
 ### Forbedret visning av feiltilstander og miljøinformasjon i organisasjonsopprettelse
 

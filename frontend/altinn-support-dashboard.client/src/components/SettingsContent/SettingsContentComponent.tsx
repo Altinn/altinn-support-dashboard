@@ -101,7 +101,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
                     For å opprette nye organisasjoner i Altinn Studio må du angi en gyldig Personal Access Token (PAT).
                     Denne brukes til å autentisere API-kall mot Gitea.
                 </Paragraph>
-                
+                <br />
                 <Box sx={{ mb: 3 }}>
                     <Paragraph data-size="sm" style={{ fontWeight: 'bold', marginBottom: '8px' }}>
                         Altinn Studio Miljø
