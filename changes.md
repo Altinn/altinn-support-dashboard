@@ -1,5 +1,16 @@
 # Endringslogg
 
+## 2025-06-18 00:17
+### Lagt til enhetstester for GiteaController
+
+**Hva**: Implementert omfattende enhetstester for GiteaController-klassen.
+**Hvordan**: 
+- Opprettet GiteaControllerTests.cs i test-prosjektet med tester for alle kontroller-endepunkter
+- Dekker alle positive og negative testscenarier med over 15 tester
+- Bruker Moq for å isolere controlleren fra tjenesten
+- Tester validering av PAT-token, organisasjonsnavn og miljøer
+**Hvorfor**: For å sikre at GiteaController fungerer korrekt under alle forhold, inkludert feilhåndtering og grensetilfeller, noe som er spesielt viktig for API-endepunkter som skal brukes av frontend for organisasjonsoppretting.
+
 ## 2025-06-16 19:05
 ### Forbedret validering med ErrorSummary komponent
 
