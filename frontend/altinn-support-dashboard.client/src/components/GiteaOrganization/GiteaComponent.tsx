@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import {
     Typography,
     Container,
@@ -101,6 +102,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
     const [shortName, setShortName] = useState('');
     const [fullName, setFullName] = useState('');
     const [website, setWebsite] = useState('');
+    const [patToken, setPatToken] = useState('');
     const [environment, setEnvironment] = useState<GiteaEnvironment>('development');
     const [giteaBaseUrl, setGiteaBaseUrl] = useState(getGiteaBaseUrl('development'));
     const [isLoading, setIsLoading] = useState(false);
@@ -135,6 +137,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
     const handleCreateOrganization = async () => {
         if (!shortName || !fullName || !patToken || !website) {
             setError('Alle felt må fylles ut');
+          
             return;
         }
 
@@ -155,6 +158,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                     shortName,
                     fullname: fullName,
                     website: formatWebsiteUrl(website) || undefined
+
                 }),
             });
 
@@ -183,6 +187,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                 if (rememberToken) {
                     saveTokenToStorage(patToken, environment);
                 }
+
             }
         } catch (err) {
             setError('An error occurred while communicating with the server');
@@ -329,11 +334,13 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
+
                             <Button
                                 variant="primary"
                                 onClick={handleCreateOrganization}
                             >
                                 {isLoading ? <CircularProgress size={24} /> : 'Opprett organisasjon'}
+
                             </Button>
                         </Grid>
                     </Grid>
