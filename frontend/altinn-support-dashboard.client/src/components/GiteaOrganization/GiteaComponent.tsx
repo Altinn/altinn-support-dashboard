@@ -110,8 +110,7 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
     const [success, setSuccess] = useState<string | null>(null);
     const [rememberToken, setRememberToken] = useState(true);
     
-    // Initialize patToken from localStorage if available
-    const [patToken, setPatToken] = useState('');
+    // patToken is initialized from localStorage in the useEffect below
     
     // Load token from localStorage when component mounts or environment changes
     useEffect(() => {
@@ -146,8 +145,8 @@ const GiteaComponent: React.FC<GiteaComponentProps> = () => {
         setSuccess(null);
 
         try {
-            // Use the backend API endpoint with the configured base URL
-            const response = await fetch('https://localhost:7174/api/gitea/create/orgwithteams', {
+            // Use the backend API endpoint with the configured base URL including environment name
+            const response = await fetch(`https://localhost:7174/api/${environment}/gitea/create/orgwithteams`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
