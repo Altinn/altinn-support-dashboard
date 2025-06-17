@@ -5,6 +5,7 @@ import SearchComponent from '../components/TopSearchBar/TopSearchBarComponent';
 import MainContent from '../components/MainContent/MainContentComponent';
 import SettingsContentComponent from '../components/SettingsContent/SettingsContentComponent';
 import ManualRoleSearchComponent from '../components/ManualRoleSearch/ManualRoleSearchComponent';
+import GiteaComponent from '../components/GiteaOrganization/GiteaComponent';
 import SignOutPage from '../SignOutPage/SignOutPage';
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -14,7 +15,7 @@ import { getBaseUrl } from '../utils/utils';
 
 const App: React.FC = () => {
     const { isDarkMode, setIsDarkMode } = useDarkMode();
-    const { environment, isEnvDropdownOpen, toggleEnvDropdown, handleEnvChange } = useEnvironment();
+    const { environment, handleEnvChange } = useEnvironment();
     const { userName, userEmail } = useUserDetails();
 
     const {
@@ -118,8 +119,6 @@ const App: React.FC = () => {
                 <div className="app-wrapper">
                     <Sidebar
                         environment={environment}
-                        isEnvDropdownOpen={isEnvDropdownOpen}
-                        toggleEnvDropdown={toggleEnvDropdown}
                         handleEnvChange={handleEnvChange}
                         userName={userName}
                         userEmail={userEmail}
@@ -162,6 +161,10 @@ const App: React.FC = () => {
                             <Route
                                 path="/manualrolesearch"
                                 element={<ManualRoleSearchComponent baseUrl={getBaseUrl(environment)} />}
+                            />
+                            <Route
+                                path="/gitea"
+                                element={<GiteaComponent />}
                             />
                             <Route
                                 path="/settings"
