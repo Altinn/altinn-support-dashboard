@@ -4,7 +4,8 @@ import {
     Heading, 
     Button, 
     Alert,
-    ErrorSummary
+    ErrorSummary,
+    Paragraph
 } from '@digdir/designsystemet-react';
 import { OrganizationFormData, OrganizationFormErrors } from './models/organizationTypes';
 import { useOrganizationCreation } from './hooks/useOrganizationCreation';
@@ -197,8 +198,15 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
             {!hasValidToken && (
                 <div style={{ padding: '24px', marginTop: '24px', marginBottom: '24px', background: '#fff', borderRadius: '4px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
                     <Alert data-color="danger" style={{ marginBottom: '16px' }}>
+                        
+                        <Heading level={2} data-size="xs" style={{ marginBottom: 'var(--ds-size-2)' }}>
                         Du må ha en gyldig PAT-token for å kunne opprette organisasjoner.
+                                            </Heading>
+                                            <Paragraph>
+                                                For å kunne opprette organisasjoner i Altinn Studio må du sette opp et gyldig PAT-token og velge miljø.
+                                            </Paragraph>
                     </Alert>
+                    
                     <Button
                         onClick={goToSettings}
                         style={{ marginTop: '16px' }}
