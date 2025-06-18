@@ -18,7 +18,9 @@ namespace AltinnSupportDashboard
 
         public void ConfigureServices(IServiceCollection services)
         {
-           
+            // Add HTTP client factory for BRREG API calls
+            services.AddHttpClient();
+            
             // Add controllers for the API
             services.AddControllers();
 

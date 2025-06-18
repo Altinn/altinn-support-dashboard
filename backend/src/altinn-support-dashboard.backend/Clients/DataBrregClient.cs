@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -99,6 +99,53 @@ namespace altinn_support_dashboard.Server.Services
                     var responseBody = await response.Content.ReadAsStringAsync();
                     throw new HttpRequestException($"Failed to retrieve data from Brreg. Status code: {response.StatusCode}, Response: {responseBody}");
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while calling Brreg API: {ex.Message}", ex);
+            }
+        }
+        
+        public async Task<string> GetOrgInfoAsync(string orgNumber, string environmentName)
+        {
+            try
+            {
+                var client = _clients[environmentName];
+
+                // Direct URL to the BRREG API with no params
+                var requestUrl = $"enhetsregisteret/api/enheter/{orgNumber}";
+
+                var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+                
+                // Set headers for fresh content
+                request.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue
+                {
+                    NoCache = true,
+                    NoStore = true,
+                    MaxAge = TimeSpan.Zero,
+                    MustRevalidate = true
+                };
+                request.Headers.Pragma.Add(new System.Net.Http.Headers.NameValueHeaderValue("no-cache"));
+
+                // Ensure we're getting JSON
+                request.Headers.Accept.Clear();
+                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                // Don't use the default encoding
+                HttpResponseMessage response = await client.SendAsync(request);
+                
+                response.EnsureSuccessStatusCode();
+                
+                // Read content directly as UTF-8 string
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (HttpRequestException ex)
+            {
+                if (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new HttpRequestException("NotFound: Organization not found", ex);
+                }
+                throw new Exception($"Error communicating with BRREG API: {ex.Message}", ex);
             }
             catch (Exception ex)
             {

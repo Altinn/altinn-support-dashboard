@@ -1,4 +1,4 @@
-﻿using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Models;
 using System.Threading.Tasks;
 
 namespace altinn_support_dashboard.Server.Services.Interfaces
@@ -7,5 +7,6 @@ namespace altinn_support_dashboard.Server.Services.Interfaces
     {
         Task<ErRollerModel> GetRolesAsync(string orgNumber, string environmentName);
         Task<UnderenhetRootObject> GetUnderenheter(string orgNumber, string environmentName);
+        Task<BrregOrgInfo> GetOrgInfoAsync(string orgNumber, string environmentName);
     }
 }
