@@ -1,5 +1,6 @@
 import React from 'react';
 import { TextField, IconButton, InputAdornment, Box, Typography } from '@mui/material';
+
 import { Search as SearchIcon, Clear as ClearIcon } from '@mui/icons-material';
 
 type SearchComponentProps = {

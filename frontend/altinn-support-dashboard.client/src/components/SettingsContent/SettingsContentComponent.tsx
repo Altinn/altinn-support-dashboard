@@ -1,4 +1,6 @@
+
 import React, { useState } from 'react';
+
 import {
     Button,
     Switch,
@@ -13,7 +15,9 @@ import {
 } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { FaSlack, FaBookOpen } from 'react-icons/fa';
+
 // Import removed: getBaseUrl
+
 import { SettingsContentProps } from './models/settingsTypes';
 import { getVersionInfo } from './utils/versionUtils';
 

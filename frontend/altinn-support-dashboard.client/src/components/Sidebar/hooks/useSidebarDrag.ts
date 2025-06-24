@@ -1,4 +1,6 @@
+
 import { useState, useEffect, MouseEvent as ReactMouseEvent } from 'react';
+
 
 export const useSidebarDrag = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -9,13 +11,16 @@ export const useSidebarDrag = () => {
     setIsCollapsed((prev) => !prev);
   };
 
+
   const handleDragStart = (e: ReactMouseEvent) => {
+
     e.preventDefault();
     setIsDragging(true);
     setDragStartX(e.clientX);
   };
-
+  
   const handleDragMove = (e: MouseEvent) => {
+
     if (!isDragging) return;
     const dragDistance = e.clientX - dragStartX;
     if (Math.abs(dragDistance) > 50) { // Threshold for triggering expand/collapse
