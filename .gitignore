@@ -398,3 +398,7 @@ FodyWeavers.xsd
 *.sln.iml
 /backend/test/altinn-support-dashboard.backend.Tests/altinn-support-dashboard.backend.Tests.csproj
 /backend/src/altinn-support-dashboard.backend/EnvironmentConfigurations.xml
+
+
+# Windsurf
+.windsurf

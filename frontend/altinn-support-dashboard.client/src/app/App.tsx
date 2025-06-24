@@ -14,7 +14,7 @@ import { getBaseUrl } from '../utils/utils';
 
 const App: React.FC = () => {
     const { isDarkMode, setIsDarkMode } = useDarkMode();
-    const { environment, isEnvDropdownOpen, toggleEnvDropdown, handleEnvChange } = useEnvironment();
+    const { environment, handleEnvChange } = useEnvironment();
     const { userName, userEmail } = useUserDetails();
 
     const {
@@ -35,9 +35,6 @@ const App: React.FC = () => {
         handleExpandToggle,
     } = useOrganizationSearch(environment);
 
-    const handleClearSearch = () => {
-        setQuery('');
-    };
 
     const theme = React.useMemo(
         () =>
@@ -118,8 +115,6 @@ const App: React.FC = () => {
                 <div className="app-wrapper">
                     <Sidebar
                         environment={environment}
-                        isEnvDropdownOpen={isEnvDropdownOpen}
-                        toggleEnvDropdown={toggleEnvDropdown}
                         handleEnvChange={handleEnvChange}
                         userName={userName}
                         userEmail={userEmail}
@@ -136,8 +131,6 @@ const App: React.FC = () => {
                                             query={query}
                                             setQuery={setQuery}
                                             handleSearch={handleSearch}
-                                            handleClearSearch={handleClearSearch}
-                                            hasSearched={hasSearched}
                                             isDarkMode={isDarkMode}
                                         />
                                         <MainContent
