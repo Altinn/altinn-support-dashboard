@@ -1,22 +1,18 @@
-﻿import React from 'react';
-import { TextField, IconButton, InputAdornment, Box, Typography, Button } from '@mui/material';
+import React from 'react';
+import { TextField, IconButton, InputAdornment, Box, Typography } from '@mui/material';
 import { Search as SearchIcon, Clear as ClearIcon } from '@mui/icons-material';
 
 type SearchComponentProps = {
     query: string;
     setQuery: (query: string) => void;
     handleSearch: () => void;
-    handleClearSearch: () => void;
-    hasSearched: boolean;
     isDarkMode: boolean;
 };
 
 const SearchComponent: React.FC<SearchComponentProps> = ({
     query,
     setQuery,
-    handleSearch,
-    handleClearSearch,
-    hasSearched,
+    handleSearch
 }) => (
     <Box sx={{ mb: 3 }}>
         <Typography variant="h6" gutterBottom>
