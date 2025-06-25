@@ -132,11 +132,12 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
                             value={patInput}
                             onChange={handlePatInputChange}
                             type={showPassword ? 'text' : 'password'}
-                            size="medium"
                             style={{ flex: 1 }}
-                            errorMessage={patState.errorMessage}
+                            error={patState.errorMessage}
                             disabled={patState.isValidating}
+                            aria-labelledby="pat-input-label"
                         />
+                        <span id="pat-input-label" style={{ display: 'none' }}>Personal Access Token</span>
                         <Button
                             variant="tertiary"
                             onClick={() => setShowPassword(!showPassword)}
@@ -265,7 +266,7 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
             {/* Action Buttons */}
             <Box sx={{ mb: 3 }}>
                 <MuiButton 
-                    variant="secondary"
+                    variant="outlined"
                     onClick={handleReload} 
                     style={{ marginRight: '12px' }}
                 >

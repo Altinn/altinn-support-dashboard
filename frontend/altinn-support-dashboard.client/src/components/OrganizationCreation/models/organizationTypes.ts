@@ -5,6 +5,7 @@ export interface OrganizationFormData {
     owners: string[];
     description: string;
     orgNumber: string;
+    emailDomain: string;
 }
 
 export interface OrganizationFormErrors {
@@ -14,6 +15,7 @@ export interface OrganizationFormErrors {
     owners?: string;
     description?: string;
     orgNumber?: string;
+    emailDomain?: string;
     general?: string;
 }
 

@@ -48,12 +48,13 @@ export const OwnersField: React.FC<OwnersFieldProps> = ({
                 <Textfield
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    size="medium"
                     style={{ flexGrow: 1 }}
                     placeholder="Gitea-brukernavn"
                     onKeyDown={handleKeyPress}
-                    errorMessage={error}
+                    error={error}
+                    aria-labelledby="owners-input-label"
                 />
+                <span id="owners-input-label" style={{ display: 'none' }}>Eiere (Gitea-brukernavn)</span>
                 
                 <Button
                     variant="secondary"
