@@ -42,7 +42,8 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
         websiteUrl: '',
         owners: [],
         description: '',
-        orgNumber: ''
+        orgNumber: '',
+        emailDomain: ''
     });
 
     const [errors, setErrors] = useState<OrganizationFormErrors>({});
@@ -166,7 +167,8 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
             websiteUrl: '',
             owners: [],
             description: '',
-            orgNumber: ''
+            orgNumber: '',
+            emailDomain: ''
         });
         setCreationSuccess(null);
         setCreationMessage('');

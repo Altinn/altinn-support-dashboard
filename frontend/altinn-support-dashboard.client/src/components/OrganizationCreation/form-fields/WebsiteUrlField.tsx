@@ -32,14 +32,14 @@ export const WebsiteUrlField: React.FC<WebsiteUrlFieldProps> = ({
                     onChange(inputValue);
                     console.log('WebsiteUrl changed:', inputValue);
                 }}
-                size="small"
                 prefix="https://"
                 style={{ width: '100%' }}
-                error={!!error}
-                errorText={error}
+                error={error}
                 description={!error ? "F.eks. eksempel.no" : undefined}
                 placeholder="www.domene.no"
+                aria-labelledby="website-url-label"
             />
+            <span id="website-url-label" style={{ display: 'none' }}>Nettside</span>
         </div>
     );
 };

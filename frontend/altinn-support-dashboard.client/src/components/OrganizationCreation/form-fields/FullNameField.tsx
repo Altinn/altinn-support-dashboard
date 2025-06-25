@@ -27,11 +27,12 @@ export const FullNameField: React.FC<FullNameFieldProps> = ({
                 id="fullName"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                size="medium"
                 style={{ width: '100%' }}
-                errorMessage={error}
-                helperText={!error ? "Organisasjonens fulle navn" : undefined}
+                error={error}
+                description={!error ? "Organisasjonens fulle navn" : undefined}
+                aria-labelledby="fullname-label"
             />
+            <span id="fullname-label" style={{ display: 'none' }}>Fullt navn</span>
         </div>
     );
 };
