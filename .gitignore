@@ -400,5 +400,8 @@ FodyWeavers.xsd
 /backend/src/altinn-support-dashboard.backend/EnvironmentConfigurations.xml
 
 
-# Windsurf
-.windsurf
+
+# Windsurf MD files
+
+.windsurf/
+

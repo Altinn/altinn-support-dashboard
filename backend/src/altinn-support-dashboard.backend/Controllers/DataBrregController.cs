@@ -1,4 +1,4 @@
-﻿using altinn_support_dashboard.Server.Services.Interfaces;
+using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
 using Microsoft.AspNetCore.Mvc;
 

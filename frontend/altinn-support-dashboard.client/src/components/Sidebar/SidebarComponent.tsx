@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Button, Menu, MenuItem, Divider, Tooltip } from '@mui/material';
-import { ExpandMore, Dashboard, Search, Settings, ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { ExpandMore, Dashboard, Search, Settings, ChevronLeft, ChevronRight, Add } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
 import { useCurrentDateTime } from '../../hooks/hooks';
@@ -125,6 +125,26 @@ const Sidebar: React.FC<Omit<SidebarProps, "isEnvDropdownOpen" | "toggleEnvDropd
                         ) : (
                             <Tooltip title="Manuelt Rollesøk" placement="right" arrow>
                                 <Search sx={{ color: 'inherit', fontSize: 24 }} />
+                            </Tooltip>
+                        )}
+                    </NavLink>
+                    <NavLink
+                        to="/new-org"
+                        className={({ isActive }) => `nav-button ${isActive ? 'selected' : ''}`}
+                        style={{
+                            textDecoration: 'none',
+                            position: 'relative',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            margin: isCollapsed ? '0 0 10px 0' : undefined
+                        }}
+                    >
+                        {!isCollapsed ? (
+                            'Ny organisasjon'
+                        ) : (
+                            <Tooltip title="Ny organisasjon" placement="right" arrow>
+                                <Add sx={{ color: 'inherit', fontSize: 24 }} />
                             </Tooltip>
                         )}
                     </NavLink>

@@ -57,7 +57,7 @@ namespace AltinnSupportDashboard
                 {
                     // Bind Configuration section to the Configuration class and add to DI
                     services.Configure<Configuration>(hostContext.Configuration.GetSection("Configuration"));
-                    services.Configure<BrregConfiguration>(hostContext.Configuration.GetSection("BrregConfiguration"));
+                    services.Configure<BrregApiConfiguration>(hostContext.Configuration.GetSection("Brreg"));
                     // Retrieve configuration values from environment variables or appsettings.json
                     var config = hostContext.Configuration.GetSection("Configuration").Get<Configuration>();
 

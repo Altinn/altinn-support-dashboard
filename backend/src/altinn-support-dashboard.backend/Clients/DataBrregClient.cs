@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -105,17 +105,67 @@ namespace altinn_support_dashboard.Server.Services
                 throw new Exception($"An error occurred while calling Brreg API: {ex.Message}", ex);
             }
         }
+        
+        /// <summary>
+        /// Henter detaljer om en bestemt enhet fra Brønnøysundregistrene
+        /// </summary>
+        /// <param name="orgNumber">Organisasjonsnummeret til enheten</param>
+        /// <param name="environmentName">Miljøet å hente data fra (Production eller TT02)</param>
+        /// <returns>JSON-streng med enhetsinformasjon</returns>
+        public async Task<string> GetEnhetsdetaljer(string orgNumber, string environmentName)
+        {
+            try
+            {
+                var client = _clients[environmentName];
+                var requestUrl = $"enhetsregisteret/api/enheter/{orgNumber}";
+                Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
+
+                // Simplified HTTP request without problematic headers
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    // Set the base address for this request only
+                    httpClient.BaseAddress = client.BaseAddress;
+                    httpClient.Timeout = client.Timeout;
+                    
+                    // Make a simple GET request
+                    var response = await httpClient.GetAsync(requestUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Simple string reading without Base64 encoding issues
+                        string result = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine("Brreg API returned successful response");
+                        return result;
+                    }
+                    else
+                    {
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine($"API call failed with status code {response.StatusCode}: {responseBody}");
+                        throw new HttpRequestException($"Failed to retrieve organization details from Brreg. Status code: {response.StatusCode}, Response: {responseBody}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in GetEnhetsdetaljer: {ex.Message}");
+                // We don't want mock data, so just throw the exception
+                throw new Exception($"An error occurred while calling Brreg API for organization details: {ex.Message}", ex);
+            }
+        }
+        
+
+
     }
 
     public class BrregConfiguration
     {
-        public EnvironmentConfiguration Production { get; set; }
-        public EnvironmentConfiguration TT02 { get; set; }
+        public required EnvironmentConfiguration Production { get; set; }
+        public required EnvironmentConfiguration TT02 { get; set; }
     }
 
     public class EnvironmentConfiguration
     {
-        public string BaseAddress { get; set; }
+        public required string BaseAddress { get; set; }
         public int Timeout { get; set; } = 100; // Default timeout in seconds
     }
 }
