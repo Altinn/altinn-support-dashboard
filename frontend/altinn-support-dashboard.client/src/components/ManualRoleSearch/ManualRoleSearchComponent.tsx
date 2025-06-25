@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { UseManualRoleSearch } from '../../hooks/hooks'; 
 import { Role } from './models/manualRoleSearchTypes';
 import {
@@ -54,28 +54,7 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({ b
             </Typography>
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 2 }}>
                 <TextField
-                    label="Rollehaver"
-                    variant="outlined"
-                    value={rollehaver}
-                    onChange={(e) => {
-                        setRollehaver(e.target.value);
-                        setLocalStorageValue('rollehaver', e.target.value);
-                    }}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <Tooltip title="Fødselsnummer til personen som har rollen">
-                                    <IconButton>
-                                        <HelpOutlineIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </InputAdornment>
-                        ),
-                    }}
-                    fullWidth
-                />
-                <TextField
-                    label="Rollegiver"
+                    label="Tilganger fra"
                     variant="outlined"
                     value={rollegiver}
                     onChange={(e) => {
@@ -86,6 +65,27 @@ const ManualRoleSearchComponent: React.FC<ManualRoleSearchComponentProps> = ({ b
                         endAdornment: (
                             <InputAdornment position="end">
                                 <Tooltip title="Organisasjonsnummer til enheten som gir rollen">
+                                    <IconButton>
+                                        <HelpOutlineIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </InputAdornment>
+                        ),
+                    }}
+                    fullWidth
+                />
+                <TextField
+                    label="Tilganger til"
+                    variant="outlined"
+                    value={rollehaver}
+                    onChange={(e) => {
+                        setRollehaver(e.target.value);
+                        setLocalStorageValue('rollehaver', e.target.value);
+                    }}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <Tooltip title="Fødselsnummer til personen som har rollen">
                                     <IconButton>
                                         <HelpOutlineIcon />
                                     </IconButton>

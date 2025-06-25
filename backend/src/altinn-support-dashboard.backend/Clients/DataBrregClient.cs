@@ -74,7 +74,7 @@ namespace altinn_support_dashboard.Server.Services
             {
                 var client = _clients[environmentName];
 
-                var requestUrl = $"enhetsregisteret/api/underenheter?overordnetEnhet={orgNumber}&registrertIMvaregisteret=false";
+                var requestUrl = $"enhetsregisteret/api/underenheter?overordnetEnhet={orgNumber}&registrertIMvaregisteret=false&size=10000";
                 Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
 
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);

@@ -151,10 +151,13 @@ const MainContentComponent: React.FC<MainContentProps> = ({
             roleGroup?.roller?.map((role) => ({
                 ...role,
                 sistEndret: roleGroup.sistEndret,
-                type: roleGroup.type,
+                // Use the role's own type instead of the group type
+                type: role.type || roleGroup.type, 
                 enhet: role.enhet,
                 person: role.person,
-                fratraadt: role.fratraadt
+                fratraadt: role.fratraadt,
+                // Store the group type for reference if needed
+                groupType: roleGroup.type
             }))
         ).filter(Boolean) || [];
     const sortedERRoles = sortERRoles(flatERRoles, erRoleSortField, erRoleSortDirection);

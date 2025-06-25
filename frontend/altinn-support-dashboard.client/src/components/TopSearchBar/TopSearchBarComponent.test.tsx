@@ -30,8 +30,6 @@ describe('SearchComponent', () => {
 const renderSearchComponent = ({
     handleSearch = vi.fn(),
     mockSetQuery = vi.fn(),
-    handleClearSearch = vi.fn(),
-    hasSearched = false,
 } = {}) => {
     const Wrapper: React.FC = () => {
         const [query, setQuery] = React.useState('');
@@ -46,8 +44,6 @@ const renderSearchComponent = ({
                 query={query}
                 setQuery={handleSetQuery}
                 handleSearch={handleSearch}
-                handleClearSearch={handleClearSearch}
-                hasSearched={hasSearched}
                 isDarkMode={false}
             />
         );
