@@ -16,7 +16,7 @@ import { EyeIcon, EyeClosedIcon, QuestionmarkIcon } from '@navikt/aksel-icons';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { FaSlack, FaBookOpen } from 'react-icons/fa';
 import { SettingsContentProps } from './models/settingsTypes';
-import { getVersionInfo } from './utils/versionUtils';
+import { getVersionInfo, fetchVersionData, VersionData } from './utils/versionUtils';
 import { usePatTokenValidation } from './hooks/usePatTokenValidation';
 
 // Digdir Designsystem imports
@@ -37,7 +37,8 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
     isDarkMode,
     setIsDarkMode,
 }) => {
-    const { versionNumber, versionName } = getVersionInfo();
+    const { versionNumber, versionName, releaseDate } = getVersionInfo();
+    const [versionInfo, setVersionInfo] = useState<VersionData | null>(null);
     const [giteaEnv, setGiteaEnv] = useState<string>('development');
     const { patState, validateToken, clearToken } = usePatTokenValidation(giteaEnv);
     
@@ -51,6 +52,15 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
             setPatInput(patState.token);
         }
     }, [patState.token]);
+    
+    // Last inn versjonsinformasjon ved oppstart
+    useEffect(() => {
+        const loadVersionInfo = async () => {
+            const data = await fetchVersionData();
+            setVersionInfo(data);
+        };
+        loadVersionInfo();
+    }, []);
 
     const handleReload = () => {
         window.location.reload();
@@ -282,7 +292,10 @@ const SettingsContentComponent: React.FC<SettingsContentProps> = ({
             {/* App Info Footer */}
             <Box sx={{ mt: 5 }}>
                 <Typography variant="body2" gutterBottom>
-                    Applikasjonsinformasjon: {versionName} - Versjon {versionNumber}
+                    Applikasjonsinformasjon: {versionName} - Versjon {versionInfo?.version || versionNumber}
+                </Typography>
+                <Typography variant="body2" gutterBottom>
+                    Utgivelsesdato: {versionInfo?.releaseDate || releaseDate || 'Ikke tilgjengelig'}
                 </Typography>
                 <Typography variant="body2" gutterBottom>
                     Valgt miljø: {environment}
