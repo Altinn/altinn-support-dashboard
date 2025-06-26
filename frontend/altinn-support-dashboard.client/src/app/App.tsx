@@ -7,16 +7,21 @@ import SettingsContentComponent from '../components/SettingsContent/SettingsCont
 import ManualRoleSearchComponent from '../components/ManualRoleSearch/ManualRoleSearchComponent';
 import OrganizationCreationComponent from '../components/OrganizationCreation/OrganizationCreationComponent';
 import SignOutPage from '../SignOutPage/SignOutPage';
+import { VersionDialog } from '../components/VersionDialog/VersionDialog';
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { useDarkMode, useEnvironment, useUserDetails, useOrganizationSearch } from '../hooks/hooks';
+import { useVersionCheck } from '../hooks/useVersionCheck';
 import { getBaseUrl } from '../utils/utils';
 
 const App: React.FC = () => {
     const { isDarkMode, setIsDarkMode } = useDarkMode();
     const { environment, handleEnvChange } = useEnvironment();
     const { userName, userEmail } = useUserDetails();
+    
+    // Sjekk etter nye versjoner
+    const { versionInfo, shouldShowDialog, acknowledgeVersion } = useVersionCheck();
 
     const {
         query,
@@ -112,6 +117,12 @@ const App: React.FC = () => {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
+            {/* Vis versjonsoppdateringsmelding hvis ny versjon er tilgjengelig */}
+            <VersionDialog 
+                versionInfo={versionInfo}
+                open={shouldShowDialog}
+                onClose={acknowledgeVersion}
+            />
             <Router>
                 <div className="app-wrapper">
                     <Sidebar

@@ -45,6 +45,9 @@ altinn-support-dashboard/
 ├── frontend/
 │   └── altinn-support-dashboard.client/
 │       ├── public/
+│       │   ├── index.html
+│       │   ├── favicon.ico
+│       │   └── version.json         # Versjonsinformasjon og endringslogg
 │       └── src/
 │           ├── components/
 │           │   ├── MainContent/
@@ -57,8 +60,12 @@ altinn-support-dashboard/
 │           │   │   ├── SidebarComponent.tsx
 │           │   │   ├── hooks/
 │           │   │   └── models/
-│           │   └── TopSearchBar/
+│           │   ├── TopSearchBar/
+│           │   └── VersionDialog/               # Versjonsmeldings-dialog
+│           │       └── VersionDialog.tsx
 │           ├── hooks/
+│           │   ├── hooks.ts
+│           │   └── useVersionCheck.ts           # Hook for versjonskontroll
 │           ├── models/
 │           ├── utils/
 │           └── main.tsx
