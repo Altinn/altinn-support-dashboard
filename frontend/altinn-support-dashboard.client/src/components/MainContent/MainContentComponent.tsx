@@ -93,6 +93,15 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         setSearchQuery('');
     }, [selectedOrg]);
 
+    // Reset role view when new search results come in
+    useEffect(() => {
+        setIsRoleView(false);
+        setShowOrgList(true);
+        setSelectedContact(null);
+        setRoleInfo([]);
+        setRoleViewError(null);
+    }, [organizations]);
+
     useEffect(() => {
         const fetchOfficialContacts = async () => {
             if (!selectedOrg) return;
