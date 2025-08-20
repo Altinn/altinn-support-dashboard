@@ -1,18 +1,13 @@
 {
-  "version": "3.0.0",
-  "releaseDate": "2025-06-26",
+  "version": "3.1.0",
+  "releaseDate": "2025-08-20",
   "changes": [
     {
-      "title": "Integrasjon av organisasjonsopprettelse",
-      "description": "Implementert betaversjon av organisasjonsopprettelse for devmiljøet i Altinn Studio. Funksjonaliteten gjør det enklere å opprette nye organisasjoner med automatiserte prosesser for team og tilganger. I tillegg er det gjort flere brukerorienterte endringer i manuelt rolleoppslag basert på tilbakemeldinger fra ABS.",
+      "title": "Forbedret rollevisning og søkefunksjonalitet",
+      "description": "Forbedret brukeropplevelse i rollevisningen med mulighet for å se roller på hovedenhet og underenheter samtidig, samt løst søkebug som hindret nye søk fra rollevisningen.",
       "details": [
-        "Ny (beta)funksjon for å opprette organisasjoner direkte i dev.altinn.studio",
-        "Validering av organisasjonsinformasjon mot Brønnøysundregistrene",
-        "Implementert PAT-token håndtering med sikker lagring",
-        "Automatisk opprettelse av standard teams og repositories",
-        "Forbedret UI for manuelt rolleoppslag med tydeligere terminologi",
-        "Optimalisert versjonshåndtering med forbedret varslingssystem",
-        "Forenklet brukergrensesnitt for søk etter roller og organisasjoner"
+        "Vis roller på hovedenhet og underenheter i samme visning",
+        "Løst søkebug: Kan nå søke direkte fra rollevisningen"
       ]
     }
   ]
