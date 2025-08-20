@@ -44,6 +44,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
 }) => {
     const [selectedContact, setSelectedContact] = useState<PersonalContact | null>(null);
     const [roleInfo, setRoleInfo] = useState<any[]>([]);
+    const [subUnitRoles, setSubUnitRoles] = useState<{[orgNumber: string]: {roles: any[], orgName: string}}>({}); 
     const [isRoleView, setIsRoleView] = useState(false);
     const [showOrgList, setShowOrgList] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -76,16 +77,92 @@ const MainContentComponent: React.FC<MainContentProps> = ({
 
     const handleViewRoles = async (subject: string, reportee: string) => {
         try {
+            // Fetch roles for the selected organization (could be main unit or sub-unit)
             const res = await authorizedFetch(`${baseUrl}/serviceowner/${subject}/roles/${reportee}`);
             const data = await res.json();
             const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
             setRoleInfo(parsedData);
+            
+            // Check if the selected org is a sub-unit or main unit
+            const currentSubUnit = subUnits.find(sub => sub.organisasjonsnummer === reportee);
+            const isSubUnit = !!currentSubUnit;
+            
+            const subUnitRoleData: {[orgNumber: string]: {roles: any[], orgName: string}} = {};
+            
+            if (isSubUnit) {
+                // If we're viewing a sub-unit, also fetch roles for the main unit and other sub-units
+                const mainUnitNumber = currentSubUnit.overordnetEnhet;
+                
+                // Fetch roles for the main unit
+                try {
+                    const mainUnitRes = await authorizedFetch(`${baseUrl}/serviceowner/${subject}/roles/${mainUnitNumber}`);
+                    const mainUnitData = await mainUnitRes.json();
+                    const parsedMainUnitData = typeof mainUnitData === 'string' ? JSON.parse(mainUnitData) : mainUnitData;
+                    
+                    // Find main unit name
+                    const mainUnit = organizations.find(org => org.organizationNumber === mainUnitNumber);
+                    subUnitRoleData[mainUnitNumber] = {
+                        roles: parsedMainUnitData,
+                        orgName: mainUnit?.name || 'Hovedenhet'
+                    };
+                } catch (mainUnitError) {
+                    console.warn(`Could not fetch roles for main unit ${mainUnitNumber}:`, mainUnitError);
+                }
+                
+                // Fetch roles for other sub-units under the same main unit
+                const otherSubUnits = subUnits.filter(sub => 
+                    sub.overordnetEnhet === mainUnitNumber && 
+                    sub.organisasjonsnummer !== reportee
+                );
+                
+                for (const subUnit of otherSubUnits) {
+                    try {
+                        const subUnitRes = await authorizedFetch(`${baseUrl}/serviceowner/${subject}/roles/${subUnit.organisasjonsnummer}`);
+                        const subUnitData = await subUnitRes.json();
+                        const parsedSubUnitData = typeof subUnitData === 'string' ? JSON.parse(subUnitData) : subUnitData;
+                        subUnitRoleData[subUnit.organisasjonsnummer] = {
+                            roles: parsedSubUnitData,
+                            orgName: subUnit.navn
+                        };
+                    } catch (subUnitError) {
+                        console.warn(`Could not fetch roles for sub-unit ${subUnit.organisasjonsnummer}:`, subUnitError);
+                        subUnitRoleData[subUnit.organisasjonsnummer] = {
+                            roles: [],
+                            orgName: subUnit.navn
+                        };
+                    }
+                }
+            } else {
+                // If we're viewing a main unit, fetch roles for related sub-units
+                const relatedSubUnits = subUnits.filter(sub => sub.overordnetEnhet === reportee);
+                
+                for (const subUnit of relatedSubUnits) {
+                    try {
+                        const subUnitRes = await authorizedFetch(`${baseUrl}/serviceowner/${subject}/roles/${subUnit.organisasjonsnummer}`);
+                        const subUnitData = await subUnitRes.json();
+                        const parsedSubUnitData = typeof subUnitData === 'string' ? JSON.parse(subUnitData) : subUnitData;
+                        subUnitRoleData[subUnit.organisasjonsnummer] = {
+                            roles: parsedSubUnitData,
+                            orgName: subUnit.navn
+                        };
+                    } catch (subUnitError) {
+                        console.warn(`Could not fetch roles for sub-unit ${subUnit.organisasjonsnummer}:`, subUnitError);
+                        subUnitRoleData[subUnit.organisasjonsnummer] = {
+                            roles: [],
+                            orgName: subUnit.navn
+                        };
+                    }
+                }
+            }
+            
+            setSubUnitRoles(subUnitRoleData);
             setIsRoleView(true);
             setShowOrgList(false);
             setRoleViewError(null);
         } catch (error) {
             setRoleViewError('Roller kunne ikke hentes.');
             setRoleInfo([]);
+            setSubUnitRoles({});
         }
     };
 
@@ -100,6 +177,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         setSelectedContact(null);
         setRoleInfo([]);
         setRoleViewError(null);
+        setSubUnitRoles({});
     }, [organizations]);
 
     useEffect(() => {
@@ -178,6 +256,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         setSelectedContact(null);
         setIsRoleView(false);
         setRoleViewError(null);
+        setSubUnitRoles({});
     };
 
     return (
@@ -584,7 +663,19 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                     >
                                         Tilbake til oversikt
                                     </Button>
-                                    <TableContainer component={Paper} sx={{ mb: 2 }}>
+
+                                    {/* Main Organization Roles */}
+                                    {(() => {
+                                        const currentSubUnit = subUnits.find(sub => sub.organisasjonsnummer === selectedOrg?.OrganizationNumber);
+                                        const isSubUnit = !!currentSubUnit;
+                                        
+                                        return (
+                                            <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
+                                                Roller på {selectedOrg?.Name} {isSubUnit ? '(Underenhet)' : '(Hovedenhet)'}
+                                            </Typography>
+                                        );
+                                    })()}
+                                    <TableContainer component={Paper} sx={{ mb: 3 }}>
                                         <MuiTable>
                                             <TableHead>
                                                 <TableRow>
@@ -616,6 +707,70 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                             </TableBody>
                                         </MuiTable>
                                     </TableContainer>
+
+                                    {/* Additional Organization Roles */}
+                                    {Object.keys(subUnitRoles).length > 0 && (
+                                        <>
+                                            {(() => {
+                                                const currentSubUnit = subUnits.find(sub => sub.organisasjonsnummer === selectedOrg?.OrganizationNumber);
+                                                const isSubUnit = !!currentSubUnit;
+                                                
+                                                return (
+                                                    <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+                                                        {isSubUnit ? 'Roller på hovedenhet og andre underenheter' : 'Roller på underenheter'}
+                                                    </Typography>
+                                                );
+                                            })()}
+                                            {Object.entries(subUnitRoles).map(([orgNumber, { roles, orgName }]) => (
+                                                <Box key={orgNumber} sx={{ mb: 3 }}>
+                                                    {(() => {
+                                                        const currentSubUnit = subUnits.find(sub => sub.organisasjonsnummer === selectedOrg?.OrganizationNumber);
+                                                        const isCurrentSubUnit = !!currentSubUnit;
+                                                        const isMainUnit = organizations.find(org => org.organizationNumber === orgNumber);
+                                                        
+                                                        return (
+                                                            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
+                                                                {orgName} ({orgNumber}) {isMainUnit ? '(Hovedenhet)' : '(Underenhet)'}
+                                                            </Typography>
+                                                        );
+                                                    })()}
+                                                    <TableContainer component={Paper}>
+                                                        <MuiTable>
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    <TableCell>
+                                                                        <Typography variant="subtitle1">Rolletype</Typography>
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        <Typography variant="subtitle1">Rollenavn</Typography>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            </TableHead>
+                                                            <TableBody>
+                                                                {roles && roles.length > 0 ? (
+                                                                    roles.map((role, index) => (
+                                                                        <TableRow key={index}>
+                                                                            <TableCell>{role.RoleType}</TableCell>
+                                                                            <TableCell>{role.RoleName}</TableCell>
+                                                                        </TableRow>
+                                                                    ))
+                                                                ) : (
+                                                                    <TableRow>
+                                                                        <TableCell colSpan={2}>
+                                                                            <Typography variant="body2" color="textSecondary" align="center">
+                                                                                Ingen roller funnet
+                                                                            </Typography>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                )}
+                                                            </TableBody>
+                                                        </MuiTable>
+                                                    </TableContainer>
+                                                </Box>
+                                            ))}
+                                        </>
+                                    )}
+
                                     {roleViewError && (
                                         <Alert severity="error" sx={{ mt: 2 }}>
                                             {roleViewError}
