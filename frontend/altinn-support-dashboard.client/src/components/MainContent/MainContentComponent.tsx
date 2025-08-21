@@ -12,7 +12,9 @@ import {
     TableRow,
     Paper,
     TextField,
-    Box
+    Box,
+    Collapse,
+    IconButton
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
 
@@ -55,6 +57,8 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     const [roleViewError, setRoleViewError] = useState<string | null>(null);
     const [officialContacts, setOfficialContacts] = useState<OfficialContact[]>([]);
     const [officialContactsError, setOfficialContactsError] = useState<string | null>(null);
+    const [mainRoleExpanded, setMainRoleExpanded] = useState(true);
+    const [subUnitRoleExpanded, setSubUnitRoleExpanded] = useState<{[orgNumber: string]: boolean}>({});
 
     const quotes = useMemo(
         () => [
@@ -257,6 +261,8 @@ const MainContentComponent: React.FC<MainContentProps> = ({
         setIsRoleView(false);
         setRoleViewError(null);
         setSubUnitRoles({});
+        setMainRoleExpanded(true);
+        setSubUnitRoleExpanded({});
     };
 
     return (
@@ -670,71 +676,18 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                         const isSubUnit = !!currentSubUnit;
                                         
                                         return (
-                                            <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
-                                                Roller på {selectedOrg?.Name} {isSubUnit ? '(Underenhet)' : '(Hovedenhet)'}
-                                            </Typography>
-                                        );
-                                    })()}
-                                    <TableContainer component={Paper} sx={{ mb: 3 }}>
-                                        <MuiTable>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell>
-                                                        <Typography variant="subtitle1">Rolletype</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="subtitle1">Rollenavn</Typography>
-                                                    </TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {roleInfo && roleInfo.length > 0 ? (
-                                                    roleInfo.map((role, index) => (
-                                                        <TableRow key={index}>
-                                                            <TableCell>{role.RoleType}</TableCell>
-                                                            <TableCell>{role.RoleName}</TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                ) : (
-                                                    <TableRow>
-                                                        <TableCell colSpan={2}>
-                                                            <Typography variant="body2" color="textSecondary" align="center">
-                                                                Ingen roller funnet
-                                                            </Typography>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )}
-                                            </TableBody>
-                                        </MuiTable>
-                                    </TableContainer>
-
-                                    {/* Additional Organization Roles */}
-                                    {Object.keys(subUnitRoles).length > 0 && (
-                                        <>
-                                            {(() => {
-                                                const currentSubUnit = subUnits.find(sub => sub.organisasjonsnummer === selectedOrg?.OrganizationNumber);
-                                                const isSubUnit = !!currentSubUnit;
-                                                
-                                                return (
-                                                    <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-                                                        {isSubUnit ? 'Roller på hovedenhet og andre underenheter' : 'Roller på underenheter'}
+                                            <Box sx={{ mt: 3, mb: 2 }}>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} 
+                                                     onClick={() => setMainRoleExpanded(!mainRoleExpanded)}>
+                                                    <Typography variant="h6" gutterBottom sx={{ mb: 0, mr: 1 }}>
+                                                        Roller på {selectedOrg?.Name} {isSubUnit ? '(Underenhet)' : '(Hovedenhet)'}
                                                     </Typography>
-                                                );
-                                            })()}
-                                            {Object.entries(subUnitRoles).map(([orgNumber, { roles, orgName }]) => (
-                                                <Box key={orgNumber} sx={{ mb: 3 }}>
-                                                    {(() => {
-                                                        const currentSubUnit = subUnits.find(sub => sub.organisasjonsnummer === selectedOrg?.OrganizationNumber);
-                                                        const isCurrentSubUnit = !!currentSubUnit;
-                                                        const isMainUnit = organizations.find(org => org.organizationNumber === orgNumber);
-                                                        
-                                                        return (
-                                                            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
-                                                                {orgName} ({orgNumber}) {isMainUnit ? '(Hovedenhet)' : '(Underenhet)'}
-                                                            </Typography>
-                                                        );
-                                                    })()}
-                                                    <TableContainer component={Paper}>
+                                                    <IconButton size="small">
+                                                        {mainRoleExpanded ? <ExpandLess /> : <ExpandMore />}
+                                                    </IconButton>
+                                                </Box>
+                                                <Collapse in={mainRoleExpanded}>
+                                                    <TableContainer component={Paper} sx={{ mb: 3 }}>
                                                         <MuiTable>
                                                             <TableHead>
                                                                 <TableRow>
@@ -747,8 +700,8 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                                 </TableRow>
                                                             </TableHead>
                                                             <TableBody>
-                                                                {roles && roles.length > 0 ? (
-                                                                    roles.map((role, index) => (
+                                                                {roleInfo && roleInfo.length > 0 ? (
+                                                                    roleInfo.map((role, index) => (
                                                                         <TableRow key={index}>
                                                                             <TableCell>{role.RoleType}</TableCell>
                                                                             <TableCell>{role.RoleName}</TableCell>
@@ -766,8 +719,89 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                                             </TableBody>
                                                         </MuiTable>
                                                     </TableContainer>
-                                                </Box>
-                                            ))}
+                                                </Collapse>
+                                            </Box>
+                                        );
+                                    })()}
+
+                                    {/* Additional Organization Roles */}
+                                    {Object.keys(subUnitRoles).length > 0 && (
+                                        <>
+                                            {(() => {
+                                                const currentSubUnit = subUnits.find(sub => sub.organisasjonsnummer === selectedOrg?.OrganizationNumber);
+                                                const isSubUnit = !!currentSubUnit;
+                                                
+                                                return (
+                                                    <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+                                                        {isSubUnit ? 'Roller på hovedenhet og andre underenheter' : 'Roller på underenheter'}
+                                                    </Typography>
+                                                );
+                                            })()}
+                                            {Object.entries(subUnitRoles).map(([orgNumber, { roles, orgName }]) => {
+                                                const isExpanded = subUnitRoleExpanded[orgNumber] ?? false; // Default to collapsed
+                                                const toggleExpanded = () => {
+                                                    setSubUnitRoleExpanded(prev => ({
+                                                        ...prev,
+                                                        [orgNumber]: !isExpanded
+                                                    }));
+                                                };
+                                                
+                                                return (
+                                                    <Box key={orgNumber} sx={{ mb: 3 }}>
+                                                        {(() => {
+                                                            const currentSubUnit = subUnits.find(sub => sub.organisasjonsnummer === selectedOrg?.OrganizationNumber);
+                                                            const isCurrentSubUnit = !!currentSubUnit;
+                                                            const isMainUnit = organizations.find(org => org.organizationNumber === orgNumber);
+                                                            
+                                                            return (
+                                                                <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} 
+                                                                     onClick={toggleExpanded}>
+                                                                    <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', mb: 0, mr: 1 }}>
+                                                                        {orgName} ({orgNumber}) {isMainUnit ? '(Hovedenhet)' : '(Underenhet)'}
+                                                                    </Typography>
+                                                                    <IconButton size="small">
+                                                                        {isExpanded ? <ExpandLess /> : <ExpandMore />}
+                                                                    </IconButton>
+                                                                </Box>
+                                                            );
+                                                        })()}
+                                                        <Collapse in={isExpanded}>
+                                                            <TableContainer component={Paper}>
+                                                                <MuiTable>
+                                                                    <TableHead>
+                                                                        <TableRow>
+                                                                            <TableCell>
+                                                                                <Typography variant="subtitle1">Rolletype</Typography>
+                                                                            </TableCell>
+                                                                            <TableCell>
+                                                                                <Typography variant="subtitle1">Rollenavn</Typography>
+                                                                            </TableCell>
+                                                                        </TableRow>
+                                                                    </TableHead>
+                                                                    <TableBody>
+                                                                        {roles && roles.length > 0 ? (
+                                                                            roles.map((role, index) => (
+                                                                                <TableRow key={index}>
+                                                                                    <TableCell>{role.RoleType}</TableCell>
+                                                                                    <TableCell>{role.RoleName}</TableCell>
+                                                                                </TableRow>
+                                                                            ))
+                                                                        ) : (
+                                                                            <TableRow>
+                                                                                <TableCell colSpan={2}>
+                                                                                    <Typography variant="body2" color="textSecondary" align="center">
+                                                                                        Ingen roller funnet
+                                                                                    </Typography>
+                                                                                </TableCell>
+                                                                            </TableRow>
+                                                                        )}
+                                                                    </TableBody>
+                                                                </MuiTable>
+                                                            </TableContainer>
+                                                        </Collapse>
+                                                    </Box>
+                                                );
+                                            })}
                                         </>
                                     )}
 
