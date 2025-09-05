@@ -87,6 +87,45 @@ const Sidebar: React.FC<Omit<SidebarProps, "isEnvDropdownOpen" | "toggleEnvDropd
                         }}
                     />
                 </Box>
+                {/* Collapse button moved under logo */}
+                <Box 
+                    sx={{ 
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mb: 2
+                    }}
+                >
+                    <Button
+                        onClick={toggleCollapse}
+                        startIcon={!isCollapsed ? <ChevronLeft /> : undefined}
+                        sx={{ 
+                            color: 'inherit',
+                            height: '36px',
+                            borderRadius: '18px',
+                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                            padding: '6px',
+                            minWidth: isCollapsed ? '36px' : 'auto',
+                            width: isCollapsed ? '36px' : 'auto',
+                            '&:hover': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                border: '1px solid rgba(255, 255, 255, 0.5)',
+                            },
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textTransform: 'none',
+                            fontSize: '0.9rem',
+                            px: !isCollapsed ? 2 : 0
+                        }}
+                    >
+                        {isCollapsed ? (
+                            <ChevronRight sx={{ fontSize: 24 }} />
+                        ) : (
+                            'Minimer sidepanel'
+                        )}
+                    </Button>
+                </Box>
                 <nav className="nav" style={{ position: 'relative', padding: isCollapsed ? '0' : '0 10px' }}>
                     <NavLink
                         to="/dashboard"
@@ -171,44 +210,6 @@ const Sidebar: React.FC<Omit<SidebarProps, "isEnvDropdownOpen" | "toggleEnvDropd
                 </nav>
             </Box>
             <Box>
-                <Box 
-                    sx={{ 
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        mb: 2
-                    }}
-                >
-                    <Button
-                        onClick={toggleCollapse}
-                        startIcon={!isCollapsed ? <ChevronLeft /> : undefined}
-                        sx={{ 
-                            color: 'inherit',
-                            height: '36px',
-                            borderRadius: '18px',
-                            border: '1px solid rgba(255, 255, 255, 0.3)',
-                            padding: '6px',
-                            minWidth: isCollapsed ? '36px' : 'auto',
-                            width: isCollapsed ? '36px' : 'auto',
-                            '&:hover': {
-                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                                border: '1px solid rgba(255, 255, 255, 0.5)',
-                            },
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            textTransform: 'none',
-                            fontSize: '0.9rem',
-                            px: !isCollapsed ? 2 : 0
-                        }}
-                    >
-                        {isCollapsed ? (
-                            <ChevronRight sx={{ fontSize: 24 }} />
-                        ) : (
-                            'Minimer sidepanel'
-                        )}
-                    </Button>
-                </Box>
                 <Divider sx={{ bgcolor: isDarkMode ? 'grey.700' : 'grey.500', my: 2 }} />
                 {!isCollapsed && (
                     <>
