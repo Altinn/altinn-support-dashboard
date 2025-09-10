@@ -4,9 +4,10 @@ import { OrganizationFormData, OrganizationCreationResponse, BrregSearchResponse
 // Hjelpefunksjon for å få riktig base URL uten dobbel "api" i path
 const getCorrectBaseUrl = (): string => {
     const apiHost = window.location.hostname;
-    const protocol = window.location.protocol;
+    const protocol = "http";
     const localDev = apiHost === 'localhost';
-    const portSegment = localDev ? ':7174' : '';
+    const portSegment = localDev ? ':5237' : '';
+    
     return `${protocol}//${apiHost}${portSegment}`;
 };
 
