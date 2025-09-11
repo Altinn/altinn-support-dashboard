@@ -1,3 +1,4 @@
+using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,13 @@ namespace altinn_support_dashboard.Server.Services
         private readonly IHttpClientFactory _clientFactory;
         private readonly Dictionary<string, HttpClient> _clients = new();
         private readonly BrregConfiguration _brregConfiguration;
+        private readonly ILogger<IDataBrregService> _logger;
 
-        public DataBrregClient(IHttpClientFactory clientFactory, IOptions<BrregConfiguration> brregConfiguration)
+        public DataBrregClient(IHttpClientFactory clientFactory, IOptions<BrregConfiguration> brregConfiguration, ILogger<IDataBrregService> logger)
         {
             _clientFactory = clientFactory;
             _brregConfiguration = brregConfiguration.Value;
+            _logger = logger;
 
             InitClient(nameof(_brregConfiguration.Production), _brregConfiguration.Production);
             InitClient(nameof(_brregConfiguration.TT02), _brregConfiguration.TT02);
@@ -41,6 +44,7 @@ namespace altinn_support_dashboard.Server.Services
 
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
+
                 request.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue
                 {
                     NoCache = true,
@@ -49,7 +53,6 @@ namespace altinn_support_dashboard.Server.Services
                     MustRevalidate = true
                 };
                 request.Headers.Pragma.Add(new System.Net.Http.Headers.NameValueHeaderValue("no-cache"));
-
                 var response = await client.SendAsync(request);
 
                 if (response.IsSuccessStatusCode)

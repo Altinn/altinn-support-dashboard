@@ -53,7 +53,6 @@ public class ER_Roller_APIController : ControllerBase
         }
         catch (Exception ex)
         {
-                return StatusCode(500, "Intern serverfeil");
             return StatusCode(500, $"Intern serverfeil: {ex.Message}");
         }
     }
