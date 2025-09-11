@@ -1,13 +1,19 @@
 export function getBaseUrl(environment: string): string {
   const apiHost = window.location.hostname;
-  const protocol = "http";
+  //quick fix to make local development possible
+  var protocol = "";
+  if (environment === "TT02") {
+    protocol = "http:";
+  } else {
+    protocol = window.location.protocol;
+  }
   const localDev =
     typeof process !== "undefined" && process.env.REACT_APP_LOCAL_DEV
       ? process.env.REACT_APP_LOCAL_DEV === "true" ||
         process.env.REACT_APP_LOCAL_DEV === "1"
       : window.location.hostname === "localhost";
   const portSegment = localDev ? ":5237" : "";
-  return `${protocol}://${apiHost}${portSegment}/api/${environment === "TT02" ? "TT02" : "Production"}`;
+  return `${protocol}//${apiHost}${portSegment}/api/${environment === "TT02" ? "TT02" : "Production"}`;
 }
 
 export async function authorizedFetch(
