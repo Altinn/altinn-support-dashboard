@@ -52,6 +52,7 @@ namespace altinn_support_dashboard.Server.Services
                     MaxAge = TimeSpan.Zero,
                     MustRevalidate = true
                 };
+                request.Headers.Pragma.Add(new System.Net.Http.Headers.NameValueHeaderValue("no-cache"));
                 var response = await client.SendAsync(request);
 
                 if (response.IsSuccessStatusCode)
