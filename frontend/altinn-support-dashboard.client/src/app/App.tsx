@@ -19,7 +19,7 @@ const App: React.FC = () => {
     const { isDarkMode, setIsDarkMode } = useDarkMode();
     const { environment, handleEnvChange } = useEnvironment();
     const { userName, userEmail } = useUserDetails();
-    
+
     // Sjekk etter nye versjoner
     const { versionInfo, shouldShowDialog, acknowledgeVersion } = useVersionCheck();
 
@@ -118,7 +118,7 @@ const App: React.FC = () => {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             {/* Vis versjonsoppdateringsmelding hvis ny versjon er tilgjengelig */}
-            <VersionDialog 
+            <VersionDialog
                 versionInfo={versionInfo}
                 open={shouldShowDialog}
                 onClose={acknowledgeVersion}
