@@ -1,12 +1,10 @@
 import React from "react";
 import "./App.css";
 import Sidebar from "../components/Sidebar/SidebarComponent";
-import SearchComponent from "../components/TopSearchBar/TopSearchBarComponent";
 import MainContent from "../components/MainContent/MainContentComponent";
 import SettingsContentComponent from "../components/SettingsContent/SettingsContentComponent";
 import ManualRoleSearchComponent from "../components/ManualRoleSearch/ManualRoleSearchComponent";
 import OrganizationCreationComponent from "../components/OrganizationCreation/OrganizationCreationComponent";
-import SignOutPage from "../SignOutPage/SignOutPage";
 import { VersionDialog } from "../components/VersionDialog/VersionDialog";
 
 import {
@@ -15,7 +13,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import { ThemeProvider, CssBaseline } from "@mui/material";
 import {
   useDarkMode,
   useEnvironment,
@@ -25,6 +23,8 @@ import {
 import { useVersionCheck } from "../hooks/useVersionCheck";
 import { getBaseUrl } from "../utils/utils";
 import { getPalleteTheme } from "../theme/palette";
+import { DashboardPage } from "../pages/DashboardPage";
+import SignOutPage from "../pages/SignOutPage";
 
 const App: React.FC = () => {
   const { environment, handleEnvChange } = useEnvironment();
@@ -35,24 +35,6 @@ const App: React.FC = () => {
   // Sjekk etter nye versjoner
   const { versionInfo, shouldShowDialog, acknowledgeVersion } =
     useVersionCheck();
-
-  const {
-    query,
-    setQuery,
-    organizations,
-    subUnits,
-    selectedOrg,
-    moreInfo,
-    rolesInfo,
-    expandedOrg,
-    error,
-    erRolesError,
-    isLoading,
-    hasSearched,
-    handleSearch,
-    handleSelectOrg,
-    handleExpandToggle,
-  } = useOrganizationSearch(environment);
 
   return (
     <ThemeProvider theme={theme}>
@@ -75,35 +57,7 @@ const App: React.FC = () => {
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <>
-                    <SearchComponent
-                      query={query}
-                      setQuery={setQuery}
-                      handleSearch={handleSearch}
-                      isDarkMode={isDarkMode}
-                    />
-                    <MainContent
-                      baseUrl={getBaseUrl(environment)}
-                      isLoading={isLoading}
-                      organizations={organizations}
-                      subUnits={subUnits}
-                      selectedOrg={selectedOrg}
-                      moreInfo={moreInfo}
-                      rolesInfo={rolesInfo}
-                      expandedOrg={expandedOrg}
-                      handleSelectOrg={handleSelectOrg}
-                      handleExpandToggle={handleExpandToggle}
-                      error={error}
-                      erRolesError={erRolesError}
-                      query={query}
-                      hasSearched={hasSearched}
-                    />
-                  </>
-                }
-              />
+              <Route path="/dashboard" element={<DashboardPage />} />
               <Route
                 path="/manualrolesearch"
                 element={

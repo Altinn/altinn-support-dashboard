@@ -12,6 +12,7 @@ import {
   getFormattedDateTime,
   fetchUserDetails,
 } from "../utils/utils";
+import { useAppStore } from "./Appstore";
 
 export function useDarkMode() {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
@@ -34,8 +35,8 @@ export function useEnvironment() {
   const [isEnvDropdownOpen, setIsEnvDropdownOpen] = useState(false);
   const toggleEnvDropdown = () => setIsEnvDropdownOpen((prev) => !prev);
   const handleEnvChange = (env: string) => {
-    setEnvironment(env);
     setIsEnvDropdownOpen(false);
+    useAppStore.getState().setEnvironment(environment);
   };
   return { environment, isEnvDropdownOpen, toggleEnvDropdown, handleEnvChange };
 }
