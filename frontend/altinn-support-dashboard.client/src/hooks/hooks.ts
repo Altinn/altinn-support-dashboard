@@ -202,10 +202,13 @@ export function useOrganizationSearch(environment: string) {
   };
 }
 
-export const UseManualRoleSearch = (baseUrl: string) => {
+export const UseManualRoleSearch = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const environment = useAppStore.getState().environment;
+  const baseUrl = getBaseUrl(environment);
 
   const fetchRoles = async (
     rollehaver: string,

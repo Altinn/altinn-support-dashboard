@@ -25,6 +25,7 @@ import { getBaseUrl } from "../utils/utils";
 import { getPalleteTheme } from "../theme/palette";
 import { DashboardPage } from "../pages/DashboardPage";
 import SignOutPage from "../pages/SignOutPage";
+import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
 
 const App: React.FC = () => {
   const { environment, handleEnvChange } = useEnvironment();
@@ -60,11 +61,7 @@ const App: React.FC = () => {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route
                 path="/manualrolesearch"
-                element={
-                  <ManualRoleSearchComponent
-                    baseUrl={getBaseUrl(environment)}
-                  />
-                }
+                element={<ManualRoleSearchPage />}
               />
               <Route
                 path="/new-org"
