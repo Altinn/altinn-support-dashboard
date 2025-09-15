@@ -46,8 +46,8 @@ const SettingsContentComponent: React.FC = () => {
   const [patInput, setPatInput] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const isDarkMode = useAppStore.getState().isDarkMode;
-  const environment = useAppStore.getState().environment;
+  const isDarkMode = useAppStore((state) => state.isDarkMode);
+  const environment = useAppStore((state) => state.environment);
 
   // Last inn lagret PAT token fra sessionStorage ved oppstart
   useEffect(() => {
@@ -72,7 +72,7 @@ const SettingsContentComponent: React.FC = () => {
   const toggleDarkMode = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newDarkModeState = event.target.checked;
     localStorage.setItem("isDarkMode", newDarkModeState.toString());
-    useAppStore.getState().setIsDarkMode(newDarkModeState);
+    useAppStore((state) => state.setIsDarkMode(newDarkModeState));
   };
 
   const handleLanguageChange = (event: SelectChangeEvent<string>) => {

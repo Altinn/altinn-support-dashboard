@@ -27,7 +27,7 @@ export function useEnvironment() {
   const toggleEnvDropdown = () => setIsEnvDropdownOpen((prev) => !prev);
   const handleEnvChange = (env: string) => {
     setIsEnvDropdownOpen(false);
-    useAppStore.getState().setEnvironment(environment);
+    useAppStore.getState().setEnvironment(env);
   };
   return { environment, isEnvDropdownOpen, toggleEnvDropdown, handleEnvChange };
 }
@@ -198,7 +198,7 @@ export const UseManualRoleSearch = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const environment = useAppStore.getState().environment;
+  const environment = useAppStore((state) => state.environment);
   const baseUrl = getBaseUrl(environment);
 
   const fetchRoles = async (
