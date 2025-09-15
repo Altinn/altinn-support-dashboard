@@ -18,9 +18,6 @@ export function useDarkMode() {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
   const setIsDarkMode = useAppStore((state) => state.setIsDarkMode);
 
-  useEffect(() => {
-    setIsDarkMode(false);
-  }, []);
   return { isDarkMode, setIsDarkMode };
 }
 
