@@ -4,6 +4,8 @@ import { AppState } from "./Appstate";
 //sets all global variables
 export const useAppStore = create<AppState>((set) => ({
   environment: "Production",
+  isDarkMode: false,
 
-  setEnvironment: (env) => set({ environment: env }),
+  setEnvironment: (env: string) => set({ environment: env }),
+  setIsDarkMode: (darkMode: boolean) => set({ isDarkMode: darkMode }),
 }));

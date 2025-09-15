@@ -15,17 +15,11 @@ import {
 import { useAppStore } from "./Appstore";
 
 export function useDarkMode() {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const isDarkMode = useAppStore((state) => state.isDarkMode);
+  const setIsDarkMode = useAppStore((state) => state.setIsDarkMode);
+
   useEffect(() => {
-    const storedDarkMode = localStorage.getItem("isDarkMode");
-    if (storedDarkMode !== null) {
-      setIsDarkMode(storedDarkMode === "true");
-    } else {
-      const prefersDarkMode =
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches;
-      setIsDarkMode(prefersDarkMode);
-    }
+    setIsDarkMode(false);
   }, []);
   return { isDarkMode, setIsDarkMode };
 }

@@ -30,7 +30,7 @@ import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
 const App: React.FC = () => {
   const { environment, handleEnvChange } = useEnvironment();
   const { userName, userEmail } = useUserDetails();
-  const { isDarkMode, setIsDarkMode } = useDarkMode();
+  const { isDarkMode } = useDarkMode();
   const theme = React.useMemo(() => getPalleteTheme(isDarkMode), [isDarkMode]);
 
   // Sjekk etter nye versjoner
@@ -69,16 +69,7 @@ const App: React.FC = () => {
                   <OrganizationCreationComponent environment={environment} />
                 }
               />
-              <Route
-                path="/settings"
-                element={
-                  <SettingsContentComponent
-                    environment={environment}
-                    isDarkMode={isDarkMode}
-                    setIsDarkMode={setIsDarkMode}
-                  />
-                }
-              />
+              <Route path="/settings" element={<SettingsContentComponent />} />
               <Route path="/signout" element={<SignOutPage />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
