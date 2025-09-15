@@ -1,7 +1,6 @@
 import React from "react";
 import "./App.css";
 import Sidebar from "../components/Sidebar/SidebarComponent";
-import SettingsContentComponent from "../components/SettingsContent/SettingsContentComponent";
 import { VersionDialog } from "../components/VersionDialog/VersionDialog";
 
 import {
@@ -18,6 +17,7 @@ import { DashboardPage } from "../pages/DashboardPage";
 import SignOutPage from "../pages/SignOutPage";
 import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
 import NewOrganizationPage from "../pages/NewOrganizationPage";
+import SettingsPage from "../pages/SettingsPage";
 
 const App: React.FC = () => {
   const { environment, handleEnvChange } = useEnvironment();
@@ -56,7 +56,7 @@ const App: React.FC = () => {
                 element={<ManualRoleSearchPage />}
               />
               <Route path="/new-org" element={<NewOrganizationPage />} />
-              <Route path="/settings" element={<SettingsContentComponent />} />
+              <Route path="/settings" element={<SettingsPage />} />
               <Route path="/signout" element={<SignOutPage />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
