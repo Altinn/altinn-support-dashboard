@@ -12,20 +12,12 @@ import {
   getFormattedDateTime,
   fetchUserDetails,
 } from "../utils/utils";
+import { useAppStore } from "./Appstore";
 
 export function useDarkMode() {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
-  useEffect(() => {
-    const storedDarkMode = localStorage.getItem("isDarkMode");
-    if (storedDarkMode !== null) {
-      setIsDarkMode(storedDarkMode === "true");
-    } else {
-      const prefersDarkMode =
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches;
-      setIsDarkMode(prefersDarkMode);
-    }
-  }, []);
+  const isDarkMode = useAppStore((state) => state.isDarkMode);
+  const setIsDarkMode = useAppStore((state) => state.setIsDarkMode);
+
   return { isDarkMode, setIsDarkMode };
 }
 
@@ -34,8 +26,8 @@ export function useEnvironment() {
   const [isEnvDropdownOpen, setIsEnvDropdownOpen] = useState(false);
   const toggleEnvDropdown = () => setIsEnvDropdownOpen((prev) => !prev);
   const handleEnvChange = (env: string) => {
-    setEnvironment(env);
     setIsEnvDropdownOpen(false);
+    useAppStore.getState().setEnvironment(env);
   };
   return { environment, isEnvDropdownOpen, toggleEnvDropdown, handleEnvChange };
 }
@@ -201,10 +193,13 @@ export function useOrganizationSearch(environment: string) {
   };
 }
 
-export const UseManualRoleSearch = (baseUrl: string) => {
+export const UseManualRoleSearch = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const environment = useAppStore((state) => state.environment);
+  const baseUrl = getBaseUrl(environment);
 
   const fetchRoles = async (
     rollehaver: string,

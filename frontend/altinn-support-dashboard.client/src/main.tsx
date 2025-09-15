@@ -1,10 +1,10 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './app/App.tsx'
-import '@digdir/designsystemet-theme';
-import '@digdir/designsystemet-css';
-ReactDOM.createRoot(document.getElementById('root')!).render(
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./app/App.tsx";
+import "@digdir/designsystemet-theme";
+import "@digdir/designsystemet-css";
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-)
+);
