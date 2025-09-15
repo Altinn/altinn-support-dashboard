@@ -47,6 +47,7 @@ const SettingsContentComponent: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const isDarkMode = useAppStore((state) => state.isDarkMode);
+  const setIsDarkMode = useAppStore((state) => state.setIsDarkMode);
   const environment = useAppStore((state) => state.environment);
 
   // Last inn lagret PAT token fra sessionStorage ved oppstart
@@ -71,8 +72,7 @@ const SettingsContentComponent: React.FC = () => {
 
   const toggleDarkMode = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newDarkModeState = event.target.checked;
-    localStorage.setItem("isDarkMode", newDarkModeState.toString());
-    useAppStore((state) => state.setIsDarkMode(newDarkModeState));
+    setIsDarkMode(newDarkModeState);
   };
 
   const handleLanguageChange = (event: SelectChangeEvent<string>) => {
