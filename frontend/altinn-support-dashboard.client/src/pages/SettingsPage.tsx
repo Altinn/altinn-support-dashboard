@@ -1,14 +1,9 @@
-import SettingsContentComponent from "../components/SettingsContent/SettingsContentComponent"
+import SettingsContentComponent from "../components/SettingsContent/SettingsContentComponent";
 
-
-
-export const SettingsPage : React.FC = () => {
-
-  return(
+export const SettingsPage: React.FC = () => {
+  return (
     <div>
-        <SettingsContentComponent>
+      <SettingsContentComponent />
     </div>
-
-
-  )
-}
+  );
+};

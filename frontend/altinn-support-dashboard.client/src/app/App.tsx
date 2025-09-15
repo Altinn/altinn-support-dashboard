@@ -1,10 +1,7 @@
 import React from "react";
 import "./App.css";
 import Sidebar from "../components/Sidebar/SidebarComponent";
-import MainContent from "../components/MainContent/MainContentComponent";
 import SettingsContentComponent from "../components/SettingsContent/SettingsContentComponent";
-import ManualRoleSearchComponent from "../components/ManualRoleSearch/ManualRoleSearchComponent";
-import OrganizationCreationComponent from "../components/OrganizationCreation/OrganizationCreationComponent";
 import { VersionDialog } from "../components/VersionDialog/VersionDialog";
 
 import {
@@ -14,18 +11,13 @@ import {
   Navigate,
 } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
-import {
-  useDarkMode,
-  useEnvironment,
-  useUserDetails,
-  useOrganizationSearch,
-} from "../hooks/hooks";
+import { useDarkMode, useEnvironment, useUserDetails } from "../hooks/hooks";
 import { useVersionCheck } from "../hooks/useVersionCheck";
-import { getBaseUrl } from "../utils/utils";
 import { getPalleteTheme } from "../theme/palette";
 import { DashboardPage } from "../pages/DashboardPage";
 import SignOutPage from "../pages/SignOutPage";
 import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
+import NewOrganizationPage from "../pages/NewOrganizationPage";
 
 const App: React.FC = () => {
   const { environment, handleEnvChange } = useEnvironment();
@@ -63,12 +55,7 @@ const App: React.FC = () => {
                 path="/manualrolesearch"
                 element={<ManualRoleSearchPage />}
               />
-              <Route
-                path="/new-org"
-                element={
-                  <OrganizationCreationComponent environment={environment} />
-                }
-              />
+              <Route path="/new-org" element={<NewOrganizationPage />} />
               <Route path="/settings" element={<SettingsContentComponent />} />
               <Route path="/signout" element={<SignOutPage />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
