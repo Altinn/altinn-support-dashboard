@@ -8,15 +8,7 @@ import SettingsVersionComponent from "../components/SettingsContent/SettingsVers
 
 const SettingsPage: React.FC = () => {
   return (
-    <Box
-      sx={{
-        p: 2,
-        height: "100%",
-        overflow: "auto",
-        maxHeight: "calc(100vh - 80px)", // Subtract header height
-        overflowX: "hidden",
-      }}
-    >
+    <Box>
       <Heading level={2} data-size="md">
         Innstillinger
       </Heading>
