@@ -1,15 +1,6 @@
 import React from "react";
+import { Box, Typography, Button, Divider } from "@mui/material";
 import {
-  Box,
-  Typography,
-  Button,
-  Menu,
-  MenuItem,
-  Divider,
-  Tooltip,
-} from "@mui/material";
-import {
-  ExpandMore,
   Dashboard,
   Search,
   Settings,
@@ -18,39 +9,21 @@ import {
   Add,
 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import { NavLink } from "react-router-dom";
-import { useCurrentDateTime } from "../../hooks/hooks";
 import logo from "../../assets/logo.png";
 import whiteLogo from "/asd_128_white.png";
 import { SidebarProps } from "./models/sidebarTypes";
 import { useSidebarDrag } from "./hooks/useSidebarDrag";
-import { useAppStore } from "../../hooks/Appstore";
+import NavItem from "./NavItem";
+import SideBarDateTime from "./SidebarDateTime";
+import SidebarEnvToggle from "./SidebarEnvToggle";
 
 const Sidebar: React.FC<
   Omit<SidebarProps, "isEnvDropdownOpen" | "toggleEnvDropdown">
-> = ({ handleEnvChange, userName, userEmail, isDarkMode }) => {
+> = ({ userName, userEmail, isDarkMode }) => {
   const theme = useTheme();
-  const { formattedDate, formattedTime } = useCurrentDateTime();
-  const environment = useAppStore((state) => state.environment);
 
   // Use the custom drag hook for collapse functionality.
   const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();
-
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleEnvironmentChange = (env: string) => {
-    useAppStore.getState().setEnvironment(env);
-    handleMenuClose();
-  };
 
   return (
     <Box
@@ -110,94 +83,30 @@ const Sidebar: React.FC<
             padding: isCollapsed ? "0" : "0 10px",
           }}
         >
-          <NavLink
+          <NavItem
             to="/dashboard"
-            className={({ isActive }) =>
-              `nav-button ${isActive ? "selected" : ""}`
-            }
-            style={{
-              textDecoration: "none",
-              position: "relative",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              margin: isCollapsed ? "0 0 10px 0" : undefined,
-            }}
-          >
-            {!isCollapsed ? (
-              "Oppslag"
-            ) : (
-              <Tooltip title="Oppslag" placement="right" arrow>
-                <Dashboard sx={{ color: "inherit", fontSize: 24 }} />
-              </Tooltip>
-            )}
-          </NavLink>
-          <NavLink
+            title="Oppslag"
+            icon={<Dashboard />}
+            isCollapsed={isCollapsed}
+          />
+          <NavItem
             to="/manualrolesearch"
-            className={({ isActive }) =>
-              `nav-button ${isActive ? "selected" : ""}`
-            }
-            style={{
-              textDecoration: "none",
-              position: "relative",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              margin: isCollapsed ? "0 0 10px 0" : undefined,
-            }}
-          >
-            {!isCollapsed ? (
-              "Manuelt Rollesøk"
-            ) : (
-              <Tooltip title="Manuelt Rollesøk" placement="right" arrow>
-                <Search sx={{ color: "inherit", fontSize: 24 }} />
-              </Tooltip>
-            )}
-          </NavLink>
-          <NavLink
+            title="Manuelt rollesøk"
+            icon={<Search />}
+            isCollapsed={isCollapsed}
+          />
+          <NavItem
             to="/new-org"
-            className={({ isActive }) =>
-              `nav-button ${isActive ? "selected" : ""}`
-            }
-            style={{
-              textDecoration: "none",
-              position: "relative",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              margin: isCollapsed ? "0 0 10px 0" : undefined,
-            }}
-          >
-            {!isCollapsed ? (
-              "Ny organisasjon"
-            ) : (
-              <Tooltip title="Ny organisasjon" placement="right" arrow>
-                <Add sx={{ color: "inherit", fontSize: 24 }} />
-              </Tooltip>
-            )}
-          </NavLink>
-          <NavLink
+            title="Ny Organisasjon"
+            icon={<Add />}
+            isCollapsed={isCollapsed}
+          />
+          <NavItem
             to="/settings"
-            className={({ isActive }) =>
-              `nav-button ${isActive ? "selected" : ""}`
-            }
-            style={{
-              textDecoration: "none",
-              position: "relative",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              margin: isCollapsed ? "0 0 10px 0" : undefined,
-            }}
-          >
-            {!isCollapsed ? (
-              "Innstillinger"
-            ) : (
-              <Tooltip title="Innstillinger" placement="right" arrow>
-                <Settings sx={{ color: "inherit", fontSize: 24 }} />
-              </Tooltip>
-            )}
-          </NavLink>
+            title="Instillinger"
+            icon={<Settings />}
+            isCollapsed={isCollapsed}
+          />
         </nav>
       </Box>
       <Box>
@@ -244,55 +153,8 @@ const Sidebar: React.FC<
         />
         {!isCollapsed && (
           <>
-            <Box sx={{ textAlign: "center", mb: 2 }}>
-              <Typography variant="h6">{formattedTime}</Typography>
-              <Typography variant="body2">{formattedDate}</Typography>
-            </Box>
-            <Box sx={{ textAlign: "center", mb: 2 }}>
-              <Button
-                variant="outlined"
-                onClick={handleMenuClick}
-                endIcon={<ExpandMore />}
-                sx={{
-                  borderColor:
-                    environment === "TT02"
-                      ? theme.palette.warning.main
-                      : theme.palette.secondary.main,
-                  color: isDarkMode ? theme.palette.text.primary : "#fff",
-                  "&:hover": {
-                    borderColor:
-                      environment === "TT02"
-                        ? theme.palette.warning.light
-                        : theme.palette.secondary.light,
-                    backgroundColor: isDarkMode
-                      ? theme.palette.action.hover
-                      : "secondary.dark",
-                  },
-                }}
-              >
-                {environment}
-              </Button>
-              <Menu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleMenuClose}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "center",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "center",
-                }}
-              >
-                <MenuItem onClick={() => handleEnvironmentChange("PROD")}>
-                  PROD
-                </MenuItem>
-                <MenuItem onClick={() => handleEnvironmentChange("TT02")}>
-                  TT02
-                </MenuItem>
-              </Menu>
-            </Box>
+            <SideBarDateTime />
+            <SidebarEnvToggle />
             <Box sx={{ textAlign: "center" }}>
               <Typography variant="subtitle1">{userName}</Typography>
               <Typography variant="body2">{userEmail}</Typography>
