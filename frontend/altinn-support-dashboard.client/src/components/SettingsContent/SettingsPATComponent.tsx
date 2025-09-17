@@ -1,27 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-import {
-  Switch,
-  Typography,
-  Link as MuiLink,
-  Paper,
-  Box,
-  FormControl,
-  InputLabel,
-  Select as MuiSelect,
-  Button as MuiButton,
-  MenuItem,
-} from "@mui/material";
-import { EyeIcon, EyeClosedIcon } from "@navikt/aksel-icons";
-import { SelectChangeEvent } from "@mui/material/Select";
-import { FaSlack, FaBookOpen } from "react-icons/fa";
-import {
-  getVersionInfo,
-  fetchVersionData,
-  VersionData,
-} from "./utils/versionUtils";
-import { usePatTokenValidation } from "./hooks/usePatTokenValidation";
-
+import { Paper, Box } from "@mui/material";
 // Digdir Designsystem imports
 import {
   Button,
@@ -32,22 +9,17 @@ import {
   Tooltip,
   Select,
 } from "@digdir/designsystemet-react";
-import { useAppStore } from "../../hooks/Appstore";
+import { useEffect, useState } from "react";
+import { usePatTokenValidation } from "./hooks/usePatTokenValidation";
+import { EyeClosedIcon, EyeIcon } from "@navikt/aksel-icons";
 
-const SettingsContentComponent: React.FC = () => {
-  const { versionNumber, versionName, releaseDate } = getVersionInfo();
-  const [versionInfo, setVersionInfo] = useState<VersionData | null>(null);
+const SettingsPATComponent: React.FC = () => {
   const [giteaEnv, setGiteaEnv] = useState<string>("development");
   const { patState, validateToken, clearToken } =
     usePatTokenValidation(giteaEnv);
 
-  const [language, setLanguage] = useState<string>("nb");
   const [patInput, setPatInput] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const isDarkMode = useAppStore((state) => state.isDarkMode);
-  const setIsDarkMode = useAppStore((state) => state.setIsDarkMode);
-  const environment = useAppStore((state) => state.environment);
 
   // Last inn lagret PAT token fra sessionStorage ved oppstart
   useEffect(() => {
@@ -55,32 +27,6 @@ const SettingsContentComponent: React.FC = () => {
       setPatInput(patState.token);
     }
   }, [patState.token]);
-
-  // Last inn versjonsinformasjon ved oppstart
-  useEffect(() => {
-    const loadVersionInfo = async () => {
-      const data = await fetchVersionData();
-      setVersionInfo(data);
-    };
-    loadVersionInfo();
-  }, []);
-
-  const handleReload = () => {
-    window.location.reload();
-  };
-
-  const toggleDarkMode = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newDarkModeState = event.target.checked;
-    setIsDarkMode(newDarkModeState);
-  };
-
-  const handleLanguageChange = (event: SelectChangeEvent<string>) => {
-    setLanguage(event.target.value as string);
-  };
-
-  const handleLogout = () => {
-    window.location.href = "/.auth/logout?post_logout_redirect_uri=/signout";
-  };
 
   const handlePatInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPatInput(event.target.value);
@@ -96,20 +42,7 @@ const SettingsContentComponent: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        p: 2,
-        height: "100%",
-        overflow: "auto",
-        maxHeight: "calc(100vh - 80px)", // Subtract header height
-        overflowX: "hidden",
-      }}
-    >
-      <Heading level={2} data-size="md">
-        Innstillinger
-      </Heading>
-      <br />
-
+    <div>
       {/* Organisation Setup Section */}
       <Paper sx={{ p: 3, mb: 4 }}>
         <Heading level={3} data-size="sm">
@@ -281,83 +214,8 @@ const SettingsContentComponent: React.FC = () => {
           </Button>
         </Box>
       </Paper>
-
-      {/* Språkvalg Section */}
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          Språkvalg
-        </Typography>
-        <FormControl fullWidth>
-          <InputLabel id="language-select-label">Velg språk</InputLabel>
-          <MuiSelect
-            labelId="language-select-label"
-            id="language-select"
-            value={language}
-            label="Velg språk"
-            onChange={handleLanguageChange}
-          >
-            <MenuItem value="nb">Norsk Bokmål</MenuItem>
-          </MuiSelect>
-        </FormControl>
-      </Paper>
-
-      {/* Dark Mode Section */}
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          Mørk Modus
-        </Typography>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="body1" sx={{ mr: 2 }}>
-            Aktiver mørk modus
-          </Typography>
-          <Switch checked={isDarkMode} onChange={toggleDarkMode} />
-        </Box>
-      </Paper>
-
-      {/* Action Buttons */}
-      <Box sx={{ mb: 3 }}>
-        <MuiButton
-          variant="outlined"
-          onClick={handleReload}
-          style={{ marginRight: "12px" }}
-        >
-          Last inn på nytt
-        </MuiButton>
-        <MuiButton onClick={handleLogout}>Logg ut</MuiButton>
-      </Box>
-
-      {/* App Info Footer */}
-      <Box sx={{ mt: 5 }}>
-        <Typography variant="body2" gutterBottom>
-          Applikasjonsinformasjon: {versionName} - Versjon{" "}
-          {versionInfo?.version || versionNumber}
-        </Typography>
-        <Typography variant="body2" gutterBottom>
-          Utgivelsesdato:{" "}
-          {versionInfo?.releaseDate || releaseDate || "Ikke tilgjengelig"}
-        </Typography>
-        <Typography variant="body2" gutterBottom>
-          Valgt miljø: {environment}
-        </Typography>
-        <Box sx={{ mt: 2 }}>
-          <MuiLink
-            href="#"
-            sx={{ display: "flex", alignItems: "center", mb: 1 }}
-          >
-            <FaBookOpen style={{ marginRight: "8px" }} />
-            Dokumentasjon
-          </MuiLink>
-          <MuiLink
-            href="https://digdir.slack.com/archives/C07AJ5NQE9E"
-            sx={{ display: "flex", alignItems: "center" }}
-          >
-            <FaSlack style={{ marginRight: "8px" }} />
-            Kontakt oss på Slack
-          </MuiLink>
-        </Box>
-      </Box>
-    </Box>
+    </div>
   );
 };
 
-export default SettingsContentComponent;
+export default SettingsPATComponent;
