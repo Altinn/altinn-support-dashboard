@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { useCurrentDateTime } from "../../hooks/hooks";
 
-const SideBareDateTime: React.FC = () => {
+const SideBarDateTime: React.FC = () => {
   const { formattedDate, formattedTime } = useCurrentDateTime();
   return (
     <Box sx={{ textAlign: "center", mb: 2 }}>
@@ -11,4 +11,4 @@ const SideBareDateTime: React.FC = () => {
   );
 };
 
-export default SideBareDateTime;
+export default SideBarDateTime;
