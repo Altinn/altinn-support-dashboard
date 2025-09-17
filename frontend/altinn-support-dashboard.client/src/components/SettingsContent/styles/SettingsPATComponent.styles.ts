@@ -1,53 +1,35 @@
-export const boldLabel = {
-  fontWeight: "bold",
-  marginBottom: "8px",
-};
+import { SxProps, Theme } from "@mui/material";
 
-export const fullWidth = {
-  width: "100%",
-  marginBottom: "16px",
-};
-
-export const tokenInputWrapper = {
-  display: "flex",
-  gap: "8px",
-  alignItems: "flex-start",
-  marginBottom: "16px",
-};
-
-export const flexGrow = {
-  flex: 1,
-};
-
-export const hiddenLabel = {
-  display: "none",
-};
-
-export const toggleButton = {
-  marginTop: "2px",
-  padding: "6px",
-  minWidth: "unset",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  height: "32px",
-};
-
-export const infoLinksWrapper = {
-  display: "flex",
-  alignItems: "center",
-  marginTop: "8px",
-  gap: "8px",
-};
-
-export const linkButton = {
-  padding: "4px 8px",
-  display: "flex",
-  alignItems: "center",
-  gap: "4px",
-  fontSize: "14px",
-};
-
-export const alertSpacing = {
-  marginTop: "16px",
+export const styles: Record<string, SxProps<Theme>> = {
+  paper: {
+    p: 3,
+    mb: 4,
+  },
+  section: {
+    mb: 3,
+  },
+  label: {
+    fontWeight: "bold",
+    mb: 1,
+  },
+  tokenRow: {
+    display: "flex",
+    gap: 1,
+    mb: 2,
+  },
+  iconButton: {
+    alignSelf: "center",
+  },
+  linksRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 2,
+  },
+  alert: {
+    mt: 2,
+  },
+  actionsRow: {
+    display: "flex",
+    gap: 2,
+  },
 };
