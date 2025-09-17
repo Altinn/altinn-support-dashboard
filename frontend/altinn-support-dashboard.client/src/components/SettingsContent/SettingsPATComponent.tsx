@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { usePatTokenValidation } from "./hooks/usePatTokenValidation";
-import { EyeClosedIcon, EyeIcon } from "@navikt/aksel-icons";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { styles } from "./styles/SettingsPATComponent.styles";
 
 const SettingsPATComponent: React.FC = () => {
@@ -97,7 +97,7 @@ const SettingsPATComponent: React.FC = () => {
             aria-label={showPassword ? "Skjul passord" : "Vis passord"}
             sx={styles.iconButton}
           >
-            {showPassword ? <EyeIcon /> : <EyeClosedIcon />}
+            {showPassword ? <Visibility /> : <VisibilityOff />}
           </IconButton>
         </Box>
 
