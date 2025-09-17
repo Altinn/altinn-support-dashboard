@@ -1,13 +1,5 @@
-import { ExpandMore, Menu } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  useTheme,
-} from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
+import { Box, FormControl, MenuItem, Select, useTheme } from "@mui/material";
 import { useAppStore } from "../../hooks/Appstore";
 import { SidebarEnvToggleStyles } from "./styles/SidebarEnvToggle.style";
 
