@@ -58,6 +58,13 @@ export const collapseContainer: SxProps<Theme> = {
   mb: 2,
 };
 
+// Logo image (collapsible)
+export const logoImg = (isCollapsed: boolean): SxProps<Theme> => ({
+  width: isCollapsed ? "40px" : "150px",
+  transition: "width 0.3s ease",
+  height: "auto", // keep aspect ratio
+});
+
 // Collapse button
 export const collapseButton = (isCollapsed: boolean): SxProps<Theme> => ({
   color: "inherit",

@@ -34,13 +34,11 @@ const Sidebar: React.FC<
       <Box>
         {/* Logo */}
         <Box sx={styles.logoBox}>
-          <img
+          <Box
+            component="img"
             src={isCollapsed ? whiteLogo : logo}
-            alt="Logo"
-            style={{
-              width: isCollapsed ? "40px" : "150px",
-              transition: "width 0.3s ease",
-            }}
+            alt="logo"
+            sx={styles.logoImg(isCollapsed)}
           />
         </Box>
 
@@ -81,11 +79,7 @@ const Sidebar: React.FC<
             startIcon={!isCollapsed ? <ChevronLeft /> : undefined}
             sx={styles.collapseButton(isCollapsed)}
           >
-            {isCollapsed ? (
-              <ChevronRight sx={{ fontSize: 24 }} />
-            ) : (
-              "Minimer sidepanel"
-            )}
+            {isCollapsed ? <ChevronRight /> : "Minimer sidepanel"}
           </Button>
         </Box>
 
