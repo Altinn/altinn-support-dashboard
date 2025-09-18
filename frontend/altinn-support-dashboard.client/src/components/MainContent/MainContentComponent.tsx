@@ -30,9 +30,11 @@ import {
   sortERRoles,
 } from "./utils/contactUtils";
 import { ERRolesSortField } from "./models/mainContentTypes";
+import { getBaseUrl } from "../../utils/utils";
+import { useAppStore } from "../../hooks/Appstore";
+import { OrganizationCard } from "./OrganizationCard";
 
 const MainContentComponent: React.FC<MainContentProps> = ({
-  baseUrl,
   isLoading,
   organizations,
   subUnits,
@@ -68,20 +70,20 @@ const MainContentComponent: React.FC<MainContentProps> = ({
     string | null
   >(null);
 
-  const quotes = useMemo(
-    () => [
-      "Dette er en fin dag.",
-      "Husk at hver dag er en gave.",
-      "Gjør det beste ut av det du har.",
-      "Livet er fullt av muligheter.",
-      "Sammen er vi sterke.",
-      "Ta vare på øyeblikket.",
-      "Smil til verden, og verden smiler til deg.",
-      "Gi aldri opp.",
-      "Livet er hva som skjer mens du planlegger noe annet.",
-    ],
-    [],
-  );
+  const environment = useAppStore((state) => state.environment);
+  const baseUrl = getBaseUrl(environment);
+
+  const quotes = [
+    "Dette er en fin dag.",
+    "Husk at hver dag er en gave.",
+    "Gjør det beste ut av det du har.",
+    "Livet er fullt av muligheter.",
+    "Sammen er vi sterke.",
+    "Ta vare på øyeblikket.",
+    "Smil til verden, og verden smiler til deg.",
+    "Gi aldri opp.",
+    "Livet er hva som skjer mens du planlegger noe annet.",
+  ];
 
   const randomQuote = useMemo(() => {
     return quotes[Math.floor(Math.random() * quotes.length)];
@@ -255,83 +257,14 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                     return true;
                   })
                   .map((org) => (
-                    <div
-                      key={org.organizationNumber}
-                      className="org-card-container"
-                    >
-                      <Paper
-                        elevation={
-                          selectedOrg?.OrganizationNumber ===
-                          org.organizationNumber
-                            ? 6
-                            : 2
-                        }
-                        sx={{
-                          p: 2,
-                          mb: 1,
-                          cursor: "pointer",
-                          backgroundColor:
-                            selectedOrg?.OrganizationNumber ===
-                            org.organizationNumber
-                              ? "secondary"
-                              : "background.paper",
-                          border:
-                            selectedOrg?.OrganizationNumber ===
-                            org.organizationNumber
-                              ? "2px solid"
-                              : "none",
-                          borderColor:
-                            selectedOrg?.OrganizationNumber ===
-                            org.organizationNumber
-                              ? "secondary"
-                              : "transparent",
-                          transition: "transform 0.3s, boxShadow 0.3s",
-                          "&:hover": {
-                            transform: "translateY(-5px)",
-                            boxShadow: 4,
-                          },
-                        }}
-                        onClick={() =>
-                          handleSelectOrg(org.organizationNumber, org.name)
-                        }
-                      >
-                        <Typography variant="h6">{org.name}</Typography>
-                        <Typography variant="body2">
-                          Org Nr: {org.organizationNumber}
-                        </Typography>
-                        <Typography variant="body2">
-                          Type: {org.type}
-                        </Typography>
-                        {subUnits.some(
-                          (sub) =>
-                            sub.overordnetEnhet === org.organizationNumber,
-                        ) && (
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            sx={{ mt: 1 }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleExpandToggle(org.organizationNumber);
-                            }}
-                            aria-expanded={
-                              expandedOrg === org.organizationNumber
-                            }
-                            aria-label={`${
-                              expandedOrg === org.organizationNumber
-                                ? "Collapse"
-                                : "Expand"
-                            } subunits for ${org.name}`}
-                          >
-                            {expandedOrg === org.organizationNumber ? (
-                              <ExpandLess />
-                            ) : (
-                              <ExpandMore />
-                            )}
-                          </Button>
-                        )}
-                      </Paper>
-                      {expandedOrg === org.organizationNumber && (
+                    <OrganizationCard
+                      org={org}
+                      subUnits={subUnits}
+                      expandedOrg={expandedOrg}
+                      onExpandToggle={handleExpandToggle}
+                      onSelectOrg={handleSelectOrg}
+                    />
+ {expandedOrg === org.organizationNumber && (
                         <div className="subunits">
                           {subUnits
                             .filter(
@@ -380,17 +313,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                                   )
                                 }
                               >
-                                <Typography variant="subtitle1">
-                                  {sub.navn}
-                                </Typography>
-                                <Typography variant="body2">
-                                  Org Nr: {sub.organisasjonsnummer}
-                                </Typography>
-                              </Paper>
-                            ))}
-                        </div>
-                      )}
-                    </div>
                   ))
               )}
             </div>

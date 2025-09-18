@@ -193,6 +193,75 @@ export function useOrganizationSearch(environment: string) {
   };
 }
 
+async function fetchOrganizations(environment: string, query: string) {
+  const trimmedQuery = query.replace(/\s/g, "");
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`,
+  );
+  const data = await res.json();
+  const orgData: Organization[] = Array.isArray(data) ? data : [data];
+
+  const mainUnits = orgData.filter(
+    (org) => org.type !== "BEDR" && org.type !== "AAFY",
+  );
+  const matchedSubUnits = orgData.filter(
+    (org) => org.type === "BEDR" || org.type === "AAFY",
+  );
+
+  // fetch subunits for each main unit
+  const allSubUnits: Subunit[] = [];
+  for (const org of mainUnits) {
+    try {
+      const subunitRes = await authorizedFetch(
+        `${getBaseUrl(environment)}/brreg/${org.organizationNumber}/underenheter`,
+      );
+      const subunitData = await subunitRes.json();
+      if (subunitData?._embedded?.underenheter) {
+        const subunits = subunitData._embedded.underenheter.map((sub: any) => ({
+          navn: sub.navn,
+          organisasjonsnummer: sub.organisasjonsnummer,
+          overordnetEnhet: sub.overordnetEnhet,
+          type: sub.organisasjonsform?.kode,
+        }));
+        allSubUnits.push(...subunits);
+      }
+    } catch {}
+  }
+
+  return {
+    organizations: [...mainUnits, ...matchedSubUnits],
+    subUnits: allSubUnits,
+  };
+}
+
+async function fetchOrgDetails(
+  environment: string,
+  orgNumber: string,
+  subUnits: Subunit[],
+) {
+  const resPersonalContacts = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/organizations/${orgNumber}/personalcontacts`,
+  );
+  const personalContacts: PersonalContact[] = await resPersonalContacts.json();
+
+  let rolesInfo: ERRole[] = [];
+  let erRolesError: string | null = null;
+
+  try {
+    const subunit = subUnits.find((s) => s.organisasjonsnummer === orgNumber);
+    const orgNumberForRoles = subunit ? subunit.overordnetEnhet : orgNumber;
+    const resRoles = await authorizedFetch(
+      `${getBaseUrl(environment)}/brreg/${orgNumberForRoles}`,
+    );
+    const roles: { rollegrupper: ERRole[] } = await resRoles.json();
+    rolesInfo = roles.rollegrupper;
+  } catch {
+    erRolesError = "ER roller kunne ikke hentes.";
+  }
+
+  return { personalContacts, rolesInfo, erRolesError };
+}
+
 export const UseManualRoleSearch = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [isLoading, setIsLoading] = useState(false);
