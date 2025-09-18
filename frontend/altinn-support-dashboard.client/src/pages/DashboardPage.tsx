@@ -1,4 +1,4 @@
-import MainContentComponent from "../components/MainContent/MainContentComponent";
+import MainContentComponent from "../components/Dashboard/MainContentComponent";
 import SearchComponent from "../components/TopSearchBar/TopSearchBarComponent";
 import { useAppStore } from "../hooks/Appstore";
 import { useDarkMode, useOrganizationSearch } from "../hooks/hooks";

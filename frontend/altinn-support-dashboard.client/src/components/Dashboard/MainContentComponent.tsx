@@ -264,55 +264,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                       onExpandToggle={handleExpandToggle}
                       onSelectOrg={handleSelectOrg}
                     />
- {expandedOrg === org.organizationNumber && (
-                        <div className="subunits">
-                          {subUnits
-                            .filter(
-                              (sub) =>
-                                sub.overordnetEnhet === org.organizationNumber,
-                            )
-                            .map((sub) => (
-                              <Paper
-                                key={sub.organisasjonsnummer}
-                                elevation={
-                                  selectedOrg?.OrganizationNumber ===
-                                  sub.organisasjonsnummer
-                                    ? 6
-                                    : 1
-                                }
-                                sx={{
-                                  p: 2,
-                                  mb: 1,
-                                  ml: 4,
-                                  cursor: "pointer",
-                                  backgroundColor:
-                                    selectedOrg?.OrganizationNumber ===
-                                    sub.organisasjonsnummer
-                                      ? "secondary"
-                                      : "background.paper",
-                                  border:
-                                    selectedOrg?.OrganizationNumber ===
-                                    sub.organisasjonsnummer
-                                      ? "2px solid"
-                                      : "none",
-                                  borderColor:
-                                    selectedOrg?.OrganizationNumber ===
-                                    sub.organisasjonsnummer
-                                      ? "secondary"
-                                      : "transparent",
-                                  transition: "transform 0.3s, boxShadow 0.3s",
-                                  "&:hover": {
-                                    transform: "translateY(-5px)",
-                                    boxShadow: 4,
-                                  },
-                                }}
-                                onClick={() =>
-                                  handleSelectOrg(
-                                    sub.organisasjonsnummer,
-                                    sub.navn,
-                                  )
-                                }
-                              >
                   ))
               )}
             </div>

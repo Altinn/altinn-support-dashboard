@@ -1,6 +1,10 @@
 import { Paper, Typography, Button } from "@mui/material";
 import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import { Organization, Subunit } from "../../models/models";
+import {
+  paperStyle,
+  subunitPaperStyle,
+} from "./styles/OrganizationCard.styles";
 
 interface OrganizationCardProps {
   org: Organization;
@@ -28,16 +32,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
     <div className="org-card-container">
       <Paper
         elevation={isSelected ? 6 : 2}
-        sx={{
-          p: 2,
-          mb: 1,
-          cursor: "pointer",
-          backgroundColor: isSelected ? "secondary" : "background.paper",
-          border: isSelected ? "2px solid" : "none",
-          borderColor: isSelected ? "secondary" : "transparent",
-          transition: "transform 0.3s, boxShadow 0.3s",
-          "&:hover": { transform: "translateY(-5px)", boxShadow: 4 },
-        }}
+        sx={paperStyle(isSelected)}
         onClick={() => onSelectOrg(org.organizationNumber, org.name)}
       >
         <Typography variant="h6">{org.name}</Typography>
@@ -64,6 +59,33 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           </Button>
         )}
       </Paper>
+
+      {/* Subunits list */}
+      {expandedOrg === org.organizationNumber && (
+        <div className="subunits">
+          {subUnits
+            .filter((sub) => sub.overordnetEnhet === org.organizationNumber)
+            .map((sub) => (
+              <Paper
+                key={sub.organisasjonsnummer}
+                elevation={
+                  selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
+                    ? 6
+                    : 1
+                }
+                sx={subunitPaperStyle(
+                  selectedOrg?.OrganizationNumber === sub.organisasjonsnummer,
+                )}
+                onClick={() => onSelectOrg(sub.organisasjonsnummer, sub.navn)}
+              >
+                <Typography variant="subtitle1">{sub.navn}</Typography>
+                <Typography variant="body2">
+                  Org Nr: {sub.organisasjonsnummer}
+                </Typography>
+              </Paper>
+            ))}
+        </div>
+      )}
     </div>
   );
 };
