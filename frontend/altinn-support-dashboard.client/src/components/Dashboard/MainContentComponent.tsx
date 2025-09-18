@@ -33,6 +33,8 @@ import { ERRolesSortField } from "./models/mainContentTypes";
 import { getBaseUrl } from "../../utils/utils";
 import { useAppStore } from "../../hooks/Appstore";
 import { OrganizationCard } from "./OrganizationCard";
+import { ErrorAlert } from "./ErrorAlert";
+import { OrganizationList } from "./OrganizationList";
 
 const MainContentComponent: React.FC<MainContentProps> = ({
   isLoading,
@@ -209,481 +211,394 @@ const MainContentComponent: React.FC<MainContentProps> = ({
 
   return (
     <div className="results-section">
-      {error.message ? (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          <Typography variant="h6" component="div">
-            {error.message}
+      {selectedOrg && (
+        <div className={`org-details ${isRoleView ? "full-width" : ""}`}>
+          <Typography variant="subtitle1" gutterBottom>
+            Org Nr: {selectedOrg.OrganizationNumber}
           </Typography>
-          {error.response && (
-            <Typography variant="body2" component="div">
-              {error.response}
-            </Typography>
-          )}
-        </Alert>
-      ) : (
-        <>
-          {showOrgList && (
-            <div className={`org-list ${isRoleView ? "hidden" : ""}`}>
-              {isLoading ? (
-                <div role="progressbar">
-                  <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
-                  <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
-                  <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
-                </div>
-              ) : organizations.length === 0 ? (
-                hasSearched ? (
-                  <Alert severity="info" sx={{ mb: 2 }}>
-                    <Typography variant="h6">
-                      Ingen organisasjoner funnet
-                    </Typography>
-                  </Alert>
-                ) : (
-                  <div className="no-search-message">
-                    <Typography variant="h6">"{randomQuote}"</Typography>
-                  </div>
-                )
-              ) : (
-                organizations
-                  .filter((org) => {
-                    if (
-                      (org.type === "BEDR" || org.type === "AAFY") &&
-                      subUnits.some(
-                        (sub) =>
-                          sub.organisasjonsnummer === org.organizationNumber,
-                      )
-                    ) {
-                      return false;
-                    }
-                    return true;
-                  })
-                  .map((org) => (
-                    <OrganizationCard
-                      org={org}
-                      subUnits={subUnits}
-                      expandedOrg={expandedOrg}
-                      onExpandToggle={handleExpandToggle}
-                      onSelectOrg={handleSelectOrg}
-                    />
-                  ))
-              )}
-            </div>
-          )}
-          {selectedOrg && (
-            <div className={`org-details ${isRoleView ? "full-width" : ""}`}>
-              <Typography variant="subtitle1" gutterBottom>
-                Org Nr: {selectedOrg.OrganizationNumber}
-              </Typography>
-              <Typography variant="h4" gutterBottom>
-                {selectedOrg.Name}
-              </Typography>
-              {!isRoleView ? (
-                <>
-                  <div
-                    className="search-ssn"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                    }}
-                  >
-                    <TextField
-                      label="Søk i kontakter"
-                      variant="outlined"
-                      size="small"
-                      fullWidth
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Navn / SSN / Telefon / E-post"
-                      sx={{ mb: 2 }}
-                    />
-                    {searchQuery.trim() !== "" && (
-                      <Button
-                        variant="outlined"
-                        onClick={handleClearSearch}
-                        sx={{ height: "fit-content", mb: 2 }}
-                      >
-                        Clear Search
-                      </Button>
-                    )}
-                  </div>
-                  <Typography variant="h6" gutterBottom>
-                    Din kontaktinformasjon
-                  </Typography>
-                  <TableContainer component={Paper} sx={{ mb: 4 }}>
-                    <MuiTable>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell
-                            sortDirection={
-                              sortField === "name" ? sortDirection : false
-                            }
-                            onClick={() => handleSort("name")}
-                            sx={{ cursor: "pointer" }}
-                          >
-                            <Typography variant="subtitle1">Navn</Typography>
-                          </TableCell>
-                          <TableCell
-                            sortDirection={
-                              sortField === "socialSecurityNumber"
-                                ? sortDirection
-                                : false
-                            }
-                            onClick={() => handleSort("socialSecurityNumber")}
-                            sx={{ cursor: "pointer" }}
-                          >
-                            <Typography variant="subtitle1">
-                              Fødselsnummer
-                            </Typography>
-                          </TableCell>
-                          <TableCell
-                            sortDirection={
-                              sortField === "mobileNumber"
-                                ? sortDirection
-                                : false
-                            }
-                            onClick={() => handleSort("mobileNumber")}
-                            sx={{ cursor: "pointer" }}
-                          >
-                            <Typography variant="subtitle1">
-                              Mobilnummer
-                            </Typography>
-                          </TableCell>
-                          <TableCell
-                            sortDirection={
-                              sortField === "eMailAddress"
-                                ? sortDirection
-                                : false
-                            }
-                            onClick={() => handleSort("eMailAddress")}
-                            sx={{ cursor: "pointer" }}
-                          >
-                            <Typography variant="subtitle1">E-post</Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography variant="subtitle1">Roller</Typography>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {sortedContacts.length > 0 ? (
-                          sortedContacts.map((contact) => (
-                            <TableRow key={contact.personalContactId}>
-                              <TableCell>{contact.name}</TableCell>
-                              <TableCell>
-                                {contact.socialSecurityNumber}
-                              </TableCell>
-                              <TableCell>{contact.mobileNumber}</TableCell>
-                              <TableCell>{contact.eMailAddress}</TableCell>
-                              <TableCell>
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  onClick={() => {
-                                    setSelectedContact(contact);
-                                    handleViewRoles(
-                                      contact.socialSecurityNumber,
-                                      selectedOrg.OrganizationNumber,
-                                    );
-                                  }}
-                                >
-                                  Vis
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        ) : (
-                          <TableRow>
-                            <TableCell colSpan={5}>
-                              <Typography
-                                variant="body2"
-                                color="textSecondary"
-                                align="center"
-                              >
-                                {searchQuery.trim().length >= 3
-                                  ? `Fant ingen resultater for '${searchQuery}'`
-                                  : "Her var det tomt"}
-                              </Typography>
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </MuiTable>
-                  </TableContainer>
-                  <Typography variant="h6" gutterBottom>
-                    Varslingsadresser for virksomheten
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 3,
-                      mb: 2,
-                      "& .MuiTableContainer-root": {
-                        flex: 1,
-                        maxWidth: "calc(50% - 1.5rem)",
-                      },
-                      "& .MuiTableCell-root": {
-                        padding: "8px 16px",
-                      },
-                    }}
-                  >
-                    <TableContainer component={Paper}>
-                      <MuiTable size="small">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>
-                              <Typography variant="subtitle2">
-                                Mobilnummer
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography variant="subtitle2">
-                                Endret Mobilnummer
-                              </Typography>
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {officialContacts && officialContacts.length > 0 ? (
-                            officialContacts.map((contact, index) => (
-                              <TableRow key={index}>
-                                <TableCell>
-                                  {contact.MobileNumber || "-"}
-                                </TableCell>
-                                <TableCell>
-                                  {formatDate(contact.MobileNumberChanged)}
-                                </TableCell>
-                              </TableRow>
-                            ))
-                          ) : (
-                            <TableRow>
-                              <TableCell colSpan={2}>
-                                <Typography
-                                  variant="body2"
-                                  color="textSecondary"
-                                  align="center"
-                                >
-                                  Her var det tomt
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </MuiTable>
-                    </TableContainer>
-
-                    <TableContainer component={Paper}>
-                      <MuiTable size="small">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>
-                              <Typography variant="subtitle2">
-                                E-post
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography variant="subtitle2">
-                                Endret E-post
-                              </Typography>
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {officialContacts && officialContacts.length > 0 ? (
-                            officialContacts.map((contact, index) => (
-                              <TableRow key={index}>
-                                <TableCell>
-                                  {contact.EMailAddress || "-"}
-                                </TableCell>
-                                <TableCell>
-                                  {formatDate(contact.EMailAddressChanged)}
-                                </TableCell>
-                              </TableRow>
-                            ))
-                          ) : (
-                            <TableRow>
-                              <TableCell colSpan={2}>
-                                <Typography
-                                  variant="body2"
-                                  color="textSecondary"
-                                  align="center"
-                                >
-                                  Her var det tomt
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </MuiTable>
-                    </TableContainer>
-                  </Box>
-                  <Typography variant="h6" gutterBottom>
-                    ER-roller
-                  </Typography>
-                  <TableContainer component={Paper} sx={{ mb: 2 }}>
-                    <MuiTable>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell
-                            sortDirection={
-                              erRoleSortField === "type"
-                                ? erRoleSortDirection
-                                : false
-                            }
-                            onClick={() => handleERRoleSort("type")}
-                            sx={{ cursor: "pointer" }}
-                          >
-                            <Typography variant="subtitle1">
-                              Rolletype
-                            </Typography>
-                          </TableCell>
-                          <TableCell
-                            sortDirection={
-                              erRoleSortField === "person"
-                                ? erRoleSortDirection
-                                : false
-                            }
-                            onClick={() => handleERRoleSort("person")}
-                            sx={{ cursor: "pointer" }}
-                          >
-                            <Typography variant="subtitle1">
-                              Person/Virksomhet
-                            </Typography>
-                          </TableCell>
-                          <TableCell
-                            sortDirection={
-                              erRoleSortField === "sistEndret"
-                                ? erRoleSortDirection
-                                : false
-                            }
-                            onClick={() => handleERRoleSort("sistEndret")}
-                            sx={{ cursor: "pointer" }}
-                          >
-                            <Typography variant="subtitle1">
-                              Dato Endret
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography variant="subtitle1">Status</Typography>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {sortedERRoles && sortedERRoles.length > 0 ? (
-                          sortedERRoles.map((role, index) => (
-                            <TableRow key={index}>
-                              <TableCell>
-                                {role.type?.beskrivelse || ""}
-                              </TableCell>
-                              <TableCell>
-                                {role.person
-                                  ? `${role.person?.navn?.fornavn || ""} ${role.person?.navn?.etternavn || ""}`.trim()
-                                  : role.enhet
-                                    ? `${role.enhet.navn?.[0] || ""} (${role.enhet.organisasjonsnummer})`
-                                    : ""}
-                              </TableCell>
-                              <TableCell>
-                                {formatDate(role.sistEndret)}
-                              </TableCell>
-                              <TableCell>
-                                {role.fratraadt ? "Fratrådt" : "Aktiv"}
-                                {role.person?.erDoed ? " (Død)" : ""}
-                                {role.enhet?.erSlettet ? " (Slettet)" : ""}
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        ) : (
-                          <TableRow>
-                            <TableCell colSpan={4}>
-                              <Typography
-                                variant="body2"
-                                color="textSecondary"
-                                align="center"
-                              >
-                                Ingen roller funnet
-                              </Typography>
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </MuiTable>
-                  </TableContainer>
-                  {erRolesError && (
-                    <Alert severity="error" sx={{ mt: 2 }}>
-                      {erRolesError}
-                    </Alert>
-                  )}
-
-                  {officialContactsError && (
-                    <Alert severity="error" sx={{ mt: 2 }}>
-                      {officialContactsError}
-                    </Alert>
-                  )}
-                </>
-              ) : (
-                <>
-                  <Typography variant="h6" gutterBottom>
-                    Roller knyttet til {selectedContact?.name}
-                  </Typography>
+          <Typography variant="h4" gutterBottom>
+            {selectedOrg.Name}
+          </Typography>
+          {!isRoleView ? (
+            <>
+              <div
+                className="search-ssn"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <TextField
+                  label="Søk i kontakter"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Navn / SSN / Telefon / E-post"
+                  sx={{ mb: 2 }}
+                />
+                {searchQuery.trim() !== "" && (
                   <Button
                     variant="outlined"
-                    onClick={() => {
-                      setIsRoleView(false);
-                      setShowOrgList(true);
-                    }}
-                    sx={{ mb: 2 }}
+                    onClick={handleClearSearch}
+                    sx={{ height: "fit-content", mb: 2 }}
                   >
-                    Tilbake til oversikt
+                    Clear Search
                   </Button>
-                  <TableContainer component={Paper} sx={{ mb: 2 }}>
-                    <MuiTable>
-                      <TableHead>
-                        <TableRow>
+                )}
+              </div>
+              <Typography variant="h6" gutterBottom>
+                Din kontaktinformasjon
+              </Typography>
+              <TableContainer component={Paper} sx={{ mb: 4 }}>
+                <MuiTable>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        sortDirection={
+                          sortField === "name" ? sortDirection : false
+                        }
+                        onClick={() => handleSort("name")}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <Typography variant="subtitle1">Navn</Typography>
+                      </TableCell>
+                      <TableCell
+                        sortDirection={
+                          sortField === "socialSecurityNumber"
+                            ? sortDirection
+                            : false
+                        }
+                        onClick={() => handleSort("socialSecurityNumber")}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <Typography variant="subtitle1">
+                          Fødselsnummer
+                        </Typography>
+                      </TableCell>
+                      <TableCell
+                        sortDirection={
+                          sortField === "mobileNumber" ? sortDirection : false
+                        }
+                        onClick={() => handleSort("mobileNumber")}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <Typography variant="subtitle1">Mobilnummer</Typography>
+                      </TableCell>
+                      <TableCell
+                        sortDirection={
+                          sortField === "eMailAddress" ? sortDirection : false
+                        }
+                        onClick={() => handleSort("eMailAddress")}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <Typography variant="subtitle1">E-post</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="subtitle1">Roller</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {sortedContacts.length > 0 ? (
+                      sortedContacts.map((contact) => (
+                        <TableRow key={contact.personalContactId}>
+                          <TableCell>{contact.name}</TableCell>
+                          <TableCell>{contact.socialSecurityNumber}</TableCell>
+                          <TableCell>{contact.mobileNumber}</TableCell>
+                          <TableCell>{contact.eMailAddress}</TableCell>
                           <TableCell>
-                            <Typography variant="subtitle1">
-                              Rolletype
-                            </Typography>
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              onClick={() => {
+                                setSelectedContact(contact);
+                                handleViewRoles(
+                                  contact.socialSecurityNumber,
+                                  selectedOrg.OrganizationNumber,
+                                );
+                              }}
+                            >
+                              Vis
+                            </Button>
                           </TableCell>
-                          <TableCell>
-                            <Typography variant="subtitle1">
-                              Rollenavn
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={5}>
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            align="center"
+                          >
+                            {searchQuery.trim().length >= 3
+                              ? `Fant ingen resultater for '${searchQuery}'`
+                              : "Her var det tomt"}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </MuiTable>
+              </TableContainer>
+              <Typography variant="h6" gutterBottom>
+                Varslingsadresser for virksomheten
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 3,
+                  mb: 2,
+                  "& .MuiTableContainer-root": {
+                    flex: 1,
+                    maxWidth: "calc(50% - 1.5rem)",
+                  },
+                  "& .MuiTableCell-root": {
+                    padding: "8px 16px",
+                  },
+                }}
+              >
+                <TableContainer component={Paper}>
+                  <MuiTable size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>
+                          <Typography variant="subtitle2">
+                            Mobilnummer
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="subtitle2">
+                            Endret Mobilnummer
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {officialContacts && officialContacts.length > 0 ? (
+                        officialContacts.map((contact, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{contact.MobileNumber || "-"}</TableCell>
+                            <TableCell>
+                              {formatDate(contact.MobileNumberChanged)}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={2}>
+                            <Typography
+                              variant="body2"
+                              color="textSecondary"
+                              align="center"
+                            >
+                              Her var det tomt
                             </Typography>
                           </TableCell>
                         </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {roleInfo && roleInfo.length > 0 ? (
-                          roleInfo.map((role, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{role.RoleType}</TableCell>
-                              <TableCell>{role.RoleName}</TableCell>
-                            </TableRow>
-                          ))
-                        ) : (
-                          <TableRow>
-                            <TableCell colSpan={2}>
-                              <Typography
-                                variant="body2"
-                                color="textSecondary"
-                                align="center"
-                              >
-                                Ingen roller funnet
-                              </Typography>
+                      )}
+                    </TableBody>
+                  </MuiTable>
+                </TableContainer>
+
+                <TableContainer component={Paper}>
+                  <MuiTable size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>
+                          <Typography variant="subtitle2">E-post</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="subtitle2">
+                            Endret E-post
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {officialContacts && officialContacts.length > 0 ? (
+                        officialContacts.map((contact, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{contact.EMailAddress || "-"}</TableCell>
+                            <TableCell>
+                              {formatDate(contact.EMailAddressChanged)}
                             </TableCell>
                           </TableRow>
-                        )}
-                      </TableBody>
-                    </MuiTable>
-                  </TableContainer>
-                  {roleViewError && (
-                    <Alert severity="error" sx={{ mt: 2 }}>
-                      {roleViewError}
-                    </Alert>
-                  )}
-                </>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={2}>
+                            <Typography
+                              variant="body2"
+                              color="textSecondary"
+                              align="center"
+                            >
+                              Her var det tomt
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </MuiTable>
+                </TableContainer>
+              </Box>
+              <Typography variant="h6" gutterBottom>
+                ER-roller
+              </Typography>
+              <TableContainer component={Paper} sx={{ mb: 2 }}>
+                <MuiTable>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        sortDirection={
+                          erRoleSortField === "type"
+                            ? erRoleSortDirection
+                            : false
+                        }
+                        onClick={() => handleERRoleSort("type")}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <Typography variant="subtitle1">Rolletype</Typography>
+                      </TableCell>
+                      <TableCell
+                        sortDirection={
+                          erRoleSortField === "person"
+                            ? erRoleSortDirection
+                            : false
+                        }
+                        onClick={() => handleERRoleSort("person")}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <Typography variant="subtitle1">
+                          Person/Virksomhet
+                        </Typography>
+                      </TableCell>
+                      <TableCell
+                        sortDirection={
+                          erRoleSortField === "sistEndret"
+                            ? erRoleSortDirection
+                            : false
+                        }
+                        onClick={() => handleERRoleSort("sistEndret")}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <Typography variant="subtitle1">Dato Endret</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="subtitle1">Status</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {sortedERRoles && sortedERRoles.length > 0 ? (
+                      sortedERRoles.map((role, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{role.type?.beskrivelse || ""}</TableCell>
+                          <TableCell>
+                            {role.person
+                              ? `${role.person?.navn?.fornavn || ""} ${role.person?.navn?.etternavn || ""}`.trim()
+                              : role.enhet
+                                ? `${role.enhet.navn?.[0] || ""} (${role.enhet.organisasjonsnummer})`
+                                : ""}
+                          </TableCell>
+                          <TableCell>{formatDate(role.sistEndret)}</TableCell>
+                          <TableCell>
+                            {role.fratraadt ? "Fratrådt" : "Aktiv"}
+                            {role.person?.erDoed ? " (Død)" : ""}
+                            {role.enhet?.erSlettet ? " (Slettet)" : ""}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={4}>
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            align="center"
+                          >
+                            Ingen roller funnet
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </MuiTable>
+              </TableContainer>
+              {erRolesError && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {erRolesError}
+                </Alert>
               )}
-            </div>
+
+              {officialContactsError && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {officialContactsError}
+                </Alert>
+              )}
+            </>
+          ) : (
+            <>
+              <Typography variant="h6" gutterBottom>
+                Roller knyttet til {selectedContact?.name}
+              </Typography>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  setIsRoleView(false);
+                  setShowOrgList(true);
+                }}
+                sx={{ mb: 2 }}
+              >
+                Tilbake til oversikt
+              </Button>
+              <TableContainer component={Paper} sx={{ mb: 2 }}>
+                <MuiTable>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <Typography variant="subtitle1">Rolletype</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="subtitle1">Rollenavn</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {roleInfo && roleInfo.length > 0 ? (
+                      roleInfo.map((role, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{role.RoleType}</TableCell>
+                          <TableCell>{role.RoleName}</TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={2}>
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            align="center"
+                          >
+                            Ingen roller funnet
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </MuiTable>
+              </TableContainer>
+              {roleViewError && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {roleViewError}
+                </Alert>
+              )}
+            </>
           )}
-        </>
+        </div>
       )}
     </div>
   );
