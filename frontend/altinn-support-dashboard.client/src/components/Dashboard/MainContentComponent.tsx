@@ -31,6 +31,7 @@ import { getBaseUrl } from "../../utils/utils";
 import { useAppStore } from "../../hooks/Appstore";
 import SearchContactsBar from "./ContactsSearchBar";
 import { ContactsTable } from "./ContactsTable";
+import { ContactFieldTable } from "./NotificationContactTable";
 
 const MainContentComponent: React.FC<MainContentProps> = ({
   organizations,
@@ -226,89 +227,19 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                   },
                 }}
               >
-                <TableContainer component={Paper}>
-                  <MuiTable size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>
-                          <Typography variant="subtitle2">
-                            Mobilnummer
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="subtitle2">
-                            Endret Mobilnummer
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {officialContacts && officialContacts.length > 0 ? (
-                        officialContacts.map((contact, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{contact.MobileNumber || "-"}</TableCell>
-                            <TableCell>
-                              {formatDate(contact.MobileNumberChanged)}
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={2}>
-                            <Typography
-                              variant="body2"
-                              color="textSecondary"
-                              align="center"
-                            >
-                              Her var det tomt
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </MuiTable>
-                </TableContainer>
+                <ContactFieldTable
+                  title="Mobilnummer"
+                  field="MobileNumber"
+                  changedField="MobileNumberChanged"
+                  contacts={officialContacts}
+                />
 
-                <TableContainer component={Paper}>
-                  <MuiTable size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>
-                          <Typography variant="subtitle2">E-post</Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="subtitle2">
-                            Endret E-post
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {officialContacts && officialContacts.length > 0 ? (
-                        officialContacts.map((contact, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{contact.EMailAddress || "-"}</TableCell>
-                            <TableCell>
-                              {formatDate(contact.EMailAddressChanged)}
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={2}>
-                            <Typography
-                              variant="body2"
-                              color="textSecondary"
-                              align="center"
-                            >
-                              Her var det tomt
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </MuiTable>
-                </TableContainer>
+                <ContactFieldTable
+                  title="E-post"
+                  field="EMailAddress"
+                  changedField="EMailAddressChanged"
+                  contacts={officialContacts}
+                />
               </Box>
               <Typography variant="h6" gutterBottom>
                 ER-roller
