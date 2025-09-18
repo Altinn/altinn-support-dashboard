@@ -1,6 +1,5 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Skeleton,
   Button,
   Alert,
   Typography,
@@ -11,10 +10,8 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TextField,
   Box,
 } from "@mui/material";
-import { ExpandMore, ExpandLess } from "@mui/icons-material";
 
 import {
   MainContentProps,
@@ -32,23 +29,14 @@ import {
 import { ERRolesSortField } from "./models/mainContentTypes";
 import { getBaseUrl } from "../../utils/utils";
 import { useAppStore } from "../../hooks/Appstore";
-import { OrganizationCard } from "./OrganizationCard";
-import { ErrorAlert } from "./ErrorAlert";
-import { OrganizationList } from "./OrganizationList";
+import SearchContactsBar from "./ContactsSearchBar";
+import { ContactsTable } from "./ContactsTable";
 
 const MainContentComponent: React.FC<MainContentProps> = ({
-  isLoading,
   organizations,
-  subUnits,
   selectedOrg,
   moreInfo,
   rolesInfo,
-  expandedOrg,
-  handleSelectOrg,
-  handleExpandToggle,
-  error,
-  erRolesError,
-  hasSearched,
 }) => {
   const [selectedContact, setSelectedContact] =
     useState<PersonalContact | null>(null);
@@ -74,22 +62,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
 
   const environment = useAppStore((state) => state.environment);
   const baseUrl = getBaseUrl(environment);
-
-  const quotes = [
-    "Dette er en fin dag.",
-    "Husk at hver dag er en gave.",
-    "Gjør det beste ut av det du har.",
-    "Livet er fullt av muligheter.",
-    "Sammen er vi sterke.",
-    "Ta vare på øyeblikket.",
-    "Smil til verden, og verden smiler til deg.",
-    "Gi aldri opp.",
-    "Livet er hva som skjer mens du planlegger noe annet.",
-  ];
-
-  const randomQuote = useMemo(() => {
-    return quotes[Math.floor(Math.random() * quotes.length)];
-  }, [quotes]);
 
   const handleViewRoles = async (subject: string, reportee: string) => {
     try {
@@ -221,129 +193,22 @@ const MainContentComponent: React.FC<MainContentProps> = ({
           </Typography>
           {!isRoleView ? (
             <>
-              <div
-                className="search-ssn"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                <TextField
-                  label="Søk i kontakter"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Navn / SSN / Telefon / E-post"
-                  sx={{ mb: 2 }}
-                />
-                {searchQuery.trim() !== "" && (
-                  <Button
-                    variant="outlined"
-                    onClick={handleClearSearch}
-                    sx={{ height: "fit-content", mb: 2 }}
-                  >
-                    Clear Search
-                  </Button>
-                )}
-              </div>
-              <Typography variant="h6" gutterBottom>
-                Din kontaktinformasjon
-              </Typography>
-              <TableContainer component={Paper} sx={{ mb: 4 }}>
-                <MuiTable>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell
-                        sortDirection={
-                          sortField === "name" ? sortDirection : false
-                        }
-                        onClick={() => handleSort("name")}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <Typography variant="subtitle1">Navn</Typography>
-                      </TableCell>
-                      <TableCell
-                        sortDirection={
-                          sortField === "socialSecurityNumber"
-                            ? sortDirection
-                            : false
-                        }
-                        onClick={() => handleSort("socialSecurityNumber")}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <Typography variant="subtitle1">
-                          Fødselsnummer
-                        </Typography>
-                      </TableCell>
-                      <TableCell
-                        sortDirection={
-                          sortField === "mobileNumber" ? sortDirection : false
-                        }
-                        onClick={() => handleSort("mobileNumber")}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <Typography variant="subtitle1">Mobilnummer</Typography>
-                      </TableCell>
-                      <TableCell
-                        sortDirection={
-                          sortField === "eMailAddress" ? sortDirection : false
-                        }
-                        onClick={() => handleSort("eMailAddress")}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <Typography variant="subtitle1">E-post</Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="subtitle1">Roller</Typography>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {sortedContacts.length > 0 ? (
-                      sortedContacts.map((contact) => (
-                        <TableRow key={contact.personalContactId}>
-                          <TableCell>{contact.name}</TableCell>
-                          <TableCell>{contact.socialSecurityNumber}</TableCell>
-                          <TableCell>{contact.mobileNumber}</TableCell>
-                          <TableCell>{contact.eMailAddress}</TableCell>
-                          <TableCell>
-                            <Button
-                              variant="outlined"
-                              size="small"
-                              onClick={() => {
-                                setSelectedContact(contact);
-                                handleViewRoles(
-                                  contact.socialSecurityNumber,
-                                  selectedOrg.OrganizationNumber,
-                                );
-                              }}
-                            >
-                              Vis
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={5}>
-                          <Typography
-                            variant="body2"
-                            color="textSecondary"
-                            align="center"
-                          >
-                            {searchQuery.trim().length >= 3
-                              ? `Fant ingen resultater for '${searchQuery}'`
-                              : "Her var det tomt"}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </MuiTable>
-              </TableContainer>
+              <SearchContactsBar
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                handleClearSearch={handleClearSearch}
+              />
+
+              <ContactsTable
+                sortedContacts={sortedContacts}
+                sortField={sortField}
+                sortDirection={sortDirection}
+                searchQuery={searchQuery}
+                selectedOrg={selectedOrg}
+                handleSort={handleSort}
+                handleViewRoles={handleViewRoles}
+                setSelectedContact={setSelectedContact}
+              />
               <Typography variant="h6" gutterBottom>
                 Varslingsadresser for virksomheten
               </Typography>
@@ -528,11 +393,6 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                   </TableBody>
                 </MuiTable>
               </TableContainer>
-              {erRolesError && (
-                <Alert severity="error" sx={{ mt: 2 }}>
-                  {erRolesError}
-                </Alert>
-              )}
 
               {officialContactsError && (
                 <Alert severity="error" sx={{ mt: 2 }}>

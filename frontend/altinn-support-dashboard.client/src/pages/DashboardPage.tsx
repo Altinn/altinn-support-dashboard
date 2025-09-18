@@ -33,15 +33,6 @@ export const DashboardPage: React.FC = () => {
   const [showOrgList] = useState<boolean>(true);
   const [isRoleView] = useState<boolean>(false);
 
-  const [randomQuote] = useState<string>(() => {
-    const quotes = [
-      "Søk etter en organisasjon",
-      "Start typing to find organizations...",
-      "Ingen søk utført ennå",
-    ];
-    return quotes[Math.floor(Math.random() * quotes.length)];
-  });
-
   return (
     <div>
       <SearchComponent
@@ -72,14 +63,12 @@ export const DashboardPage: React.FC = () => {
                 isRoleView={isRoleView}
                 isLoading={isLoading}
                 hasSearched={hasSearched}
-                randomQuote={randomQuote}
                 handleExpandToggle={handleExpandToggle}
                 handleSelectOrg={handleSelectOrg}
               />
             </div>
           )}
 
-          {/* Main content area */}
           <div style={{ flex: "1 1 65%", maxWidth: "65%" }}>
             <MainContentComponent
               baseUrl={getBaseUrl(environment)}
