@@ -19,7 +19,7 @@ interface ContactFieldTableProps {
   contacts: OfficialContact[];
 }
 
-export const ContactFieldTable: React.FC<ContactFieldTableProps> = ({
+const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
   title,
   field,
   changedField,
@@ -66,3 +66,5 @@ export const ContactFieldTable: React.FC<ContactFieldTableProps> = ({
     </TableContainer>
   );
 };
+
+export default OfficialContactFieldTable;

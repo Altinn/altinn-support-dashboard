@@ -31,7 +31,9 @@ import { getBaseUrl } from "../../utils/utils";
 import { useAppStore } from "../../hooks/Appstore";
 import SearchContactsBar from "./ContactsSearchBar";
 import { ContactsTable } from "./ContactsTable";
-import { ContactFieldTable } from "./NotificationContactTable";
+import OfficialContactFieldTable, {
+  ContactFieldTable,
+} from "./NotificationContactTable";
 
 const MainContentComponent: React.FC<MainContentProps> = ({
   organizations,
@@ -227,14 +229,14 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                   },
                 }}
               >
-                <ContactFieldTable
+                <OfficialContactFieldTable
                   title="Mobilnummer"
                   field="MobileNumber"
                   changedField="MobileNumberChanged"
                   contacts={officialContacts}
                 />
 
-                <ContactFieldTable
+                <OfficialContactFieldTable
                   title="E-post"
                   field="EMailAddress"
                   changedField="EMailAddressChanged"
