@@ -40,7 +40,7 @@ Før du begynner bør du ha følgende installert:
 ### Kloning av repo
 For å klone repoet, kjør følgende kommando i terminalen:
 
-git clone https://github.com/Altinn/altinn-access-management-frontend.git
+git clone https://github.com/Altinn/altinn-support-dashboard.git
 
 
 ## Kjøre dashboardet på lokal maskin
