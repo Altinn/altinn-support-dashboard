@@ -1,10 +1,6 @@
 import React from "react";
-import { TextField, Button } from "@mui/material";
-import {
-  searchBarContainerStyle,
-  textFieldStyle,
-  clearButtonStyle,
-} from "../../styles/ContactsSearchBar.styles";
+import { TextField, IconButton, InputAdornment } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
 
 interface SearchContactsBarProps {
   searchQuery: string;
@@ -12,34 +8,33 @@ interface SearchContactsBarProps {
   handleClearSearch: () => void;
 }
 
-const ContactsSearchBar: React.FC<SearchContactsBarProps> = ({
+const SearchContactsBar: React.FC<SearchContactsBarProps> = ({
   searchQuery,
   setSearchQuery,
   handleClearSearch,
 }) => {
   return (
-    <div className="search-ssn" style={searchBarContainerStyle}>
-      <TextField
-        label="Søk i kontakter"
-        variant="outlined"
-        size="small"
-        fullWidth
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Navn / SSN / Telefon / E-post"
-        sx={textFieldStyle}
-      />
-      {searchQuery.trim() !== "" && (
-        <Button
-          variant="outlined"
-          onClick={handleClearSearch}
-          sx={clearButtonStyle}
-        >
-          Clear Search
-        </Button>
-      )}
-    </div>
+    <TextField
+      label="Søk i kontakter"
+      variant="outlined"
+      size="small"
+      fullWidth
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      placeholder="Navn / SSN / Telefon / E-post"
+      slotProps={{
+        input: {
+          endAdornment: searchQuery.trim() !== "" && (
+            <InputAdornment position="end">
+              <IconButton onClick={handleClearSearch} edge="end">
+                <ClearIcon />
+              </IconButton>
+            </InputAdornment>
+          ),
+        },
+      }}
+    />
   );
 };
 
-export default ContactsSearchBar;
+export default SearchContactsBar;

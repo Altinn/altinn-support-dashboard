@@ -106,8 +106,8 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
           </TableHead>
           <TableBody>
             {sortedContacts.length > 0 ? (
-              sortedContacts.map((contact) => (
-                <TableRow key={contact.personalContactId}>
+              sortedContacts.map((contact, index) => (
+                <TableRow key={`${contact.personalContactId}-${index}`}>
                   <TableCell>{contact.name}</TableCell>
                   <TableCell>{contact.socialSecurityNumber}</TableCell>
                   <TableCell>{contact.mobileNumber}</TableCell>
