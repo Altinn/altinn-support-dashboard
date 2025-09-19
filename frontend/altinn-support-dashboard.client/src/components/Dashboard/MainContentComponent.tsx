@@ -31,9 +31,8 @@ import { getBaseUrl } from "../../utils/utils";
 import { useAppStore } from "../../hooks/Appstore";
 import SearchContactsBar from "./ContactsSearchBar";
 import { ContactsTable } from "./ContactsTable";
-import OfficialContactFieldTable, {
-  ContactFieldTable,
-} from "./NotificationContactTable";
+import OfficialContactFieldTable from "./NotificationContactTable";
+import ERRolesTable from "./ERRolesTable";
 
 const MainContentComponent: React.FC<MainContentProps> = ({
   organizations,
@@ -246,87 +245,12 @@ const MainContentComponent: React.FC<MainContentProps> = ({
               <Typography variant="h6" gutterBottom>
                 ER-roller
               </Typography>
-              <TableContainer component={Paper} sx={{ mb: 2 }}>
-                <MuiTable>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell
-                        sortDirection={
-                          erRoleSortField === "type"
-                            ? erRoleSortDirection
-                            : false
-                        }
-                        onClick={() => handleERRoleSort("type")}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <Typography variant="subtitle1">Rolletype</Typography>
-                      </TableCell>
-                      <TableCell
-                        sortDirection={
-                          erRoleSortField === "person"
-                            ? erRoleSortDirection
-                            : false
-                        }
-                        onClick={() => handleERRoleSort("person")}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <Typography variant="subtitle1">
-                          Person/Virksomhet
-                        </Typography>
-                      </TableCell>
-                      <TableCell
-                        sortDirection={
-                          erRoleSortField === "sistEndret"
-                            ? erRoleSortDirection
-                            : false
-                        }
-                        onClick={() => handleERRoleSort("sistEndret")}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <Typography variant="subtitle1">Dato Endret</Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="subtitle1">Status</Typography>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {sortedERRoles && sortedERRoles.length > 0 ? (
-                      sortedERRoles.map((role, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{role.type?.beskrivelse || ""}</TableCell>
-                          <TableCell>
-                            {role.person
-                              ? `${role.person?.navn?.fornavn || ""} ${role.person?.navn?.etternavn || ""}`.trim()
-                              : role.enhet
-                                ? `${role.enhet.navn?.[0] || ""} (${role.enhet.organisasjonsnummer})`
-                                : ""}
-                          </TableCell>
-                          <TableCell>{formatDate(role.sistEndret)}</TableCell>
-                          <TableCell>
-                            {role.fratraadt ? "Fratrådt" : "Aktiv"}
-                            {role.person?.erDoed ? " (Død)" : ""}
-                            {role.enhet?.erSlettet ? " (Slettet)" : ""}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={4}>
-                          <Typography
-                            variant="body2"
-                            color="textSecondary"
-                            align="center"
-                          >
-                            Ingen roller funnet
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </MuiTable>
-              </TableContainer>
-
+              <ERRolesTable
+                sortedERRoles={sortedERRoles}
+                erRoleSortField={erRoleSortField}
+                erRoleSortDirection={erRoleSortDirection}
+                handleERRoleSort={handleERRoleSort}
+              />
               {officialContactsError && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                   {officialContactsError}
