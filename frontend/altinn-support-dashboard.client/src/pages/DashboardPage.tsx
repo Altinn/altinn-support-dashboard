@@ -32,7 +32,6 @@ export const DashboardPage: React.FC = () => {
         query={query}
         setQuery={setQuery}
         handleSearch={handleSearch}
-        isDarkMode={isDarkMode}
       />
       <MainContentComponent
         baseUrl={getBaseUrl(environment)}
