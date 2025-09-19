@@ -45,7 +45,7 @@ git clone https://github.com/Altinn/altinn-support-dashboard.git
 
 ## Kjøre dashboardet på lokal maskin
 
-- Kjør kommandoen `dotnet run --project backend/src/altinn-support-dashboard.backend/backend.csproj ` (starter backend)
+- Kjør kommandoen `dotnet run --project backend/src/altinn-support-dashboard.backend/backend.csproj` (starter backend)
 - Kjør kommandoen `npm install` (trengs bare første gang eller for oppdatering av avhengigheter)
 - Kjør kommandoen `npm run dev --prefix frontend/altinn-support-dashboard.client` (starter frontend)
 
