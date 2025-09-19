@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import MainContentComponent from "../components/Dashboard/MainContentComponent";
 import SearchComponent from "../components/TopSearchBar/TopSearchBarComponent";
 import { useAppStore } from "../hooks/Appstore";
 import { useDarkMode, useOrganizationSearch } from "../hooks/hooks";
 import { getBaseUrl } from "../utils/utils";
 import { ErrorAlert } from "../components/Dashboard/ErrorAlert";
-import { OrganizationList } from "../components/Dashboard/OrganizationList";
+import { OrganizationList } from "../components/Dashboard/organizations/OrganizationList";
+import DetailedOrgView from "../components/Dashboard/DetailedOrgView";
 
 export const DashboardPage: React.FC = () => {
   const environment = useAppStore((state) => state.environment);
@@ -70,7 +70,7 @@ export const DashboardPage: React.FC = () => {
           )}
 
           <div style={{ flex: "1 1 65%", maxWidth: "65%" }}>
-            <MainContentComponent
+            <DetailedOrgView
               baseUrl={getBaseUrl(environment)}
               isLoading={isLoading}
               organizations={organizations}

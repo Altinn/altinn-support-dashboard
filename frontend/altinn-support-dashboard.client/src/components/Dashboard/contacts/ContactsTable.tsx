@@ -10,7 +10,7 @@ import {
   TableBody,
   Button,
 } from "@mui/material";
-import { PersonalContact } from "./models/mainContentTypes";
+import { PersonalContact } from "../models/mainContentTypes";
 
 interface ContactsTableProps {
   sortedContacts: PersonalContact[];

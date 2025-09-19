@@ -9,8 +9,8 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { OfficialContact } from "./models/mainContentTypes";
-import { formatDate } from "./utils/dateUtils";
+import { OfficialContact } from "../models/mainContentTypes";
+import { formatDate } from "../utils/dateUtils";
 
 interface ContactFieldTableProps {
   title: string;

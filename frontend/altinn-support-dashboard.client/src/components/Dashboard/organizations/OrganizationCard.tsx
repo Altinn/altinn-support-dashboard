@@ -1,10 +1,10 @@
 import { Paper, Typography, Button } from "@mui/material";
 import { ExpandMore, ExpandLess } from "@mui/icons-material";
-import { Organization, Subunit } from "../../models/models";
 import {
   paperStyle,
   subunitPaperStyle,
-} from "./styles/OrganizationCard.styles";
+} from "../styles/OrganizationCard.styles";
+import { Organization, Subunit } from "../../../models/models";
 
 interface OrganizationCardProps {
   org: Organization;
