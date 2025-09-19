@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event';
 import { describe, it, beforeEach, vi, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import ManualRoleSearchComponent from './ManualRoleSearchComponent';
+import { ManualRoleSearchPage } from '../../pages/ManualRoleSearchPage';
 import { UseManualRoleSearch } from '../../hooks/hooks';
 import { Role } from '../../models/models';
 
@@ -26,7 +26,7 @@ describe('ManualRoleSearchComponent', () => {
     });
 
     it('renders the component with all elements', () => {
-        render(<ManualRoleSearchComponent baseUrl="http://mock-api" />);
+        render(<ManualRoleSearchPage baseUrl="http://mock-api" />);
         expect(screen.getByRole('heading', { name: /Manuelt Rollesøk/ })).toBeInTheDocument();
         expect(screen.getByLabelText(/Rollehaver/)).toBeInTheDocument();
         expect(screen.getByLabelText(/Rollegiver/)).toBeInTheDocument();
@@ -35,7 +35,7 @@ describe('ManualRoleSearchComponent', () => {
 
     it('disables the "Søk" button if Rollehaver or Rollegiver is missing', async () => {
         const user = userEvent.setup();
-        render(<ManualRoleSearchComponent baseUrl="http://mock-api" />);
+        render(<ManualRoleSearchPage baseUrl="http://mock-api" />);
         const rollehaverInput = screen.getByLabelText(/Rollehaver/);
         const rollegiverInput = screen.getByLabelText(/Rollegiver/);
         const searchButton = screen.getByRole('button', { name: /Søk/ });
@@ -54,13 +54,13 @@ describe('ManualRoleSearchComponent', () => {
             ...defaultHookReturn,
             isLoading: true,
         });
-        render(<ManualRoleSearchComponent baseUrl="http://mock-api" />);
+        render(<ManualRoleSearchPage baseUrl="http://mock-api" />);
         expect(screen.getByRole('button', { name: /Søk/ })).toBeDisabled();
     });
 
     it('calls fetchRoles when valid inputs are provided and "Søk" is clicked', async () => {
         const user = userEvent.setup();
-        render(<ManualRoleSearchComponent baseUrl="http://mock-api" />);
+        render(<ManualRoleSearchPage baseUrl="http://mock-api" />);
         const rollehaverInput = screen.getByLabelText(/Rollehaver/);
         const rollegiverInput = screen.getByLabelText(/Rollegiver/);
         const searchButton = screen.getByRole('button', { name: /Søk/ });
@@ -78,7 +78,7 @@ describe('ManualRoleSearchComponent', () => {
             ...defaultHookReturn,
             error: 'En feil har oppstått',
         });
-        render(<ManualRoleSearchComponent baseUrl="http://mock-api" />);
+        render(<ManualRoleSearchPage baseUrl="http://mock-api" />);
         expect(screen.getByText(/En feil har oppstått/)).toBeInTheDocument();
     });
 
@@ -87,7 +87,7 @@ describe('ManualRoleSearchComponent', () => {
             ...defaultHookReturn,
             isLoading: true,
         });
-        render(<ManualRoleSearchComponent baseUrl="http://mock-api" />);
+        render(<ManualRoleSearchPage baseUrl="http://mock-api" />);
         expect(screen.getByText(/Laster roller\.\.\./)).toBeInTheDocument();
     });
 
@@ -99,7 +99,7 @@ describe('ManualRoleSearchComponent', () => {
             error: null,
         });
         const user = userEvent.setup();
-        render(<ManualRoleSearchComponent baseUrl="http://mock-api" />);
+        render(<ManualRoleSearchPage baseUrl="http://mock-api" />);
         await user.type(screen.getByLabelText(/Rollehaver/), '11111111111');
         await user.type(screen.getByLabelText(/Rollegiver/), '222222222');
         await user.click(screen.getByRole('button', { name: /Søk/ }));
@@ -132,7 +132,7 @@ describe('ManualRoleSearchComponent', () => {
             error: null,
         });
         const user = userEvent.setup();
-        render(<ManualRoleSearchComponent baseUrl="http://mock-api" />);
+        render(<ManualRoleSearchPage baseUrl="http://mock-api" />);
         await user.type(screen.getByLabelText(/Rollehaver/), '12345678901');
         await user.type(screen.getByLabelText(/Rollegiver/), '987654321');
         await user.click(screen.getByRole('button', { name: /Søk/ }));
