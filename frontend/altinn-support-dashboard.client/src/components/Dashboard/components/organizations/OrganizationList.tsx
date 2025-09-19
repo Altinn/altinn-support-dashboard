@@ -8,7 +8,6 @@ interface OrganizationListProps {
   subUnits: Subunit[];
   expandedOrg: string | null;
   showOrgList: boolean;
-  isRoleView: boolean;
   isLoading: boolean;
   hasSearched: boolean;
   handleExpandToggle: (orgNumber: string) => void;
@@ -20,7 +19,6 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
   subUnits,
   expandedOrg,
   showOrgList,
-  isRoleView,
   isLoading,
   hasSearched,
   handleExpandToggle,
@@ -48,7 +46,7 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
 
   // Default case: render organizations
   return (
-    <div className={`org-list ${isRoleView ? "hidden" : ""}`}>
+    <div className={`org-list`}>
       {organizations
         .filter((org) => {
           // filter out subunits if parent is already included

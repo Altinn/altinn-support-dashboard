@@ -59,7 +59,6 @@ export const DashboardPage: React.FC = () => {
                 subUnits={subUnits}
                 expandedOrg={expandedOrg}
                 showOrgList={showOrgList}
-                isRoleView={isRoleView}
                 isLoading={isLoading}
                 hasSearched={hasSearched}
                 handleExpandToggle={handleExpandToggle}
