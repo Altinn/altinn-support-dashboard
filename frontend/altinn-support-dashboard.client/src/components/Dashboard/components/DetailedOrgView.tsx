@@ -16,11 +16,12 @@ import {
 import { ERRolesSortField } from "../models/mainContentTypes";
 import { getBaseUrl } from "../../../utils/utils";
 import { useAppStore } from "../../../hooks/Appstore";
-import SearchContactsBar from "./contacts/ContactsSearchBar";
 import { ContactsTable } from "./contacts/ContactsTable";
 import OfficialContactFieldTable from "./contacts/NotificationContactTable";
 import ERRolesTable from "./ERRolesTable";
 import { RoleDetails } from "./RoleDetails";
+import ContactsSearchBar from "./contacts/ContactsSearchBar";
+import { officialContactsBoxStyle } from "../styles/DetailedOrgView.styles";
 
 const DetailedOrgView: React.FC<MainContentProps> = ({
   organizations,
@@ -184,7 +185,7 @@ const DetailedOrgView: React.FC<MainContentProps> = ({
 
           {!isRoleView ? (
             <>
-              <SearchContactsBar
+              <ContactsSearchBar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 handleClearSearch={handleClearSearch}
@@ -204,20 +205,7 @@ const DetailedOrgView: React.FC<MainContentProps> = ({
               <Typography variant="h6" gutterBottom>
                 Varslingsadresser for virksomheten
               </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 3,
-                  mb: 2,
-                  "& .MuiTableContainer-root": {
-                    flex: 1,
-                    maxWidth: "calc(50% - 1.5rem)",
-                  },
-                  "& .MuiTableCell-root": {
-                    padding: "8px 16px",
-                  },
-                }}
-              >
+              <Box sx={officialContactsBoxStyle}>
                 <OfficialContactFieldTable
                   title="Mobilnummer"
                   field="MobileNumber"

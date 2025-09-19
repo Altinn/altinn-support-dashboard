@@ -1,5 +1,10 @@
 import React from "react";
 import { TextField, Button } from "@mui/material";
+import {
+  searchBarContainerStyle,
+  textFieldStyle,
+  clearButtonStyle,
+} from "../../styles/ContactsSearchBar.styles";
 
 interface SearchContactsBarProps {
   searchQuery: string;
@@ -7,20 +12,13 @@ interface SearchContactsBarProps {
   handleClearSearch: () => void;
 }
 
-const SearchContactsBar: React.FC<SearchContactsBarProps> = ({
+const ContactsSearchBar: React.FC<SearchContactsBarProps> = ({
   searchQuery,
   setSearchQuery,
   handleClearSearch,
 }) => {
   return (
-    <div
-      className="search-ssn"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
-      }}
-    >
+    <div className="search-ssn" style={searchBarContainerStyle}>
       <TextField
         label="Søk i kontakter"
         variant="outlined"
@@ -29,13 +27,13 @@ const SearchContactsBar: React.FC<SearchContactsBarProps> = ({
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Navn / SSN / Telefon / E-post"
-        sx={{ mb: 2 }}
+        sx={textFieldStyle}
       />
       {searchQuery.trim() !== "" && (
         <Button
           variant="outlined"
           onClick={handleClearSearch}
-          sx={{ height: "fit-content", mb: 2 }}
+          sx={clearButtonStyle}
         >
           Clear Search
         </Button>
@@ -44,4 +42,4 @@ const SearchContactsBar: React.FC<SearchContactsBarProps> = ({
   );
 };
 
-export default SearchContactsBar;
+export default ContactsSearchBar;
