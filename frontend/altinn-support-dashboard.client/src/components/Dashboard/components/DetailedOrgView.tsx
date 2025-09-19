@@ -4,24 +4,17 @@ import { Alert, Typography, Box } from "@mui/material";
 import {
   MainContentProps,
   OfficialContact,
-  SortDirection,
   PersonalContact,
 } from "../models/mainContentTypes";
 import authorizedFetch from "../hooks/useAuthorizedFetch";
-import {
-  filterContacts,
-  sortContacts,
-  sortERRoles,
-} from "../utils/contactUtils";
-import { ERRolesSortField } from "../models/mainContentTypes";
 import { getBaseUrl } from "../../../utils/utils";
 import { useAppStore } from "../../../hooks/Appstore";
-import { ContactsTable } from "./contacts/ContactsTable";
 import OfficialContactFieldTable from "./contacts/NotificationContactTable";
 import ERRolesTable from "./ERRolesTable";
 import { RoleDetails } from "./RoleDetails";
 import ContactsSearchBar from "./contacts/ContactsSearchBar";
 import { officialContactsBoxStyle } from "../styles/DetailedOrgView.styles";
+import ContactsTable from "./contacts/ContactsTable";
 
 const DetailedOrgView: React.FC<MainContentProps> = ({
   organizations,
@@ -35,14 +28,6 @@ const DetailedOrgView: React.FC<MainContentProps> = ({
   const [isRoleView, setIsRoleView] = useState(false);
   const [showOrgList, setShowOrgList] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortField, setSortField] = useState<keyof PersonalContact | null>(
-    null,
-  );
-  const [sortDirection, setSortDirection] = useState<SortDirection>(undefined);
-  const [erRoleSortField, setERRoleSortField] =
-    useState<ERRolesSortField>(null);
-  const [erRoleSortDirection, setERRoleSortDirection] =
-    useState<SortDirection>(undefined);
   const [roleViewError, setRoleViewError] = useState<string | null>(null);
   const [officialContacts, setOfficialContacts] = useState<OfficialContact[]>(
     [],
@@ -102,71 +87,8 @@ const DetailedOrgView: React.FC<MainContentProps> = ({
     fetchOfficialContacts();
   }, [selectedOrg, baseUrl]);
 
-  const handleSort = (field: keyof PersonalContact) => {
-    if (field === sortField) {
-      if (sortDirection === "asc") {
-        setSortDirection("desc");
-      } else if (sortDirection === "desc") {
-        setSortField(null);
-        setSortDirection(undefined);
-      } else {
-        setSortDirection("asc");
-      }
-    } else {
-      setSortField(field);
-      setSortDirection("asc");
-    }
-  };
-
-  const handleERRoleSort = (field: ERRolesSortField) => {
-    if (field === erRoleSortField) {
-      if (erRoleSortDirection === "asc") {
-        setERRoleSortDirection("desc");
-      } else if (erRoleSortDirection === "desc") {
-        setERRoleSortField(null);
-        setERRoleSortDirection(undefined);
-      } else {
-        setERRoleSortDirection("asc");
-      }
-    } else {
-      setERRoleSortField(field);
-      setERRoleSortDirection("asc");
-    }
-  };
-
-  const filteredContacts = filterContacts(moreInfo || [], searchQuery);
-  const sortedContacts = sortContacts(
-    filteredContacts,
-    sortField,
-    sortDirection,
-  );
-
-  const flatERRoles =
-    rolesInfo
-      ?.flatMap((roleGroup) =>
-        roleGroup?.roller?.map((role) => ({
-          ...role,
-          sistEndret: roleGroup.sistEndret,
-          // Use the role's own type instead of the group type
-          type: role.type || roleGroup.type,
-          enhet: role.enhet,
-          person: role.person,
-          fratraadt: role.fratraadt,
-          // Store the group type for reference if needed
-          groupType: roleGroup.type,
-        })),
-      )
-      .filter(Boolean) || [];
-  const sortedERRoles = sortERRoles(
-    flatERRoles,
-    erRoleSortField,
-    erRoleSortDirection,
-  );
-
   const handleClearSearch = () => {
     setSearchQuery("");
-    setSortField(null);
-    setSortDirection(undefined);
     setSelectedContact(null);
     setIsRoleView(false);
     setRoleViewError(null);
@@ -192,12 +114,9 @@ const DetailedOrgView: React.FC<MainContentProps> = ({
               />
 
               <ContactsTable
-                sortedContacts={sortedContacts}
-                sortField={sortField}
-                sortDirection={sortDirection}
+                moreInfo={moreInfo}
                 searchQuery={searchQuery}
                 selectedOrg={selectedOrg}
-                handleSort={handleSort}
                 handleViewRoles={handleViewRoles}
                 setSelectedContact={setSelectedContact}
               />
@@ -224,12 +143,7 @@ const DetailedOrgView: React.FC<MainContentProps> = ({
               <Typography variant="h6" gutterBottom>
                 ER-roller
               </Typography>
-              <ERRolesTable
-                sortedERRoles={sortedERRoles}
-                erRoleSortField={erRoleSortField}
-                erRoleSortDirection={erRoleSortDirection}
-                handleERRoleSort={handleERRoleSort}
-              />
+              <ERRolesTable rolesInfo={rolesInfo} />
 
               {officialContactsError && (
                 <Alert severity="error" sx={{ mt: 2 }}>

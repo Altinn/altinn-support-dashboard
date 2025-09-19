@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table as MuiTable,
   TableBody,
@@ -10,35 +10,58 @@ import {
   Paper,
 } from "@mui/material";
 import { formatDate } from "../utils/dateUtils";
-
-interface ERRolle {
-  type?: { beskrivelse?: string };
-  person?: {
-    navn?: { fornavn?: string; etternavn?: string };
-    erDoed?: boolean;
-  };
-  enhet?: {
-    navn?: string[];
-    organisasjonsnummer?: string;
-    erSlettet?: boolean;
-  };
-  sistEndret?: string;
-  fratraadt?: boolean;
-}
+import { ERRolesSortField, SortDirection } from "../models/mainContentTypes";
+import { ERRole } from "../../../models/models";
+import { sortERRoles } from "../utils/contactUtils";
 
 interface ERRolesTableProps {
-  sortedERRoles: ERRolle[];
-  erRoleSortField: string;
-  erRoleSortDirection: "asc" | "desc";
-  handleERRoleSort: (field: string) => void;
+  rolesInfo: ERRole[];
 }
 
-const ERRolesTable: React.FC<ERRolesTableProps> = ({
-  sortedERRoles,
-  erRoleSortField,
-  erRoleSortDirection,
-  handleERRoleSort,
-}) => {
+const ERRolesTable: React.FC<ERRolesTableProps> = ({ rolesInfo }) => {
+  const [erRoleSortField, setERRoleSortField] =
+    useState<ERRolesSortField>(null);
+  const [erRoleSortDirection, setERRoleSortDirection] =
+    useState<SortDirection>(undefined);
+
+  const handleERRoleSort = (field: ERRolesSortField) => {
+    if (field === erRoleSortField) {
+      if (erRoleSortDirection === "asc") {
+        setERRoleSortDirection("desc");
+      } else if (erRoleSortDirection === "desc") {
+        setERRoleSortField(null);
+        setERRoleSortDirection(undefined);
+      } else {
+        setERRoleSortDirection("asc");
+      }
+    } else {
+      setERRoleSortField(field);
+      setERRoleSortDirection("asc");
+    }
+  };
+
+  const flatERRoles =
+    rolesInfo
+      ?.flatMap((roleGroup) =>
+        roleGroup?.roller?.map((role) => ({
+          ...role,
+          sistEndret: roleGroup.sistEndret,
+          // Use the role's own type instead of the group type
+          type: role.type || roleGroup.type,
+          enhet: role.enhet,
+          person: role.person,
+          fratraadt: role.fratraadt,
+          // Store the group type for reference if needed
+          groupType: roleGroup.type,
+        })),
+      )
+      .filter(Boolean) || [];
+  const sortedERRoles = sortERRoles(
+    flatERRoles,
+    erRoleSortField,
+    erRoleSortDirection,
+  );
+
   return (
     <TableContainer component={Paper} sx={{ mb: 2 }}>
       <MuiTable>

@@ -52,7 +52,6 @@ export const DashboardPage: React.FC = () => {
             marginTop: "1rem",
           }}
         >
-          {/* Sidebar: Organization list */}
           {showOrgList && (
             <div style={{ flex: "1 1 35%", maxWidth: "35%" }}>
               <OrganizationList
@@ -71,7 +70,6 @@ export const DashboardPage: React.FC = () => {
 
           <div style={{ flex: "1 1 65%", maxWidth: "65%" }}>
             <DetailedOrgView
-              baseUrl={getBaseUrl(environment)}
               isLoading={isLoading}
               organizations={organizations}
               subUnits={subUnits}

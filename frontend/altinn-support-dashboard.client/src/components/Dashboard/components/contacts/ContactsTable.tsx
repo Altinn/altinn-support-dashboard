@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Typography,
   TableContainer,
@@ -10,29 +10,52 @@ import {
   TableBody,
   Button,
 } from "@mui/material";
-import { PersonalContact } from "../../models/mainContentTypes";
+import { PersonalContact, SortDirection } from "../../models/mainContentTypes";
+import { filterContacts, sortContacts } from "../../utils/contactUtils";
 
 interface ContactsTableProps {
-  sortedContacts: PersonalContact[];
-  sortField: string;
-  sortDirection: "asc" | "desc";
+  moreInfo: PersonalContact[];
   searchQuery: string;
   selectedOrg: { OrganizationNumber: string };
-  handleSort: (field: string) => void;
   handleViewRoles: (ssn: string, orgNumber: string) => void;
   setSelectedContact: (personalContact: PersonalContact) => void;
 }
 
-export const ContactsTable: React.FC<ContactsTableProps> = ({
-  sortedContacts,
-  sortField,
-  sortDirection,
+const ContactsTable: React.FC<ContactsTableProps> = ({
   searchQuery,
+  moreInfo,
   selectedOrg,
-  handleSort,
   handleViewRoles,
   setSelectedContact,
 }) => {
+  const [sortField, setSortField] = useState<keyof PersonalContact | null>(
+    null,
+  );
+
+  const filteredContacts = filterContacts(moreInfo || [], searchQuery);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(undefined);
+  const sortedContacts = sortContacts(
+    filteredContacts,
+    sortField,
+    sortDirection,
+  );
+
+  const handleSort = (field: keyof PersonalContact) => {
+    if (field === sortField) {
+      if (sortDirection === "asc") {
+        setSortDirection("desc");
+      } else if (sortDirection === "desc") {
+        setSortField(null);
+        setSortDirection(undefined);
+      } else {
+        setSortDirection("asc");
+      }
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
   return (
     <>
       <Typography variant="h6" gutterBottom>
@@ -127,3 +150,5 @@ export const ContactsTable: React.FC<ContactsTableProps> = ({
     </>
   );
 };
+
+export default ContactsTable;
