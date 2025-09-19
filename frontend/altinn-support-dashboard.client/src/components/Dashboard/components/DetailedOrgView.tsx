@@ -6,16 +6,16 @@ import {
   OfficialContact,
   SortDirection,
   PersonalContact,
-} from "./models/mainContentTypes";
-import authorizedFetch from "./hooks/useAuthorizedFetch";
+} from "../models/mainContentTypes";
+import authorizedFetch from "../hooks/useAuthorizedFetch";
 import {
   filterContacts,
   sortContacts,
   sortERRoles,
-} from "./utils/contactUtils";
-import { ERRolesSortField } from "./models/mainContentTypes";
-import { getBaseUrl } from "../../utils/utils";
-import { useAppStore } from "../../hooks/Appstore";
+} from "../utils/contactUtils";
+import { ERRolesSortField } from "../models/mainContentTypes";
+import { getBaseUrl } from "../../../utils/utils";
+import { useAppStore } from "../../../hooks/Appstore";
 import SearchContactsBar from "./contacts/ContactsSearchBar";
 import { ContactsTable } from "./contacts/ContactsTable";
 import OfficialContactFieldTable from "./contacts/NotificationContactTable";

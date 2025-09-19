@@ -1,7 +1,7 @@
 import React from "react";
 import { Alert, Typography, Skeleton } from "@mui/material";
 import { OrganizationCard } from "./OrganizationCard";
-import { Organization, Subunit } from "../../../models/models";
+import { Organization, Subunit } from "../../../../models/models";
 
 interface OrganizationListProps {
   organizations: Organization[];

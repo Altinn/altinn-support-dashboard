@@ -3,9 +3,9 @@ import SearchComponent from "../components/TopSearchBar/TopSearchBarComponent";
 import { useAppStore } from "../hooks/Appstore";
 import { useDarkMode, useOrganizationSearch } from "../hooks/hooks";
 import { getBaseUrl } from "../utils/utils";
-import { ErrorAlert } from "../components/Dashboard/ErrorAlert";
-import { OrganizationList } from "../components/Dashboard/organizations/OrganizationList";
-import DetailedOrgView from "../components/Dashboard/DetailedOrgView";
+import { ErrorAlert } from "../components/Dashboard/components/ErrorAlert";
+import DetailedOrgView from "../components/Dashboard/components/DetailedOrgView";
+import { OrganizationList } from "../components/Dashboard/components/organizations/OrganizationList";
 
 export const DashboardPage: React.FC = () => {
   const environment = useAppStore((state) => state.environment);

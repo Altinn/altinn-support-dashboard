@@ -9,7 +9,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { formatDate } from "./utils/dateUtils";
+import { formatDate } from "../utils/dateUtils";
 
 interface ERRolle {
   type?: { beskrivelse?: string };

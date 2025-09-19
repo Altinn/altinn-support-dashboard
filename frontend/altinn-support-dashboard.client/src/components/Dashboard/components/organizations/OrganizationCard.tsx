@@ -3,8 +3,8 @@ import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import {
   paperStyle,
   subunitPaperStyle,
-} from "../styles/OrganizationCard.styles";
-import { Organization, Subunit } from "../../../models/models";
+} from "../../styles/OrganizationCard.styles";
+import { Organization, Subunit } from "../../../../models/models";
 
 interface OrganizationCardProps {
   org: Organization;
