@@ -1,17 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Alert,
-  Typography,
-  Table as MuiTable,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Box,
-} from "@mui/material";
+import { Alert, Typography, Box } from "@mui/material";
 
 import {
   MainContentProps,
@@ -20,7 +8,6 @@ import {
   PersonalContact,
 } from "./models/mainContentTypes";
 import authorizedFetch from "./hooks/useAuthorizedFetch";
-import { formatDate } from "./utils/dateUtils";
 import {
   filterContacts,
   sortContacts,
@@ -33,6 +20,7 @@ import SearchContactsBar from "./ContactsSearchBar";
 import { ContactsTable } from "./ContactsTable";
 import OfficialContactFieldTable from "./NotificationContactTable";
 import ERRolesTable from "./ERRolesTable";
+import { RoleDetails } from "./RoleDetails";
 
 const MainContentComponent: React.FC<MainContentProps> = ({
   organizations,
@@ -193,6 +181,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
           <Typography variant="h4" gutterBottom>
             {selectedOrg.Name}
           </Typography>
+
           {!isRoleView ? (
             <>
               <SearchContactsBar
@@ -211,6 +200,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                 handleViewRoles={handleViewRoles}
                 setSelectedContact={setSelectedContact}
               />
+
               <Typography variant="h6" gutterBottom>
                 Varslingsadresser for virksomheten
               </Typography>
@@ -242,6 +232,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                   contacts={officialContacts}
                 />
               </Box>
+
               <Typography variant="h6" gutterBottom>
                 ER-roller
               </Typography>
@@ -251,6 +242,7 @@ const MainContentComponent: React.FC<MainContentProps> = ({
                 erRoleSortDirection={erRoleSortDirection}
                 handleERRoleSort={handleERRoleSort}
               />
+
               {officialContactsError && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                   {officialContactsError}
@@ -258,62 +250,15 @@ const MainContentComponent: React.FC<MainContentProps> = ({
               )}
             </>
           ) : (
-            <>
-              <Typography variant="h6" gutterBottom>
-                Roller knyttet til {selectedContact?.name}
-              </Typography>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  setIsRoleView(false);
-                  setShowOrgList(true);
-                }}
-                sx={{ mb: 2 }}
-              >
-                Tilbake til oversikt
-              </Button>
-              <TableContainer component={Paper} sx={{ mb: 2 }}>
-                <MuiTable>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <Typography variant="subtitle1">Rolletype</Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="subtitle1">Rollenavn</Typography>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {roleInfo && roleInfo.length > 0 ? (
-                      roleInfo.map((role, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{role.RoleType}</TableCell>
-                          <TableCell>{role.RoleName}</TableCell>
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={2}>
-                          <Typography
-                            variant="body2"
-                            color="textSecondary"
-                            align="center"
-                          >
-                            Ingen roller funnet
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </MuiTable>
-              </TableContainer>
-              {roleViewError && (
-                <Alert severity="error" sx={{ mt: 2 }}>
-                  {roleViewError}
-                </Alert>
-              )}
-            </>
+            <RoleDetails
+              selectedContactName={selectedContact?.name}
+              roleInfo={roleInfo}
+              roleViewError={roleViewError}
+              onBack={() => {
+                setIsRoleView(false);
+                setShowOrgList(true);
+              }}
+            />
           )}
         </div>
       )}
