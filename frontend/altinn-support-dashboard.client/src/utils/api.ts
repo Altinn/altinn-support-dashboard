@@ -1,3 +1,4 @@
+import { OfficialContact } from "../components/Dashboard/models/mainContentTypes";
 import { authorizedFetch, getBaseUrl } from "./utils";
 
 //this file defines which which api endpoints we want to fetch data from
@@ -35,6 +36,8 @@ export const fetchPersonalContacts = async (
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/serviceowner/organizations/${orgNumber}/personalcontacts`,
   );
+  console.log(res.json());
+  console.log("diwuaidwao");
   return res.json();
 };
 
@@ -44,4 +47,16 @@ export const fetchRoles = async (environment: string, orgNumber: string) => {
   );
   const data = await res.json();
   return data.rollegrupper ?? [];
+};
+
+export const fetchOfficialContacts = async (
+  environment: string,
+  orgNumber: string,
+): Promise<OfficialContact[]> => {
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/organizations/${orgNumber}/officialcontacts`,
+  );
+  const data = await res.json();
+  console.log(data);
+  return Array.isArray(data) ? data : [data];
 };

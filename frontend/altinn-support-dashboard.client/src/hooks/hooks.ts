@@ -15,6 +15,7 @@ import {
 import { useAppStore } from "./Appstore";
 import { useQuery } from "@tanstack/react-query";
 import {
+  fetchOfficialContacts,
   fetchOrganizations,
   fetchPersonalContacts,
   fetchRoles,
@@ -94,7 +95,8 @@ export function useOrgSearch(environment: string, query: string) {
   };
 }
 
-export function useOrgDetails(environment: string, orgNumber: string) {
+export function useOrgDetails(environment: string, orgNumber?: string) {
+  console.log(orgNumber);
   const contactsQuery = useQuery({
     queryKey: ["contacts", environment, orgNumber],
     queryFn: () => fetchPersonalContacts(environment, orgNumber!),
@@ -106,8 +108,13 @@ export function useOrgDetails(environment: string, orgNumber: string) {
     queryFn: () => fetchRoles(environment, orgNumber!),
     enabled: !!orgNumber,
   });
+  const officialContactsQuery = useQuery({
+    queryKey: ["officialContacts", environment, orgNumber],
+    queryFn: () => fetchOfficialContacts(environment, orgNumber!),
+    enabled: !!orgNumber,
+  });
 
-  return { contactsQuery, rolesQuery };
+  return { contactsQuery, rolesQuery, officialContactsQuery };
 }
 
 export const UseManualRoleSearch = () => {

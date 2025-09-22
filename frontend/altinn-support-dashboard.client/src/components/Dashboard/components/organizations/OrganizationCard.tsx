@@ -31,12 +31,17 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
     e.stopPropagation();
   };
 
+  const handleSelectedOrg = () => {
+    console.log(org.organizationNumber);
+    setSelectedOrg(org.organizationNumber);
+  };
+
   return (
     <div className="org-card-container">
       <Paper
         elevation={isSelected ? 6 : 2}
         sx={paperStyle(isSelected)}
-        onClick={() => setSelectedOrg(org.organizationNumber)}
+        onClick={() => handleSelectedOrg()}
       >
         <Typography variant="h6">{org.name}</Typography>
         <Typography variant="body2">

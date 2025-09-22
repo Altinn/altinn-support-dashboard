@@ -25,7 +25,30 @@ const DetailedOrgView: React.FC<MainContentProps> = ({ selectedOrg }) => {
   const [isRoleView, setIsRoleView] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const { officialContactsQuery } = useOrgDetails(
+    environment,
+    selectedOrg?.OrganizationNumber,
+  );
+
+  const baseUrl = getBaseUrl(environment);
+
+  const handleViewRoles = async (subject: string, reportee: string) => {
+    try {
+      const res = await authorizedFetch(
+        `${baseUrl}/serviceowner/${subject}/roles/${reportee}`,
+      );
+      const data = await res.json();
+      const parsedData = typeof data === "string" ? JSON.parse(data) : data;
+      setRoleInfo(parsedData);
+      setIsRoleView(true);
+    } catch (error) {
+      setRoleInfo([]);
+    }
+  };
+
   useEffect(() => {
+    console.log("dette");
+    console.log(selectedOrg?.OrganizationNumber);
     setSearchQuery("");
     setIsRoleView(false);
     setSelectedContact(null);
@@ -45,9 +68,7 @@ const DetailedOrgView: React.FC<MainContentProps> = ({ selectedOrg }) => {
           <Typography variant="subtitle1" gutterBottom>
             Org Nr: {selectedOrg.OrganizationNumber}
           </Typography>
-          <Typography variant="h4" gutterBottom>
-            {selectedOrg.Name}
-          </Typography>
+          <Typography variant="h4" gutterBottom></Typography>
 
           {!isRoleView ? (
             <>
@@ -72,14 +93,14 @@ const DetailedOrgView: React.FC<MainContentProps> = ({ selectedOrg }) => {
                   title="Mobilnummer"
                   field="MobileNumber"
                   changedField="MobileNumberChanged"
-                  contacts={officialContacts}
+                  contacts={officialContactsQuery.data}
                 />
 
                 <OfficialContactFieldTable
                   title="E-post"
                   field="EMailAddress"
                   changedField="EMailAddressChanged"
-                  contacts={officialContacts}
+                  contacts={officialContactsQuery.data}
                 />
               </Box>
 
