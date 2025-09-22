@@ -5,7 +5,6 @@ import { Box, Typography } from "@mui/material";
 type SearchComponentProps = {
   query: string;
   setQuery: (query: string) => void;
-  handleSearch: () => void;
 };
 
 const SearchComponent: React.FC<SearchComponentProps> = ({

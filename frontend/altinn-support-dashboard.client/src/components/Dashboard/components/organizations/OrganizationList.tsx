@@ -3,16 +3,15 @@ import { Alert, Typography, Skeleton } from "@mui/material";
 import { OrganizationCard } from "./OrganizationCard";
 import { useOrgSearch } from "../../../../hooks/hooks";
 import { useAppStore } from "../../../../hooks/Appstore";
+import { ErrorAlert } from "../ErrorAlert";
 
 interface OrganizationListProps {
-  hasSearched: boolean;
-  handleSelectOrg: (orgNumber: string, name: string) => void;
+  setSelectedOrg: (orgNumber: string) => void;
   query: string;
 }
 
 export const OrganizationList: React.FC<OrganizationListProps> = ({
-  hasSearched,
-  handleSelectOrg,
+  setSelectedOrg,
   query,
 }) => {
   const environment = useAppStore((state) => state.environment);
@@ -30,12 +29,17 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
     );
   }
 
-  if (organizations.length === 0) {
-    return hasSearched ? (
+  if (orgQuery.isError) {
+    const error = { message: orgQuery.error.message.toString() };
+    return <ErrorAlert error={error} />;
+  }
+
+  if (organizations.length <= 0 && query.length <= 0) {
+    return (
       <Alert severity="info" sx={{ mb: 2 }}>
         <Typography variant="h6">Ingen organisasjoner funnet</Typography>
       </Alert>
-    ) : null;
+    );
   }
 
   // Default case: render organizations
@@ -59,7 +63,7 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
             key={org.organizationNumber}
             org={org}
             subUnits={subUnits}
-            onSelectOrg={handleSelectOrg}
+            setSelectedOrg={setSelectedOrg}
           />
         ))}
     </div>

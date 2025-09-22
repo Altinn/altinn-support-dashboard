@@ -22,7 +22,6 @@ interface RoleDetailsProps {
 export const RoleDetails: React.FC<RoleDetailsProps> = ({
   selectedContactName,
   roleInfo,
-  roleViewError,
   onBack,
 }) => {
   return (

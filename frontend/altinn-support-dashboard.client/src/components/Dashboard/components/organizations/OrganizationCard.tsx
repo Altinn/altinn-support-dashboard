@@ -11,14 +11,14 @@ interface OrganizationCardProps {
   org: Organization;
   selectedOrg?: { OrganizationNumber: string } | null;
   subUnits: Subunit[];
-  onSelectOrg: (orgNumber: string, name: string) => void;
+  setSelectedOrg: (orgNumber: string) => void;
 }
 
 export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   org,
   selectedOrg,
   subUnits,
-  onSelectOrg,
+  setSelectedOrg,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const isSelected = selectedOrg?.OrganizationNumber === org.organizationNumber;
@@ -36,7 +36,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
       <Paper
         elevation={isSelected ? 6 : 2}
         sx={paperStyle(isSelected)}
-        onClick={() => onSelectOrg(org.organizationNumber, org.name)}
+        onClick={() => setSelectedOrg(org.organizationNumber)}
       >
         <Typography variant="h6">{org.name}</Typography>
         <Typography variant="body2">
@@ -74,7 +74,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                 sx={subunitPaperStyle(
                   selectedOrg?.OrganizationNumber === sub.organisasjonsnummer,
                 )}
-                onClick={() => onSelectOrg(sub.organisasjonsnummer, sub.navn)}
+                onClick={() => setSelectedOrg(sub.organisasjonsnummer)}
               >
                 <Typography variant="subtitle1">{sub.navn}</Typography>
                 <Typography variant="body2">

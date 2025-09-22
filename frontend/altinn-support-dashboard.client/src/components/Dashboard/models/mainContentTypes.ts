@@ -3,8 +3,6 @@ export type { PersonalContact };
 
 export interface MainContentProps {
   selectedOrg: { Name: string; OrganizationNumber: string } | null;
-  moreInfo: PersonalContact[];
-  rolesInfo: ERRole[];
 }
 
 export interface OfficialContact {
