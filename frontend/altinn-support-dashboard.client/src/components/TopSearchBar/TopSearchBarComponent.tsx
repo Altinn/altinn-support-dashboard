@@ -12,9 +12,9 @@ type SearchComponentProps = {
 };
 
 const SearchComponent: React.FC<SearchComponentProps> = ({
-    query,
-    setQuery,
-    handleSearch
+  query,
+  setQuery,
+  handleSearch,
 }) => (
     <Box sx={{ mb: 3 }}>
         <Typography variant="h6" gutterBottom>

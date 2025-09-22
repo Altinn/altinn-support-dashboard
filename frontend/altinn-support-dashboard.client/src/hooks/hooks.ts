@@ -27,7 +27,7 @@ export function useEnvironment() {
   const toggleEnvDropdown = () => setIsEnvDropdownOpen((prev) => !prev);
   const handleEnvChange = (env: string) => {
     setIsEnvDropdownOpen(false);
-    useAppStore.getState().setEnvironment(env);
+    useAppStore((state) => state.setEnvironment(env));
   };
   return { environment, isEnvDropdownOpen, toggleEnvDropdown, handleEnvChange };
 }
