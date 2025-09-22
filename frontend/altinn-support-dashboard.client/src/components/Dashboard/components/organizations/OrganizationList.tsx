@@ -1,22 +1,16 @@
 import React from "react";
 import { Alert, Typography, Skeleton } from "@mui/material";
 import { OrganizationCard } from "./OrganizationCard";
-import { Organization, Subunit } from "../../../../models/models";
 import { useOrgSearch } from "../../../../hooks/hooks";
 import { useAppStore } from "../../../../hooks/Appstore";
 
 interface OrganizationListProps {
-  organizations: Organization[];
-  subUnits: Subunit[];
-  showOrgList: boolean;
-  isLoading: boolean;
   hasSearched: boolean;
   handleSelectOrg: (orgNumber: string, name: string) => void;
   query: string;
 }
 
 export const OrganizationList: React.FC<OrganizationListProps> = ({
-  showOrgList,
   hasSearched,
   handleSelectOrg,
   query,
@@ -25,8 +19,6 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
   const { orgQuery, subunitQuery } = useOrgSearch(environment, query);
   const organizations = orgQuery.data ?? [];
   const subUnits = subunitQuery.data ?? [];
-
-  if (!showOrgList) return null;
 
   if (orgQuery.isLoading) {
     return (

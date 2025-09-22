@@ -12,20 +12,14 @@ export const DashboardPage: React.FC = () => {
   const {
     query,
     setQuery,
-    organizations,
-    subUnits,
     selectedOrg,
     moreInfo,
     rolesInfo,
     error,
-    isLoading,
     hasSearched,
     handleSearch,
     handleSelectOrg,
   } = useOrganizationSearch(environment);
-
-  // Local UI state
-  const [showOrgList] = useState<boolean>(true);
 
   return (
     <div>
@@ -45,19 +39,13 @@ export const DashboardPage: React.FC = () => {
             marginTop: "1rem",
           }}
         >
-          {showOrgList && (
-            <div style={{ flex: "1 1 35%", maxWidth: "35%" }}>
-              <OrganizationList
-                organizations={organizations}
-                subUnits={subUnits}
-                showOrgList={showOrgList}
-                isLoading={isLoading}
-                hasSearched={hasSearched}
-                handleSelectOrg={handleSelectOrg}
-                query={query}
-              />
-            </div>
-          )}
+          <div style={{ flex: "1 1 35%", maxWidth: "35%" }}>
+            <OrganizationList
+              hasSearched={hasSearched}
+              handleSelectOrg={handleSelectOrg}
+              query={query}
+            />
+          </div>
 
           <div style={{ flex: "1 1 65%", maxWidth: "65%" }}>
             <DetailedOrgView
