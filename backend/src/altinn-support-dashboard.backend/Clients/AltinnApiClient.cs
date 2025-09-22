@@ -3,6 +3,7 @@ using altinn_support_dashboard.Server.Models;
 using Altinn.ApiClients.Maskinporten.Factories;
 using Altinn.ApiClients.Maskinporten.Services;
 using Microsoft.Extensions.Options;
+using System.Text.Json;
 
 public class AltinnApiClient
 {
@@ -66,7 +67,9 @@ public class AltinnApiClient
             var response = await client.GetAsync(requestUrl);
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadAsStringAsync();
+                var unsortedResponse = await response.Content.ReadAsStringAsync();
+                var sortedOrganizations = JsonSerializer.Deserialize<List<Organization>>(unsortedResponse)?.OrderBy(o => o.Name).ToList();
+                return JsonSerializer.Serialize(sortedOrganizations);
             }
             else
             {
@@ -92,7 +95,10 @@ public class AltinnApiClient
             var response = await client.GetAsync(requestUrl);
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadAsStringAsync();
+
+                var unsortedResponse = await response.Content.ReadAsStringAsync();
+                var sortedOrganizations = JsonSerializer.Deserialize<List<Organization>>(unsortedResponse)?.OrderBy(o => o.Name).ToList();
+                return JsonSerializer.Serialize(sortedOrganizations);
             }
             else
             {
