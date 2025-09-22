@@ -39,7 +39,6 @@ export const DashboardPage: React.FC = () => {
         query={query}
         setQuery={setQuery}
         handleSearch={handleSearch}
-        isDarkMode={isDarkMode}
       />
 
       {error?.message ? (
