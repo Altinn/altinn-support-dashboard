@@ -46,7 +46,7 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
 
   // Default case: render organizations
   return (
-    <div className={`org-list`}>
+    <div className={`org-list`} style={{ overflowY: "auto", maxHeight: "80vh" }}>
       {organizations
         .filter((org) => {
           // filter out subunits if parent is already included
