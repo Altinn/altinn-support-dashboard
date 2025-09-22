@@ -5,28 +5,31 @@ import {
   subunitPaperStyle,
 } from "../../styles/OrganizationCard.styles";
 import { Organization, Subunit } from "../../../../models/models";
+import { useState } from "react";
 
 interface OrganizationCardProps {
   org: Organization;
   selectedOrg?: { OrganizationNumber: string } | null;
   subUnits: Subunit[];
-  expandedOrg: string | null;
   onSelectOrg: (orgNumber: string, name: string) => void;
-  onExpandToggle: (orgNumber: string) => void;
 }
 
 export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   org,
   selectedOrg,
   subUnits,
-  expandedOrg,
   onSelectOrg,
-  onExpandToggle,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const isSelected = selectedOrg?.OrganizationNumber === org.organizationNumber;
   const hasSubUnits = subUnits.some(
     (sub) => sub.overordnetEnhet === org.organizationNumber,
   );
+
+  const handleExpanded = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setIsExpanded(!isExpanded);
+    e.stopPropagation();
+  };
 
   return (
     <div className="org-card-container">
@@ -47,21 +50,16 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
             size="small"
             sx={{ mt: 1 }}
             onClick={(e) => {
-              e.stopPropagation();
-              onExpandToggle(org.organizationNumber);
+              handleExpanded(e);
             }}
           >
-            {expandedOrg === org.organizationNumber ? (
-              <ExpandLess />
-            ) : (
-              <ExpandMore />
-            )}
+            {isExpanded ? <ExpandLess /> : <ExpandMore />}
           </Button>
         )}
       </Paper>
 
       {/* Subunits list */}
-      {expandedOrg === org.organizationNumber && (
+      {isExpanded && (
         <div className="subunits">
           {subUnits
             .filter((sub) => sub.overordnetEnhet === org.organizationNumber)

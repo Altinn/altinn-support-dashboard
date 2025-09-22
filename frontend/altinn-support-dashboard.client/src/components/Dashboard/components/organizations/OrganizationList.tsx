@@ -8,20 +8,16 @@ import { useAppStore } from "../../../../hooks/Appstore";
 interface OrganizationListProps {
   organizations: Organization[];
   subUnits: Subunit[];
-  expandedOrg: string | null;
   showOrgList: boolean;
   isLoading: boolean;
   hasSearched: boolean;
-  handleExpandToggle: (orgNumber: string) => void;
   handleSelectOrg: (orgNumber: string, name: string) => void;
   query: string;
 }
 
 export const OrganizationList: React.FC<OrganizationListProps> = ({
-  expandedOrg,
   showOrgList,
   hasSearched,
-  handleExpandToggle,
   handleSelectOrg,
   query,
 }) => {
@@ -71,8 +67,6 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
             key={org.organizationNumber}
             org={org}
             subUnits={subUnits}
-            expandedOrg={expandedOrg}
-            onExpandToggle={handleExpandToggle}
             onSelectOrg={handleSelectOrg}
           />
         ))}

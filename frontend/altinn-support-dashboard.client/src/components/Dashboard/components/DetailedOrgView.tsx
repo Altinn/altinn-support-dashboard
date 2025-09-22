@@ -17,7 +17,6 @@ import { officialContactsBoxStyle } from "../styles/DetailedOrgView.styles";
 import ContactsTable from "./contacts/ContactsTable";
 
 const DetailedOrgView: React.FC<MainContentProps> = ({
-  organizations,
   selectedOrg,
   moreInfo,
   rolesInfo,
@@ -58,16 +57,12 @@ const DetailedOrgView: React.FC<MainContentProps> = ({
 
   useEffect(() => {
     setSearchQuery("");
-  }, [selectedOrg]);
-
-  // Reset role view when new search results come in
-  useEffect(() => {
     setIsRoleView(false);
     setShowOrgList(true);
     setSelectedContact(null);
     setRoleInfo([]);
     setRoleViewError(null);
-  }, [organizations]);
+  }, [selectedOrg]);
 
   useEffect(() => {
     const fetchOfficialContacts = async () => {
