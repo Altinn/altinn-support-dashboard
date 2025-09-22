@@ -2,6 +2,8 @@ import React from "react";
 import { Alert, Typography, Skeleton } from "@mui/material";
 import { OrganizationCard } from "./OrganizationCard";
 import { Organization, Subunit } from "../../../../models/models";
+import { useOrgSearch } from "../../../../hooks/hooks";
+import { useAppStore } from "../../../../hooks/Appstore";
 
 interface OrganizationListProps {
   organizations: Organization[];
@@ -12,21 +14,25 @@ interface OrganizationListProps {
   hasSearched: boolean;
   handleExpandToggle: (orgNumber: string) => void;
   handleSelectOrg: (orgNumber: string, name: string) => void;
+  query: string;
 }
 
 export const OrganizationList: React.FC<OrganizationListProps> = ({
-  organizations,
-  subUnits,
   expandedOrg,
   showOrgList,
-  isLoading,
   hasSearched,
   handleExpandToggle,
   handleSelectOrg,
+  query,
 }) => {
+  const environment = useAppStore((state) => state.environment);
+  const { orgQuery, subunitQuery } = useOrgSearch(environment, query);
+  const organizations = orgQuery.data ?? [];
+  const subUnits = subunitQuery.data ?? [];
+
   if (!showOrgList) return null;
 
-  if (isLoading) {
+  if (orgQuery.isLoading) {
     return (
       <div role="progressbar">
         <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />

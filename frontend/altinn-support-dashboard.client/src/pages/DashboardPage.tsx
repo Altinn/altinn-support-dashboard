@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import SearchComponent from "../components/TopSearchBar/TopSearchBarComponent";
 import { useAppStore } from "../hooks/Appstore";
-import { useDarkMode, useOrganizationSearch } from "../hooks/hooks";
-import { getBaseUrl } from "../utils/utils";
+import {
+  useDarkMode,
+  useOrganizationSearch,
+  useOrgSearch,
+} from "../hooks/hooks";
 import { ErrorAlert } from "../components/Dashboard/components/ErrorAlert";
 import DetailedOrgView from "../components/Dashboard/components/DetailedOrgView";
 import { OrganizationList } from "../components/Dashboard/components/organizations/OrganizationList";
@@ -10,6 +13,7 @@ import { OrganizationList } from "../components/Dashboard/components/organizatio
 export const DashboardPage: React.FC = () => {
   const environment = useAppStore((state) => state.environment);
   const { isDarkMode } = useDarkMode();
+  const [newQuery, setNewQuery] = useState("");
 
   const {
     query,
@@ -31,7 +35,6 @@ export const DashboardPage: React.FC = () => {
 
   // Local UI state
   const [showOrgList] = useState<boolean>(true);
-  const [isRoleView] = useState<boolean>(false);
 
   return (
     <div>
@@ -62,6 +65,7 @@ export const DashboardPage: React.FC = () => {
                 hasSearched={hasSearched}
                 handleExpandToggle={handleExpandToggle}
                 handleSelectOrg={handleSelectOrg}
+                query={query}
               />
             </div>
           )}

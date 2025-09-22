@@ -57,6 +57,55 @@ export function useCurrentDateTime() {
   return { currentDateTime, formattedTime, formattedDate };
 }
 
+import { useQuery } from "@tanstack/react-query";
+import { fetchOrganizations, fetchSubunits } from "../utils/api";
+
+export function useOrgSearch(environment: string, query: string) {
+  const orgQuery = useQuery({
+    queryKey: ["organizations", environment, query],
+    queryFn: () => fetchOrganizations(environment, query),
+    enabled: !!query, // only run when query is non-empty
+  });
+
+  const subunitQuery = useQuery({
+    queryKey: ["subunits", environment, query],
+    queryFn: async () => {
+      if (!orgQuery.data) return [];
+      const mainUnits = orgQuery.data.filter(
+        (org) => org.type !== "BEDR" && org.type !== "AAFY",
+      );
+      const all = await Promise.all(
+        mainUnits.map((org) =>
+          fetchSubunits(environment, org.organizationNumber),
+        ),
+      );
+      return all.flat();
+    },
+    enabled: !!orgQuery.data, // wait until organizations are fetched
+  });
+
+  return {
+    orgQuery,
+    subunitQuery,
+  };
+}
+
+export function useOrgDetails(environment: string, orgNumber?: string) {
+  const contactsQuery = useQuery({
+    queryKey: ["contacts", environment, orgNumber],
+    queryFn: () => fetchPersonalContacts(environment, orgNumber!),
+    enabled: !!orgNumber,
+  });
+
+  const rolesQuery = useQuery({
+    queryKey: ["roles", environment, orgNumber],
+    queryFn: () => fetchRoles(environment, orgNumber!),
+    enabled: !!orgNumber,
+  });
+
+  return { contactsQuery, rolesQuery };
+}
+
 export function useOrganizationSearch(environment: string) {
   const [query, setQuery] = useState("");
   const [organizations, setOrganizations] = useState<Organization[]>([]);
