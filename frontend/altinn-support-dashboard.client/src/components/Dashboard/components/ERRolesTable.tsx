@@ -63,7 +63,7 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ rolesInfo }) => {
   );
 
   return (
-    <TableContainer component={Paper} sx={{ mb: 2 }}>
+    <TableContainer component={Paper} sx={{ mb: 2, pb: 4 }}>
       <MuiTable>
         <TableHead>
           <TableRow>
