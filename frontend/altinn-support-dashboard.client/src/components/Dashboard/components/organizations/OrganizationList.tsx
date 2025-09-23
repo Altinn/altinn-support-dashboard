@@ -35,7 +35,7 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
     return <ErrorAlert error={error} />;
   }
 
-  if (organizations.length <= 0 && query.length <= 0) {
+  if (organizations.length <= 0 && query.length > 0) {
     return (
       <Alert severity="info" sx={{ mb: 2 }}>
         <Typography variant="h6">Ingen organisasjoner funnet</Typography>

@@ -70,6 +70,5 @@ export const fetchRoles = async (
   );
   const data = await res.json();
 
-  // Sometimes backend sends a stringified JSON, so parse if needed
   return typeof data === "string" ? JSON.parse(data) : data;
 };

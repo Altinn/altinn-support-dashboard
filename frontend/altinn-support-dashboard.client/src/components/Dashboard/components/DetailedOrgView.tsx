@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Typography, Box } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 
 import { PersonalContact } from "../models/mainContentTypes";
-import authorizedFetch from "../hooks/useAuthorizedFetch";
-import { getBaseUrl } from "../../../utils/utils";
 import { useAppStore } from "../../../hooks/Appstore";
 import OfficialContactFieldTable from "./contacts/NotificationContactTable";
 import ERRolesTable from "./ERRolesTable";
@@ -29,18 +27,15 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
     environment,
     selectedOrg?.OrganizationNumber,
   );
-
-  useEffect(() => {
-    setSearchQuery("");
-    setIsRoleView(false);
-    setSelectedContact(null);
-  }, [selectedOrg]);
-
   const handleClearSearch = () => {
     setSearchQuery("");
     setSelectedContact(null);
     setIsRoleView(false);
   };
+
+  useEffect(() => {
+    handleClearSearch();
+  }, [selectedOrg]);
 
   useEffect(() => {
     if (selectedContact != null) {
