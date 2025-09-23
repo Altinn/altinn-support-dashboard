@@ -27,9 +27,7 @@ export async function authorizedFetch(
     Authorization: `Basic ${token}`,
     "Content-Type": "application/json",
   };
-  console.log(url);
   const response = await fetch(url, { ...options, headers });
-  console.log(response);
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`${response.statusText}: ${errorText}`);

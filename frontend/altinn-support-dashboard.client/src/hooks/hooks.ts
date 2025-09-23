@@ -98,7 +98,6 @@ export function useOrgSearch(environment: string, query: string) {
 }
 
 export function useOrgDetails(environment: string, orgNumber?: string) {
-  console.log(orgNumber);
   const contactsQuery: UseQueryResult<PersonalContact[], Error> = useQuery({
     queryKey: ["contacts", environment, orgNumber],
     queryFn: () => fetchPersonalContacts(environment, orgNumber!),
