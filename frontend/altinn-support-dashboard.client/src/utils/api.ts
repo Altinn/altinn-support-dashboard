@@ -42,11 +42,13 @@ export const fetchPersonalContacts = async (
 };
 
 export const fetchERoles = async (environment: string, orgNumber: string) => {
+  console.log(`${getBaseUrl(environment)}/brreg/${orgNumber}`);
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/brreg/${orgNumber}`,
   );
   const data = await res.json();
-  return Array.isArray(data) ? data : [data];
+  console.log(data);
+  return data.rollegrupper;
 };
 
 export const fetchOfficialContacts = async (

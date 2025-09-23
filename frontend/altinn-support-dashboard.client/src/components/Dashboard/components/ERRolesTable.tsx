@@ -11,15 +11,22 @@ import {
 } from "@mui/material";
 import { formatDate } from "../utils/dateUtils";
 import { ERRolesSortField, SortDirection } from "../models/mainContentTypes";
-import { ERRole } from "../../../models/models";
 import { sortERRoles } from "../utils/contactUtils";
 import { useOrgDetails } from "../../../hooks/hooks";
 import { useAppStore } from "../../../hooks/Appstore";
+import { SelectedOrg } from "../../../models/models";
 
-const ERRolesTable: React.FC = () => {
+interface ERRolesTableProps {
+  selectedOrg: SelectedOrg;
+}
+
+const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
   const environment = useAppStore((state) => state.environment);
-  const { ERolesQuery } = useOrgDetails(environment);
-  const roles: ERRole[] = ERolesQuery.data;
+  const { ERolesQuery } = useOrgDetails(
+    environment,
+    selectedOrg.OrganizationNumber,
+  );
+  const roles = ERolesQuery.data;
 
   const [erRoleSortField, setERRoleSortField] =
     useState<ERRolesSortField>(null);
