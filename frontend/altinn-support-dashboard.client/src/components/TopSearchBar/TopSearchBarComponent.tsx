@@ -1,31 +1,22 @@
-import React from 'react';
-import { TopSearchBarTextField } from './TopSearchBarTextField';
-import { 
-    Box, 
-    Typography 
-} from '@mui/material';
+import React from "react";
+import { TopSearchBarTextField } from "./TopSearchBarTextField";
+import { Box, Typography } from "@mui/material";
 
 type SearchComponentProps = {
-    query: string;
-    setQuery: (query: string) => void;
-    handleSearch: () => void;
+  query: string;
+  setQuery: (query: string) => void;
 };
 
 const SearchComponent: React.FC<SearchComponentProps> = ({
   query,
   setQuery,
-  handleSearch,
 }) => (
-    <Box sx={{ mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-            Søk etter Organisasjoner
-        </Typography>
-        <TopSearchBarTextField 
-            query={query} 
-            setQuery={setQuery} 
-            handleSearch={handleSearch}
-        />
-    </Box>
+  <Box sx={{ mb: 3 }}>
+    <Typography variant="h6" gutterBottom>
+      Søk etter Organisasjoner
+    </Typography>
+    <TopSearchBarTextField query={query} setQuery={setQuery} />
+  </Box>
 );
 
 export default SearchComponent;

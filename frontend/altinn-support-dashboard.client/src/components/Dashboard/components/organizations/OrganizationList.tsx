@@ -1,32 +1,26 @@
 import React from "react";
 import { Alert, Typography, Skeleton } from "@mui/material";
 import { OrganizationCard } from "./OrganizationCard";
-import { Organization, Subunit } from "../../../../models/models";
+import { useOrgSearch } from "../../../../hooks/hooks";
+import { useAppStore } from "../../../../hooks/Appstore";
+import { ErrorAlert } from "../ErrorAlert";
+import { Organization, SelectedOrg } from "../../../../models/models";
 
 interface OrganizationListProps {
-  organizations: Organization[];
-  subUnits: Subunit[];
-  expandedOrg: string | null;
-  showOrgList: boolean;
-  isLoading: boolean;
-  hasSearched: boolean;
-  handleExpandToggle: (orgNumber: string) => void;
-  handleSelectOrg: (orgNumber: string, name: string) => void;
+  setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
+  query: string;
 }
 
 export const OrganizationList: React.FC<OrganizationListProps> = ({
-  organizations,
-  subUnits,
-  expandedOrg,
-  showOrgList,
-  isLoading,
-  hasSearched,
-  handleExpandToggle,
-  handleSelectOrg,
+  setSelectedOrg,
+  query,
 }) => {
-  if (!showOrgList) return null;
+  const environment = useAppStore((state) => state.environment);
+  const { orgQuery, subunitQuery } = useOrgSearch(environment, query);
+  const organizations = orgQuery.data ?? [];
+  const subUnits = subunitQuery.data ?? [];
 
-  if (isLoading) {
+  if (orgQuery.isLoading) {
     return (
       <div role="progressbar">
         <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
@@ -36,12 +30,17 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
     );
   }
 
-  if (organizations.length === 0) {
-    return hasSearched ? (
+  if (orgQuery.isError) {
+    const error = { message: orgQuery.error.message.toString() };
+    return <ErrorAlert error={error} />;
+  }
+
+  if (organizations.length <= 0 && query.length > 0) {
+    return (
       <Alert severity="info" sx={{ mb: 2 }}>
         <Typography variant="h6">Ingen organisasjoner funnet</Typography>
       </Alert>
-    ) : null;
+    );
   }
 
   // Default case: render organizations
@@ -65,9 +64,7 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
             key={org.organizationNumber}
             org={org}
             subUnits={subUnits}
-            expandedOrg={expandedOrg}
-            onExpandToggle={handleExpandToggle}
-            onSelectOrg={handleSelectOrg}
+            setSelectedOrg={setSelectedOrg}
           />
         ))}
     </div>

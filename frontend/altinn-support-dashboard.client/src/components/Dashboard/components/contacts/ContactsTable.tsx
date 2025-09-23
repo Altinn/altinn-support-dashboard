@@ -12,27 +12,35 @@ import {
 } from "@mui/material";
 import { PersonalContact, SortDirection } from "../../models/mainContentTypes";
 import { filterContacts, sortContacts } from "../../utils/contactUtils";
+import { useOrgDetails } from "../../../../hooks/hooks";
+import { useAppStore } from "../../../../hooks/Appstore";
+import { SelectedOrg } from "../../../../models/models";
 
 interface ContactsTableProps {
-  moreInfo: PersonalContact[];
   searchQuery: string;
-  selectedOrg: { OrganizationNumber: string };
-  handleViewRoles: (ssn: string, orgNumber: string) => void;
+  selectedOrg: SelectedOrg;
   setSelectedContact: (personalContact: PersonalContact) => void;
 }
 
 const ContactsTable: React.FC<ContactsTableProps> = ({
   searchQuery,
-  moreInfo,
   selectedOrg,
-  handleViewRoles,
   setSelectedContact,
 }) => {
   const [sortField, setSortField] = useState<keyof PersonalContact | null>(
     null,
   );
 
-  const filteredContacts = filterContacts(moreInfo || [], searchQuery);
+  const environment = useAppStore((state) => state.environment);
+  const { contactsQuery } = useOrgDetails(
+    environment,
+    selectedOrg?.OrganizationNumber,
+  );
+
+  const filteredContacts = filterContacts(
+    contactsQuery.data || [],
+    searchQuery,
+  );
   const [sortDirection, setSortDirection] = useState<SortDirection>(undefined);
   const sortedContacts = sortContacts(
     filteredContacts,
@@ -118,10 +126,6 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
                       size="small"
                       onClick={() => {
                         setSelectedContact(contact);
-                        handleViewRoles(
-                          contact.socialSecurityNumber,
-                          selectedOrg.OrganizationNumber,
-                        );
                       }}
                     >
                       Vis

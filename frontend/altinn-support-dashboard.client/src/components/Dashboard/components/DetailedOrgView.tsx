@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Typography, Box } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 
-import {
-  MainContentProps,
-  OfficialContact,
-  PersonalContact,
-} from "../models/mainContentTypes";
-import authorizedFetch from "../hooks/useAuthorizedFetch";
-import { getBaseUrl } from "../../../utils/utils";
+import { PersonalContact } from "../models/mainContentTypes";
 import { useAppStore } from "../../../hooks/Appstore";
 import OfficialContactFieldTable from "./contacts/NotificationContactTable";
 import ERRolesTable from "./ERRolesTable";
@@ -15,84 +9,39 @@ import { RoleDetails } from "./RoleDetails";
 import ContactsSearchBar from "./contacts/ContactsSearchBar";
 import { officialContactsBoxStyle } from "../styles/DetailedOrgView.styles";
 import ContactsTable from "./contacts/ContactsTable";
+import { useOrgDetails } from "../../../hooks/hooks";
+import { SelectedOrg } from "../../../models/models";
 
-const DetailedOrgView: React.FC<MainContentProps> = ({
-  organizations,
-  selectedOrg,
-  moreInfo,
-  rolesInfo,
-}) => {
+interface DetailedOrgViewProps {
+  selectedOrg: SelectedOrg;
+}
+
+const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
+  const environment = useAppStore((state) => state.environment);
   const [selectedContact, setSelectedContact] =
     useState<PersonalContact | null>(null);
-  const [roleInfo, setRoleInfo] = useState<any[]>([]);
   const [isRoleView, setIsRoleView] = useState(false);
-  const [showOrgList, setShowOrgList] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [roleViewError, setRoleViewError] = useState<string | null>(null);
-  const [officialContacts, setOfficialContacts] = useState<OfficialContact[]>(
-    [],
+
+  const { officialContactsQuery } = useOrgDetails(
+    environment,
+    selectedOrg?.OrganizationNumber,
   );
-  const [officialContactsError, setOfficialContactsError] = useState<
-    string | null
-  >(null);
-
-  const environment = useAppStore((state) => state.environment);
-  const baseUrl = getBaseUrl(environment);
-
-  const handleViewRoles = async (subject: string, reportee: string) => {
-    try {
-      const res = await authorizedFetch(
-        `${baseUrl}/serviceowner/${subject}/roles/${reportee}`,
-      );
-      const data = await res.json();
-      const parsedData = typeof data === "string" ? JSON.parse(data) : data;
-      setRoleInfo(parsedData);
-      setIsRoleView(true);
-      setShowOrgList(false);
-      setRoleViewError(null);
-    } catch (error) {
-      setRoleViewError("Roller kunne ikke hentes.");
-      setRoleInfo([]);
-    }
-  };
-
-  useEffect(() => {
-    setSearchQuery("");
-  }, [selectedOrg]);
-
-  // Reset role view when new search results come in
-  useEffect(() => {
-    setIsRoleView(false);
-    setShowOrgList(true);
-    setSelectedContact(null);
-    setRoleInfo([]);
-    setRoleViewError(null);
-  }, [organizations]);
-
-  useEffect(() => {
-    const fetchOfficialContacts = async () => {
-      if (!selectedOrg) return;
-      try {
-        const res = await authorizedFetch(
-          `${baseUrl}/serviceowner/organizations/${selectedOrg.OrganizationNumber}/officialcontacts`,
-        );
-        const data = await res.json();
-        setOfficialContacts(Array.isArray(data) ? data : [data]);
-        setOfficialContactsError(null);
-      } catch (error) {
-        setOfficialContactsError("Offisielle kontakter kunne ikke hentes.");
-        setOfficialContacts([]);
-      }
-    };
-    fetchOfficialContacts();
-  }, [selectedOrg, baseUrl]);
-
   const handleClearSearch = () => {
     setSearchQuery("");
     setSelectedContact(null);
     setIsRoleView(false);
-    setRoleViewError(null);
   };
+
+  useEffect(() => {
+    handleClearSearch();
+  }, [selectedOrg]);
+
+  useEffect(() => {
+    if (selectedContact != null) {
+      setIsRoleView(true);
+    }
+  }, [selectedContact]);
 
   return (
     <div className="results-section">
@@ -114,10 +63,8 @@ const DetailedOrgView: React.FC<MainContentProps> = ({
               />
 
               <ContactsTable
-                moreInfo={moreInfo}
                 searchQuery={searchQuery}
                 selectedOrg={selectedOrg}
-                handleViewRoles={handleViewRoles}
                 setSelectedContact={setSelectedContact}
               />
 
@@ -129,36 +76,29 @@ const DetailedOrgView: React.FC<MainContentProps> = ({
                   title="Mobilnummer"
                   field="MobileNumber"
                   changedField="MobileNumberChanged"
-                  contacts={officialContacts}
+                  contacts={officialContactsQuery.data}
                 />
 
                 <OfficialContactFieldTable
                   title="E-post"
                   field="EMailAddress"
                   changedField="EMailAddressChanged"
-                  contacts={officialContacts}
+                  contacts={officialContactsQuery.data}
                 />
               </Box>
 
               <Typography variant="h6" gutterBottom>
                 ER-roller
               </Typography>
-              <ERRolesTable rolesInfo={rolesInfo} />
-
-              {officialContactsError && (
-                <Alert severity="error" sx={{ mt: 2 }}>
-                  {officialContactsError}
-                </Alert>
-              )}
+              <ERRolesTable selectedOrg={selectedOrg} />
             </>
           ) : (
             <RoleDetails
-              selectedContactName={selectedContact?.name}
-              roleInfo={roleInfo}
-              roleViewError={roleViewError}
+              selectedContact={selectedContact}
+              organizationNumber={selectedOrg.OrganizationNumber}
               onBack={() => {
                 setIsRoleView(false);
-                setShowOrgList(true);
+                setSelectedContact(null);
               }}
             />
           )}

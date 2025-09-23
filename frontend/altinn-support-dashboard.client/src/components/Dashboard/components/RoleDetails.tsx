@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Alert,
   Button,
   Paper,
   Table as MuiTable,
@@ -11,27 +10,40 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useAppStore } from "../../../hooks/Appstore";
+import { useRoles } from "../../../hooks/hooks";
+import { PersonalContact } from "../models/mainContentTypes";
 
 interface RoleDetailsProps {
-  selectedContactName?: string;
-  roleInfo: { RoleType: string; RoleName: string }[];
-  roleViewError?: string | null;
+  selectedContact: PersonalContact;
+  organizationNumber: string;
   onBack: () => void;
 }
 
 export const RoleDetails: React.FC<RoleDetailsProps> = ({
-  selectedContactName,
-  roleInfo,
-  roleViewError,
+  selectedContact,
+  organizationNumber,
   onBack,
 }) => {
+  const environment = useAppStore((state) => state.environment);
+
+  const roleInfo = useRoles(
+    environment,
+    selectedContact.socialSecurityNumber,
+    organizationNumber,
+  ).data;
+
+  const handleBack = () => {
+    onBack();
+  };
+
   return (
     <div>
       <Typography variant="h6" gutterBottom>
-        Roller knyttet til {selectedContactName}
+        Roller knyttet til {selectedContact.name}
       </Typography>
 
-      <Button variant="outlined" onClick={onBack} sx={{ mb: 2 }}>
+      <Button variant="outlined" onClick={handleBack} sx={{ mb: 2 }}>
         Tilbake til oversikt
       </Button>
 
@@ -71,12 +83,6 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
           </TableBody>
         </MuiTable>
       </TableContainer>
-
-      {roleViewError && (
-        <Alert severity="error" sx={{ mt: 2 }}>
-          {roleViewError}
-        </Alert>
-      )}
     </div>
   );
 };
