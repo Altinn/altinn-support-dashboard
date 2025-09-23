@@ -27,7 +27,7 @@ export const TopSearchBarTextField: React.FC<Props> = ({ query, setQuery }) => {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            {query && (
+            {textFieldValue && (
               <IconButton onClick={() => setTextFieldValue("")} edge="end">
                 <ClearIcon />
               </IconButton>
