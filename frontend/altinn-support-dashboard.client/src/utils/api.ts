@@ -36,9 +36,9 @@ export const fetchPersonalContacts = async (
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/serviceowner/organizations/${orgNumber}/personalcontacts`,
   );
-  console.log(res.json());
-  console.log("diwuaidwao");
-  return res.json();
+  const data = await res.json();
+
+  return Array.isArray(data) ? data : [data];
 };
 
 export const fetchRoles = async (environment: string, orgNumber: string) => {

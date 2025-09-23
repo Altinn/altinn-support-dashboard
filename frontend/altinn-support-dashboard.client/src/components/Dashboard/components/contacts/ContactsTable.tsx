@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   TableContainer,
@@ -14,10 +14,11 @@ import { PersonalContact, SortDirection } from "../../models/mainContentTypes";
 import { filterContacts, sortContacts } from "../../utils/contactUtils";
 import { useOrgDetails } from "../../../../hooks/hooks";
 import { useAppStore } from "../../../../hooks/Appstore";
+import { SelectedOrg } from "../../../../models/models";
 
 interface ContactsTableProps {
   searchQuery: string;
-  selectedOrg: { OrganizationNumber: string };
+  selectedOrg: SelectedOrg;
   handleViewRoles: (ssn: string, orgNumber: string) => void;
   setSelectedContact: (personalContact: PersonalContact) => void;
 }
@@ -35,7 +36,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
   const environment = useAppStore((state) => state.environment);
   const { contactsQuery } = useOrgDetails(
     environment,
-    selectedOrg.OrganizationNumber,
+    selectedOrg?.OrganizationNumber,
   );
 
   const filteredContacts = filterContacts(

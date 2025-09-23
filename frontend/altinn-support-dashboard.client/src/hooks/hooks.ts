@@ -13,7 +13,7 @@ import {
   fetchUserDetails,
 } from "../utils/utils";
 import { useAppStore } from "./Appstore";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   fetchOfficialContacts,
   fetchOrganizations,
@@ -21,6 +21,7 @@ import {
   fetchRoles,
   fetchSubunits,
 } from "../utils/api";
+import { OfficialContact } from "../components/Dashboard/models/mainContentTypes";
 
 export function useDarkMode() {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
@@ -97,22 +98,23 @@ export function useOrgSearch(environment: string, query: string) {
 
 export function useOrgDetails(environment: string, orgNumber?: string) {
   console.log(orgNumber);
-  const contactsQuery = useQuery({
+  const contactsQuery: UseQueryResult<PersonalContact[], Error> = useQuery({
     queryKey: ["contacts", environment, orgNumber],
     queryFn: () => fetchPersonalContacts(environment, orgNumber!),
     enabled: !!orgNumber,
   });
 
-  const rolesQuery = useQuery({
+  const rolesQuery: UseQueryResult<ERRole[], Error> = useQuery({
     queryKey: ["roles", environment, orgNumber],
     queryFn: () => fetchRoles(environment, orgNumber!),
     enabled: !!orgNumber,
   });
-  const officialContactsQuery = useQuery({
-    queryKey: ["officialContacts", environment, orgNumber],
-    queryFn: () => fetchOfficialContacts(environment, orgNumber!),
-    enabled: !!orgNumber,
-  });
+  const officialContactsQuery: UseQueryResult<OfficialContact[], Error> =
+    useQuery({
+      queryKey: ["officialContacts", environment, orgNumber],
+      queryFn: () => fetchOfficialContacts(environment, orgNumber!),
+      enabled: !!orgNumber,
+    });
 
   return { contactsQuery, rolesQuery, officialContactsQuery };
 }

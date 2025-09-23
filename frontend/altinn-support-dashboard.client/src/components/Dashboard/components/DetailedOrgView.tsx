@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Alert, Typography, Box } from "@mui/material";
 
-import {
-  MainContentProps,
-  OfficialContact,
-  PersonalContact,
-} from "../models/mainContentTypes";
+import { PersonalContact } from "../models/mainContentTypes";
 import authorizedFetch from "../hooks/useAuthorizedFetch";
 import { getBaseUrl } from "../../../utils/utils";
 import { useAppStore } from "../../../hooks/Appstore";
@@ -16,8 +12,13 @@ import ContactsSearchBar from "./contacts/ContactsSearchBar";
 import { officialContactsBoxStyle } from "../styles/DetailedOrgView.styles";
 import ContactsTable from "./contacts/ContactsTable";
 import { useOrgDetails } from "../../../hooks/hooks";
+import { SelectedOrg } from "../../../models/models";
 
-const DetailedOrgView: React.FC<MainContentProps> = ({ selectedOrg }) => {
+interface DetailedOrgViewProps {
+  selectedOrg: SelectedOrg;
+}
+
+const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
   const environment = useAppStore((state) => state.environment);
   const [selectedContact, setSelectedContact] =
     useState<PersonalContact | null>(null);
@@ -47,7 +48,6 @@ const DetailedOrgView: React.FC<MainContentProps> = ({ selectedOrg }) => {
   };
 
   useEffect(() => {
-    console.log("dette");
     console.log(selectedOrg?.OrganizationNumber);
     setSearchQuery("");
     setIsRoleView(false);
@@ -68,7 +68,9 @@ const DetailedOrgView: React.FC<MainContentProps> = ({ selectedOrg }) => {
           <Typography variant="subtitle1" gutterBottom>
             Org Nr: {selectedOrg.OrganizationNumber}
           </Typography>
-          <Typography variant="h4" gutterBottom></Typography>
+          <Typography variant="h4" gutterBottom>
+            {selectedOrg.Name}
+          </Typography>
 
           {!isRoleView ? (
             <>

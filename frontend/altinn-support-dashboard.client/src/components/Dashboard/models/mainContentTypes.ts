@@ -1,10 +1,6 @@
 import type { PersonalContact, ERRole } from "../../../models/models";
 export type { PersonalContact };
 
-export interface MainContentProps {
-  selectedOrg: { Name: string; OrganizationNumber: string } | null;
-}
-
 export interface OfficialContact {
   MobileNumber: string;
   MobileNumberChanged: string;

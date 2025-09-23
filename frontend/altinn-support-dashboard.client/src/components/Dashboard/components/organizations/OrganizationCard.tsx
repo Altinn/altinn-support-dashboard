@@ -4,14 +4,14 @@ import {
   paperStyle,
   subunitPaperStyle,
 } from "../../styles/OrganizationCard.styles";
-import { Organization, Subunit } from "../../../../models/models";
+import { Organization, SelectedOrg, Subunit } from "../../../../models/models";
 import { useState } from "react";
 
 interface OrganizationCardProps {
   org: Organization;
   selectedOrg?: { OrganizationNumber: string } | null;
   subUnits: Subunit[];
-  setSelectedOrg: (orgNumber: string) => void;
+  setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
 }
 
 export const OrganizationCard: React.FC<OrganizationCardProps> = ({
@@ -32,8 +32,11 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   };
 
   const handleSelectedOrg = () => {
-    console.log(org.organizationNumber);
-    setSelectedOrg(org.organizationNumber);
+    const selectedOrg: SelectedOrg = {
+      Name: org.name,
+      OrganizationNumber: org.organizationNumber,
+    };
+    setSelectedOrg(selectedOrg);
   };
 
   return (
@@ -79,7 +82,12 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                 sx={subunitPaperStyle(
                   selectedOrg?.OrganizationNumber === sub.organisasjonsnummer,
                 )}
-                onClick={() => setSelectedOrg(sub.organisasjonsnummer)}
+                onClick={() =>
+                  setSelectedOrg({
+                    Name: sub.navn,
+                    OrganizationNumber: sub.organisasjonsnummer,
+                  })
+                }
               >
                 <Typography variant="subtitle1">{sub.navn}</Typography>
                 <Typography variant="body2">
