@@ -41,12 +41,12 @@ export const fetchPersonalContacts = async (
   return Array.isArray(data) ? data : [data];
 };
 
-export const fetchRoles = async (environment: string, orgNumber: string) => {
+export const fetchERoles = async (environment: string, orgNumber: string) => {
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/brreg/${orgNumber}`,
   );
   const data = await res.json();
-  return data.rollegrupper ?? [];
+  return Array.isArray(data) ? data : [data];
 };
 
 export const fetchOfficialContacts = async (
@@ -59,4 +59,18 @@ export const fetchOfficialContacts = async (
   const data = await res.json();
   console.log(data);
   return Array.isArray(data) ? data : [data];
+};
+
+export const fetchRoles = async (
+  environment: string,
+  subject: string,
+  reportee: string,
+) => {
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/${subject}/roles/${reportee}`,
+  );
+  const data = await res.json();
+
+  // Sometimes backend sends a stringified JSON, so parse if needed
+  return typeof data === "string" ? JSON.parse(data) : data;
 };

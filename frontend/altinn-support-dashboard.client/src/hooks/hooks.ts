@@ -15,6 +15,7 @@ import {
 import { useAppStore } from "./Appstore";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
+  fetchERoles,
   fetchOfficialContacts,
   fetchOrganizations,
   fetchPersonalContacts,
@@ -104,9 +105,9 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     enabled: !!orgNumber,
   });
 
-  const rolesQuery: UseQueryResult<ERRole[], Error> = useQuery({
+  const ERolesQuery: UseQueryResult<ERRole[], Error> = useQuery({
     queryKey: ["roles", environment, orgNumber],
-    queryFn: () => fetchRoles(environment, orgNumber!),
+    queryFn: () => fetchERoles(environment, orgNumber!),
     enabled: !!orgNumber,
   });
   const officialContactsQuery: UseQueryResult<OfficialContact[], Error> =
@@ -116,8 +117,22 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
       enabled: !!orgNumber,
     });
 
-  return { contactsQuery, rolesQuery, officialContactsQuery };
+  return { contactsQuery, ERolesQuery, officialContactsQuery };
 }
+
+export const useRoles = (
+  environment: string,
+  subject?: string,
+  reportee?: string,
+) => {
+  const rolesQuery: UseQueryResult<Role[], Error> = useQuery({
+    queryKey: ["roles", environment, subject, reportee],
+    queryFn: () => fetchRoles(environment, subject!, reportee!),
+    enabled: !!subject && !!reportee, // only run if both exist
+  });
+
+  return rolesQuery;
+};
 
 export const UseManualRoleSearch = () => {
   const [roles, setRoles] = useState<Role[]>([]);

@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import SearchComponent from "../components/TopSearchBar/TopSearchBarComponent";
 import DetailedOrgView from "../components/Dashboard/components/DetailedOrgView";
 import { OrganizationList } from "../components/Dashboard/components/organizations/OrganizationList";
+import { Organization, SelectedOrg } from "../models/models";
 
 export const DashboardPage: React.FC = () => {
   const [query, setQuery] = useState("");
-  const [selectedOrg, setSelectedOrg] = useState(null);
+  const [selectedOrg, setSelectedOrg] = useState<SelectedOrg | null>(null);
 
   return (
     <div>

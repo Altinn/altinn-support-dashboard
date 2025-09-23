@@ -19,14 +19,12 @@ import { SelectedOrg } from "../../../../models/models";
 interface ContactsTableProps {
   searchQuery: string;
   selectedOrg: SelectedOrg;
-  handleViewRoles: (ssn: string, orgNumber: string) => void;
   setSelectedContact: (personalContact: PersonalContact) => void;
 }
 
 const ContactsTable: React.FC<ContactsTableProps> = ({
   searchQuery,
   selectedOrg,
-  handleViewRoles,
   setSelectedContact,
 }) => {
   const [sortField, setSortField] = useState<keyof PersonalContact | null>(
@@ -128,10 +126,6 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
                       size="small"
                       onClick={() => {
                         setSelectedContact(contact);
-                        handleViewRoles(
-                          contact.socialSecurityNumber,
-                          selectedOrg.OrganizationNumber,
-                        );
                       }}
                     >
                       Vis

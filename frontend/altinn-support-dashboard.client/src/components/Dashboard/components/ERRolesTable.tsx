@@ -18,8 +18,8 @@ import { useAppStore } from "../../../hooks/Appstore";
 
 const ERRolesTable: React.FC = () => {
   const environment = useAppStore((state) => state.environment);
-  const { rolesQuery } = useOrgDetails(environment);
-  const roles: ERRole[] = rolesQuery.data;
+  const { ERolesQuery } = useOrgDetails(environment);
+  const roles: ERRole[] = ERolesQuery.data;
 
   const [erRoleSortField, setERRoleSortField] =
     useState<ERRolesSortField>(null);

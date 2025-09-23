@@ -4,9 +4,10 @@ import { OrganizationCard } from "./OrganizationCard";
 import { useOrgSearch } from "../../../../hooks/hooks";
 import { useAppStore } from "../../../../hooks/Appstore";
 import { ErrorAlert } from "../ErrorAlert";
+import { Organization, SelectedOrg } from "../../../../models/models";
 
 interface OrganizationListProps {
-  setSelectedOrg: (orgNumber: string) => void;
+  setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
   query: string;
 }
 

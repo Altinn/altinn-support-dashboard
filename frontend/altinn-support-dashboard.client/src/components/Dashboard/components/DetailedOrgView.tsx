@@ -22,7 +22,6 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
   const environment = useAppStore((state) => state.environment);
   const [selectedContact, setSelectedContact] =
     useState<PersonalContact | null>(null);
-  const [roleInfo, setRoleInfo] = useState<any[]>([]);
   const [isRoleView, setIsRoleView] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -31,28 +30,10 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
     selectedOrg?.OrganizationNumber,
   );
 
-  const baseUrl = getBaseUrl(environment);
-
-  const handleViewRoles = async (subject: string, reportee: string) => {
-    try {
-      const res = await authorizedFetch(
-        `${baseUrl}/serviceowner/${subject}/roles/${reportee}`,
-      );
-      const data = await res.json();
-      const parsedData = typeof data === "string" ? JSON.parse(data) : data;
-      setRoleInfo(parsedData);
-      setIsRoleView(true);
-    } catch (error) {
-      setRoleInfo([]);
-    }
-  };
-
   useEffect(() => {
-    console.log(selectedOrg?.OrganizationNumber);
     setSearchQuery("");
     setIsRoleView(false);
     setSelectedContact(null);
-    setRoleInfo([]);
   }, [selectedOrg]);
 
   const handleClearSearch = () => {
@@ -60,6 +41,12 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
     setSelectedContact(null);
     setIsRoleView(false);
   };
+
+  useEffect(() => {
+    if (selectedContact != null) {
+      setIsRoleView(true);
+    }
+  }, [selectedContact]);
 
   return (
     <div className="results-section">
@@ -83,7 +70,6 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
               <ContactsTable
                 searchQuery={searchQuery}
                 selectedOrg={selectedOrg}
-                handleViewRoles={handleViewRoles}
                 setSelectedContact={setSelectedContact}
               />
 
@@ -113,10 +99,11 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
             </>
           ) : (
             <RoleDetails
-              selectedContactName={selectedContact?.name}
-              roleInfo={roleInfo}
+              selectedContact={selectedContact}
+              organizationNumber={selectedOrg.OrganizationNumber}
               onBack={() => {
                 setIsRoleView(false);
+                setSelectedContact(null);
               }}
             />
           )}
