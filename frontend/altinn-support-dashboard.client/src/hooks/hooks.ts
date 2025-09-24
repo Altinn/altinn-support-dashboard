@@ -20,6 +20,7 @@ import {
   fetchOrganizations,
   fetchPersonalContacts,
   fetchRoles,
+  fetchRoleTypes,
   fetchSubunits,
 } from "../utils/api";
 import { OfficialContact } from "../components/Dashboard/models/mainContentTypes";
@@ -133,7 +134,34 @@ export const useRoles = (
   return rolesQuery;
 };
 
-export const UseManualRoleSearch = () => {
+export function UseManualRoleSearch(rollehaver: string, rollegiver: string) {
+  const environment = useAppStore((state) => state.environment);
+  const baseUrl = getBaseUrl(environment);
+
+  return useQuery ({
+    queryKey: ["manualroles", baseUrl, rollehaver, rollegiver],
+    queryFn: async () => {
+      if (!rollehaver || !rollegiver) return [];
+      const res = await fetch( `/api/TT02/serviceowner/${rollehaver}/roles/${rollegiver}`);
+      if (!res.ok) { const errorText = await res.text(); throw new Error(errorText || "Error fetching roles");}
+      const data = await res.json();
+      let rolesArray: Role[] = [];
+      if (Array.isArray(data)) {
+        rolesArray = data;
+      } else if (data && data._embedded) {
+        const embeddedKeys = Object.keys(data._embedded);
+        if (embeddedKeys.length > 0) {
+          const firstKey = embeddedKeys[0];
+          rolesArray = data._embedded[firstKey];
+        }
+      }
+      return rolesArray;
+    },
+    enabled: !!rollehaver && !!rollegiver,
+  });
+};
+
+/*export const UseManualRoleSearch = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -186,4 +214,4 @@ export const UseManualRoleSearch = () => {
   };
 
   return { fetchRoles, roles, isLoading, error, clearRoles };
-};
+};*/

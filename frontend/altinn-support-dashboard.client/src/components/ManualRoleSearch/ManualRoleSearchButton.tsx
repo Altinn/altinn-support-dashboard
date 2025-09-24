@@ -5,25 +5,23 @@ import { Button } from "@mui/material";
 type SearchButtonProps = {
   rollehaver: string;
   rollegiver: string;
-  fetchRoles: (rollehaver: string, rollegiver: string) => Promise<void>;
   isLoading: boolean;
+  refetch: () => void;
   sethasSearched: (value: boolean) => void;
 };
 
 const SearchButton: React.FC<SearchButtonProps> = ({
     rollehaver,
     rollegiver,
-    fetchRoles,
     isLoading,
+    refetch,
     sethasSearched,
   }) => {
 
 
     const handleSearch = async () => {
         sethasSearched(true);
-        const cleanRollehaver = rollehaver.replace(/\s/g, "");
-        const cleanRollegiver = rollegiver.replace(/\s/g, "");
-        await fetchRoles(cleanRollehaver, cleanRollegiver);
+        refetch();
     };
     return (
         <Button

@@ -4,7 +4,7 @@ import { Role } from "./models/manualRoleSearchTypes";
 import RoleTable from "./ManualRoleSearchTable";
 
 type ManualRoleSearchResultProps = {
-    error: string | null;
+    error: Error | null;
     isLoading: boolean;
     hasSearched: boolean;
     roles: Role[];
@@ -22,7 +22,7 @@ const ManualRoleSearchResult: React.FC<ManualRoleSearchResultProps> = ({
         <Box>
         {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
+          {error.message}
         </Alert>
       )}
       {isLoading && <Typography variant="body1"> Laster roller...</Typography>}

@@ -6,14 +6,12 @@ import { Button } from "@mui/material";
 
 
 type EmptySearchProps = {
-    clearRoles: () => void;
     sethasSearched: (value: boolean) => void;
     setRollehaver: (value: string) => void;
     setRollegiver: (value: string) => void;
 };
 
 const EmptySearch: React.FC<EmptySearchProps> = ({
-    clearRoles,
     sethasSearched,
     setRollehaver,
     setRollegiver
@@ -26,7 +24,6 @@ const EmptySearch: React.FC<EmptySearchProps> = ({
         setLocalStorageValue("rollehaver", "");
         setLocalStorageValue("rollegiver", "");
         sethasSearched(false);
-        clearRoles();
     }
 
     return (

@@ -55,6 +55,13 @@ export default defineConfig({
             }
 
             : undefined, // Deaktiver HTTPS i produksjon ved � sette til undefined
+        proxy: {
+            '/api': {
+                target: target,
+                changeOrigin: true,
+                secure: false,
+            },
+        },
 
     },
     test: {
