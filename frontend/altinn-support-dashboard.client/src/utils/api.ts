@@ -1,5 +1,6 @@
 import { OfficialContact } from "../components/Dashboard/models/mainContentTypes";
 import { authorizedFetch, getBaseUrl } from "./utils";
+import { Role } from "../models/models";
 
 //this file defines which which api endpoints we want to fetch data from
 
@@ -72,3 +73,24 @@ export const fetchRoles = async (
 
   return typeof data === "string" ? JSON.parse(data) : data;
 };
+
+export const fetchRolesForOrg = async(
+  environment: string, 
+  rollehaver: string, 
+  rollegiver:string
+) => {
+  const res = await authorizedFetch( `/api/${environment}/serviceowner/${rollehaver}/roles/${rollegiver}`);
+  if (!res.ok) throw new Error(await res.text() || "Error fetching roles");
+  const data = await res.json();
+  let rolesArray: Role[] = [];
+  if (Array.isArray(data)) {
+    rolesArray = data;
+  } else if (data && data._embedded) {
+    const embeddedKeys = Object.keys(data._embedded);
+    if (embeddedKeys.length > 0) {
+      const firstKey = embeddedKeys[0];
+      rolesArray = data._embedded[firstKey];
+    }
+  }
+  return rolesArray;
+}
