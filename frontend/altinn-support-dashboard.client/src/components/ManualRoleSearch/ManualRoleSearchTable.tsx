@@ -10,6 +10,7 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import RoleTypeCell from "../RoleTypeCell";
 
 interface RoleTableProps {
   roles: Role[];
@@ -44,7 +45,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles }) => {
         <TableBody>
           {roles.map((role, index) => (
             <TableRow key={index}>
-              <TableCell>{role.RoleType}</TableCell>
+              <RoleTypeCell roleType = {role.RoleType} />
               <TableCell>{role.RoleName}</TableCell>
               <TableCell>{role.RoleDescription}</TableCell>
               <TableCell>{role.RoleDefinitionCode}</TableCell>
