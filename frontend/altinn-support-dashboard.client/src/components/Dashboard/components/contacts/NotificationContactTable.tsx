@@ -49,7 +49,6 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
                 contact={contact[field] as string | null}
                   userInput={userInput}
                  />
-                <TableCell>{contact[field] || "-"}</TableCell>
                 <TableCell>
                   {formatDate(contact[changedField] as string | null)}
                 </TableCell> 
