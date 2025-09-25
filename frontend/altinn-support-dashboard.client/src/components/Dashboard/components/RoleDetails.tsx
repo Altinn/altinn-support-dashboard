@@ -10,9 +10,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useAppStore } from "../../../hooks/Appstore";
 import { useRoles } from "../../../hooks/hooks";
 import { PersonalContact } from "../models/mainContentTypes";
+import { useAppStore } from "../../../stores/Appstore";
 import  RoleTypeCell  from "../../RoleTypeCell";
 
 interface RoleDetailsProps {

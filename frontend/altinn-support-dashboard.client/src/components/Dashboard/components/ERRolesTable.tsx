@@ -13,8 +13,8 @@ import { formatDate } from "../utils/dateUtils";
 import { ERRolesSortField, SortDirection } from "../models/mainContentTypes";
 import { sortERRoles } from "../utils/contactUtils";
 import { useOrgDetails } from "../../../hooks/hooks";
-import { useAppStore } from "../../../hooks/Appstore";
 import { SelectedOrg } from "../../../models/models";
+import { useAppStore } from "../../../stores/Appstore";
 
 interface ERRolesTableProps {
   selectedOrg: SelectedOrg;

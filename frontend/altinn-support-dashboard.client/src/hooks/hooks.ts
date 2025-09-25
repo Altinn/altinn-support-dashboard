@@ -1,18 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
-import {
-  Organization,
-  PersonalContact,
-  Subunit,
-  ERRole,
-  Role,
-} from "../models/models";
+import { useState, useEffect } from "react";
+import { PersonalContact, ERRole, Role } from "../models/models";
 import {
   getBaseUrl,
   authorizedFetch,
   getFormattedDateTime,
   fetchUserDetails,
 } from "../utils/utils";
-import { useAppStore } from "./Appstore";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   fetchERoles,
@@ -23,6 +16,7 @@ import {
   fetchSubunits,
 } from "../utils/api";
 import { OfficialContact } from "../components/Dashboard/models/mainContentTypes";
+import { useAppStore } from "../stores/Appstore";
 
 export function useDarkMode() {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
