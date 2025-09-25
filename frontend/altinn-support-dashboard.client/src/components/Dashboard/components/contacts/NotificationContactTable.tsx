@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { OfficialContact } from "../../models/mainContentTypes";
 import { formatDate } from "../../utils/dateUtils";
+import NotificationContactCell from "./NotificationContactCell";
 
 interface ContactFieldTableProps {
   title: string;
@@ -42,10 +43,12 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
           {contacts && contacts.length > 0 ? (
             contacts.map((contact, index) => (
               <TableRow key={index}>
-                <TableCell>{contact[field] || "-"}</TableCell>
+                <NotificationContactCell 
+                contact={contact[field] as string | null}
+                 />
                 <TableCell>
                   {formatDate(contact[changedField] as string | null)}
-                </TableCell>
+                </TableCell> 
               </TableRow>
             ))
           ) : (
