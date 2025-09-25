@@ -67,6 +67,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg, query })
                 searchQuery={searchQuery}
                 selectedOrg={selectedOrg}
                 setSelectedContact={setSelectedContact}
+                userInput={query}
               />
 
               <Typography variant="h6" gutterBottom>

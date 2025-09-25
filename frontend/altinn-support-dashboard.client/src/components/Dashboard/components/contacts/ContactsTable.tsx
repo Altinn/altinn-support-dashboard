@@ -15,17 +15,20 @@ import { filterContacts, sortContacts } from "../../utils/contactUtils";
 import { useOrgDetails } from "../../../../hooks/hooks";
 import { useAppStore } from "../../../../hooks/Appstore";
 import { SelectedOrg } from "../../../../models/models";
+import NotificationContactCell from "./NotificationContactCell";
 
 interface ContactsTableProps {
   searchQuery: string;
   selectedOrg: SelectedOrg;
   setSelectedContact: (personalContact: PersonalContact) => void;
+  userInput: string;
 }
 
 const ContactsTable: React.FC<ContactsTableProps> = ({
   searchQuery,
   selectedOrg,
   setSelectedContact,
+  userInput
 }) => {
   const [sortField, setSortField] = useState<keyof PersonalContact | null>(
     null,
@@ -118,8 +121,14 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
                 <TableRow key={`${contact.personalContactId}-${index}`}>
                   <TableCell>{contact.name}</TableCell>
                   <TableCell>{contact.socialSecurityNumber}</TableCell>
-                  <TableCell>{contact.mobileNumber}</TableCell>
-                  <TableCell>{contact.eMailAddress}</TableCell>
+                  <NotificationContactCell 
+                    contact={contact.mobileNumber}
+                    userInput={userInput}
+                  />
+                  <NotificationContactCell 
+                    contact={contact.eMailAddress} 
+                    userInput={userInput} 
+                  />
                   <TableCell>
                     <Button
                       variant="outlined"
