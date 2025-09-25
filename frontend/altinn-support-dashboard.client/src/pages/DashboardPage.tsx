@@ -3,11 +3,13 @@ import SearchComponent from "../components/TopSearchBar/TopSearchBarComponent";
 import DetailedOrgView from "../components/Dashboard/components/DetailedOrgView";
 import { OrganizationList } from "../components/Dashboard/components/organizations/OrganizationList";
 import { Organization, SelectedOrg } from "../models/models";
+import { useDashboardStore } from "../stores/DashboardStore";
 
 export const DashboardPage: React.FC = () => {
-  const [query, setQuery] = useState("");
-  const [selectedOrg, setSelectedOrg] = useState<SelectedOrg | null>(null);
-
+  const query = useDashboardStore((s) => s.query);
+  const setQuery = useDashboardStore((s) => s.setQuery);
+  const selectedOrg = useDashboardStore((s) => s.selectedOrg);
+  const setSelectedOrg = useDashboardStore((s) => s.setSelectedOrg);
   return (
     <div>
       <SearchComponent query={query} setQuery={setQuery} />
