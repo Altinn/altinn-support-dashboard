@@ -14,9 +14,10 @@ import { SelectedOrg } from "../../../models/models";
 
 interface DetailedOrgViewProps {
   selectedOrg: SelectedOrg;
+  query: string;
 }
 
-const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
+const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg, query }) => {
   const environment = useAppStore((state) => state.environment);
   const [selectedContact, setSelectedContact] =
     useState<PersonalContact | null>(null);
@@ -77,6 +78,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
                   field="MobileNumber"
                   changedField="MobileNumberChanged"
                   contacts={officialContactsQuery.data}
+                  userInput={query} 
                 />
 
                 <OfficialContactFieldTable
@@ -84,6 +86,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
                   field="EMailAddress"
                   changedField="EMailAddressChanged"
                   contacts={officialContactsQuery.data}
+                  userInput={query} 
                 />
               </Box>
 
