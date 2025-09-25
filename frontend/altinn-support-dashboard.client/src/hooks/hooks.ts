@@ -13,6 +13,7 @@ import {
   fetchOrganizations,
   fetchPersonalContacts,
   fetchRoles,
+  fetchRolesForOrg,
   fetchSubunits,
 } from "../utils/api";
 import { OfficialContact } from "../components/Dashboard/models/mainContentTypes";
@@ -127,7 +128,18 @@ export const useRoles = (
   return rolesQuery;
 };
 
-export const UseManualRoleSearch = () => {
+export function UseManualRoleSearch(rollehaver: string, rollegiver: string) {
+  const environment = useAppStore((state) => state.environment);
+  const baseUrl = getBaseUrl(environment);
+
+  return useQuery ({
+    queryKey: ["manualroles", baseUrl, rollehaver, rollegiver],
+    queryFn: async () => fetchRolesForOrg(environment, rollehaver, rollegiver),
+    enabled: !!rollehaver && !!rollegiver,
+  });
+};
+
+/*export const UseManualRoleSearch = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -180,4 +192,4 @@ export const UseManualRoleSearch = () => {
   };
 
   return { fetchRoles, roles, isLoading, error, clearRoles };
-};
+};*/

@@ -6,17 +6,15 @@ import InputComponent from "../components/ManualRoleSearch/ManualRoleSearchInput
 import SearchButton from "../components/ManualRoleSearch/ManualRoleSearchButton";
 import EmptySearch from "../components/ManualRoleSearch/ManualRoleEmptySearchButton";
 import ManualRoleSearchResult from "../components/ManualRoleSearch/ManualRoleSearchResult";
+import { useQuery } from "@tanstack/react-query";
+
 
 export const ManualRoleSearchPage: React.FC<{ baseUrl?: string }> = ({ baseUrl }) => {
-  const [rollehaver, setRollehaver] = useState<string>(
-    getLocalStorageValue("rollehaver"),
-  );
-  const [rollegiver, setRollegiver] = useState<string>(
-    getLocalStorageValue("rollegiver"),
-  );
+  const [rollehaver, setRollehaver] = useState<string>(getLocalStorageValue("rollehaver"),);
+  const [rollegiver, setRollegiver] = useState<string>(getLocalStorageValue("rollegiver"),);
   const [hasSearched, setHasSearched] = useState(false);
-  const { fetchRoles, roles, isLoading, error, clearRoles } =
-    UseManualRoleSearch();
+  const { data: roles = [], isLoading, error, refetch } =
+    UseManualRoleSearch(rollehaver, rollegiver);
 
   return (
     <Box sx={{ mb: 3 }}>
@@ -33,8 +31,8 @@ export const ManualRoleSearchPage: React.FC<{ baseUrl?: string }> = ({ baseUrl }
         <SearchButton
           rollehaver={rollehaver}
           rollegiver={rollegiver}
-          fetchRoles={fetchRoles}
           isLoading={isLoading}
+          refetch={refetch}
           sethasSearched={setHasSearched}
         />
       </Box>
@@ -43,7 +41,6 @@ export const ManualRoleSearchPage: React.FC<{ baseUrl?: string }> = ({ baseUrl }
         rollegiver.trim() !== "") && (
         <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
           <EmptySearch
-            clearRoles={clearRoles}
             sethasSearched={setHasSearched}
             setRollehaver={setRollehaver}
             setRollegiver={setRollegiver}
