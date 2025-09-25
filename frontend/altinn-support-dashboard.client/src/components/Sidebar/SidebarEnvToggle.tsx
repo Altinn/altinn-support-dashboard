@@ -1,0 +1,33 @@
+import { ExpandMore } from "@mui/icons-material";
+import { Box, FormControl, MenuItem, Select, useTheme } from "@mui/material";
+import { SidebarEnvToggleStyles } from "./styles/SidebarEnvToggle.style";
+import { useAppStore } from "../../stores/Appstore";
+
+const SidebarEnvToggle: React.FC = () => {
+  const environment = useAppStore((state) => state.environment);
+  const theme = useTheme();
+  const isDarkMode = useAppStore((state) => state.isDarkMode);
+
+  const handleEnvironmentChange = (env: string) => {
+    useAppStore.getState().setEnvironment(env);
+  };
+
+  return (
+    <Box sx={{ textAlign: "center", mb: 2 }}>
+      <FormControl fullWidth>
+        <Select
+          value={environment}
+          onChange={(e) => handleEnvironmentChange(e.target.value)}
+          IconComponent={ExpandMore}
+          sx={SidebarEnvToggleStyles(theme, environment, isDarkMode)}
+          variant="outlined"
+        >
+          <MenuItem value="PROD">PROD</MenuItem>
+          <MenuItem value="TT02">TT02</MenuItem>
+        </Select>
+      </FormControl>
+    </Box>
+  );
+};
+
+export default SidebarEnvToggle;
