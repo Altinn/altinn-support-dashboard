@@ -1,7 +1,7 @@
 import { ExpandMore } from "@mui/icons-material";
 import { Box, FormControl, MenuItem, Select, useTheme } from "@mui/material";
-import { useAppStore } from "../../hooks/Appstore";
 import { SidebarEnvToggleStyles } from "./styles/SidebarEnvToggle.style";
+import { useAppStore } from "../../stores/Appstore";
 
 const SidebarEnvToggle: React.FC = () => {
   const environment = useAppStore((state) => state.environment);

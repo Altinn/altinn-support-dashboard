@@ -1,5 +1,5 @@
 import { Box, Paper, Typography, Switch } from "@mui/material";
-import { useAppStore } from "../../hooks/Appstore";
+import { useAppStore } from "../../stores/Appstore";
 
 const SettingsDarkModeComponent: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);

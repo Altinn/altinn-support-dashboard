@@ -13,9 +13,8 @@ import {
 import { PersonalContact, SortDirection } from "../../models/mainContentTypes";
 import { filterContacts, sortContacts } from "../../utils/contactUtils";
 import { useOrgDetails } from "../../../../hooks/hooks";
-import { useAppStore } from "../../../../hooks/Appstore";
 import { SelectedOrg } from "../../../../models/models";
-import NotificationContactCell from "./NotificationContactCell";
+import { useAppStore } from "../../../../stores/Appstore";
 
 interface ContactsTableProps {
   searchQuery: string;
