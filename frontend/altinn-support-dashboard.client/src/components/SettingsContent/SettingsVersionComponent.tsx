@@ -7,8 +7,7 @@ import {
   fetchVersionData,
   VersionData,
 } from "./utils/versionUtils";
-
-import { useAppStore } from "../../hooks/Appstore";
+import { useAppStore } from "../../stores/Appstore";
 
 const SettingsVersionComponent: React.FC = () => {
   const { versionNumber, versionName, releaseDate } = getVersionInfo();

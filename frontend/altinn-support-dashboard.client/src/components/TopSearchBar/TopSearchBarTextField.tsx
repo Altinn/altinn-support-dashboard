@@ -1,6 +1,6 @@
 import { IconButton, TextField, InputAdornment } from "@mui/material";
 import { Search as SearchIcon, Clear as ClearIcon } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   query: string;
@@ -12,6 +12,12 @@ export const TopSearchBarTextField: React.FC<Props> = ({ query, setQuery }) => {
   const handleSearch = () => {
     setQuery(textFieldValue);
   };
+
+  useEffect(() => {
+    if (textFieldValue === "" && query != null) {
+      setTextFieldValue(query);
+    }
+  }, []);
   return (
     <TextField
       fullWidth
