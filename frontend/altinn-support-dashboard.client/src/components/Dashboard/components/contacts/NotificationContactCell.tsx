@@ -1,16 +1,17 @@
 import { TableCell } from "@mui/material";
+import { useDashboardStore } from "../../../../stores/DashboardStore";
 
 
 
 interface NotificationContactCellProps {
     contact: string | null;
-    userInput?: string;
 }
 
 
 const NotificationContactCell: React.FC<NotificationContactCellProps> = ({ 
-    contact, userInput 
+    contact
 }) => {
+    const userInput = useDashboardStore((s) => s.query.replace(/\s/g, ""));
     if (contact === userInput) {
         return <TableCell style= {{fontWeight: "bold"}}>{contact || "-"}</TableCell>
     }

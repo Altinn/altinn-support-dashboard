@@ -18,7 +18,6 @@ interface ContactFieldTableProps {
   field: keyof OfficialContact;
   changedField: keyof OfficialContact;
   contacts: OfficialContact[];
-  userInput: string;
 }
 
 const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
@@ -26,7 +25,6 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
   field,
   changedField,
   contacts,
-  userInput,
 }) => {
   return (
     <TableContainer component={Paper}>
@@ -47,7 +45,6 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
               <TableRow key={index}>
                 <NotificationContactCell 
                 contact={contact[field] as string | null}
-                  userInput={userInput}
                  />
                 <TableCell>
                   {formatDate(contact[changedField] as string | null)}

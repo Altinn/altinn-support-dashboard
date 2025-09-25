@@ -24,7 +24,7 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         <div style={{ flex: "1 1 65%", maxWidth: "65%" }}>
-          <DetailedOrgView selectedOrg={selectedOrg} query = {query} />
+          <DetailedOrgView selectedOrg={selectedOrg} />
         </div>
       </div>
     </div>

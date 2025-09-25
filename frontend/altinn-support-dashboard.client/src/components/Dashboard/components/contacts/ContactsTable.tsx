@@ -21,14 +21,12 @@ interface ContactsTableProps {
   searchQuery: string;
   selectedOrg: SelectedOrg;
   setSelectedContact: (personalContact: PersonalContact) => void;
-  userInput: string;
 }
 
 const ContactsTable: React.FC<ContactsTableProps> = ({
   searchQuery,
   selectedOrg,
   setSelectedContact,
-  userInput
 }) => {
   const [sortField, setSortField] = useState<keyof PersonalContact | null>(
     null,
@@ -123,11 +121,9 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
                   <TableCell>{contact.socialSecurityNumber}</TableCell>
                   <NotificationContactCell 
                     contact={contact.mobileNumber}
-                    userInput={userInput}
                   />
                   <NotificationContactCell 
                     contact={contact.eMailAddress} 
-                    userInput={userInput} 
                   />
                   <TableCell>
                     <Button
