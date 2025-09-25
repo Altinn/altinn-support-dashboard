@@ -15,6 +15,7 @@ import { filterContacts, sortContacts } from "../../utils/contactUtils";
 import { useOrgDetails } from "../../../../hooks/hooks";
 import { SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
+import NotificationContactCell from "./NotificationContactCell";
 
 interface ContactsTableProps {
   searchQuery: string;
