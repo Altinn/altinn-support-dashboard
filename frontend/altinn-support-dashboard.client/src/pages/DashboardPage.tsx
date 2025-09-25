@@ -1,8 +1,6 @@
-import React, { useState } from "react";
 import SearchComponent from "../components/TopSearchBar/TopSearchBarComponent";
 import DetailedOrgView from "../components/Dashboard/components/DetailedOrgView";
 import { OrganizationList } from "../components/Dashboard/components/organizations/OrganizationList";
-import { Organization, SelectedOrg } from "../models/models";
 import { useDashboardStore } from "../stores/DashboardStore";
 
 export const DashboardPage: React.FC = () => {
