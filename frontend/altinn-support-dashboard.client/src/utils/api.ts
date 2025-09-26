@@ -8,7 +8,8 @@ export const fetchOrganizations = async (
   environment: string,
   query: string,
 ) => {
-  const trimmedQuery = query.replace(/\s/g, "");
+  var trimmedQuery = query.replace(/\s/g, "");
+
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`,
   );
@@ -74,13 +75,15 @@ export const fetchRoles = async (
   return typeof data === "string" ? JSON.parse(data) : data;
 };
 
-export const fetchRolesForOrg = async(
-  environment: string, 
-  rollehaver: string, 
-  rollegiver:string
+export const fetchRolesForOrg = async (
+  environment: string,
+  rollehaver: string,
+  rollegiver: string,
 ) => {
-  const res = await authorizedFetch( `/api/${environment}/serviceowner/${rollehaver}/roles/${rollegiver}`);
-  if (!res.ok) throw new Error(await res.text() || "Error fetching roles");
+  const res = await authorizedFetch(
+    `/api/${environment}/serviceowner/${rollehaver}/roles/${rollegiver}`,
+  );
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
   const data = await res.json();
   let rolesArray: Role[] = [];
   if (Array.isArray(data)) {
@@ -93,4 +96,5 @@ export const fetchRolesForOrg = async(
     }
   }
   return rolesArray;
-}
+};
+
