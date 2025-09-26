@@ -10,7 +10,12 @@ type Props = {
 export const TopSearchBarTextField: React.FC<Props> = ({ query, setQuery }) => {
   const [textFieldValue, setTextFieldValue] = useState("");
   const handleSearch = () => {
-    setQuery(textFieldValue);
+    //Ignores + for countrycodes for phonenumbers
+    if (textFieldValue[0] === "+") {
+      setQuery(textFieldValue.slice(1));
+    } else {
+      setQuery(textFieldValue);
+    }
   };
 
   useEffect(() => {
