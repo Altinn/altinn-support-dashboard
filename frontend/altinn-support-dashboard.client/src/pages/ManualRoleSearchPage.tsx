@@ -6,22 +6,35 @@ import InputComponent from "../components/ManualRoleSearch/ManualRoleSearchInput
 import SearchButton from "../components/ManualRoleSearch/ManualRoleSearchButton";
 import EmptySearch from "../components/ManualRoleSearch/ManualRoleEmptySearchButton";
 import ManualRoleSearchResult from "../components/ManualRoleSearch/ManualRoleSearchResult";
-import { useQuery } from "@tanstack/react-query";
+import {
+  containerBox,
+  inputRowBox,
+  emptySearchBox,
+} from "./styles/ManualRoleSearchPage.styles";
 
-
-export const ManualRoleSearchPage: React.FC<{ baseUrl?: string }> = ({ baseUrl }) => {
-  const [rollehaver, setRollehaver] = useState<string>(getLocalStorageValue("rollehaver"),);
-  const [rollegiver, setRollegiver] = useState<string>(getLocalStorageValue("rollegiver"),);
+export const ManualRoleSearchPage: React.FC = () => {
+  const [rollehaver, setRollehaver] = useState<string>(
+    getLocalStorageValue("rollehaver"),
+  );
+  const [rollegiver, setRollegiver] = useState<string>(
+    getLocalStorageValue("rollegiver"),
+  );
   const [hasSearched, setHasSearched] = useState(false);
-  const { data: roles = [], isLoading, error, refetch } =
-    UseManualRoleSearch(rollehaver, rollegiver);
+
+  const {
+    data: roles = [],
+    isLoading,
+    error,
+    refetch,
+  } = UseManualRoleSearch(rollehaver, rollegiver);
 
   return (
-    <Box sx={{ mb: 3 }}>
+    <Box sx={containerBox}>
       <Typography variant="h6" gutterBottom>
         Manuelt Rollesøk
       </Typography>
-      <Box sx={{ display: "flex", gap: 2, alignItems: "center", mb: 2 }}>
+
+      <Box sx={inputRowBox}>
         <InputComponent
           rollehaver={rollehaver}
           rollegiver={rollegiver}
@@ -36,10 +49,11 @@ export const ManualRoleSearchPage: React.FC<{ baseUrl?: string }> = ({ baseUrl }
           sethasSearched={setHasSearched}
         />
       </Box>
+
       {(hasSearched ||
         rollehaver.trim() !== "" ||
         rollegiver.trim() !== "") && (
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        <Box sx={emptySearchBox}>
           <EmptySearch
             sethasSearched={setHasSearched}
             setRollehaver={setRollehaver}
@@ -47,12 +61,15 @@ export const ManualRoleSearchPage: React.FC<{ baseUrl?: string }> = ({ baseUrl }
           />
         </Box>
       )}
+
       <ManualRoleSearchResult
-        error = {error}
-        isLoading = {isLoading}
-        hasSearched = {hasSearched}
-        roles = {roles}
+        error={error}
+        isLoading={isLoading}
+        hasSearched={hasSearched}
+        roles={roles}
       />
     </Box>
   );
 };
+
+export default ManualRoleSearchPage;
