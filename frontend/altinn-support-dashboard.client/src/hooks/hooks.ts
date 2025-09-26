@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { PersonalContact, ERRole, Role } from "../models/models";
 import {
   getBaseUrl,
-  authorizedFetch,
   getFormattedDateTime,
   fetchUserDetails,
 } from "../utils/utils";
