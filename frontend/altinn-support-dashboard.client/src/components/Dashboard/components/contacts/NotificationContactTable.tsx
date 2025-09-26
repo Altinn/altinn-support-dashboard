@@ -26,6 +26,8 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
   changedField,
   contacts,
 }) => {
+  const filteredContacts =
+    contacts?.filter((contacts) => contacts[field]) || [];
   return (
     <TableContainer component={Paper}>
       <MuiTable size="small">
@@ -40,15 +42,15 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {contacts && contacts.length > 0 ? (
-            contacts.map((contact, index) => (
+          {filteredContacts && filteredContacts.length > 0 ? (
+            filteredContacts.map((contact, index) => (
               <TableRow key={index}>
-                <NotificationContactCell 
-                contact={contact[field] as string | null}
-                 />
+                <NotificationContactCell
+                  contact={contact[field] as string | null}
+                />
                 <TableCell>
                   {formatDate(contact[changedField] as string | null)}
-                </TableCell> 
+                </TableCell>
               </TableRow>
             ))
           ) : (
