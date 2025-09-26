@@ -18,20 +18,20 @@ Velkommen til Altinn Support Dashboard. Løsningen ble utviklet for å få en mo
 
 ## Teknologier
 
-- **Backend**: .NET 7, C#, ASP.NET Core Web API
+- **Backend**: .NET 8, C#, ASP.NET Core Web API
 - **Frontend**: React, TypeScript, Vite
 - **Testing**: xUnit for backend
 - **CI/CD**: GitHub Actions
 - **Hosting**: Azure App Service
 - **Autentisering**: Azure AD B2C
 - **API Integrasjoner**: REST-API til Brønnøysundregistrene og Altinn 
-- **Styling og komponenter**: Designsystemet fra Digdir (@digdir/designsystemet-css og @digdir/designsystemet-react)
+- **Styling og komponenter**: MUI
 
 ## Komme i gang
 
 ### Forutsetninger
 Før du begynner bør du ha følgende installert:
-- [.NET 7 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [Node.js (LTS versjon)](https://nodejs.org/)
 - [npm (kommer med Node.js)](https://www.npmjs.com/)
 - [Git](https://git-scm.com/)
