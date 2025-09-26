@@ -16,6 +16,7 @@ import { useOrgDetails } from "../../../../hooks/hooks";
 import { SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import NotificationContactCell from "./NotificationContactCell";
+import { useContactsWithRoles } from "../../hooks/useContactsWithRoles";
 
 interface ContactsTableProps {
   searchQuery: string;
@@ -47,6 +48,12 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
     filteredContacts,
     sortField,
     sortDirection,
+  );
+
+  const contactsWithRoles = useContactsWithRoles(
+    sortedContacts,
+    environment,
+    selectedOrg?.OrganizationNumber
   );
 
   const handleSort = (field: keyof PersonalContact) => {
@@ -114,8 +121,8 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedContacts.length > 0 ? (
-              sortedContacts.map((contact, index) => (
+            {contactsWithRoles.length > 0 ? (
+              contactsWithRoles.map((contact, index) => (
                 <TableRow key={`${contact.personalContactId}-${index}`}>
                   <TableCell>{contact.name}</TableCell>
                   <TableCell>{contact.socialSecurityNumber}</TableCell>
