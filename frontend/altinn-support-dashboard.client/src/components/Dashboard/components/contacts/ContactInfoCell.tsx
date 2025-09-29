@@ -1,7 +1,6 @@
-import { IconButton, TableCell, Tooltip } from "@mui/material";
+import { Box, TableCell, Tooltip } from "@mui/material";
 import { useDashboardStore } from "../../../../stores/DashboardStore";
 
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { formatDate } from "../../utils/dateUtils";
 
 interface ContactInfoCellProps {
@@ -25,12 +24,9 @@ const ContactInfoCell: React.FC<ContactInfoCellProps> = ({
 
   return (
     <TableCell sx={sxProps}>
-      {contact || "-"}
       {contactLastChanged && (
-        <Tooltip title={formatDate(contactLastChanged)}>
-          <IconButton>
-            <HelpOutlineIcon />
-          </IconButton>
+        <Tooltip title={`Dato endret: ${formatDate(contactLastChanged)}`}>
+          <Box>{contact || "-"}</Box>
         </Tooltip>
       )}
     </TableCell>
