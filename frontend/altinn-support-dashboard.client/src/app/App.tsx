@@ -10,7 +10,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
-import { useDarkMode, useEnvironment, useUserDetails } from "../hooks/hooks";
+import { useDarkMode } from "../hooks/hooks";
 import { useVersionCheck } from "../hooks/useVersionCheck";
 import { getPalleteTheme } from "../theme/palette";
 import { DashboardPage } from "../pages/DashboardPage";
@@ -20,8 +20,6 @@ import NewOrganizationPage from "../pages/NewOrganizationPage";
 import SettingsPage from "../pages/SettingsPage";
 
 const App: React.FC = () => {
-  const { environment, handleEnvChange } = useEnvironment();
-  const { userName, userEmail } = useUserDetails();
   const { isDarkMode } = useDarkMode();
   const theme = React.useMemo(() => getPalleteTheme(isDarkMode), [isDarkMode]);
 
@@ -40,13 +38,7 @@ const App: React.FC = () => {
       />
       <Router>
         <div className="app-wrapper">
-          <Sidebar
-            environment={environment}
-            handleEnvChange={handleEnvChange}
-            userName={userName}
-            userEmail={userEmail}
-            isDarkMode={isDarkMode}
-          />
+          <Sidebar />
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
