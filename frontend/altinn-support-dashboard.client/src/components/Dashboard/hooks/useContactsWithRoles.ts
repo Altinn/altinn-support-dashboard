@@ -2,6 +2,9 @@ import { useQueries } from "@tanstack/react-query";
 import { PersonalContact } from "../models/mainContentTypes";
 import { fetchRoles } from "../../../utils/api";
 
+
+//If they have one role, the person is shown, if they have no roles the person is filtered out
+
 export function useContactsWithRoles(
   contacts: PersonalContact[],
   environment: string,
