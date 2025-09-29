@@ -5,18 +5,11 @@ import SettingsDarkModeComponent from "../components/SettingsContent/SettingsDar
 import SettingsLanguageComponent from "../components/SettingsContent/SettingsLanguageComponent";
 import SettingsActionButtons from "../components/SettingsContent/SettingsActionButtons";
 import SettingsVersionComponent from "../components/SettingsContent/SettingsVersionComponent";
+import { containerBox } from "./styles/SettingsPage.styles";
 
 const SettingsPage: React.FC = () => {
   return (
-    <Box
-      sx={{
-        p: 2,
-        height: "100%",
-        overflow: "auto",
-        maxHeight: "calc(100vh - 80px)", // Subtract header height
-        overflowX: "hidden",
-      }}
-    >
+    <Box sx={containerBox}>
       <Heading level={2} data-size="md">
         Innstillinger
       </Heading>
