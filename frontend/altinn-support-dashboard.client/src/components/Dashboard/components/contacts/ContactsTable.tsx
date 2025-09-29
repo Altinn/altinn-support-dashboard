@@ -15,7 +15,7 @@ import { filterContacts, sortContacts } from "../../utils/contactUtils";
 import { useOrgDetails } from "../../../../hooks/hooks";
 import { SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
-import NotificationContactCell from "./NotificationContactCell";
+import ContactInfoCell from "./ContactInfoCell";
 
 interface ContactsTableProps {
   searchQuery: string;
@@ -119,11 +119,13 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
                 <TableRow key={`${contact.personalContactId}-${index}`}>
                   <TableCell>{contact.name}</TableCell>
                   <TableCell>{contact.socialSecurityNumber}</TableCell>
-                  <NotificationContactCell 
+                  <ContactInfoCell
                     contact={contact.mobileNumber}
+                    contactLastChanged={contact.mobileNumberChanged}
                   />
-                  <NotificationContactCell 
-                    contact={contact.eMailAddress} 
+                  <ContactInfoCell
+                    contact={contact.eMailAddress}
+                    contactLastChanged={contact.eMailAddressChanged}
                   />
                   <TableCell>
                     <Button
