@@ -10,18 +10,19 @@ import {
 } from "@mui/icons-material";
 import logo from "../../assets/logo.png";
 import whiteLogo from "/asd_128_white.png";
-import { SidebarProps } from "./models/sidebarTypes";
 import { useSidebarDrag } from "./hooks/useSidebarDrag";
 import NavItem from "./NavItem";
 import SideBarDateTime from "./SidebarDateTime";
 import SidebarEnvToggle from "./SidebarEnvToggle";
 import * as styles from "./styles/SidebarComponent.style";
+import { useAppStore } from "../../stores/Appstore";
+import { useUserDetails } from "../../hooks/hooks";
 
-const Sidebar: React.FC<
-  Omit<SidebarProps, "isEnvDropdownOpen" | "toggleEnvDropdown">
-> = ({ userName, userEmail, isDarkMode }) => {
+const Sidebar: React.FC = () => {
   const theme = useTheme();
   const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();
+  const isDarkMode = useAppStore((state) => state.isDarkMode);
+  const { userName, userEmail } = useUserDetails();
 
   return (
     <Box sx={styles.sidebarContainer(isCollapsed, isDarkMode, theme)}>
