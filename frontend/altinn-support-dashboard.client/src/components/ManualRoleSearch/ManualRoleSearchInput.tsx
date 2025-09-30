@@ -2,6 +2,7 @@ import React from "react";
 import { Box } from "@mui/material";
 import { setLocalStorageValue, } from "./utils/storageUtils";
 import ManualRoleSearchTextField from "./ManualRoleSearchTextfield";
+import { Tooltip } from "@digdir/designsystemet-react";
 
 
 type InputComponentProps = {
@@ -19,26 +20,32 @@ const InputComponent: React.FC<InputComponentProps> = ({
   }) => {
 
   return (
-    <Box sx={{display: "flex" , gap: 2, alignItems: "center" , mb: 2}}>
-      <ManualRoleSearchTextField
-        label="Tilganger fra"
-        value={rollegiver || ""}
-        onChange={(value) => {
-          setRollegiver?.(value);
-          setLocalStorageValue("rollegiver", value);
-        }}
-        tooltip = "Organisasjonsnummeret til virksomheten som gir rollen"
-      />
-      <ManualRoleSearchTextField
-        label="Tilganger til"
-        value={rollehaver || ""}
-        onChange={(value) => {
-          setRollehaver?.(value);
-          setLocalStorageValue("rollehaver", value);
-        }}
-        tooltip = "Organisasjonsnummeret til virksomheten som har rollen"
-      />
-    </Box>
+    <>
+      <Tooltip content = "Organisasjonsnummeret til virksomheten som gir rollen" placement="bottom">
+        <span>
+          <ManualRoleSearchTextField
+            label="Tilganger fra"
+            value={rollegiver || ""}
+            onChange={(value) => {
+              setRollegiver?.(value);
+              setLocalStorageValue("rollegiver", value);
+            }}
+          />
+        </span>
+      </Tooltip>
+      <Tooltip content = "Organisasjonsnummeret til virksomheten som har rollen" placement="bottom">
+      <span>
+        <ManualRoleSearchTextField
+          label="Tilganger til"
+          value={rollehaver || ""}
+          onChange={(value) => {
+            setRollehaver?.(value);
+            setLocalStorageValue("rollehaver", value);
+          }}
+        />
+        </span>
+      </Tooltip>
+    </>
    );
 };
 
