@@ -2,7 +2,7 @@ import React from "react";
 import {
     setLocalStorageValue
 } from "./utils/storageUtils";
-import { Button } from "@mui/material";
+import { Button } from '@digdir/designsystemet-react';
 
 
 type EmptySearchProps = {
@@ -27,7 +27,7 @@ const EmptySearch: React.FC<EmptySearchProps> = ({
     }
 
     return (
-        <Button variant="outlined" onClick={clearSearch}>
+        <Button variant="secondary" onClick={clearSearch}>
             Tøm søk
         </Button>
     );
