@@ -18,24 +18,6 @@ import {
 import { OfficialContact } from "../components/Dashboard/models/mainContentTypes";
 import { useAppStore } from "../stores/Appstore";
 
-export function useDarkMode() {
-  const isDarkMode = useAppStore((state) => state.isDarkMode);
-  const setIsDarkMode = useAppStore((state) => state.setIsDarkMode);
-
-  return { isDarkMode, setIsDarkMode };
-}
-
-export function useEnvironment() {
-  const [environment, setEnvironment] = useState("PROD");
-  const [isEnvDropdownOpen, setIsEnvDropdownOpen] = useState(false);
-  const toggleEnvDropdown = () => setIsEnvDropdownOpen((prev) => !prev);
-  const handleEnvChange = (env: string) => {
-    setIsEnvDropdownOpen(false);
-    useAppStore((state) => state.setEnvironment(env));
-  };
-  return { environment, isEnvDropdownOpen, toggleEnvDropdown, handleEnvChange };
-}
-
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
   const [userEmail, setUserEmail] = useState("");
