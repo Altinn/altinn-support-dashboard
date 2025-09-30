@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@mui/material";
+import { Button } from '@digdir/designsystemet-react';
 
 
 type SearchButtonProps = {
@@ -25,8 +25,7 @@ const SearchButton: React.FC<SearchButtonProps> = ({
     };
     return (
         <Button
-          variant="contained"
-          color="primary"
+          variant="primary"
           onClick={handleSearch}
           disabled={isLoading || !rollehaver || !rollegiver}
         >
