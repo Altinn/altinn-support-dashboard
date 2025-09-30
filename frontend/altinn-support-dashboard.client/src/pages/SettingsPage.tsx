@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import classes from "./styles/SettingsPage.module.css";
 import { Heading } from "@digdir/designsystemet-react";
 import SettingsPATComponent from "../components/SettingsContent/SettingsPATComponent";
@@ -6,7 +5,6 @@ import SettingsDarkModeComponent from "../components/SettingsContent/SettingsDar
 import SettingsLanguageComponent from "../components/SettingsContent/SettingsLanguageComponent";
 import SettingsActionButtons from "../components/SettingsContent/SettingsActionButtons";
 import SettingsVersionComponent from "../components/SettingsContent/SettingsVersionComponent";
-import { containerBox } from "./styles/SettingsPage.styles";
 
 const SettingsPage: React.FC = () => {
   return (
