@@ -30,8 +30,8 @@ export const ManualRoleSearchPage: React.FC = () => {
   } = UseManualRoleSearch(rollehaver, rollegiver);
 
   return (
-    <>
-      <Heading level={6} data-size="sm" >
+    <Box sx={containerBox}>
+      <Heading level={1} data-size="sm" >
         Manuelt Rollesøk
       </Heading>
 
@@ -69,7 +69,7 @@ export const ManualRoleSearchPage: React.FC = () => {
         hasSearched={hasSearched}
         roles={roles}
       />
-    </>
+    </Box>
   );
 };
 
