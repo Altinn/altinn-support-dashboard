@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import classes from "./styles/SettingsPage.module.css";
 import { Heading } from "@digdir/designsystemet-react";
 import SettingsPATComponent from "../components/SettingsContent/SettingsPATComponent";
 import SettingsDarkModeComponent from "../components/SettingsContent/SettingsDarkModeComponent";
@@ -9,7 +10,7 @@ import { containerBox } from "./styles/SettingsPage.styles";
 
 const SettingsPage: React.FC = () => {
   return (
-    <Box sx={containerBox}>
+    <div className={classes.container}>
       <Heading level={2} data-size="md">
         Innstillinger
       </Heading>
@@ -19,7 +20,7 @@ const SettingsPage: React.FC = () => {
       <SettingsLanguageComponent />
       <SettingsActionButtons />
       <SettingsVersionComponent />
-    </Box>
+    </div>
   );
 };
 
