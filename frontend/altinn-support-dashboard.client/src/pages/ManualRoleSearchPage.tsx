@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { getLocalStorageValue } from "../components/ManualRoleSearch/utils/storageUtils";
 import { UseManualRoleSearch } from "../hooks/hooks";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import InputComponent from "../components/ManualRoleSearch/ManualRoleSearchInput";
 import SearchButton from "../components/ManualRoleSearch/ManualRoleSearchButton";
 import EmptySearch from "../components/ManualRoleSearch/ManualRoleEmptySearchButton";
@@ -11,6 +11,7 @@ import {
   inputRowBox,
   emptySearchBox,
 } from "./styles/ManualRoleSearchPage.styles";
+import { Heading } from '@digdir/designsystemet-react';
 
 export const ManualRoleSearchPage: React.FC = () => {
   const [rollehaver, setRollehaver] = useState<string>(
@@ -29,10 +30,10 @@ export const ManualRoleSearchPage: React.FC = () => {
   } = UseManualRoleSearch(rollehaver, rollegiver);
 
   return (
-    <Box sx={containerBox}>
-      <Typography variant="h6" gutterBottom>
+    <>
+      <Heading level={6} data-size="sm" >
         Manuelt Rollesøk
-      </Typography>
+      </Heading>
 
       <Box sx={inputRowBox}>
         <InputComponent
@@ -68,7 +69,7 @@ export const ManualRoleSearchPage: React.FC = () => {
         hasSearched={hasSearched}
         roles={roles}
       />
-    </Box>
+    </>
   );
 };
 
