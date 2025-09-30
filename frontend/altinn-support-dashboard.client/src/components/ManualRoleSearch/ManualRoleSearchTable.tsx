@@ -1,16 +1,13 @@
 import { Role } from "./models/manualRoleSearchTypes";
 import React from "react";
 import {
-  Typography,
-  Table as MuiTable,
-  TableBody,
-  TableCell,
   TableContainer,
-  TableHead,
-  TableRow,
   Paper,
 } from "@mui/material";
 import RoleTypeCell from "../RoleTypeCell";
+import {
+  Table
+} from "@digdir/designsystemet-react";
 
 interface RoleTableProps {
   roles: Role[];
@@ -21,38 +18,38 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles }) => {
     <TableContainer
       component={Paper}
       sx={{
-        maxHeight: "80vh",
+        maxHeight: "75vh",
         overflowY: "auto",
       }}
     >
-      <MuiTable stickyHeader>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <Typography variant="subtitle1">Rolletype</Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="subtitle1">Rollenavn</Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="subtitle1">Beskrivelse</Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="subtitle1">Rolledefinisjonskode</Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+      <Table stickyHeader border>
+        <Table.Head>
+          <Table.Row>
+            <Table.HeaderCell>
+              Rolletype
+            </Table.HeaderCell>
+            <Table.HeaderCell>
+              Rollenavn
+            </Table.HeaderCell>
+            <Table.HeaderCell>
+              Beskrivelse
+            </Table.HeaderCell>
+            <Table.HeaderCell>
+              Rolledefinisjonskode
+            </Table.HeaderCell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
           {roles.map((role, index) => (
-            <TableRow key={index}>
+            <Table.Row key={index}>
               <RoleTypeCell roleType = {role.RoleType} />
-              <TableCell>{role.RoleName}</TableCell>
-              <TableCell>{role.RoleDescription}</TableCell>
-              <TableCell>{role.RoleDefinitionCode}</TableCell>
-            </TableRow>
+              <Table.Cell>{role.RoleName}</Table.Cell>
+              <Table.Cell>{role.RoleDescription}</Table.Cell>
+              <Table.Cell>{role.RoleDefinitionCode}</Table.Cell>
+            </Table.Row>
           ))}
-        </TableBody>
-      </MuiTable>
+        </Table.Body>
+      </Table>
     </TableContainer>
   );
 };
