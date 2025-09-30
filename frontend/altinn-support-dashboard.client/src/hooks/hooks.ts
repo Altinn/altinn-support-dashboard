@@ -11,7 +11,6 @@ import {
   fetchOfficialContacts,
   fetchOrganizations,
   fetchPersonalContacts,
-  fetchRoles,
   fetchRolesForOrg,
   fetchSubunits,
 } from "../utils/api";
@@ -102,19 +101,20 @@ export const useRoles = (
 ) => {
   const rolesQuery: UseQueryResult<Role[], Error> = useQuery({
     queryKey: ["roles", environment, subject, reportee],
-    queryFn: () => fetchRoles(environment, subject!, reportee!),
+    queryFn: () => fetchRolesForOrg(environment, subject!, reportee!),
     enabled: !!subject && !!reportee, // only run if both exist
   });
 
   return rolesQuery;
 };
 
-export function UseManualRoleSearch(rollehaver: string, rollegiver: string) {
-  const environment = useAppStore((state) => state.environment);
-  const baseUrl = getBaseUrl(environment);
-
+export function UseManualRoleSearch(
+  rollehaver: string,
+  rollegiver: string,
+  environment: string,
+) {
   return useQuery({
-    queryKey: ["manualroles", baseUrl, rollehaver, rollegiver],
+    queryKey: ["manualroles", environment, rollehaver, rollegiver],
     queryFn: async () => fetchRolesForOrg(environment, rollehaver, rollegiver),
     enabled: !!rollehaver && !!rollegiver,
   });
