@@ -7,12 +7,6 @@ import EmptySearch from "../components/ManualRoleSearch/ManualRoleEmptySearchBut
 import ManualRoleSearchResult from "../components/ManualRoleSearch/ManualRoleSearchResult";
 import { Heading} from '@digdir/designsystemet-react';
 import styles from"./styles/ManualRoleSearchPage.module.css";
-import resultTableStyles from "./styles/ManualRoleSearch/ResultTable.module.css";
-import {
-  containerBox,
-  inputRowBox,
-  emptySearchBox,
-} from "./styles/ManualRoleSearchPage.styles";
 import { useAppStore } from "../stores/Appstore";
 
 export const ManualRoleSearchPage: React.FC = () => {
