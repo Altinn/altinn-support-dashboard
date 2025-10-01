@@ -1,20 +1,24 @@
 import {
-  Paper,
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Alert,
-  Tooltip,
-  Select,
-  MenuItem,
-  IconButton,
-} from "@mui/material";
-
+  EyeIcon,
+  EyeSlashIcon,
+  InformationSquareIcon,
+} from "@navikt/aksel-icons";
+import classes from "./styles/SettingsPatComponent.module.css";
 import { useEffect, useState } from "react";
 import { usePatTokenValidation } from "./hooks/usePatTokenValidation";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { styles } from "./styles/SettingsPATComponent.styles";
+import {
+  Card,
+  Heading,
+  Paragraph,
+  Select,
+  SelectOption,
+  Textfield,
+  Button,
+  Tooltip,
+  Alert,
+} from "@digdir/designsystemet-react";
 
 const SettingsPATComponent: React.FC = () => {
   const [giteaEnv, setGiteaEnv] = useState<string>("development");
@@ -38,127 +42,119 @@ const SettingsPATComponent: React.FC = () => {
     await validateToken(patInput);
   };
 
+  const handleGeneratePatToken = () => {
+    const baseUrl =
+      giteaEnv === "development"
+        ? "https://dev.altinn.studio"
+        : "https://altinn.studio";
+    window.open(
+      `${baseUrl}/repos/user/settings/applications`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  };
+
   const handleClearToken = () => {
     setPatInput("");
     clearToken();
   };
 
-  return (
-    <Paper sx={styles.paper}>
-      {/* Heading */}
-      <Typography variant="h6" gutterBottom>
-        Organisasjonsoppsett
-      </Typography>
+  const handleGiteaEnvChange = (e: string) => {
+    setGiteaEnv(e);
+    handleClearToken();
+  };
 
-      <Typography variant="body1" sx={styles.section}>
+  return (
+    <Card className={classes.wrapper}>
+      <Heading className={classes.cardTitle} level={6}>
+        Organisasjonsoppsett
+      </Heading>
+
+      <Paragraph className={classes.description} data-size="sm">
         For å opprette nye organisasjoner i Altinn Studio må du angi en gyldig
         Personal Access Token (PAT). Denne brukes til å autentisere API-kall mot
         Gitea.
-      </Typography>
+      </Paragraph>
 
       {/* Environment selection */}
-      <Box sx={styles.section}>
-        <Typography variant="subtitle2" sx={styles.label}>
+      <Card className={classes.section}>
+        <Heading className={classes.sectionTitle} level={6}>
           Altinn Studio Miljø
-        </Typography>
+        </Heading>
         <Select
-          fullWidth
           value={giteaEnv}
-          onChange={(e) => {
-            setGiteaEnv(e.target.value);
-            clearToken();
-            setPatInput("");
-          }}
+          onChange={(e) => handleGiteaEnvChange(e.target.value)}
         >
-          <MenuItem value="development">
+          <SelectOption value="development">
             Development (dev.altinn.studio)
-          </MenuItem>
+          </SelectOption>
         </Select>
-      </Box>
+      </Card>
 
       {/* Token input */}
-      <Box sx={styles.section}>
-        <Typography variant="subtitle2" sx={styles.label}>
+      <Card className={classes.section}>
+        <Heading level={6} className={classes.sectionTitle}>
           Personal Access Token (PAT)
-        </Typography>
+        </Heading>
 
-        <Box sx={styles.tokenRow}>
-          <TextField
-            fullWidth
+        <div className={classes.patInputWrapper}>
+          <Textfield
+            className={classes.patInputField}
             value={patInput}
             onChange={handlePatInputChange}
             type={showPassword ? "text" : "password"}
             error={!!patState.errorMessage}
-            helperText={patState.errorMessage || ""}
             disabled={patState.isValidating}
-            label="Personal Access Token"
+            aria-label="Personal Access Token"
           />
-          <IconButton
+          <Button
+            variant="secondary"
             onClick={() => setShowPassword(!showPassword)}
             aria-label={showPassword ? "Skjul passord" : "Vis passord"}
-            sx={styles.iconButton}
+            icon
           >
-            {showPassword ? <Visibility /> : <VisibilityOff />}
-          </IconButton>
-        </Box>
-
+            {showPassword ? <EyeIcon /> : <EyeSlashIcon />}
+          </Button>
+        </div>
         {/* Help links */}
-        <Box sx={styles.linksRow}>
-          <Tooltip title="PAT-token brukes for å opprette organisasjoner, teams og repositories i Gitea. Denne må opprettes med admin-tilgang.">
-            <Button variant="text" size="small">
+        <Card>
+          <Tooltip content="PAT-token brukes for å opprette organisasjoner, teams og repositories i Gitea. Denne må opprettes med admin-tilgang.">
+            <InformationSquareIcon className={classes.informationIcon}>
               Hva er en PAT-token?
-            </Button>
+            </InformationSquareIcon>
           </Tooltip>
           <Button
-            variant="text"
-            size="small"
-            onClick={() => {
-              const baseUrl =
-                giteaEnv === "development"
-                  ? "https://dev.altinn.studio"
-                  : "https://altinn.studio";
-              window.open(
-                `${baseUrl}/repos/user/settings/applications`,
-                "_blank",
-                "noopener,noreferrer",
-              );
-            }}
+            variant="secondary"
+            data-size="sm"
+            onClick={() => handleGeneratePatToken()}
           >
             Generer et nytt PAT-token
           </Button>
-        </Box>
+        </Card>
 
         {/* Validation alerts */}
         {patState.isValid && (
-          <Alert severity="success" sx={styles.alert}>
-            PAT-token er validert.
-          </Alert>
+          <Alert data-color="success">PAT-token er validert.</Alert>
         )}
         {!patState.isValid && patState.errorMessage && (
-          <Alert severity="error" sx={styles.alert}>
-            {patState.errorMessage}
-          </Alert>
+          <Alert data-color="danger">{patState.errorMessage}</Alert>
         )}
-      </Box>
 
-      {/* Action buttons */}
-      <Box sx={styles.actionsRow}>
+        {/* Action buttons */}
         <Button
-          variant="contained"
           onClick={handleValidateToken}
           disabled={patState.isValidating || !patInput}
         >
           {patState.isValidating ? "Validerer..." : "Valider token"}
         </Button>
         <Button
-          variant="outlined"
           onClick={handleClearToken}
           disabled={patState.isValidating || !patInput}
         >
           Fjern token
         </Button>
-      </Box>
-    </Paper>
+      </Card>
+    </Card>
   );
 };
 

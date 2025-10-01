@@ -1,0 +1,34 @@
+.wrapper {
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.section {
+  margin-bottom: 1rem;
+}
+
+.cardTitle {
+  margin-bottom: 1rem;
+}
+
+.description {
+  font-style: italic;
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+}
+
+.informationIcon {
+  height: 32px;
+  width: 32px;
+}
+
+.patInputWrapper {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.patInputField {
+  flex: 1;
+}

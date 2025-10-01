@@ -1,8 +1,6 @@
-import classes, {
-  textWrapper,
-} from "./styles/SettingsDarkModeComponent.module.css";
+import classes from "./styles/SettingsDarkModeComponent.module.css";
 
-import { Card, Switch } from "@digdir/designsystemet-react";
+import { Card, Switch, Heading } from "@digdir/designsystemet-react";
 
 import { useAppStore } from "../../stores/Appstore";
 
@@ -17,7 +15,7 @@ const SettingsDarkModeComponent: React.FC = () => {
 
   return (
     <Card className={classes.container}>
-      <h3>Darkmode</h3>
+      <Heading level={6}>Darkmode</Heading>
       <Switch label="" onChange={toggleDarkMode} />
     </Card>
   );

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./app/App.tsx";
+import App from "./app/App";
 import "@digdir/designsystemet-theme";
 import "@digdir/designsystemet-css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

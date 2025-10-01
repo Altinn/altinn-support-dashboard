@@ -1,6 +1,11 @@
 import classes from "./styles/SettingsLanguageComponent.module.css";
 
-import { Card, Select, SelectOption } from "@digdir/designsystemet-react";
+import {
+  Card,
+  Heading,
+  Select,
+  SelectOption,
+} from "@digdir/designsystemet-react";
 import { useState } from "react";
 
 const SettingsLanguageComponent: React.FC = () => {
@@ -13,7 +18,9 @@ const SettingsLanguageComponent: React.FC = () => {
 
   return (
     <Card className={classes.container}>
-      <h3 className={classes.title}>Språkvalg</h3>
+      <Heading level={6} className={classes.title}>
+        Språkvalg
+      </Heading>
       <Select
         id="language-select"
         value={language}

@@ -9,7 +9,7 @@ import SettingsVersionComponent from "../components/SettingsContent/SettingsVers
 const SettingsPage: React.FC = () => {
   return (
     <div className={classes.container}>
-      <Heading level={2} data-size="md">
+      <Heading level={1} data-size="md">
         Innstillinger
       </Heading>
 
