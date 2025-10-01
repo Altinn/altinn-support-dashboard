@@ -1,4 +1,5 @@
-import { Box, Button } from "@mui/material";
+import { Card, Button } from "@digdir/designsystemet-react";
+import classes from "./styles/SettingsActionsButtons.module.css";
 
 const SettingsActionButtons: React.FC = () => {
   const handleReload = () => {
@@ -9,16 +10,18 @@ const SettingsActionButtons: React.FC = () => {
     window.location.href = "/.auth/logout?post_logout_redirect_uri=/signout";
   };
   return (
-    <Box sx={{ mb: 3 }}>
+    <Card className={classes.container}>
       <Button
-        variant="outlined"
+        variant="secondary"
         onClick={handleReload}
         style={{ marginRight: "12px" }}
       >
         Last inn på nytt
       </Button>
-      <Button onClick={handleLogout}>Logg ut</Button>
-    </Box>
+      <Button variant="secondary" onClick={handleLogout}>
+        Logg ut
+      </Button>
+    </Card>
   );
 };
 

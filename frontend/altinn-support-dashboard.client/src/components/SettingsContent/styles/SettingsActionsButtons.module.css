@@ -1,0 +1,7 @@
+.container {
+  display: flex;
+}
+
+.link {
+  margin-left: 10px;
+}
