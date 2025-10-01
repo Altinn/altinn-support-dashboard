@@ -7,6 +7,10 @@ import EmptySearch from "../components/ManualRoleSearch/ManualRoleEmptySearchBut
 import ManualRoleSearchResult from "../components/ManualRoleSearch/ManualRoleSearchResult";
 import { Heading} from '@digdir/designsystemet-react';
 import "./styles/ManualRoleSearchPage.style.css";
+import buttonStyles from "./styles/ManualRoleSearch/SearchButton.module.css";
+import inputStyles from "./styles/ManualRoleSearch/InputFields.module.css";
+import emptyStyles from "./styles/ManualRoleSearch/EmptySearchButton.module.css"; 
+import resultTableStyles from "./styles/ManualRoleSearch/ResultTable.module.css";
 
 export const ManualRoleSearchPage: React.FC = () => {
   const [rollehaver, setRollehaver] = useState<string>(
@@ -31,7 +35,7 @@ export const ManualRoleSearchPage: React.FC = () => {
       </Heading>
 
       <div className="input-row">
-        <div className="input-fields">
+        <div className={inputStyles["input-fields"]}>
           <InputComponent
             rollehaver={rollehaver}
             rollegiver={rollegiver}
@@ -39,7 +43,7 @@ export const ManualRoleSearchPage: React.FC = () => {
             setRollegiver={setRollegiver}
           />
         </div>
-        <div className="search-button">
+        <div className={buttonStyles["search-button"]}>
           <SearchButton
             rollehaver={rollehaver}
             rollegiver={rollegiver}
@@ -53,7 +57,7 @@ export const ManualRoleSearchPage: React.FC = () => {
         {(hasSearched ||
           rollehaver.trim() !== "" ||
           rollegiver.trim() !== "") && (
-          <div className="empty-search-button">
+          <div className={emptyStyles["empty-search-button"]}>
             <EmptySearch
               sethasSearched={setHasSearched}
             setRollehaver={setRollehaver}
@@ -61,7 +65,7 @@ export const ManualRoleSearchPage: React.FC = () => {
             />
           </div>
         )}
-        <div className="result-table">
+        <div className={resultTableStyles["result-table"]}>
           <ManualRoleSearchResult
             error={error}
             isLoading={isLoading}

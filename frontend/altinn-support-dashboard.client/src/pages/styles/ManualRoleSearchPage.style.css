@@ -9,32 +9,7 @@
     margin-bottom: -2.5rem;
 }
 
-.input-fields { 
-    display: flex;
-    gap: 1rem;
-}
-
-.search-button { 
-    align-self: flex-end;
-    margin-left: 0;
-}
-
 .result-area {
     width: 100%;
     position: relative;
-}
-.empty-search-button {
-    margin: 1rem;
-    z-index: 2;
-    position: absolute;
-    top:0;
-    right:0;
-}
-
-.result-table {
-    margin-top: 3rem;
-    width:100%;
-    margin-left: 1rem;
-    padding-top: 5rem;
-    z-index: 1;
 }
