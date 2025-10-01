@@ -4,7 +4,8 @@ import RoleTypeCell from "../RoleTypeCell";
 import {
   Table
 } from "@digdir/designsystemet-react";
-import "./styles/ManualRoleSearchStyle.css";
+import  styles from "./styles/Table.module.css";
+
 
 interface RoleTableProps {
   roles: Role[];
@@ -12,7 +13,7 @@ interface RoleTableProps {
 
 const RoleTable: React.FC<RoleTableProps> = ({ roles }) => {
   return (
-    <div className="table-div">
+    <div className={styles["table-div"]}>
       <Table stickyHeader border data-color="neutral">
         <Table.Head>
           <Table.Row>

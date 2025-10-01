@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { getLocalStorageValue } from "../components/ManualRoleSearch/utils/storageUtils";
 import { UseManualRoleSearch } from "../hooks/hooks";
-import { Box } from "@mui/material";
 import InputComponent from "../components/ManualRoleSearch/ManualRoleSearchInput";
 import SearchButton from "../components/ManualRoleSearch/ManualRoleSearchButton";
 import EmptySearch from "../components/ManualRoleSearch/ManualRoleEmptySearchButton";
