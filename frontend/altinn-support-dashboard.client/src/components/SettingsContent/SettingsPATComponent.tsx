@@ -6,8 +6,6 @@ import {
 import classes from "./styles/SettingsPatComponent.module.css";
 import { useEffect, useState } from "react";
 import { usePatTokenValidation } from "./hooks/usePatTokenValidation";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { styles } from "./styles/SettingsPATComponent.styles";
 import {
   Card,
   Heading,
@@ -66,9 +64,7 @@ const SettingsPATComponent: React.FC = () => {
 
   return (
     <Card className={classes.wrapper}>
-      <Heading className={classes.cardTitle} level={6}>
-        Organisasjonsoppsett
-      </Heading>
+      <Heading level={6}>Organisasjonsoppsett</Heading>
 
       <Paragraph className={classes.description} data-size="sm">
         For å opprette nye organisasjoner i Altinn Studio må du angi en gyldig
@@ -103,7 +99,6 @@ const SettingsPATComponent: React.FC = () => {
             value={patInput}
             onChange={handlePatInputChange}
             type={showPassword ? "text" : "password"}
-            error={!!patState.errorMessage}
             disabled={patState.isValidating}
             aria-label="Personal Access Token"
           />
@@ -117,12 +112,7 @@ const SettingsPATComponent: React.FC = () => {
           </Button>
         </div>
         {/* Help links */}
-        <Card>
-          <Tooltip content="PAT-token brukes for å opprette organisasjoner, teams og repositories i Gitea. Denne må opprettes med admin-tilgang.">
-            <InformationSquareIcon className={classes.informationIcon}>
-              Hva er en PAT-token?
-            </InformationSquareIcon>
-          </Tooltip>
+        <div className={classes.patgeneratewrapper}>
           <Button
             variant="secondary"
             data-size="sm"
@@ -130,7 +120,10 @@ const SettingsPATComponent: React.FC = () => {
           >
             Generer et nytt PAT-token
           </Button>
-        </Card>
+          <Tooltip content="PAT-token brukes for å opprette organisasjoner, teams og repositories i Gitea. Denne må opprettes med admin-tilgang.">
+            <InformationSquareIcon className={classes.informationIcon} />
+          </Tooltip>
+        </div>
 
         {/* Validation alerts */}
         {patState.isValid && (
@@ -141,18 +134,23 @@ const SettingsPATComponent: React.FC = () => {
         )}
 
         {/* Action buttons */}
-        <Button
-          onClick={handleValidateToken}
-          disabled={patState.isValidating || !patInput}
-        >
-          {patState.isValidating ? "Validerer..." : "Valider token"}
-        </Button>
-        <Button
-          onClick={handleClearToken}
-          disabled={patState.isValidating || !patInput}
-        >
-          Fjern token
-        </Button>
+        <div className={classes.patActionButtonsWrapper}>
+          {" "}
+          <Button
+            variant="secondary"
+            onClick={handleValidateToken}
+            disabled={patState.isValidating || !patInput}
+          >
+            {patState.isValidating ? "Validerer..." : "Valider token"}
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={handleClearToken}
+            disabled={patState.isValidating || !patInput}
+          >
+            Fjern token
+          </Button>
+        </div>
       </Card>
     </Card>
   );

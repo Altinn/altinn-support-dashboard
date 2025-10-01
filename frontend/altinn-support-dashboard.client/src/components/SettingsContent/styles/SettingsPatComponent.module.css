@@ -1,14 +1,12 @@
 .wrapper {
   padding: 1.5rem;
+}
+
+.wrapper > * {
   margin-bottom: 1rem;
 }
 
 .section {
-  margin-bottom: 1rem;
-}
-
-.cardTitle {
-  margin-bottom: 1rem;
 }
 
 .description {
@@ -24,6 +22,9 @@
   width: 32px;
 }
 
+.section > * {
+  margin-bottom: 1rem;
+}
 .patInputWrapper {
   display: flex;
   gap: 0.25rem;
@@ -31,4 +32,13 @@
 
 .patInputField {
   flex: 1;
+}
+
+.patgeneratewrapper {
+  display: flex;
+}
+
+.patActionButtonsWrapper {
+  display: flex;
+  gap: 0.25rem;
 }
