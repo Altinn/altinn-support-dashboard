@@ -11,30 +11,11 @@ import {
   fetchOfficialContacts,
   fetchOrganizations,
   fetchPersonalContacts,
-  fetchRoles,
   fetchRolesForOrg,
   fetchSubunits,
 } from "../utils/api";
 import { OfficialContact } from "../components/Dashboard/models/mainContentTypes";
 import { useAppStore } from "../stores/Appstore";
-
-export function useDarkMode() {
-  const isDarkMode = useAppStore((state) => state.isDarkMode);
-  const setIsDarkMode = useAppStore((state) => state.setIsDarkMode);
-
-  return { isDarkMode, setIsDarkMode };
-}
-
-export function useEnvironment() {
-  const [environment, setEnvironment] = useState("PROD");
-  const [isEnvDropdownOpen, setIsEnvDropdownOpen] = useState(false);
-  const toggleEnvDropdown = () => setIsEnvDropdownOpen((prev) => !prev);
-  const handleEnvChange = (env: string) => {
-    setIsEnvDropdownOpen(false);
-    useAppStore((state) => state.setEnvironment(env));
-  };
-  return { environment, isEnvDropdownOpen, toggleEnvDropdown, handleEnvChange };
-}
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -120,19 +101,20 @@ export const useRoles = (
 ) => {
   const rolesQuery: UseQueryResult<Role[], Error> = useQuery({
     queryKey: ["roles", environment, subject, reportee],
-    queryFn: () => fetchRoles(environment, subject!, reportee!),
+    queryFn: () => fetchRolesForOrg(environment, subject!, reportee!),
     enabled: !!subject && !!reportee, // only run if both exist
   });
 
   return rolesQuery;
 };
 
-export function UseManualRoleSearch(rollehaver: string, rollegiver: string) {
-  const environment = useAppStore((state) => state.environment);
-  const baseUrl = getBaseUrl(environment);
-
+export function UseManualRoleSearch(
+  rollehaver: string,
+  rollegiver: string,
+  environment: string,
+) {
   return useQuery({
-    queryKey: ["manualroles", baseUrl, rollehaver, rollegiver],
+    queryKey: ["manualroles", environment, rollehaver, rollegiver],
     queryFn: async () => fetchRolesForOrg(environment, rollehaver, rollegiver),
     enabled: !!rollehaver && !!rollegiver,
   });

@@ -10,7 +10,6 @@ import {
   Navigate,
 } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
-import { useDarkMode } from "../hooks/hooks";
 import { useVersionCheck } from "../hooks/useVersionCheck";
 import { getPalleteTheme } from "../theme/palette";
 import { DashboardPage } from "../pages/DashboardPage";
@@ -18,9 +17,10 @@ import SignOutPage from "../pages/SignOutPage";
 import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
 import NewOrganizationPage from "../pages/NewOrganizationPage";
 import SettingsPage from "../pages/SettingsPage";
+import { useAppStore } from "../stores/Appstore";
 
 const App: React.FC = () => {
-  const { isDarkMode } = useDarkMode();
+  const isDarkMode = useAppStore((state) => state.isDarkMode);
   const theme = React.useMemo(() => getPalleteTheme(isDarkMode), [isDarkMode]);
 
   // Sjekk etter nye versjoner

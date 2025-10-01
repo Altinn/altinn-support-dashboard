@@ -62,39 +62,17 @@ export const fetchOfficialContacts = async (
   return Array.isArray(data) ? data : [data];
 };
 
-export const fetchRoles = async (
-  environment: string,
-  subject: string,
-  reportee: string,
-) => {
-  const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/${subject}/roles/${reportee}`,
-  );
-  const data = await res.json();
-
-  return typeof data === "string" ? JSON.parse(data) : data;
-};
-
 export const fetchRolesForOrg = async (
   environment: string,
   rollehaver: string,
   rollegiver: string,
-) => {
+): Promise<Role[]> => {
   const res = await authorizedFetch(
     `/api/${environment}/serviceowner/${rollehaver}/roles/${rollegiver}`,
   );
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
-  const data = await res.json();
-  let rolesArray: Role[] = [];
-  if (Array.isArray(data)) {
-    rolesArray = data;
-  } else if (data && data._embedded) {
-    const embeddedKeys = Object.keys(data._embedded);
-    if (embeddedKeys.length > 0) {
-      const firstKey = embeddedKeys[0];
-      rolesArray = data._embedded[firstKey];
-    }
-  }
-  return rolesArray;
-};
 
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
+
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+};
