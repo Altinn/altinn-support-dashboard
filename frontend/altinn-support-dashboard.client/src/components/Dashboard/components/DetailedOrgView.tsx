@@ -20,7 +20,6 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
   const environment = useAppStore((state) => state.environment);
   const [selectedContact, setSelectedContact] =
     useState<PersonalContact | null>(null);
-  const [isRoleView, setIsRoleView] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const { officialContactsQuery } = useOrgDetails(
@@ -30,23 +29,16 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
   const handleClearSearch = () => {
     setSearchQuery("");
     setSelectedContact(null);
-    setIsRoleView(false);
   };
 
   useEffect(() => {
     handleClearSearch();
   }, [selectedOrg]);
 
-  useEffect(() => {
-    if (selectedContact != null) {
-      setIsRoleView(true);
-    }
-  }, [selectedContact]);
-
   return (
     <div className="results-section">
       {selectedOrg && (
-        <div className={`org-details ${isRoleView ? "full-width" : ""}`}>
+        <div className={`org-details ${selectedContact ? "full-width" : ""}`}>
           <Typography variant="subtitle1" gutterBottom>
             Org Nr: {selectedOrg.OrganizationNumber}
           </Typography>
@@ -54,7 +46,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
             {selectedOrg.Name}
           </Typography>
 
-          {!isRoleView ? (
+          {!selectedContact ? (
             <>
               <ContactsSearchBar
                 searchQuery={searchQuery}
@@ -76,14 +68,14 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
                   title="Mobilnummer"
                   field="MobileNumber"
                   changedField="MobileNumberChanged"
-                  contacts={officialContactsQuery.data}
+                  contacts={officialContactsQuery.data ?? []}
                 />
 
                 <OfficialContactFieldTable
                   title="E-post"
                   field="EMailAddress"
                   changedField="EMailAddressChanged"
-                  contacts={officialContactsQuery.data}
+                  contacts={officialContactsQuery.data ?? []}
                 />
               </Box>
 
@@ -97,7 +89,6 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
               selectedContact={selectedContact}
               organizationNumber={selectedOrg.OrganizationNumber}
               onBack={() => {
-                setIsRoleView(false);
                 setSelectedContact(null);
               }}
             />
