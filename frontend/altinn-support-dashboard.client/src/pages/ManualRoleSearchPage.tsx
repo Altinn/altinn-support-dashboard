@@ -6,12 +6,8 @@ import InputComponent from "../components/ManualRoleSearch/ManualRoleSearchInput
 import SearchButton from "../components/ManualRoleSearch/ManualRoleSearchButton";
 import EmptySearch from "../components/ManualRoleSearch/ManualRoleEmptySearchButton";
 import ManualRoleSearchResult from "../components/ManualRoleSearch/ManualRoleSearchResult";
-import {
-  containerBox,
-  inputRowBox,
-  emptySearchBox,
-} from "./styles/ManualRoleSearchPage.styles";
-import { Heading } from '@digdir/designsystemet-react';
+import { Heading} from '@digdir/designsystemet-react';
+import "./styles/ManualRoleSearchPage.style.css";
 
 export const ManualRoleSearchPage: React.FC = () => {
   const [rollehaver, setRollehaver] = useState<string>(
@@ -30,46 +26,52 @@ export const ManualRoleSearchPage: React.FC = () => {
   } = UseManualRoleSearch(rollehaver, rollegiver);
 
   return (
-    <Box sx={containerBox}>
+    <div>
       <Heading level={1} data-size="sm" >
         Manuelt Rollesøk
       </Heading>
 
-      <Box sx={inputRowBox}>
-        <InputComponent
-          rollehaver={rollehaver}
-          rollegiver={rollegiver}
-          setRollehaver={setRollehaver}
-          setRollegiver={setRollegiver}
-        />
-        <SearchButton
-          rollehaver={rollehaver}
-          rollegiver={rollegiver}
-          isLoading={isLoading}
-          refetch={refetch}
-          sethasSearched={setHasSearched}
-        />
-      </Box>
-
-      {(hasSearched ||
-        rollehaver.trim() !== "" ||
-        rollegiver.trim() !== "") && (
-        <Box sx={emptySearchBox}>
-          <EmptySearch
-            sethasSearched={setHasSearched}
+      <div className="input-row">
+        <div className="input-fields">
+          <InputComponent
+            rollehaver={rollehaver}
+            rollegiver={rollegiver}
             setRollehaver={setRollehaver}
             setRollegiver={setRollegiver}
           />
-        </Box>
-      )}
-
-      <ManualRoleSearchResult
-        error={error}
-        isLoading={isLoading}
-        hasSearched={hasSearched}
-        roles={roles}
-      />
-    </Box>
+        </div>
+        <div className="search-button">
+          <SearchButton
+            rollehaver={rollehaver}
+            rollegiver={rollegiver}
+            isLoading={isLoading}
+            refetch={refetch}
+            sethasSearched={setHasSearched}
+          />
+        </div>
+      </div>
+      <div className="result-area">
+        {(hasSearched ||
+          rollehaver.trim() !== "" ||
+          rollegiver.trim() !== "") && (
+          <div className="empty-search-button">
+            <EmptySearch
+              sethasSearched={setHasSearched}
+            setRollehaver={setRollehaver}
+            setRollegiver={setRollegiver}
+            />
+          </div>
+        )}
+        <div className="result-table">
+          <ManualRoleSearchResult
+            error={error}
+            isLoading={isLoading}
+            hasSearched={hasSearched}
+            roles={roles}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

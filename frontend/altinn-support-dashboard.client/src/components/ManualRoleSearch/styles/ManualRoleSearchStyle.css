@@ -13,12 +13,13 @@
     background-color: white;
 }
 
-.textfield-div {
-    flex: 1;
+.textfield-div{
+    flex:1;
     min-width: 0;
 }
 
-.input-div{
-    display: flex;
-    gap: 1rem;
+.textfield-div input {
+  width: 100%;
+  min-width: 70%;
+  padding: 1rem;
 }
