@@ -1,6 +1,7 @@
 import { IconButton, TextField, InputAdornment } from "@mui/material";
 import { Search as SearchIcon, Clear as ClearIcon } from "@mui/icons-material";
 import { useEffect, useState } from "react";
+import { Textfield, Button } from "@digdir/designsystemet-react";
 
 type Props = {
   query: string;
@@ -24,30 +25,15 @@ export const TopSearchBarTextField: React.FC<Props> = ({ query, setQuery }) => {
     }
   }, []);
   return (
-    <TextField
-      fullWidth
-      variant="outlined"
+    <Textfield
+      label=""
       placeholder="Mobilnummer / E-post / Organisasjonsnummer"
       value={textFieldValue}
       onChange={(e) => setTextFieldValue(e.target.value)}
-      onKeyPress={(e) => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") {
           handleSearch();
         }
-      }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            {textFieldValue && (
-              <IconButton onClick={() => setTextFieldValue("")} edge="end">
-                <ClearIcon />
-              </IconButton>
-            )}
-            <IconButton onClick={handleSearch} edge="end">
-              <SearchIcon />
-            </IconButton>
-          </InputAdornment>
-        ),
       }}
     />
   );
