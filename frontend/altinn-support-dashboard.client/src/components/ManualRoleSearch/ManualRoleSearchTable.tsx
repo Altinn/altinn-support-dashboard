@@ -1,13 +1,10 @@
 import { Role } from "./models/manualRoleSearchTypes";
 import React from "react";
-import {
-  TableContainer,
-  Paper,
-} from "@mui/material";
 import RoleTypeCell from "../RoleTypeCell";
 import {
   Table
 } from "@digdir/designsystemet-react";
+import "./styles/ManualRoleSearchStyle.css";
 
 interface RoleTableProps {
   roles: Role[];
@@ -15,14 +12,8 @@ interface RoleTableProps {
 
 const RoleTable: React.FC<RoleTableProps> = ({ roles }) => {
   return (
-    <TableContainer
-      component={Paper}
-      sx={{
-        maxHeight: "75vh",
-        overflowY: "auto",
-      }}
-    >
-      <Table stickyHeader border>
+    <div className="table-div">
+      <Table stickyHeader border data-color="neutral">
         <Table.Head>
           <Table.Row>
             <Table.HeaderCell>
@@ -50,7 +41,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles }) => {
           ))}
         </Table.Body>
       </Table>
-    </TableContainer>
+    </div>
   );
 };
 
