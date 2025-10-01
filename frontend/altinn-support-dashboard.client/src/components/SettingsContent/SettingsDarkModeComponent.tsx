@@ -16,7 +16,7 @@ const SettingsDarkModeComponent: React.FC = () => {
   return (
     <Card className={classes.container}>
       <Heading level={6}>Darkmode</Heading>
-      <Switch label="" onChange={toggleDarkMode} />
+      <Switch checked={isDarkMode} label="" onChange={toggleDarkMode} />
     </Card>
   );
 };
