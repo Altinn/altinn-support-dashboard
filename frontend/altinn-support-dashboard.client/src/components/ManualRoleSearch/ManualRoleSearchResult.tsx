@@ -2,6 +2,7 @@ import React from "react";
 import { Role } from "./models/manualRoleSearchTypes";
 import RoleTable from "./ManualRoleSearchTable";
 import { Alert, Heading } from '@digdir/designsystemet-react';
+import styles from "./styles/ResultTable.module.css";
 
 type ManualRoleSearchResultProps = {
     error: Error | null;
@@ -19,7 +20,7 @@ const ManualRoleSearchResult: React.FC<ManualRoleSearchResultProps> = ({
   }) => {
 
     return (
-      <div>
+      <div className={styles["result-area"]}>
         {error && (
           <Alert data-color="danger" >
             {error.message}

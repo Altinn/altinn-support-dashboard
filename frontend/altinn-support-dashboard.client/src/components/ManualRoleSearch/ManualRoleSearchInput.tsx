@@ -2,6 +2,7 @@ import React from "react";
 import { setLocalStorageValue, } from "./utils/storageUtils";
 import ManualRoleSearchTextField from "./ManualRoleSearchTextfield";
 import { Tooltip } from "@digdir/designsystemet-react";
+import style from "./styles/InputComponent.module.css";
 
 
 type InputComponentProps = {
@@ -19,7 +20,7 @@ const InputComponent: React.FC<InputComponentProps> = ({
   }) => {
 
   return (
-    <>
+    <div className={style["input-fields"]}>
       <Tooltip content = "Organisasjonsnummeret til virksomheten som gir rollen" placement="bottom">
         <span>
           <ManualRoleSearchTextField
@@ -44,7 +45,7 @@ const InputComponent: React.FC<InputComponentProps> = ({
         />
         </span>
       </Tooltip>
-    </>
+    </div>
    );
 };
 

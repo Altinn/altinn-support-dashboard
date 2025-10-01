@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from '@digdir/designsystemet-react';
-
+import style from "./styles/SearchButton.module.css";
 
 type SearchButtonProps = {
   rollehaver: string;
@@ -24,13 +24,14 @@ const SearchButton: React.FC<SearchButtonProps> = ({
         refetch();
     };
     return (
-        <Button
-          variant="primary"
-          onClick={handleSearch}
-          disabled={isLoading || !rollehaver || !rollegiver}
-        >
-          Søk
-        </Button>
+      <div className={style["search-button"]}>
+          <Button
+            onClick={handleSearch}
+            disabled={isLoading || !rollehaver || !rollegiver}
+          >
+            Søk
+          </Button>
+      </div>
     );
 };
 

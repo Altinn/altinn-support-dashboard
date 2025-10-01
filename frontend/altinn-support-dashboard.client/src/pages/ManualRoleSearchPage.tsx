@@ -6,10 +6,7 @@ import SearchButton from "../components/ManualRoleSearch/ManualRoleSearchButton"
 import EmptySearch from "../components/ManualRoleSearch/ManualRoleEmptySearchButton";
 import ManualRoleSearchResult from "../components/ManualRoleSearch/ManualRoleSearchResult";
 import { Heading} from '@digdir/designsystemet-react';
-import "./styles/ManualRoleSearchPage.style.css";
-import buttonStyles from "./styles/ManualRoleSearch/SearchButton.module.css";
-import inputStyles from "./styles/ManualRoleSearch/InputFields.module.css";
-import emptyStyles from "./styles/ManualRoleSearch/EmptySearchButton.module.css"; 
+import styles from"./styles/ManualRoleSearchPage.module.css";
 import resultTableStyles from "./styles/ManualRoleSearch/ResultTable.module.css";
 
 export const ManualRoleSearchPage: React.FC = () => {
@@ -34,45 +31,37 @@ export const ManualRoleSearchPage: React.FC = () => {
         Manuelt Rollesøk
       </Heading>
 
-      <div className="input-row">
-        <div className={inputStyles["input-fields"]}>
-          <InputComponent
-            rollehaver={rollehaver}
-            rollegiver={rollegiver}
-            setRollehaver={setRollehaver}
-            setRollegiver={setRollegiver}
-          />
-        </div>
-        <div className={buttonStyles["search-button"]}>
-          <SearchButton
-            rollehaver={rollehaver}
-            rollegiver={rollegiver}
-            isLoading={isLoading}
-            refetch={refetch}
-            sethasSearched={setHasSearched}
-          />
-        </div>
+      <div className={styles["input-row"]}>
+        <InputComponent
+          rollehaver={rollehaver}
+          rollegiver={rollegiver}
+          setRollehaver={setRollehaver}
+          setRollegiver={setRollegiver}
+        />
+        <SearchButton
+          rollehaver={rollehaver}
+          rollegiver={rollegiver}
+          isLoading={isLoading}
+          refetch={refetch}
+          sethasSearched={setHasSearched}
+        />
       </div>
-      <div className="result-area">
+      <div className={styles["result-area"]}>
         {(hasSearched ||
           rollehaver.trim() !== "" ||
           rollegiver.trim() !== "") && (
-          <div className={emptyStyles["empty-search-button"]}>
-            <EmptySearch
-              sethasSearched={setHasSearched}
+          <EmptySearch
+            sethasSearched={setHasSearched}
             setRollehaver={setRollehaver}
             setRollegiver={setRollegiver}
-            />
-          </div>
-        )}
-        <div className={resultTableStyles["result-table"]}>
-          <ManualRoleSearchResult
-            error={error}
-            isLoading={isLoading}
-            hasSearched={hasSearched}
-            roles={roles}
           />
-        </div>
+        )}
+        <ManualRoleSearchResult
+          error={error}
+          isLoading={isLoading}
+          hasSearched={hasSearched}
+          roles={roles}
+        />
       </div>
     </div>
   );

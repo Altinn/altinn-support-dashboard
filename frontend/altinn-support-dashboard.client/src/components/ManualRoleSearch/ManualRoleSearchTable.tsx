@@ -4,7 +4,7 @@ import RoleTypeCell from "../RoleTypeCell";
 import {
   Table
 } from "@digdir/designsystemet-react";
-import  styles from "./styles/Table.module.css";
+import  styles from "./styles/RoleTable.module.css";
 
 
 interface RoleTableProps {
