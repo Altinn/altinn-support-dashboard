@@ -8,6 +8,12 @@ import ManualRoleSearchResult from "../components/ManualRoleSearch/ManualRoleSea
 import { Heading} from '@digdir/designsystemet-react';
 import styles from"./styles/ManualRoleSearchPage.module.css";
 import resultTableStyles from "./styles/ManualRoleSearch/ResultTable.module.css";
+import {
+  containerBox,
+  inputRowBox,
+  emptySearchBox,
+} from "./styles/ManualRoleSearchPage.styles";
+import { useAppStore } from "../stores/Appstore";
 
 export const ManualRoleSearchPage: React.FC = () => {
   const [rollehaver, setRollehaver] = useState<string>(
@@ -17,13 +23,14 @@ export const ManualRoleSearchPage: React.FC = () => {
     getLocalStorageValue("rollegiver"),
   );
   const [hasSearched, setHasSearched] = useState(false);
+  const environment = useAppStore((state) => state.environment);
 
   const {
     data: roles = [],
     isLoading,
     error,
     refetch,
-  } = UseManualRoleSearch(rollehaver, rollegiver);
+  } = UseManualRoleSearch(rollehaver, rollegiver, environment);
 
   return (
     <div>
