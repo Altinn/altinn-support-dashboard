@@ -135,7 +135,6 @@ const SettingsPATComponent: React.FC = () => {
 
         {/* Action buttons */}
         <div className={classes.patActionButtonsWrapper}>
-          {" "}
           <Button
             variant="secondary"
             onClick={handleValidateToken}
