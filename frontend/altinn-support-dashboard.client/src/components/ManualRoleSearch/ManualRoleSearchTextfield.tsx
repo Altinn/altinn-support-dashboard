@@ -1,5 +1,5 @@
 import React from "react";
- import { Textfield, Tooltip } from '@digdir/designsystemet-react';
+ import { Textfield } from '@digdir/designsystemet-react';
 
 type ManualRoleSearchTextFieldProps = {
   label: string;

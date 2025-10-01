@@ -1,5 +1,4 @@
 import React from "react";
-import { Box } from "@mui/material";
 import { setLocalStorageValue, } from "./utils/storageUtils";
 import ManualRoleSearchTextField from "./ManualRoleSearchTextfield";
 import { Tooltip } from "@digdir/designsystemet-react";
