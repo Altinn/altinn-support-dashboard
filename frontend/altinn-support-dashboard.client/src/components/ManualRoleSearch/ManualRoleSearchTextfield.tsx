@@ -13,13 +13,13 @@ const ManualRoleSearchTextField: React.FC<ManualRoleSearchTextFieldProps> = ({
         onChange,
     }) => {
     return (
-        <>
+        <div className="textfield-div">
             <Textfield
                 label={label}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
             />
-        </>
+        </div>
     );
 };
 

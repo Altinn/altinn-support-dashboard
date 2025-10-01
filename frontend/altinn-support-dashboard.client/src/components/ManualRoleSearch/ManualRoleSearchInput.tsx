@@ -20,7 +20,7 @@ const InputComponent: React.FC<InputComponentProps> = ({
   }) => {
 
   return (
-    <>
+    <div className="input-div">
       <Tooltip content = "Organisasjonsnummeret til virksomheten som gir rollen" placement="bottom">
         <span>
           <ManualRoleSearchTextField
@@ -45,7 +45,7 @@ const InputComponent: React.FC<InputComponentProps> = ({
         />
         </span>
       </Tooltip>
-    </>
+    </div>
    );
 };
 

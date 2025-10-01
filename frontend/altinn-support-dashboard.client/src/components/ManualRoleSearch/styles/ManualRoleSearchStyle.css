@@ -12,3 +12,13 @@
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
     background-color: white;
 }
+
+.textfield-div {
+    flex: 1;
+    min-width: 0;
+}
+
+.input-div{
+    display: flex;
+    gap: 1rem;
+}
