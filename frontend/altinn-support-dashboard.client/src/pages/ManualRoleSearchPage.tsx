@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { getLocalStorageValue } from "../components/ManualRoleSearch/utils/storageUtils";
 import { UseManualRoleSearch } from "../hooks/hooks";
-import { Box, Typography } from "@mui/material";
 import InputComponent from "../components/ManualRoleSearch/ManualRoleSearchInput";
 import SearchButton from "../components/ManualRoleSearch/ManualRoleSearchButton";
 import EmptySearch from "../components/ManualRoleSearch/ManualRoleEmptySearchButton";
 import ManualRoleSearchResult from "../components/ManualRoleSearch/ManualRoleSearchResult";
-import {
-  containerBox,
-  inputRowBox,
-  emptySearchBox,
-} from "./styles/ManualRoleSearchPage.styles";
+import { Heading} from '@digdir/designsystemet-react';
+import styles from"./styles/ManualRoleSearchPage.module.css";
 import { useAppStore } from "../stores/Appstore";
 
 export const ManualRoleSearchPage: React.FC = () => {
@@ -31,12 +27,12 @@ export const ManualRoleSearchPage: React.FC = () => {
   } = UseManualRoleSearch(rollehaver, rollegiver, environment);
 
   return (
-    <Box sx={containerBox}>
-      <Typography variant="h6" gutterBottom>
+    <div>
+      <Heading level={1} data-size="sm" >
         Manuelt Rollesøk
-      </Typography>
+      </Heading>
 
-      <Box sx={inputRowBox}>
+      <div className={styles["input-row"]}>
         <InputComponent
           rollehaver={rollehaver}
           rollegiver={rollegiver}
@@ -50,27 +46,25 @@ export const ManualRoleSearchPage: React.FC = () => {
           refetch={refetch}
           sethasSearched={setHasSearched}
         />
-      </Box>
-
-      {(hasSearched ||
-        rollehaver.trim() !== "" ||
-        rollegiver.trim() !== "") && (
-        <Box sx={emptySearchBox}>
+      </div>
+      <div className={styles["result-area"]}>
+        {(hasSearched ||
+          rollehaver.trim() !== "" ||
+          rollegiver.trim() !== "") && (
           <EmptySearch
             sethasSearched={setHasSearched}
             setRollehaver={setRollehaver}
             setRollegiver={setRollegiver}
           />
-        </Box>
-      )}
-
-      <ManualRoleSearchResult
-        error={error}
-        isLoading={isLoading}
-        hasSearched={hasSearched}
-        roles={roles}
-      />
-    </Box>
+        )}
+        <ManualRoleSearchResult
+          error={error}
+          isLoading={isLoading}
+          hasSearched={hasSearched}
+          roles={roles}
+        />
+      </div>
+    </div>
   );
 };
 
