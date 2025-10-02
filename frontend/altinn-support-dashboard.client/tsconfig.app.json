@@ -26,6 +26,6 @@
     "skipLibCheck": true
   },
 
-  "include": [ "src/**/*", "types.d.ts" ], 
+"include": ["src/**/*.{ts,tsx,js,jsx,css,scss}", "types.d.ts"],
   "types": [  ]
 }

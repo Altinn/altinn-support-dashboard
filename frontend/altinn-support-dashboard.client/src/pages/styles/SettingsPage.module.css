@@ -1,0 +1,10 @@
+.container {
+  padding: 16px;
+  height: 100%;
+  max-height: calc(100vh - 80px);
+  overflow: scroll;
+}
+
+.container > * {
+  margin-bottom: 1rem;
+}

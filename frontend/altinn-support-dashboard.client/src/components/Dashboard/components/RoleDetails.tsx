@@ -13,7 +13,7 @@ import {
 import { useRoles } from "../../../hooks/hooks";
 import { PersonalContact } from "../models/mainContentTypes";
 import { useAppStore } from "../../../stores/Appstore";
-import  RoleTypeCell  from "../../RoleTypeCell";
+import RoleTypeCell from "../../RoleTypeCell";
 
 interface RoleDetailsProps {
   selectedContact: PersonalContact;
@@ -48,7 +48,7 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
         Tilbake til oversikt
       </Button>
 
-      <TableContainer component={Paper} sx={{ mb: 2 }} >
+      <TableContainer component={Paper} sx={{ mb: 2 }}>
         <MuiTable>
           <TableHead>
             <TableRow>
@@ -64,7 +64,7 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
             {roleInfo && roleInfo.length > 0 ? (
               roleInfo.map((role, index) => (
                 <TableRow key={index}>
-                  <RoleTypeCell roleType = {role.RoleType} />
+                  <RoleTypeCell roleType={role.RoleType} />
                   <TableCell>{role.RoleName}</TableCell>
                 </TableRow>
               ))

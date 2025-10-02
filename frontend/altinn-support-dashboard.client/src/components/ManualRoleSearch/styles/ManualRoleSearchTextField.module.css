@@ -1,0 +1,11 @@
+
+.textfield-div{
+    flex:1;
+    min-width: 0;
+}
+
+.textfield-div input {
+  width: 100%;
+  min-width: 70%;
+  padding: 1rem;
+}

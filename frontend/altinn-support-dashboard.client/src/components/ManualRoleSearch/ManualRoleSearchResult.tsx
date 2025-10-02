@@ -1,7 +1,8 @@
 import React from "react";
-import { Alert, Box, Typography } from "@mui/material";
 import { Role } from "./models/manualRoleSearchTypes";
 import RoleTable from "./ManualRoleSearchTable";
+import { Alert, Heading } from '@digdir/designsystemet-react';
+import styles from "./styles/ResultTable.module.css";
 
 type ManualRoleSearchResultProps = {
     error: Error | null;
@@ -19,20 +20,20 @@ const ManualRoleSearchResult: React.FC<ManualRoleSearchResultProps> = ({
   }) => {
 
     return (
-        <Box>
+      <div className={styles["result-area"]}>
         {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error.message}
-        </Alert>
-      )}
-      {isLoading && <Typography variant="body1"> Laster roller...</Typography>}
-      {!isLoading && hasSearched && roles.length === 0 && !error && (
-        <Alert severity="info" sx={{ mb: 2 }}>
-          Ingen roller funnet.
-        </Alert>
-      )}
-      {roles.length > 0 && !error && <RoleTable roles={roles} />}
-      </Box>
+          <Alert data-color="danger" >
+            {error.message}
+          </Alert>
+        )}
+        {isLoading && <Heading level={2}> Laster roller...</Heading>}
+        {!isLoading && hasSearched && roles.length === 0 && !error && (
+            <Alert data-color="info">
+            Ingen roller funnet.
+          </Alert>
+        )}
+        {roles.length > 0 && !error && <RoleTable roles={roles} />}
+    </div>
     );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
+import classes from "./styles/SettingsVersionComponent.module.css";
 
-import { Typography, Link, Box } from "@mui/material";
 import { FaSlack, FaBookOpen } from "react-icons/fa";
 import {
   getVersionInfo,
@@ -8,6 +8,7 @@ import {
   VersionData,
 } from "./utils/versionUtils";
 import { useAppStore } from "../../stores/Appstore";
+import { Paragraph, Link } from "@digdir/designsystemet-react";
 
 const SettingsVersionComponent: React.FC = () => {
   const { versionNumber, versionName, releaseDate } = getVersionInfo();
@@ -24,32 +25,30 @@ const SettingsVersionComponent: React.FC = () => {
   }, []);
 
   return (
-    <Box sx={{ mt: 5 }}>
-      <Typography variant="body2" gutterBottom>
+    <div>
+      <Paragraph>
         Applikasjonsinformasjon: {versionName} - Versjon{" "}
         {versionInfo?.version || versionNumber}
-      </Typography>
-      <Typography variant="body2" gutterBottom>
+      </Paragraph>
+      <Paragraph>
         Utgivelsesdato:{" "}
         {versionInfo?.releaseDate || releaseDate || "Ikke tilgjengelig"}
-      </Typography>
-      <Typography variant="body2" gutterBottom>
-        Valgt miljø: {environment}
-      </Typography>
-      <Box sx={{ mt: 2 }}>
-        <Link href="#" sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-          <FaBookOpen style={{ marginRight: "8px" }} />
+      </Paragraph>
+      <Paragraph>Valgt miljø: {environment}</Paragraph>
+      <div>
+        <Link className={classes.link} href="#">
+          <FaBookOpen />
           Dokumentasjon
         </Link>
         <Link
+          className={classes.link}
           href="https://digdir.slack.com/archives/C07AJ5NQE9E"
-          sx={{ display: "flex", alignItems: "center" }}
         >
-          <FaSlack style={{ marginRight: "8px" }} />
+          <FaSlack />
           Kontakt oss på Slack
         </Link>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 
