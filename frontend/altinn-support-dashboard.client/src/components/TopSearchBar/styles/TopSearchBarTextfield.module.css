@@ -6,7 +6,7 @@
 
 .TopSearchBarTextField input {
     width: 95%;
-    padding-right: 3rem;
+    padding-right: 6rem;
     box-shadow: none;
 }
 .TopSearchBarTextField input:focus{
@@ -14,7 +14,7 @@
     box-shadow:none;
 }
 
-.TopSearchBarTextField button {
+.TopSearchBarTextField-button {
     position:absolute;
     right:-0.5rem;
     top: 50%;
@@ -22,4 +22,16 @@
     height: 2.5rem;
     min-width: 2.5rem;
     background: none;
+}
+
+.TopSearchBarTextField-emptySearch{
+    position: absolute;
+    right: 2.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2.5rem;
+    min-width: 2.5rem;
+    background-color: transparent;
+    color: grey;
+    font-size: larger;
 }
