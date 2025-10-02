@@ -26,15 +26,14 @@ const Sidebar: React.FC = () => {
 
   return (
     <div
+      data-color="brand3"
       className={`${classes.sidebar} ${
         isCollapsed ? classes.collapsed : classes.expanded
       }`}
     >
-      {/* Drag handle */}
       <div className={classes.dragHandle} onMouseDown={handleDragStart} />
 
       <div>
-        {/* Logo */}
         <div className={classes.logoBox}>
           <img
             src={isCollapsed ? whiteLogo : logo}
@@ -45,7 +44,6 @@ const Sidebar: React.FC = () => {
           />
         </div>
 
-        {/* Navigation */}
         <nav className={classes.nav}>
           <NavItem
             to="/dashboard"
