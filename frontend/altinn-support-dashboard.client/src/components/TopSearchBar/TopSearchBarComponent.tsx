@@ -1,7 +1,7 @@
 import React from "react";
 import { TopSearchBarTextField } from "./TopSearchBarTextField";
 import { Box } from "@mui/material";
-import { Heading } from "@digdir/designsystemet-react";
+import { Card, Heading } from "@digdir/designsystemet-react";
 
 type SearchComponentProps = {
   query: string;
@@ -12,12 +12,12 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
   query,
   setQuery,
 }) => (
-  <div>
-    <Heading level={1}>
+  <Card data-color="neutral">
+    <Heading level={1} style={{ marginBottom: "0.5rem" }}>
       Søk etter Organisasjoner
     </Heading>
     <TopSearchBarTextField query={query} setQuery={setQuery} />
-  </div>
+  </Card>
 );
 
 export default SearchComponent;
