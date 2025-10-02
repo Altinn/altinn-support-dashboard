@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Textfield, Button, Search, } from "@digdir/designsystemet-react";
-import styles from "./styles/TopSearchBarTextfieldComponent.module.css";
+import styles from "./styles/TopSearchBarTextfield.module.css";
 
 type Props = {
   query: string;
