@@ -1,41 +1,34 @@
+import classes from "./styles/SettingsLanguageComponent.module.css";
+
 import {
+  Card,
+  Heading,
   Select,
-  Box,
-  FormControl,
-  InputLabel,
-  Paper,
-  Typography,
-  MenuItem,
-  SelectChangeEvent,
-} from "@mui/material";
+  SelectOption,
+} from "@digdir/designsystemet-react";
 import { useState } from "react";
 
 const SettingsLanguageComponent: React.FC = () => {
   const [language, setLanguage] = useState<string>("nb");
-  const handleLanguageChange = (event: SelectChangeEvent<string>) => {
+  const handleLanguageChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
     setLanguage(event.target.value as string);
   };
 
   return (
-    <Box>
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          Språkvalg
-        </Typography>
-        <FormControl fullWidth>
-          <InputLabel id="language-select-label">Velg språk</InputLabel>
-          <Select
-            labelId="language-select-label"
-            id="language-select"
-            value={language}
-            label="Velg språk"
-            onChange={handleLanguageChange}
-          >
-            <MenuItem value="nb">Norsk Bokmål</MenuItem>
-          </Select>
-        </FormControl>
-      </Paper>
-    </Box>
+    <Card className={classes.container}>
+      <Heading level={6} className={classes.title}>
+        Språkvalg
+      </Heading>
+      <Select
+        id="language-select"
+        value={language}
+        onChange={handleLanguageChange}
+      >
+        <SelectOption value="nb">Norsk Bokmål</SelectOption>
+      </Select>
+    </Card>
   );
 };
 
