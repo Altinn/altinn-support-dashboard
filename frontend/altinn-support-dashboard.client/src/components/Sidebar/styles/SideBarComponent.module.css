@@ -1,0 +1,127 @@
+/* Base sidebar styles */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  height: 100vh;
+  position: relative;
+  transition:
+    width 0.3s ease,
+    min-width 0.3s ease,
+    background-color 0.3s ease,
+    color 0.3s ease;
+
+  /* Light mode colors from design system */
+  background-color: var(--ds-color-surface-defualt);
+  color: var(--ds-color-text-default, #24272b);
+}
+
+/* Dark mode overrides */
+[data-color-scheme="dark"] .sidebar {
+  background-color: var(--ds-color-surface-inverted, #24272b);
+  color: var(--ds-color-text-inverted, #ffffff);
+}
+
+/* Collapsed / Expanded widths */
+.collapsed {
+  width: 70px;
+  min-width: 70px;
+}
+
+.expanded {
+  width: 250px;
+  min-width: 250px;
+}
+
+/* Drag handle */
+.dragHandle {
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: ew-resize;
+  transition: all 0.2s ease;
+
+  background-color: var(--ds-color-accent, #0062ba);
+  border: 2px solid var(--ds-color-support-brand1, #0d7a5f);
+}
+
+.dragHandle:hover {
+  transform: translateY(-50%) scale(1.2);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Logo */
+.logoBox {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.logoImg {
+  height: auto;
+  transition: width 0.3s ease;
+}
+
+.logoCollapsed {
+  width: 40px;
+}
+
+.logoExpanded {
+  width: 150px;
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Collapse button */
+.collapseContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.collapseButton {
+  height: 36px;
+  border-radius: var(--ds-border-radius, 4px);
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+
+  background-color: var(--ds-color-surface, #ffffff);
+  color: var(--ds-color-text-default, #24272b);
+  border: 1px solid var(--ds-color-support-brand2, #5b3fa0);
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
+}
+
+.collapseButton:hover {
+  background-color: var(--ds-color-accent, #0062ba);
+  border-color: var(--ds-color-support-brand1, #0d7a5f);
+}
+
+/* Divider */
+.divider {
+  margin: 16px 0;
+  height: 1px;
+  border: none;
+  background-color: var(--ds-color-support-brand2, #5b3fa0);
+}
+
+/* User info */
+.userInfo {
+  text-align: center;
+}

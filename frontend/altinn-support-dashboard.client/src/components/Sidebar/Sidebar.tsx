@@ -1,5 +1,4 @@
 import React from "react";
-import { Box, Typography, Button, Divider, useTheme } from "@mui/material";
 import {
   Dashboard,
   Search,
@@ -14,37 +13,40 @@ import { useSidebarDrag } from "./hooks/useSidebarDrag";
 import NavItem from "./NavItem";
 import SideBarDateTime from "./SidebarDateTime";
 import SidebarEnvToggle from "./SidebarEnvToggle";
-import * as styles from "./styles/SidebarComponent.style";
-import { useAppStore } from "../../stores/Appstore";
 import { useUserDetails } from "../../hooks/hooks";
 
+// design system imports
+import { Button, Divider, Label } from "@digdir/designsystemet-react";
+
+import classes from "./styles/SideBarComponent.module.css";
+
 const Sidebar: React.FC = () => {
-  const theme = useTheme();
   const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();
-  const isDarkMode = useAppStore((state) => state.isDarkMode);
   const { userName, userEmail } = useUserDetails();
 
   return (
-    <Box sx={styles.sidebarContainer(isCollapsed, isDarkMode, theme)}>
+    <div
+      className={`${classes.sidebar} ${
+        isCollapsed ? classes.collapsed : classes.expanded
+      }`}
+    >
       {/* Drag handle */}
-      <Box
-        onMouseDown={handleDragStart}
-        sx={styles.dragHandle(isDarkMode, theme)}
-      />
+      <div className={classes.dragHandle} onMouseDown={handleDragStart} />
 
-      <Box>
+      <div>
         {/* Logo */}
-        <Box sx={styles.logoBox}>
-          <Box
-            component="img"
+        <div className={classes.logoBox}>
+          <img
             src={isCollapsed ? whiteLogo : logo}
             alt="logo"
-            sx={styles.logoImg(isCollapsed)}
+            className={`${classes.logoImg} ${
+              isCollapsed ? classes.logoCollapsed : classes.logoExpanded
+            }`}
           />
-        </Box>
+        </div>
 
         {/* Navigation */}
-        <nav className="nav">
+        <nav className={classes.nav}>
           <NavItem
             to="/dashboard"
             title="Oppslag"
@@ -70,35 +72,37 @@ const Sidebar: React.FC = () => {
             isCollapsed={isCollapsed}
           />
         </nav>
-      </Box>
+      </div>
 
-      <Box>
+      <div>
         {/* Collapse button */}
-        <Box sx={styles.collapseContainer}>
-          <Button
-            onClick={toggleCollapse}
-            startIcon={!isCollapsed ? <ChevronLeft /> : undefined}
-            sx={styles.collapseButton(isCollapsed)}
-          >
-            {isCollapsed ? <ChevronRight /> : "Minimer sidepanel"}
+        <div className={classes.collapseContainer}>
+          <Button onClick={toggleCollapse} className={classes.collapseButton}>
+            {isCollapsed ? (
+              <ChevronRight />
+            ) : (
+              <>
+                <ChevronLeft /> Minimer sidepanel
+              </>
+            )}
           </Button>
-        </Box>
+        </div>
 
-        <Divider sx={styles.dividerStyle(isDarkMode)} />
+        <Divider className={classes.divider} />
 
         {/* Extra info when expanded */}
         {!isCollapsed && (
           <>
             <SideBarDateTime />
             <SidebarEnvToggle />
-            <Box sx={styles.userInfoBox}>
-              <Typography variant="subtitle1">{userName}</Typography>
-              <Typography variant="body2">{userEmail}</Typography>
-            </Box>
+            <div className={classes.userInfo}>
+              <Label>{userName}</Label>
+              <Label>{userEmail}</Label>
+            </div>
           </>
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 
