@@ -1,0 +1,10 @@
+
+
+
+.RoleDetailsContainer {
+    border-color: lightskyblue;
+    border-style: solid;
+    overflow-y: auto;
+    max-height: 60vh;
+    border-width: 0.02rem;
+}
