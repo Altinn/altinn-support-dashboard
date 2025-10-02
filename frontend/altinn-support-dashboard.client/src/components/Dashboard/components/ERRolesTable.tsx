@@ -1,20 +1,16 @@
 import React, { useState } from "react";
-import {
-  Table as MuiTable,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Paper,
-} from "@mui/material";
 import { formatDate } from "../utils/dateUtils";
 import { ERRolesSortField, SortDirection } from "../models/mainContentTypes";
 import { sortERRoles } from "../utils/contactUtils";
 import { useOrgDetails } from "../../../hooks/hooks";
 import { SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
+import {
+  Table,
+  Heading,
+  Paragraph,
+  Card
+} from "@digdir/designsystemet-react";
 
 interface ERRolesTableProps {
   selectedOrg: SelectedOrg;
@@ -35,19 +31,25 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
 
   const handleERRoleSort = (field: ERRolesSortField) => {
     if (field === erRoleSortField) {
-      if (erRoleSortDirection === "asc") {
-        setERRoleSortDirection("desc");
-      } else if (erRoleSortDirection === "desc") {
+      if (erRoleSortDirection === "ascending") {
+        setERRoleSortDirection("descending");
+      } else if (erRoleSortDirection === "descending") {
         setERRoleSortField(null);
         setERRoleSortDirection(undefined);
       } else {
-        setERRoleSortDirection("asc");
+        setERRoleSortDirection("ascending");
       }
     } else {
       setERRoleSortField(field);
-      setERRoleSortDirection("asc");
+      setERRoleSortDirection("ascending");
     }
   };
+  function changetoShortenedSort(direction) {
+    if (direction === "ascending") return "asc";
+    if (direction === "descending") return "desc";
+    return undefined;
+  }
+  //Kan kanskje fjernes når alt er migrert over til designsystemet?
 
   const flatERRoles =
     roles
@@ -68,82 +70,75 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
   const sortedERRoles = sortERRoles(
     flatERRoles,
     erRoleSortField,
-    erRoleSortDirection,
+    changetoShortenedSort(erRoleSortDirection)
   );
 
   return (
-    <TableContainer component={Paper} sx={{ mb: 2, pb: 4 }}>
-      <MuiTable>
-        <TableHead>
-          <TableRow>
-            <TableCell
-              sortDirection={
-                erRoleSortField === "type" ? erRoleSortDirection : false
+    <Card>
+      <Table>
+        <Table.Head>
+          <Table.Row>
+            <Table.HeaderCell
+              sort={
+                erRoleSortField === "type" ? erRoleSortDirection : 'none'
               }
               onClick={() => handleERRoleSort("type")}
-              sx={{ cursor: "pointer" }}
             >
-              <Typography variant="subtitle1">Rolletype</Typography>
-            </TableCell>
-            <TableCell
-              sortDirection={
-                erRoleSortField === "person" ? erRoleSortDirection : false
+              Rolletype
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              sort={
+                erRoleSortField === "person" ? erRoleSortDirection : 'none'
               }
               onClick={() => handleERRoleSort("person")}
-              sx={{ cursor: "pointer" }}
             >
-              <Typography variant="subtitle1">Person/Virksomhet</Typography>
-            </TableCell>
-            <TableCell
-              sortDirection={
-                erRoleSortField === "sistEndret" ? erRoleSortDirection : false
+              Person/Virksomhet
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              sort={
+                erRoleSortField === "sistEndret" ? erRoleSortDirection : 'none'
               }
               onClick={() => handleERRoleSort("sistEndret")}
-              sx={{ cursor: "pointer" }}
             >
-              <Typography variant="subtitle1">Dato Endret</Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="subtitle1">Status</Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+              Dato Endret
+            </Table.HeaderCell>
+            <Table.HeaderCell>
+              Status
+            </Table.HeaderCell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
           {sortedERRoles && sortedERRoles.length > 0 ? (
             sortedERRoles.map((role, index) => (
-              <TableRow key={index}>
-                <TableCell>{role.type?.beskrivelse || ""}</TableCell>
-                <TableCell>
+              <Table.Row key={index}>
+                <Table.Cell>{role.type?.beskrivelse || ""}</Table.Cell>
+                <Table.Cell>
                   {role.person
                     ? `${role.person?.navn?.fornavn || ""} ${role.person?.navn?.etternavn || ""}`.trim()
                     : role.enhet
                       ? `${role.enhet.navn?.[0] || ""} (${role.enhet.organisasjonsnummer})`
                       : ""}
-                </TableCell>
-                <TableCell>{formatDate(role.sistEndret)}</TableCell>
-                <TableCell>
+                </Table.Cell>
+                <Table.Cell>{formatDate(role.sistEndret)}</Table.Cell>
+                <Table.Cell>
                   {role.fratraadt ? "Fratrådt" : "Aktiv"}
                   {role.person?.erDoed ? " (Død)" : ""}
                   {role.enhet?.erSlettet ? " (Slettet)" : ""}
-                </TableCell>
-              </TableRow>
+                </Table.Cell>
+              </Table.Row>
             ))
           ) : (
-            <TableRow>
-              <TableCell colSpan={4}>
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  align="center"
-                >
+            <Table.Row>
+              <Table.Cell colSpan={4}>
+                <Paragraph style={{ textAlign: "center" }}>
                   Ingen roller funnet
-                </Typography>
-              </TableCell>
-            </TableRow>
+                </Paragraph>
+              </Table.Cell>
+            </Table.Row>
           )}
-        </TableBody>
-      </MuiTable>
-    </TableContainer>
+        </Table.Body>
+      </Table>
+    </Card>
   );
 };
 
