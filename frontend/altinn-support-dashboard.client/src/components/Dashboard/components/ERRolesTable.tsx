@@ -11,6 +11,7 @@ import {
   Paragraph,
   Card
 } from "@digdir/designsystemet-react";
+import style from "../styles/ERRolesTable.module.css";
 
 interface ERRolesTableProps {
   selectedOrg: SelectedOrg;
@@ -74,8 +75,9 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
   );
 
   return (
-    <Card>
-      <Table>
+    <Card className={style["ERRoleTableCard"]}>
+      <Heading level={2} data-size="sm" className={style["ERRoleTableCard-heading"]}>ER-roller</Heading>
+      <Table border>
         <Table.Head>
           <Table.Row>
             <Table.HeaderCell

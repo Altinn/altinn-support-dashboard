@@ -1,0 +1,12 @@
+
+
+
+.ERRoleTableCard {
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: 40vh;
+}
+
+.ERRoleTableCard-heading{
+    margin-bottom: 0.5rem;
+}
