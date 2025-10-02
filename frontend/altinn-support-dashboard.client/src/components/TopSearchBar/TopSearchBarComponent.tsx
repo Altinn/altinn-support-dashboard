@@ -12,12 +12,12 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
   query,
   setQuery,
 }) => (
-  <Box sx={{ mb: 3 }}>
+  <div>
     <Heading level={1}>
       Søk etter Organisasjoner
     </Heading>
     <TopSearchBarTextField query={query} setQuery={setQuery} />
-  </Box>
+  </div>
 );
 
 export default SearchComponent;

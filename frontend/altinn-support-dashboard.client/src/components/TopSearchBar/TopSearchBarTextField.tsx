@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Textfield, Button, Search, } from "@digdir/designsystemet-react";
+import styles from "./styles/TopSearchBarTextfieldComponent.module.css";
 
 type Props = {
   query: string;
@@ -25,6 +26,7 @@ export const TopSearchBarTextField: React.FC<Props> = ({ query, setQuery }) => {
   return (
     <div>
       <Textfield
+        className={styles["TopSearchBarTextField"]}
         label=""
         placeholder="Mobilnummer / E-post / Organisasjonsnummer"
         value={textFieldValue}
