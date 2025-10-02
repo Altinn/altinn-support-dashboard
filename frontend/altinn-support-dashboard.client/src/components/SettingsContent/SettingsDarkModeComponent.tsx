@@ -1,4 +1,7 @@
-import { Box, Paper, Typography, Switch } from "@mui/material";
+import classes from "./styles/SettingsDarkModeComponent.module.css";
+
+import { Card, Switch, Heading } from "@digdir/designsystemet-react";
+
 import { useAppStore } from "../../stores/Appstore";
 
 const SettingsDarkModeComponent: React.FC = () => {
@@ -11,17 +14,14 @@ const SettingsDarkModeComponent: React.FC = () => {
   };
 
   return (
-    <Paper sx={{ p: 2, mb: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Mørk Modus
-      </Typography>
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Typography variant="body1" sx={{ mr: 2 }}>
-          Aktiver mørk modus
-        </Typography>
-        <Switch checked={isDarkMode} onChange={toggleDarkMode} />
-      </Box>
-    </Paper>
+    <Card className={classes.container}>
+      <Heading level={6}>Darkmode</Heading>
+      <Switch
+        checked={isDarkMode}
+        aria-label="enable dark mode"
+        onChange={toggleDarkMode}
+      />
+    </Card>
   );
 };
 

@@ -13,9 +13,10 @@
   "dependencies": {
     "@azure/msal-browser": "^3.27.0",
     "@azure/msal-react": "^2.2.0",
-    "@digdir/designsystemet-css": "^1.0.8",
-    "@digdir/designsystemet-react": "^1.0.8",
-    "@digdir/designsystemet-theme": "^1.0.8",
+    "@digdir/designsystemet": "^1.6.0",
+    "@digdir/designsystemet-css": "^1.6.0",
+    "@digdir/designsystemet-react": "^1.6.0",
+    "@digdir/designsystemet-theme": "^1.6.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.7",
@@ -49,6 +50,7 @@
     "jsdom": "^25.0.1",
     "ts-jest": "^29.2.5",
     "typescript": "^5.2.2",
+    "typescript-plugin-css-modules": "^5.2.0",
     "vite": "^5.3.1",
     "vitest": "^2.1.1"
   }
