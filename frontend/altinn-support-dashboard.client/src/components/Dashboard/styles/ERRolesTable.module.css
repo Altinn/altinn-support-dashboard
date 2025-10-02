@@ -2,7 +2,6 @@
 
 
 .ERRoleTableCard {
-    padding: 1rem;
     overflow-y: auto;
     max-height: 40vh;
 }
