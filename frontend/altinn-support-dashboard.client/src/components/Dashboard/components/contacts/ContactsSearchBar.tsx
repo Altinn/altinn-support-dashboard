@@ -1,9 +1,6 @@
 import React from "react";
-import { TextField, IconButton, InputAdornment } from "@mui/material";
-import ClearIcon from "@mui/icons-material/Clear";
 import {
   Textfield,
-  Button
 } from "@digdir/designsystemet-react";
 import styles from "../../styles/ContactsSearchBar.module.css";
 
