@@ -1,6 +1,7 @@
 import React, { ReactElement } from "react";
 import { Tooltip } from "@mui/material";
 import { NavLink } from "react-router-dom";
+import classes from "./styles/NavItem.module.css";
 
 interface NavItemProps {
   to: string;
@@ -13,14 +14,9 @@ const NavItem: React.FC<NavItemProps> = ({ to, title, icon, isCollapsed }) => {
   return (
     <NavLink
       to={to}
-      className={({ isActive }) => `nav-button ${isActive ? "selected" : ""}`}
-      style={{
-        textDecoration: "none",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        margin: isCollapsed ? "0 0 10px 0" : undefined,
-      }}
+      className={({ isActive }) =>
+        `${classes.navButton} ${isActive ? classes.navButtonSelected : ""}`
+      }
     >
       {isCollapsed ? (
         <Tooltip title={title} placement="right" arrow>
