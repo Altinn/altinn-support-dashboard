@@ -1,7 +1,10 @@
-import { Box, TableCell, Tooltip } from "@mui/material";
 import { useDashboardStore } from "../../../../stores/DashboardStore";
 
+import { Table, Tooltip, Label } from "@digdir/designsystemet-react";
+
 import { formatDate } from "../../utils/dateUtils";
+import { useEffect, useState } from "react";
+import classes from "../../styles/ContactInfoCell.module.css";
 
 interface ContactInfoCellProps {
   contact: string | null;
@@ -13,23 +16,24 @@ const ContactInfoCell: React.FC<ContactInfoCellProps> = ({
   contactLastChanged,
 }) => {
   const userInput = useDashboardStore((s) => s.query.replace(/\s/g, ""));
-  var sxProps = {};
+
+  const [isBold, setIsBold] = useState<boolean>(false);
 
   //outlines if searchquery is part of the cell
-  if (contact === userInput) {
-    sxProps = {
-      fontWeight: "bold",
-    };
-  }
 
+  useEffect(() => {
+    if (contact === userInput) {
+      setIsBold(true);
+    }
+  }, [userInput]);
   return (
-    <TableCell sx={sxProps}>
+    <Table.Cell>
       {contactLastChanged && (
-        <Tooltip title={`Dato endret: ${formatDate(contactLastChanged)}`}>
-          <Box>{contact || "-"}</Box>
+        <Tooltip content={`Dato endret: ${formatDate(contactLastChanged)}`}>
+          <Label className={isBold ? classes.bold : ""}>{contact || "-"}</Label>
         </Tooltip>
       )}
-    </TableCell>
+    </Table.Cell>
   );
 };
 
