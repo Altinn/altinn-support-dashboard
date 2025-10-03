@@ -5,12 +5,7 @@ import { sortERRoles } from "../utils/contactUtils";
 import { useOrgDetails } from "../../../hooks/hooks";
 import { SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
-import {
-  Table,
-  Heading,
-  Paragraph,
-  Card
-} from "@digdir/designsystemet-react";
+import { Table, Heading, Paragraph, Card } from "@digdir/designsystemet-react";
 import style from "../styles/ERRolesTable.module.css";
 
 interface ERRolesTableProps {
@@ -45,11 +40,6 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
       setERRoleSortDirection("ascending");
     }
   };
-  function changetoShortenedSort(direction) {
-    if (direction === "ascending") return "asc";
-    if (direction === "descending") return "desc";
-    return undefined;
-  }
   //Kan kanskje fjernes når alt er migrert over til designsystemet?
 
   const flatERRoles =
@@ -71,44 +61,38 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
   const sortedERRoles = sortERRoles(
     flatERRoles,
     erRoleSortField,
-    changetoShortenedSort(erRoleSortDirection)
+    erRoleSortDirection,
   );
 
   return (
     <Card className={style["Card"]}>
-      <Heading level={2}className={style["heading"]}>
+      <Heading level={2} className={style["heading"]}>
         ER-roller
       </Heading>
       <Table border>
         <Table.Head>
           <Table.Row>
             <Table.HeaderCell
-              sort={
-                erRoleSortField === "type" ? erRoleSortDirection : 'none'
-              }
+              sort={erRoleSortField === "type" ? erRoleSortDirection : "none"}
               onClick={() => handleERRoleSort("type")}
             >
               Rolletype
             </Table.HeaderCell>
             <Table.HeaderCell
-              sort={
-                erRoleSortField === "person" ? erRoleSortDirection : 'none'
-              }
+              sort={erRoleSortField === "person" ? erRoleSortDirection : "none"}
               onClick={() => handleERRoleSort("person")}
             >
               Person/Virksomhet
             </Table.HeaderCell>
             <Table.HeaderCell
               sort={
-                erRoleSortField === "sistEndret" ? erRoleSortDirection : 'none'
+                erRoleSortField === "sistEndret" ? erRoleSortDirection : "none"
               }
               onClick={() => handleERRoleSort("sistEndret")}
             >
               Dato Endret
             </Table.HeaderCell>
-            <Table.HeaderCell>
-              Status
-            </Table.HeaderCell>
+            <Table.HeaderCell>Status</Table.HeaderCell>
           </Table.Row>
         </Table.Head>
         <Table.Body>
