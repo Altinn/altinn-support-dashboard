@@ -13,13 +13,16 @@ const NotificationContactCell: React.FC<NotificationContactCellProps> = ({
   var sxProps = {};
 
   //outlines if searchquery is part of the cell
-  if (contact === userInput) {
-    sxProps = {
-      fontWeight: "bold",
-    };
-  }
+  const boldened = contact === userInput ? {fontWeight: "bold"} : undefined;
 
-  return <Table.Cell className={style["cellText"]}>{contact || "-"}</Table.Cell>;
+  return (
+    <Table.Cell 
+    className={style["cellText"]}
+    style={boldened}
+    >
+      {contact || "-"}
+    </Table.Cell>
+  );
 };
 
 export default NotificationContactCell;
