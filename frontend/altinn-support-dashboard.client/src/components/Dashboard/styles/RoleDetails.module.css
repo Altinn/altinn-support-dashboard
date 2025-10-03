@@ -1,0 +1,19 @@
+
+
+
+.Container {
+    border-color: lightskyblue;
+    border-style: solid;
+    overflow-y: auto;
+    max-height: 60vh;
+    border-width: 0.02rem;
+}
+
+.Button {
+    margin: 0.5rem 0 1rem 0;
+    height: 2.5rem;
+    font-size: 0.95rem;
+    padding: 0.2rem 0.2rem;
+    min-width: unset;
+    min-height: unset;
+}

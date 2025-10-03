@@ -1,0 +1,15 @@
+
+
+
+.Card {
+    overflow-y: auto;
+    max-height: 40vh;
+}
+
+.heading{
+    margin-bottom: 0.5rem;
+}
+
+.paragraph {
+    text-align: center;
+}
