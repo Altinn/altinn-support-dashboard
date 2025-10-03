@@ -8,9 +8,8 @@ import { Button,
   Table,
   Card,
   Paragraph
-} from '@digdir/designsystemet-react'
-import containerStyles from "../styles/RoleDetailsContainer.module.css";
-import buttonStyles from "../styles/RoleDetailsButton.module.css"
+} from '@digdir/designsystemet-react';
+import styles from "../styles/RoleDetails.module.css"
 
 interface RoleDetailsProps {
   selectedContact: PersonalContact;
@@ -41,13 +40,13 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
         Roller knyttet til {selectedContact.name}
       </Heading>
 
-      <Button className={buttonStyles["RoleDetailsButton"]} 
+      <Button className={styles["Button"]} 
       onClick={handleBack}
       variant='secondary'>
         Tilbake til oversikt
       </Button>
 
-      <div className={containerStyles["RoleDetailsContainer"]}>
+      <div className={styles["Container"]}>
         <Table stickyHeader>
           <Table.Head>
             <Table.Row>
