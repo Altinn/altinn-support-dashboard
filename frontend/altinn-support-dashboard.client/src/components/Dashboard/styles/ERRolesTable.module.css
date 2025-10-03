@@ -1,11 +1,11 @@
 
 
 
-.ERRoleTableCard {
+.Card {
     overflow-y: auto;
     max-height: 40vh;
 }
 
-.ERRoleTableCard-heading{
+.heading{
     margin-bottom: 0.5rem;
 }

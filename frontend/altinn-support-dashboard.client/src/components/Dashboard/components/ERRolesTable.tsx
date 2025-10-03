@@ -75,8 +75,10 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
   );
 
   return (
-    <Card className={style["ERRoleTableCard"]}>
-      <Heading level={2} data-size="sm" className={style["ERRoleTableCard-heading"]}>ER-roller</Heading>
+    <Card className={style["Card"]}>
+      <Heading level={2}className={style["heading"]}>
+        ER-roller
+      </Heading>
       <Table border>
         <Table.Head>
           <Table.Row>
