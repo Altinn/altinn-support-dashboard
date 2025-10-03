@@ -79,9 +79,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
                 />
               </Box>
 
-              <Typography variant="h6" gutterBottom>
-                ER-roller
-              </Typography>
+              
               <ERRolesTable selectedOrg={selectedOrg} />
             </>
           ) : (
