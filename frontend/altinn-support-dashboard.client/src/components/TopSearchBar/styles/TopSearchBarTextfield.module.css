@@ -1,0 +1,38 @@
+
+.Container {
+    position: relative;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.Container input {
+    width: 95%;
+    padding-right: 6rem;
+    box-shadow: none;
+}
+.Container input:focus{
+    outline: none;
+    box-shadow:none;
+}
+
+.searchButton {
+    position:absolute;
+    right:0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2.5rem;
+    max-width: 2.5rem;
+    background: none;
+}
+
+.emptySearchButton{
+    position: absolute;
+    right: 2.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 3rem;
+    min-width: 2rem;
+    background-color: transparent;
+    color: grey;
+    font-size: larger;
+}
