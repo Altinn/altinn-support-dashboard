@@ -1,6 +1,11 @@
 import React from "react";
 import { TextField, IconButton, InputAdornment } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
+import {
+  Textfield,
+  Button
+} from "@digdir/designsystemet-react";
+import styles from "../../styles/ContactsSearchBar.module.css";
 
 interface SearchContactsBarProps {
   searchQuery: string;
@@ -14,25 +19,12 @@ const SearchContactsBar: React.FC<SearchContactsBarProps> = ({
   handleClearSearch,
 }) => {
   return (
-    <TextField
+    <Textfield
       label="Søk i kontakter"
-      variant="outlined"
-      size="small"
-      fullWidth
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
-      placeholder="Navn / SSN / Telefon / E-post"
-      slotProps={{
-        input: {
-          endAdornment: searchQuery.trim() !== "" && (
-            <InputAdornment position="end">
-              <IconButton onClick={handleClearSearch} edge="end">
-                <ClearIcon />
-              </IconButton>
-            </InputAdornment>
-          ),
-        },
-      }}
+      placeholder="Navn / Fødselsnummer / Telefon / E-post"
+      className={styles["input"]}
     />
   );
 };
