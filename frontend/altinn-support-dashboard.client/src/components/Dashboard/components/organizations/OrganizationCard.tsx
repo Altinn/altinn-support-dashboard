@@ -1,11 +1,8 @@
-import { Paper, Typography, Button } from "@mui/material";
-import { ExpandMore, ExpandLess } from "@mui/icons-material";
-import {
-  paperStyle,
-  subunitPaperStyle,
-} from "../../styles/OrganizationCard.styles";
+import classes from "../../styles/OrganizationCard.module.css";
+import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
 import { Organization, SelectedOrg, Subunit } from "../../../../models/models";
 import { useState } from "react";
+import { Card, Button, Heading, Paragraph } from "@digdir/designsystemet-react";
 
 interface OrganizationCardProps {
   org: Organization;
@@ -40,48 +37,33 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   };
 
   return (
-    <div className="org-card-container">
-      <Paper
-        elevation={isSelected ? 6 : 2}
-        sx={paperStyle(isSelected)}
-        onClick={() => handleSelectedOrg()}
-      >
-        <Typography variant="h6">{org.name}</Typography>
-        <Typography variant="body2">
-          Org Nr: {org.organizationNumber}
-        </Typography>
-        <Typography variant="body2">Type: {org.type}</Typography>
+    <div className={classes.container}>
+      <Card className={classes.mainCard} onClick={() => handleSelectedOrg()}>
+        <Heading level={6}>{org.name}</Heading>
+        <Paragraph variant="short">Org Nr: {org.organizationNumber}</Paragraph>
+        <Paragraph variant="short">Type: {org.type}</Paragraph>
 
         {hasSubUnits && (
           <Button
-            variant="outlined"
-            size="small"
-            sx={{ mt: 1 }}
+            className={classes.expandButton}
+            variant="secondary"
             onClick={(e) => {
               handleExpanded(e);
             }}
           >
-            {isExpanded ? <ExpandLess /> : <ExpandMore />}
+            {isExpanded ? <ChevronDownIcon /> : <ChevronUpIcon />}
           </Button>
         )}
-      </Paper>
+      </Card>
 
       {/* Subunits list */}
       {isExpanded && (
-        <div className="subunits">
+        <div className={classes.subunit}>
           {subUnits
             .filter((sub) => sub.overordnetEnhet === org.organizationNumber)
             .map((sub) => (
-              <Paper
+              <Card
                 key={sub.organisasjonsnummer}
-                elevation={
-                  selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
-                    ? 6
-                    : 1
-                }
-                sx={subunitPaperStyle(
-                  selectedOrg?.OrganizationNumber === sub.organisasjonsnummer,
-                )}
                 onClick={() =>
                   setSelectedOrg({
                     Name: sub.navn,
@@ -89,11 +71,11 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                   })
                 }
               >
-                <Typography variant="subtitle1">{sub.navn}</Typography>
-                <Typography variant="body2">
+                <Paragraph variant="short">{sub.navn}</Paragraph>
+                <Paragraph variant="short">
                   Org Nr: {sub.organisasjonsnummer}
-                </Typography>
-              </Paper>
+                </Paragraph>
+              </Card>
             ))}
         </div>
       )}

@@ -1,0 +1,18 @@
+.container {
+  margin-bottom: 1rem;
+}
+
+.expandButton {
+  margin-top: 1rem;
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+.mainCard {
+  position: relative;
+}
+
+.subunit {
+  margin-left: 20px;
+  margin-top: 10px;
+}
