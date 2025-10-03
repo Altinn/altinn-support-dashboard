@@ -1,0 +1,11 @@
+
+
+
+
+.input :focus {
+    outline: none;
+}
+
+.input {
+    margin-bottom: 0.5rem;
+}
