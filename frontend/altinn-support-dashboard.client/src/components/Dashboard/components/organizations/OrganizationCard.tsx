@@ -1,15 +1,12 @@
-import { Paper, Typography, Button } from "@mui/material";
-import { ExpandMore, ExpandLess } from "@mui/icons-material";
-import {
-  paperStyle,
-  subunitPaperStyle,
-} from "../../styles/OrganizationCard.styles";
+import classes from "../../styles/OrganizationCard.module.css";
+import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
 import { Organization, SelectedOrg, Subunit } from "../../../../models/models";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Card, Button, Heading, Paragraph } from "@digdir/designsystemet-react";
 
 interface OrganizationCardProps {
   org: Organization;
-  selectedOrg?: { OrganizationNumber: string } | null;
+  selectedOrg?: SelectedOrg;
   subUnits: Subunit[];
   setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
 }
@@ -21,7 +18,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   setSelectedOrg,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const isSelected = selectedOrg?.OrganizationNumber === org.organizationNumber;
+
   const hasSubUnits = subUnits.some(
     (sub) => sub.overordnetEnhet === org.organizationNumber,
   );
@@ -39,49 +36,49 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
     setSelectedOrg(selectedOrg);
   };
 
+  const checkIsSelected = (orgNumber: string) => {
+    return orgNumber === selectedOrg?.OrganizationNumber;
+  };
+
   return (
-    <div className="org-card-container">
-      <Paper
-        elevation={isSelected ? 6 : 2}
-        sx={paperStyle(isSelected)}
+    <div className={classes.container}>
+      <Card
+        data-color="neutral"
+        variant={checkIsSelected(org.organizationNumber) ? "tinted" : "default"}
+        className={classes.card}
         onClick={() => handleSelectedOrg()}
       >
-        <Typography variant="h6">{org.name}</Typography>
-        <Typography variant="body2">
-          Org Nr: {org.organizationNumber}
-        </Typography>
-        <Typography variant="body2">Type: {org.type}</Typography>
+        <Heading level={6}>{org.name}</Heading>
+        <Paragraph variant="short">Org Nr: {org.organizationNumber}</Paragraph>
+        <Paragraph variant="short">Type: {org.type}</Paragraph>
 
         {hasSubUnits && (
           <Button
-            variant="outlined"
-            size="small"
-            sx={{ mt: 1 }}
+            className={classes.expandButton}
+            variant="secondary"
             onClick={(e) => {
               handleExpanded(e);
             }}
           >
-            {isExpanded ? <ExpandLess /> : <ExpandMore />}
+            {isExpanded ? <ChevronDownIcon /> : <ChevronUpIcon />}
           </Button>
         )}
-      </Paper>
+      </Card>
 
       {/* Subunits list */}
       {isExpanded && (
-        <div className="subunits">
+        <div className={`${classes.subunit} ${classes.card}`}>
           {subUnits
             .filter((sub) => sub.overordnetEnhet === org.organizationNumber)
             .map((sub) => (
-              <Paper
-                key={sub.organisasjonsnummer}
-                elevation={
-                  selectedOrg?.OrganizationNumber === sub.organisasjonsnummer
-                    ? 6
-                    : 1
+              <Card
+                variant={
+                  checkIsSelected(sub.organisasjonsnummer)
+                    ? "tinted"
+                    : "default"
                 }
-                sx={subunitPaperStyle(
-                  selectedOrg?.OrganizationNumber === sub.organisasjonsnummer,
-                )}
+                data-color="neutral"
+                key={sub.organisasjonsnummer}
                 onClick={() =>
                   setSelectedOrg({
                     Name: sub.navn,
@@ -89,11 +86,11 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                   })
                 }
               >
-                <Typography variant="subtitle1">{sub.navn}</Typography>
-                <Typography variant="body2">
+                <Paragraph variant="short">{sub.navn}</Paragraph>
+                <Paragraph variant="short">
                   Org Nr: {sub.organisasjonsnummer}
-                </Typography>
-              </Paper>
+                </Paragraph>
+              </Card>
             ))}
         </div>
       )}
