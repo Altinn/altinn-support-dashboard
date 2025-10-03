@@ -1,13 +1,14 @@
-import { Box, Typography } from "@mui/material";
 import { useCurrentDateTime } from "../../hooks/hooks";
+import { Heading } from "@digdir/designsystemet-react";
+import classes from "./styles/SideBarDateTime.module.css";
 
 const SideBarDateTime: React.FC = () => {
   const { formattedDate, formattedTime } = useCurrentDateTime();
   return (
-    <Box sx={{ textAlign: "center", mb: 2 }}>
-      <Typography variant="h6">{formattedTime}</Typography>
-      <Typography variant="body2">{formattedDate}</Typography>
-    </Box>
+    <div className={classes.container}>
+      <Heading level={5}>{formattedTime}</Heading>
+      <Heading level={6}>{formattedDate}</Heading>
+    </div>
   );
 };
 
