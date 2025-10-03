@@ -1,21 +1,10 @@
 import React from "react";
-import {
-  Table as MuiTable,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Paper,
-} from "@mui/material";
 import { OfficialContact } from "../../models/mainContentTypes";
 import { formatDate } from "../../utils/dateUtils";
 import NotificationContactCell from "./NotificationContactCell";
 import {
   Table,
-  Paragraph,
-  Card
+  Paragraph
  } from "@digdir/designsystemet-react"
 import styles from "../../styles/NotificationContact.module.css";
 
@@ -56,13 +45,13 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
               </Table.Row>
             ))
           ) : (
-            <TableRow>
+            <Table.Row>
               <Table.Cell colSpan={2}>
                 <Paragraph className={styles["paragraph"]}>
                   Her var det tomt
                 </Paragraph>
               </Table.Cell>
-            </TableRow>
+            </Table.Row>
           )}
         </Table.Body>
       </Table>

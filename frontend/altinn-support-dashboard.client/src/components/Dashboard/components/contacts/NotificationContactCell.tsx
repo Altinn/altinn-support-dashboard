@@ -1,4 +1,3 @@
-import { TableCell } from "@mui/material";
 import { useDashboardStore } from "../../../../stores/DashboardStore";
 import { Table } from "@digdir/designsystemet-react"
 import style from "../../styles/NotificationContact.module.css";

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Box } from "@mui/material";
+import { Typography } from "@mui/material";
 
 import { PersonalContact } from "../models/mainContentTypes";
 import OfficialContactFieldTable from "./contacts/NotificationContactTable";
 import ERRolesTable from "./ERRolesTable";
 import { RoleDetails } from "./RoleDetails";
 import ContactsSearchBar from "./contacts/ContactsSearchBar";
-import { officialContactsBoxStyle } from "../styles/DetailedOrgView.styles";
 import ContactsTable from "./contacts/ContactsTable";
 import { useOrgDetails } from "../../../hooks/hooks";
 import { SelectedOrg } from "../../../models/models";
