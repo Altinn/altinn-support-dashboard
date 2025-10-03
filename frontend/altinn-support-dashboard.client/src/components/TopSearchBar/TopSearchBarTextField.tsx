@@ -24,7 +24,7 @@ export const TopSearchBarTextField: React.FC<Props> = ({ query, setQuery }) => {
     }
   }, []); 
   return (
-    <div className={styles["TopSearchBarTextField"]}>
+    <div className={styles["Container"]}>
       <Textfield
         label=""
         placeholder="Mobilnummer / E-post / Organisasjonsnummer"
@@ -38,14 +38,15 @@ export const TopSearchBarTextField: React.FC<Props> = ({ query, setQuery }) => {
       />
       <Button
         onClick={() => setTextFieldValue("")}
-        className={styles["TopSearchBarTextField-emptySearch"]}
+        className={styles.emptySearchButton}
       >
         X
       </Button>
       <Button 
         onClick={handleSearch}
         variant="tertiary"
-        className={styles["TopSearchBarTextField-button"]}>
+        className={styles.searchButton}
+      >
         <Search />
       </Button>
     </div>

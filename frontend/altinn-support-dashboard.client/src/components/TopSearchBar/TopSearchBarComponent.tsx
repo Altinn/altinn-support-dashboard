@@ -12,12 +12,12 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
   query,
   setQuery,
 }) => (
-  <Card data-color="neutral">
-    <Heading level={1} style={{ marginBottom: "0.5rem" }}>
+  <div>
+    <Heading level={1}>
       Søk etter Organisasjoner
     </Heading>
     <TopSearchBarTextField query={query} setQuery={setQuery} />
-  </Card>
+  </div>
 );
 
 export default SearchComponent;
