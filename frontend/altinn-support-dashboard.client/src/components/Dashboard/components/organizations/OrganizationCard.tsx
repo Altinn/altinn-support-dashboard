@@ -73,7 +73,9 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
             .map((sub) => (
               <Card
                 variant={
-                  checkIsSelected(sub.organisasjonsnummer) ? "tinted" : "tinted"
+                  checkIsSelected(sub.organisasjonsnummer)
+                    ? "tinted"
+                    : "default"
                 }
                 data-color="neutral"
                 key={sub.organisasjonsnummer}
