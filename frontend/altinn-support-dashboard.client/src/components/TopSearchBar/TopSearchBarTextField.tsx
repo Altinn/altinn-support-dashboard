@@ -37,7 +37,9 @@ export const TopSearchBarTextField: React.FC<Props> = ({ query, setQuery }) => {
         }}
       />
       <Button
-        onClick={() => setTextFieldValue("")}
+        onClick={() => {
+          setTextFieldValue("");
+          setQuery("");}}
         className={styles.emptySearchButton}
       >
         X

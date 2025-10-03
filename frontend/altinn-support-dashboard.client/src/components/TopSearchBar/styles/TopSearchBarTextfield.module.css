@@ -17,11 +17,11 @@
 
 .searchButton {
     position:absolute;
-    right:-0.5rem;
+    right:0.8rem;
     top: 50%;
     transform: translateY(-50%);
     height: 2.5rem;
-    min-width: 2.5rem;
+    max-width: 2.5rem;
     background: none;
 }
 
@@ -30,8 +30,8 @@
     right: 2.5rem;
     top: 50%;
     transform: translateY(-50%);
-    height: 2.5rem;
-    min-width: 2.5rem;
+    height: 3rem;
+    min-width: 2rem;
     background-color: transparent;
     color: grey;
     font-size: larger;
