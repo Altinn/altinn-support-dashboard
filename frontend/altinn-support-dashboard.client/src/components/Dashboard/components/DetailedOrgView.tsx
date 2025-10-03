@@ -11,6 +11,9 @@ import ContactsTable from "./contacts/ContactsTable";
 import { useOrgDetails } from "../../../hooks/hooks";
 import { SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
+import {
+  Card
+} from "@digdir/designsystemet-react"
 
 interface DetailedOrgViewProps {
   selectedOrg: SelectedOrg;
@@ -63,7 +66,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
               <Typography variant="h6" gutterBottom>
                 Varslingsadresser for virksomheten
               </Typography>
-              <Box sx={officialContactsBoxStyle}>
+              <Card>
                 <OfficialContactFieldTable
                   title="Mobilnummer"
                   field="MobileNumber"
@@ -77,7 +80,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
                   changedField="EMailAddressChanged"
                   contacts={officialContactsQuery.data ?? []}
                 />
-              </Box>
+              </Card>
 
               
               <ERRolesTable selectedOrg={selectedOrg} />

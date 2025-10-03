@@ -35,8 +35,8 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
   const filteredContacts =
     contacts?.filter((contacts) => contacts[field]) || [];
   return (
-    <TableContainer component={Paper}>
-      <Table>
+    <div className={styles["container"]}>
+      <Table border>
         <Table.Head>
           <Table.Row>
             <Table.HeaderCell>{title}</Table.HeaderCell>
@@ -51,7 +51,7 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
                   contact={contact[field] as string | null}
                 />
                 <Table.Cell className={styles["cellText"]}>
-                  {formatDate(contact[changedField] as string | null)}
+                  {formatDate(contact[changedField] as string)}
                 </Table.Cell>
               </Table.Row>
             ))
@@ -66,7 +66,7 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
           )}
         </Table.Body>
       </Table>
-    </TableContainer>
+    </div>
   );
 };
 
