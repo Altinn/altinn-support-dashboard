@@ -134,7 +134,7 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
           ) : (
             <Table.Row>
               <Table.Cell colSpan={4}>
-                <Paragraph style={{ textAlign: "center" }}>
+                <Paragraph className={style["paragraph"]}>
                   Ingen roller funnet
                 </Paragraph>
               </Table.Cell>
