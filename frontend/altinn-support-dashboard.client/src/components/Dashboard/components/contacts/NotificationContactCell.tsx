@@ -1,5 +1,7 @@
 import { TableCell } from "@mui/material";
 import { useDashboardStore } from "../../../../stores/DashboardStore";
+import { Table } from "@digdir/designsystemet-react"
+import style from "../../styles/NotificationContact.module.css";
 
 interface NotificationContactCellProps {
   contact: string | null;
@@ -18,7 +20,7 @@ const NotificationContactCell: React.FC<NotificationContactCellProps> = ({
     };
   }
 
-  return <TableCell sx={sxProps}>{contact || "-"}</TableCell>;
+  return <Table.Cell className={style["cellText"]}>{contact || "-"}</Table.Cell>;
 };
 
 export default NotificationContactCell;

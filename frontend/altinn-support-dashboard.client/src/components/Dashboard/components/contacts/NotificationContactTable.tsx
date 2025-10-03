@@ -12,6 +12,12 @@ import {
 import { OfficialContact } from "../../models/mainContentTypes";
 import { formatDate } from "../../utils/dateUtils";
 import NotificationContactCell from "./NotificationContactCell";
+import {
+  Table,
+  Paragraph,
+  Card
+ } from "@digdir/designsystemet-react"
+import styles from "../../styles/NotificationContact.module.css";
 
 interface ContactFieldTableProps {
   title: string;
@@ -30,44 +36,36 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
     contacts?.filter((contacts) => contacts[field]) || [];
   return (
     <TableContainer component={Paper}>
-      <MuiTable size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <Typography variant="subtitle2">{title}</Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="subtitle2">{"Endret " + title}</Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+      <Table>
+        <Table.Head>
+          <Table.Row>
+            <Table.HeaderCell>{title}</Table.HeaderCell>
+            <Table.HeaderCell>{"Endret " + title}</Table.HeaderCell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
           {filteredContacts && filteredContacts.length > 0 ? (
             filteredContacts.map((contact, index) => (
-              <TableRow key={index}>
+              <Table.Row key={index}>
                 <NotificationContactCell
                   contact={contact[field] as string | null}
                 />
-                <TableCell>
+                <Table.Cell className={styles["cellText"]}>
                   {formatDate(contact[changedField] as string | null)}
-                </TableCell>
-              </TableRow>
+                </Table.Cell>
+              </Table.Row>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={2}>
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  align="center"
-                >
+              <Table.Cell colSpan={2}>
+                <Paragraph className={styles["paragraph"]}>
                   Her var det tomt
-                </Typography>
-              </TableCell>
+                </Paragraph>
+              </Table.Cell>
             </TableRow>
           )}
-        </TableBody>
-      </MuiTable>
+        </Table.Body>
+      </Table>
     </TableContainer>
   );
 };
