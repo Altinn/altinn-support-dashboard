@@ -1,19 +1,15 @@
 import React from "react";
-import {
-  Button,
-  Paper,
-  Table as MuiTable,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
 import { useRoles } from "../../../hooks/hooks";
 import { PersonalContact } from "../models/mainContentTypes";
 import { useAppStore } from "../../../stores/Appstore";
 import RoleTypeCell from "../../RoleTypeCell";
+import { Button, 
+  Heading,
+  Table,
+  Card,
+  Paragraph
+} from '@digdir/designsystemet-react';
+import styles from "../styles/RoleDetails.module.css"
 
 interface RoleDetailsProps {
   selectedContact: PersonalContact;
@@ -39,51 +35,45 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
   };
 
   return (
-    <div>
-      <Typography variant="h6" gutterBottom>
+    <Card>
+      <Heading level={2}>
         Roller knyttet til {selectedContact.name}
-      </Typography>
+      </Heading>
 
-      <Button variant="outlined" onClick={handleBack} sx={{ mb: 2 }}>
+      <Button className={styles["Button"]} 
+      onClick={handleBack}
+      variant='secondary'>
         Tilbake til oversikt
       </Button>
 
-      <TableContainer component={Paper} sx={{ mb: 2 }}>
-        <MuiTable>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <Typography variant="subtitle1">Rolletype</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle1">Rollenavn</Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
+      <div className={styles["Container"]}>
+        <Table stickyHeader>
+          <Table.Head>
+            <Table.Row>
+              <Table.HeaderCell>Rolletype</Table.HeaderCell>
+              <Table.HeaderCell>Rollenavn</Table.HeaderCell>
+            </Table.Row>
+          </Table.Head>
+          <Table.Body>
             {roleInfo && roleInfo.length > 0 ? (
               roleInfo.map((role, index) => (
-                <TableRow key={index}>
+                <Table.Row key={index}>
                   <RoleTypeCell roleType={role.RoleType} />
-                  <TableCell>{role.RoleName}</TableCell>
-                </TableRow>
+                  <Table.Cell>{role.RoleName}</Table.Cell>
+                </Table.Row>
               ))
             ) : (
-              <TableRow>
-                <TableCell colSpan={2}>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    align="center"
-                  >
+              <Table.Row>
+                <Table.Cell colSpan={2}>
+                  <Paragraph style={{ textAlign: 'center' }}>
                     Ingen roller funnet
-                  </Typography>
-                </TableCell>
-              </TableRow>
+                  </Paragraph>
+                </Table.Cell>
+              </Table.Row>
             )}
-          </TableBody>
-        </MuiTable>
-      </TableContainer>
-    </div>
+          </Table.Body>
+        </Table>
+      </div>
+    </Card>
   );
 };
