@@ -1,21 +1,19 @@
 import React, { useState } from "react";
-import {
-  Typography,
-  TableContainer,
-  Paper,
-  Table as MuiTable,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Button,
-} from "@mui/material";
+import classes from "../../styles/ContactsTable.module.css";
 import { PersonalContact, SortDirection } from "../../models/mainContentTypes";
 import { filterContacts, sortContacts } from "../../utils/contactUtils";
 import { useOrgDetails } from "../../../../hooks/hooks";
 import { SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import ContactInfoCell from "./ContactInfoCell";
+import {
+  Button,
+  Heading,
+  Table,
+  TableHeaderCell,
+  Label,
+  Paragraph,
+} from "@digdir/designsystemet-react";
 
 interface ContactsTableProps {
   searchQuery: string;
@@ -51,114 +49,100 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
 
   const handleSort = (field: keyof PersonalContact) => {
     if (field === sortField) {
-      if (sortDirection === "asc") {
-        setSortDirection("desc");
-      } else if (sortDirection === "desc") {
+      if (sortDirection === "ascending") {
+        setSortDirection("descending");
+      } else if (sortDirection === "descending") {
         setSortField(null);
         setSortDirection(undefined);
       } else {
-        setSortDirection("asc");
+        setSortDirection("ascending");
       }
     } else {
       setSortField(field);
-      setSortDirection("asc");
+      setSortDirection("ascending");
     }
   };
 
   return (
-    <>
-      <Typography variant="h6" gutterBottom>
-        Din kontaktinformasjon
-      </Typography>
-      <TableContainer component={Paper} sx={{ mb: 4 }}>
-        <MuiTable>
-          <TableHead>
-            <TableRow>
-              <TableCell
-                sortDirection={sortField === "name" ? sortDirection : false}
-                onClick={() => handleSort("name")}
-                sx={{ cursor: "pointer" }}
-              >
-                <Typography variant="subtitle1">Navn</Typography>
-              </TableCell>
-              <TableCell
-                sortDirection={
-                  sortField === "socialSecurityNumber" ? sortDirection : false
-                }
-                onClick={() => handleSort("socialSecurityNumber")}
-                sx={{ cursor: "pointer" }}
-              >
-                <Typography variant="subtitle1">Fødselsnummer</Typography>
-              </TableCell>
-              <TableCell
-                sortDirection={
-                  sortField === "mobileNumber" ? sortDirection : false
-                }
-                onClick={() => handleSort("mobileNumber")}
-                sx={{ cursor: "pointer" }}
-              >
-                <Typography variant="subtitle1">Mobilnummer</Typography>
-              </TableCell>
-              <TableCell
-                sortDirection={
-                  sortField === "eMailAddress" ? sortDirection : false
-                }
-                onClick={() => handleSort("eMailAddress")}
-                sx={{ cursor: "pointer" }}
-              >
-                <Typography variant="subtitle1">E-post</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle1">Roller</Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortedContacts.length > 0 ? (
-              sortedContacts.map((contact, index) => (
-                <TableRow key={`${contact.personalContactId}-${index}`}>
-                  <TableCell>{contact.name}</TableCell>
-                  <TableCell>{contact.socialSecurityNumber}</TableCell>
-                  <ContactInfoCell
-                    contact={contact.mobileNumber}
-                    contactLastChanged={contact.mobileNumberChanged}
-                  />
-                  <ContactInfoCell
-                    contact={contact.eMailAddress}
-                    contactLastChanged={contact.eMailAddressChanged}
-                  />
-                  <TableCell>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={() => {
-                        setSelectedContact(contact);
-                      }}
-                    >
-                      Vis
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5}>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    align="center"
+    <div className={classes.tableContainer}>
+      <Table border>
+        <caption>Din kontaktinformasjon</caption>
+        <Table.Head>
+          <Table.Row>
+            <Table.HeaderCell
+              className={classes.tableHeaderCell}
+              sort={sortField === "name" ? sortDirection : "none"}
+              onClick={() => handleSort("name")}
+            >
+              Navn
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              className={classes.tableHeaderCell}
+              sort={
+                sortField === "socialSecurityNumber" ? sortDirection : "none"
+              }
+              onClick={() => handleSort("socialSecurityNumber")}
+            >
+              Fødselsnummer
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              className={classes.tableHeaderCell}
+              sort={sortField === "mobileNumber" ? sortDirection : "none"}
+              onClick={() => handleSort("mobileNumber")}
+            >
+              Mobilnummer
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              className={classes.tableHeaderCell}
+              sort={sortField === "eMailAddress" ? sortDirection : "none"}
+              onClick={() => handleSort("eMailAddress")}
+            >
+              E-post
+            </Table.HeaderCell>
+            <Table.HeaderCell>Roller</Table.HeaderCell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
+          {sortedContacts.length > 0 ? (
+            sortedContacts.map((contact, index) => (
+              <Table.Row key={`${contact.personalContactId}-${index}`}>
+                <Table.Cell>{contact.name}</Table.Cell>
+                <Table.Cell>{contact.socialSecurityNumber}</Table.Cell>
+                <ContactInfoCell
+                  contact={contact.mobileNumber}
+                  contactLastChanged={contact.mobileNumberChanged}
+                />
+                <ContactInfoCell
+                  contact={contact.eMailAddress}
+                  contactLastChanged={contact.eMailAddressChanged}
+                />
+                <Table.Cell>
+                  <Button
+                    variant="primary"
+                    data-size="sm"
+                    onClick={() => {
+                      setSelectedContact(contact);
+                    }}
                   >
-                    {searchQuery.trim().length >= 3
-                      ? `Fant ingen resultater for '${searchQuery}'`
-                      : "Her var det tomt"}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </MuiTable>
-      </TableContainer>
-    </>
+                    Vis
+                  </Button>
+                </Table.Cell>
+              </Table.Row>
+            ))
+          ) : (
+            <Table.Row>
+              <Table.Cell colSpan={5}>
+                <Paragraph>
+                  {searchQuery.trim().length >= 3
+                    ? `Fant ingen resultater for '${searchQuery}'`
+                    : "Her var det tomt"}
+                </Paragraph>
+              </Table.Cell>
+            </Table.Row>
+          )}
+        </Table.Body>
+      </Table>
+    </div>
   );
 };
 
