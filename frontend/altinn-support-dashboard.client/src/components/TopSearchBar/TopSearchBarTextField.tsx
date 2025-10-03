@@ -1,6 +1,6 @@
-import { IconButton, TextField, InputAdornment } from "@mui/material";
-import { Search as SearchIcon, Clear as ClearIcon } from "@mui/icons-material";
 import { useEffect, useState } from "react";
+import { Textfield, Button, Search, } from "@digdir/designsystemet-react";
+import styles from "./styles/TopSearchBarTextfield.module.css";
 
 type Props = {
   query: string;
@@ -22,33 +22,35 @@ export const TopSearchBarTextField: React.FC<Props> = ({ query, setQuery }) => {
     if (textFieldValue === "" && query != null) {
       setTextFieldValue(query);
     }
-  }, []);
+  }, []); 
   return (
-    <TextField
-      fullWidth
-      variant="outlined"
-      placeholder="Mobilnummer / E-post / Organisasjonsnummer"
-      value={textFieldValue}
-      onChange={(e) => setTextFieldValue(e.target.value)}
-      onKeyPress={(e) => {
-        if (e.key === "Enter") {
-          handleSearch();
-        }
-      }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            {textFieldValue && (
-              <IconButton onClick={() => setTextFieldValue("")} edge="end">
-                <ClearIcon />
-              </IconButton>
-            )}
-            <IconButton onClick={handleSearch} edge="end">
-              <SearchIcon />
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
-    />
+    <div className={styles["Container"]}>
+      <Textfield
+        label=""
+        placeholder="Mobilnummer / E-post / Organisasjonsnummer"
+        value={textFieldValue}
+        onChange={(e) => setTextFieldValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleSearch();
+          }
+        }}
+      />
+      <Button
+        onClick={() => {
+          setTextFieldValue("");
+          setQuery("");}}
+        className={styles.emptySearchButton}
+      >
+        X
+      </Button>
+      <Button 
+        onClick={handleSearch}
+        variant="tertiary"
+        className={styles.searchButton}
+      >
+        <Search />
+      </Button>
+    </div>
   );
 };

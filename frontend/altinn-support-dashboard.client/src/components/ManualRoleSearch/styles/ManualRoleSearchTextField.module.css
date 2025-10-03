@@ -9,3 +9,8 @@
   min-width: 70%;
   padding: 1rem;
 }
+
+.textfield-div input:focus{
+    outline: none;
+    box-shadow:none;
+}
