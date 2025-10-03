@@ -36,7 +36,7 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
     contacts?.filter((contacts) => contacts[field]) || [];
   return (
     <div className={styles["container"]}>
-      <Table border>
+      <Table border className = {styles["table"]}>
         <Table.Head>
           <Table.Row>
             <Table.HeaderCell>{title}</Table.HeaderCell>

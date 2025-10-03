@@ -1,8 +1,12 @@
 
 .container {
     margin:0.5 0;
-    min-width: 30%;
-    max-width: 50%;
+    flex-basis: 50%;
+    
+}
+
+.table {
+    max-width: 100%;
 }
 
 .cellText {
