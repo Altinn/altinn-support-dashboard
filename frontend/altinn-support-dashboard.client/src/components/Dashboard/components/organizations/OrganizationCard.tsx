@@ -1,12 +1,12 @@
 import classes from "../../styles/OrganizationCard.module.css";
 import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
 import { Organization, SelectedOrg, Subunit } from "../../../../models/models";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Button, Heading, Paragraph } from "@digdir/designsystemet-react";
 
 interface OrganizationCardProps {
   org: Organization;
-  selectedOrg?: { OrganizationNumber: string } | null;
+  selectedOrg?: SelectedOrg;
   subUnits: Subunit[];
   setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
 }
@@ -18,7 +18,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   setSelectedOrg,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const isSelected = selectedOrg?.OrganizationNumber === org.organizationNumber;
+
   const hasSubUnits = subUnits.some(
     (sub) => sub.overordnetEnhet === org.organizationNumber,
   );
@@ -36,9 +36,18 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
     setSelectedOrg(selectedOrg);
   };
 
+  const checkIsSelected = (orgNumber: string) => {
+    return orgNumber === selectedOrg?.OrganizationNumber;
+  };
+
   return (
     <div className={classes.container}>
-      <Card className={classes.mainCard} onClick={() => handleSelectedOrg()}>
+      <Card
+        data-color="neutral"
+        variant={checkIsSelected(org.organizationNumber) ? "tinted" : "default"}
+        className={classes.card}
+        onClick={() => handleSelectedOrg()}
+      >
         <Heading level={6}>{org.name}</Heading>
         <Paragraph variant="short">Org Nr: {org.organizationNumber}</Paragraph>
         <Paragraph variant="short">Type: {org.type}</Paragraph>
@@ -58,11 +67,15 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
 
       {/* Subunits list */}
       {isExpanded && (
-        <div className={classes.subunit}>
+        <div className={`${classes.subunit} ${classes.card}`}>
           {subUnits
             .filter((sub) => sub.overordnetEnhet === org.organizationNumber)
             .map((sub) => (
               <Card
+                variant={
+                  checkIsSelected(sub.organisasjonsnummer) ? "tinted" : "tinted"
+                }
+                data-color="neutral"
                 key={sub.organisasjonsnummer}
                 onClick={() =>
                   setSelectedOrg({

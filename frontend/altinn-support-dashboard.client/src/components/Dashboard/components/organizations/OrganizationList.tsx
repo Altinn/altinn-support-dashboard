@@ -10,11 +10,13 @@ import { Skeleton, Alert, Heading } from "@digdir/designsystemet-react";
 
 interface OrganizationListProps {
   setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
+  selectedOrg: SelectedOrg;
   query: string;
 }
 
 export const OrganizationList: React.FC<OrganizationListProps> = ({
   setSelectedOrg,
+  selectedOrg,
   query,
 }) => {
   const environment = useAppStore((state) => state.environment);
@@ -61,6 +63,7 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
         })
         .map((org) => (
           <OrganizationCard
+            selectedOrg={selectedOrg}
             key={org.organizationNumber}
             org={org}
             subUnits={subUnits}
