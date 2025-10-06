@@ -15,7 +15,7 @@ const VersionDialogTitle: React.FC<VersionDialogTitleProps> = ({
     versionInfo
 }) => {
     return (
-        <Dialog.Block id = "version-dialog-title">
+        <Dialog.Block>
             <Heading className={styles.heading}>
                 Ny versjon: {versionInfo.version} 🎉🥳
             </Heading>
