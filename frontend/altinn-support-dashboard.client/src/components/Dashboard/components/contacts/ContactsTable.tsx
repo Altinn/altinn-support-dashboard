@@ -119,6 +119,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
                 />
                 <Table.Cell>
                   <Button
+                    data-color="accent"
                     variant="primary"
                     data-size="sm"
                     onClick={() => {
