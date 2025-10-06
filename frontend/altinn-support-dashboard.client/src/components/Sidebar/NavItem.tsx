@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { Tooltip } from "@mui/material";
+import { Tooltip } from "@digdir/designsystemet-react";
 import { NavLink } from "react-router-dom";
 import classes from "./styles/NavItem.module.css";
 
@@ -19,7 +19,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, title, icon, isCollapsed }) => {
       }
     >
       {isCollapsed ? (
-        <Tooltip title={title} placement="right" arrow>
+        <Tooltip content={title} placement="right">
           {icon}
         </Tooltip>
       ) : (
