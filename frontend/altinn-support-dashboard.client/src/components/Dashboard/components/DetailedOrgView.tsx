@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Heading, Paragraph } from "@digdir/designsystemet-react";
+import { Heading } from "@digdir/designsystemet-react";
 import { PersonalContact } from "../models/mainContentTypes";
 import OfficialContactFieldTable from "./contacts/NotificationContactTable";
 import ERRolesTable from "./ERRolesTable";
