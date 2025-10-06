@@ -1,6 +1,14 @@
 
 
 
+.OrgNumber {
+    font-size: medium;
+    color: gray;
+}
+
+.OrgName {
+    font-size: xx-large;
+}
 
 .OfficialContactContainer {
     margin: 0.5rem 0 1.5rem 0;
