@@ -21,14 +21,13 @@ import { useAppStore } from "../stores/Appstore";
 
 const App: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
-  const theme = React.useMemo(() => getPalleteTheme(isDarkMode), [isDarkMode]);
 
   // Sjekk etter nye versjoner
   const { versionInfo, shouldShowDialog, acknowledgeVersion } =
     useVersionCheck();
 
   return (
-    <ThemeProvider theme={theme}>
+    <div>
       <CssBaseline />
       {/* Vis versjonsoppdateringsmelding hvis ny versjon er tilgjengelig */}
       <VersionDialog
@@ -55,7 +54,7 @@ const App: React.FC = () => {
           </main>
         </div>
       </Router>
-    </ThemeProvider>
+    </div>
   );
 };
 
