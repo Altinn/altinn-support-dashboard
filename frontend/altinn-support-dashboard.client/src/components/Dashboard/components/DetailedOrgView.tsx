@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
 
 import { PersonalContact } from "../models/mainContentTypes";
-import OfficialContactFieldTable from "./contacts/NotificationContactTable";
 import ERRolesTable from "./ERRolesTable";
 import { RoleDetails } from "./RoleDetails";
 import ContactsSearchBar from "./contacts/ContactsSearchBar";
@@ -10,10 +9,9 @@ import ContactsTable from "./contacts/ContactsTable";
 import { useOrgDetails } from "../../../hooks/hooks";
 import { SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
-import {
-  Card
-} from "@digdir/designsystemet-react"
-import styles from "../styles/DetailedOrgViewConatiner.module.css";                                       
+import { Card, Heading } from "@digdir/designsystemet-react";
+import styles from "../styles/DetailedOrgViewConatiner.module.css";
+import NotificationContactTable from "./contacts/NotificationContactTable";
 
 interface DetailedOrgViewProps {
   selectedOrg: SelectedOrg;
@@ -63,26 +61,27 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
                 setSelectedContact={setSelectedContact}
               />
 
-              <Typography variant="h6" gutterBottom>
-                Varslingsadresser for virksomheten
-              </Typography>
-              <Card className={styles["OfficialContactContainer"]} >
-                <OfficialContactFieldTable
-                  title="Mobilnummer"
-                  field="MobileNumber"
-                  changedField="MobileNumberChanged"
-                  contacts={officialContactsQuery.data ?? []}
-                />
-
-                <OfficialContactFieldTable
-                  title="E-post"
-                  field="EMailAddress"
-                  changedField="EMailAddressChanged"
-                  contacts={officialContactsQuery.data ?? []}
-                />
+              <Card
+                data-color="neutral"
+                className={styles.OfficialContactContainer}
+              >
+                <Heading level={6}>Varslingsadresser for virksomheten</Heading>
+                <div className={styles.OfficialContactBottom}>
+                  <NotificationContactTable
+                    title="Mobilnummer"
+                    field="MobileNumber"
+                    changedField="MobileNumberChanged"
+                    contacts={officialContactsQuery.data ?? []}
+                  />
+                  <NotificationContactTable
+                    title="E-post"
+                    field="EMailAddress"
+                    changedField="EMailAddressChanged"
+                    contacts={officialContactsQuery.data ?? []}
+                  />
+                </div>
               </Card>
 
-              
               <ERRolesTable selectedOrg={selectedOrg} />
             </>
           ) : (

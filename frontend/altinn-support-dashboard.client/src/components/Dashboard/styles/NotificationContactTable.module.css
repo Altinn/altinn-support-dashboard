@@ -1,0 +1,17 @@
+.container {
+  flex-basis: 50%;
+}
+
+.table {
+  max-width: 100%;
+}
+
+.cellText {
+  font-size: 0.875rem;
+}
+
+.paragraph {
+  text-align: center;
+  font-size: 0.875rem;
+}
+
