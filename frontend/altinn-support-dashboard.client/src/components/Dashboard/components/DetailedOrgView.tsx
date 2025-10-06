@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Typography } from "@mui/material";
-
+import { Heading } from "@digdir/designsystemet-react";
 import { PersonalContact } from "../models/mainContentTypes";
 import OfficialContactFieldTable from "./contacts/NotificationContactTable";
 import ERRolesTable from "./ERRolesTable";
@@ -12,8 +11,8 @@ import { SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
 import {
   Card
-} from "@digdir/designsystemet-react"
-import styles from "../styles/DetailedOrgViewConatiner.module.css";                                       
+} from "@digdir/designsystemet-react";
+import styles from "../styles/DetailedOrgView.module.css";                                   
 
 interface DetailedOrgViewProps {
   selectedOrg: SelectedOrg;
@@ -42,12 +41,12 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
     <div className="results-section">
       {selectedOrg && (
         <div className={`org-details ${selectedContact ? "full-width" : ""}`}>
-          <Typography variant="subtitle1" gutterBottom>
+          <Heading className={styles["OrgNumber"]}>
             Org Nr: {selectedOrg.OrganizationNumber}
-          </Typography>
-          <Typography variant="h4" gutterBottom>
+          </Heading>
+          <Heading className={styles["OrgName"]}>
             {selectedOrg.Name}
-          </Typography>
+          </Heading>
 
           {!selectedContact ? (
             <>
@@ -63,9 +62,9 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
                 setSelectedContact={setSelectedContact}
               />
 
-              <Typography variant="h6" gutterBottom>
+              <Heading>
                 Varslingsadresser for virksomheten
-              </Typography>
+              </Heading>
               <Card className={styles["OfficialContactContainer"]} >
                 <OfficialContactFieldTable
                   title="Mobilnummer"
