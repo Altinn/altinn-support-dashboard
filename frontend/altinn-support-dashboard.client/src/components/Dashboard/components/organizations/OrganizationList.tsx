@@ -1,18 +1,22 @@
 import React from "react";
-import { Alert, Typography, Skeleton } from "@mui/material";
 import { OrganizationCard } from "./OrganizationCard";
 import { useOrgSearch } from "../../../../hooks/hooks";
 import { ErrorAlert } from "../ErrorAlert";
-import { Organization, SelectedOrg } from "../../../../models/models";
+import { SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
+import classes from "../../styles/OrganizationList.module.css";
+
+import { Skeleton, Alert, Heading } from "@digdir/designsystemet-react";
 
 interface OrganizationListProps {
   setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
+  selectedOrg: SelectedOrg;
   query: string;
 }
 
 export const OrganizationList: React.FC<OrganizationListProps> = ({
   setSelectedOrg,
+  selectedOrg,
   query,
 }) => {
   const environment = useAppStore((state) => state.environment);
@@ -23,9 +27,7 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
   if (orgQuery.isLoading) {
     return (
       <div role="progressbar">
-        <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
-        <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
-        <Skeleton variant="rectangular" height={100} sx={{ mb: 2 }} />
+        <Skeleton variant="rectangle" height={300} />
       </div>
     );
   }
@@ -37,18 +39,15 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
 
   if (organizations.length <= 0 && query.length > 0) {
     return (
-      <Alert severity="info" sx={{ mb: 2 }}>
-        <Typography variant="h6">Ingen organisasjoner funnet</Typography>
+      <Alert data-color="info">
+        <Heading level={6}>Ingen organisasjoner funnet</Heading>
       </Alert>
     );
   }
 
   // Default case: render organizations
   return (
-    <div
-      className={`org-list`}
-      style={{ overflowY: "auto", maxHeight: "80vh" }}
-    >
+    <div className={classes.container}>
       {organizations
         .filter((org) => {
           // filter out subunits if parent is already included
@@ -64,6 +63,7 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
         })
         .map((org) => (
           <OrganizationCard
+            selectedOrg={selectedOrg}
             key={org.organizationNumber}
             org={org}
             subUnits={subUnits}
