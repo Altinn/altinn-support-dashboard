@@ -17,6 +17,7 @@ const SettingsDarkModeComponent: React.FC = () => {
     <Card data-color="neutral" className={classes.container}>
       <Heading level={6}>Darkmode</Heading>
       <Switch
+        data-color="accent"
         checked={isDarkMode}
         aria-label="enable dark mode"
         onChange={toggleDarkMode}
