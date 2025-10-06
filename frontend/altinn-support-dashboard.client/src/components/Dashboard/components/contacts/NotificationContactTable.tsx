@@ -1,17 +1,12 @@
 import React from "react";
-import {
-  Table as MuiTable,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Paper,
-} from "@mui/material";
 import { OfficialContact } from "../../models/mainContentTypes";
 import { formatDate } from "../../utils/dateUtils";
 import NotificationContactCell from "./NotificationContactCell";
+import {
+  Table,
+  Paragraph
+ } from "@digdir/designsystemet-react"
+import styles from "../../styles/NotificationContact.module.css";
 
 interface ContactFieldTableProps {
   title: string;
@@ -29,46 +24,38 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
   const filteredContacts =
     contacts?.filter((contacts) => contacts[field]) || [];
   return (
-    <TableContainer component={Paper}>
-      <MuiTable size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <Typography variant="subtitle2">{title}</Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="subtitle2">{"Endret " + title}</Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+    <div className={styles["container"]}>
+      <Table border className = {styles["table"]}>
+        <Table.Head>
+          <Table.Row>
+            <Table.HeaderCell>{title}</Table.HeaderCell>
+            <Table.HeaderCell>{"Endret " + title}</Table.HeaderCell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
           {filteredContacts && filteredContacts.length > 0 ? (
             filteredContacts.map((contact, index) => (
-              <TableRow key={index}>
+              <Table.Row key={index}>
                 <NotificationContactCell
                   contact={contact[field] as string | null}
                 />
-                <TableCell>
-                  {formatDate(contact[changedField] as string | null)}
-                </TableCell>
-              </TableRow>
+                <Table.Cell className={styles["cellText"]}>
+                  {formatDate(contact[changedField] as string)}
+                </Table.Cell>
+              </Table.Row>
             ))
           ) : (
-            <TableRow>
-              <TableCell colSpan={2}>
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  align="center"
-                >
+            <Table.Row>
+              <Table.Cell colSpan={2}>
+                <Paragraph className={styles["paragraph"]}>
                   Her var det tomt
-                </Typography>
-              </TableCell>
-            </TableRow>
+                </Paragraph>
+              </Table.Cell>
+            </Table.Row>
           )}
-        </TableBody>
-      </MuiTable>
-    </TableContainer>
+        </Table.Body>
+      </Table>
+    </div>
   );
 };
 

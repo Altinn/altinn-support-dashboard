@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Box } from "@mui/material";
+import { Typography } from "@mui/material";
 
 import { PersonalContact } from "../models/mainContentTypes";
 import OfficialContactFieldTable from "./contacts/NotificationContactTable";
 import ERRolesTable from "./ERRolesTable";
 import { RoleDetails } from "./RoleDetails";
 import ContactsSearchBar from "./contacts/ContactsSearchBar";
-import { officialContactsBoxStyle } from "../styles/DetailedOrgView.styles";
 import ContactsTable from "./contacts/ContactsTable";
 import { useOrgDetails } from "../../../hooks/hooks";
 import { SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
+import {
+  Card
+} from "@digdir/designsystemet-react"
+import styles from "../styles/DetailedOrgViewConatiner.module.css";                                       
 
 interface DetailedOrgViewProps {
   selectedOrg: SelectedOrg;
@@ -63,7 +66,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
               <Typography variant="h6" gutterBottom>
                 Varslingsadresser for virksomheten
               </Typography>
-              <Box sx={officialContactsBoxStyle}>
+              <Card className={styles["OfficialContactContainer"]} >
                 <OfficialContactFieldTable
                   title="Mobilnummer"
                   field="MobileNumber"
@@ -77,7 +80,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
                   changedField="EMailAddressChanged"
                   contacts={officialContactsQuery.data ?? []}
                 />
-              </Box>
+              </Card>
 
               
               <ERRolesTable selectedOrg={selectedOrg} />
