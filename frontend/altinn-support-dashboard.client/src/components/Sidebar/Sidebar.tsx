@@ -75,7 +75,11 @@ const Sidebar: React.FC = () => {
       <div>
         {/* Collapse button */}
         <div className={classes.collapseContainer}>
-          <Button onClick={toggleCollapse} className={classes.collapseButton}>
+          <Button
+            data-color="accent"
+            onClick={toggleCollapse}
+            className={classes.collapseButton}
+          >
             {isCollapsed ? (
               <ChevronRight />
             ) : (

@@ -36,9 +36,11 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
   }, [selectedOrg]);
 
   return (
-    <div className="results-section">
+    <div className={styles.container}>
       {selectedOrg && (
-        <div className={`org-details ${selectedContact ? "full-width" : ""}`}>
+        <div
+          className={`${styles.orgDetails} ${selectedContact ? "full-width" : ""}`}
+        >
           <Heading className={styles.orgNumer}>
             Org Nr: {selectedOrg.OrganizationNumber}
           </Heading>

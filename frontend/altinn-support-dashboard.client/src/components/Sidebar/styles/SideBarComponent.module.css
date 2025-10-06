@@ -11,6 +11,10 @@
   background-color: var(--ds-color-base-default);
 }
 
+[data-color-scheme="dark"] .sidebar {
+  background-color: var(--ds-color-surface-default);
+}
+
 .collapsed {
   width: 70px;
   min-width: 70px;
@@ -77,10 +81,10 @@
   border-radius: 18px;
   padding: 6px 12px;
   font-size: 0.9rem;
-  display: flex;
   align-items: center;
   gap: 4px;
   cursor: pointer;
+  color: #fff;
 }
 
 .divider {
@@ -92,6 +96,7 @@
 
 .userInfo {
   text-align: center;
-  color: var(--ds-color-base-contrast-default);
+  color: var(--ds-color-text-default);
   display: flex;
+  color: #fff;
 }
