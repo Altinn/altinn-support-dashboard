@@ -17,7 +17,7 @@ const SettingsLanguageComponent: React.FC = () => {
   };
 
   return (
-    <Card className={classes.container}>
+    <Card data-color="neutral" className={classes.container}>
       <Heading level={6} className={classes.title}>
         Språkvalg
       </Heading>

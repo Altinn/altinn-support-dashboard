@@ -13,6 +13,7 @@ import {
   TableHeaderCell,
   Label,
   Paragraph,
+  Card,
 } from "@digdir/designsystemet-react";
 
 interface ContactsTableProps {
@@ -64,8 +65,8 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
   };
 
   return (
-    <div className={classes.tableContainer}>
-      <Table border>
+    <Card data-color="neutral" className={classes.tableContainer}>
+      <Table data-color="neutral" border>
         <caption>Din kontaktinformasjon</caption>
         <Table.Head>
           <Table.Row>
@@ -118,6 +119,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
                 />
                 <Table.Cell>
                   <Button
+                    data-color="accent"
                     variant="primary"
                     data-size="sm"
                     onClick={() => {
@@ -142,7 +144,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
           )}
         </Table.Body>
       </Table>
-    </div>
+    </Card>
   );
 };
 

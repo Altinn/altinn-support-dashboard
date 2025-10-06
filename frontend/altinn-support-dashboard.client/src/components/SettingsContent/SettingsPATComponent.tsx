@@ -63,7 +63,7 @@ const SettingsPATComponent: React.FC = () => {
   };
 
   return (
-    <Card className={classes.wrapper}>
+    <Card data-color="neutral" className={classes.container}>
       <Heading level={6}>Organisasjonsoppsett</Heading>
 
       <Paragraph className={classes.description} data-size="sm">
@@ -73,7 +73,7 @@ const SettingsPATComponent: React.FC = () => {
       </Paragraph>
 
       {/* Environment selection */}
-      <Card className={classes.section}>
+      <div className={classes.section}>
         <Heading className={classes.sectionTitle} level={6}>
           Altinn Studio Miljø
         </Heading>
@@ -85,10 +85,10 @@ const SettingsPATComponent: React.FC = () => {
             Development (dev.altinn.studio)
           </SelectOption>
         </Select>
-      </Card>
+      </div>
 
       {/* Token input */}
-      <Card className={classes.section}>
+      <div className={classes.section}>
         <Heading level={6} className={classes.sectionTitle}>
           Personal Access Token (PAT)
         </Heading>
@@ -114,7 +114,8 @@ const SettingsPATComponent: React.FC = () => {
         {/* Help links */}
         <div className={classes.patgeneratewrapper}>
           <Button
-            variant="secondary"
+            data-color="accent"
+            variant="primary"
             data-size="sm"
             onClick={() => handleGeneratePatToken()}
           >
@@ -136,6 +137,7 @@ const SettingsPATComponent: React.FC = () => {
         {/* Action buttons */}
         <div className={classes.patActionButtonsWrapper}>
           <Button
+            data-color="accent"
             variant="secondary"
             onClick={handleValidateToken}
             disabled={patState.isValidating || !patInput}
@@ -143,6 +145,7 @@ const SettingsPATComponent: React.FC = () => {
             {patState.isValidating ? "Validerer..." : "Valider token"}
           </Button>
           <Button
+            data-color="accent"
             variant="secondary"
             onClick={handleClearToken}
             disabled={patState.isValidating || !patInput}
@@ -150,7 +153,7 @@ const SettingsPATComponent: React.FC = () => {
             Fjern token
           </Button>
         </div>
-      </Card>
+      </div>
     </Card>
   );
 };

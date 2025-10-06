@@ -2,11 +2,8 @@ import React from "react";
 import { OfficialContact } from "../../models/mainContentTypes";
 import { formatDate } from "../../utils/dateUtils";
 import NotificationContactCell from "./NotificationContactCell";
-import {
-  Table,
-  Paragraph
- } from "@digdir/designsystemet-react"
-import styles from "../../styles/NotificationContact.module.css";
+import { Table, Paragraph } from "@digdir/designsystemet-react";
+import styles from "../../styles/NotificationContactTable.module.css";
 
 interface ContactFieldTableProps {
   title: string;
@@ -15,7 +12,7 @@ interface ContactFieldTableProps {
   contacts: OfficialContact[];
 }
 
-const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
+const NotificationContactTable: React.FC<ContactFieldTableProps> = ({
   title,
   field,
   changedField,
@@ -25,7 +22,7 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
     contacts?.filter((contacts) => contacts[field]) || [];
   return (
     <div className={styles["container"]}>
-      <Table border className = {styles["table"]}>
+      <Table border className={styles["table"]}>
         <Table.Head>
           <Table.Row>
             <Table.HeaderCell>{title}</Table.HeaderCell>
@@ -59,4 +56,4 @@ const OfficialContactFieldTable: React.FC<ContactFieldTableProps> = ({
   );
 };
 
-export default OfficialContactFieldTable;
+export default NotificationContactTable;
