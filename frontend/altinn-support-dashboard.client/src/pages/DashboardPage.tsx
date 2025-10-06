@@ -1,13 +1,8 @@
-import { Box } from "@mui/material";
 import SearchComponent from "../components/TopSearchBar/TopSearchBarComponent";
 import DetailedOrgView from "../components/Dashboard/components/DetailedOrgView";
 import { OrganizationList } from "../components/Dashboard/components/organizations/OrganizationList";
 import { useDashboardStore } from "../stores/DashboardStore";
-import {
-  dashboardContainer,
-  orgListBox,
-  detailedOrgBox,
-} from "./styles/DashboardPage.styles";
+import styles from "./styles/DashboardPage.module.css";
 
 export const DashboardPage: React.FC = () => {
   const query = useDashboardStore((s) => s.query);
@@ -16,23 +11,23 @@ export const DashboardPage: React.FC = () => {
   const setSelectedOrg = useDashboardStore((s) => s.setSelectedOrg);
 
   return (
-    <Box>
+    <div className={styles["dashboard-page-container"]}>
       <SearchComponent query={query} setQuery={setQuery} />
 
-      <Box sx={dashboardContainer}>
-        <Box sx={orgListBox}>
+      <div className={styles["dashboard-container"]}>
+        <div className={styles["org-list-container"]}>
           <OrganizationList
             setSelectedOrg={setSelectedOrg}
             selectedOrg={selectedOrg}
             query={query}
           />
-        </Box>
+        </div>
 
-        <Box sx={detailedOrgBox}>
+        <div className={styles["detailed-org-container"]}>
           <DetailedOrgView selectedOrg={selectedOrg} />
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 };
 
