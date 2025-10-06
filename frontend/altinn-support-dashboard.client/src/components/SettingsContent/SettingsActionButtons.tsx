@@ -10,15 +10,16 @@ const SettingsActionButtons: React.FC = () => {
     window.location.href = "/.auth/logout?post_logout_redirect_uri=/signout";
   };
   return (
-    <Card className={classes.container}>
+    <Card data-color="neutral" className={classes.container}>
       <Button
-        variant="secondary"
+        data-color="accent"
+        variant="primary"
         onClick={handleReload}
         style={{ marginRight: "12px" }}
       >
         Last inn på nytt
       </Button>
-      <Button variant="secondary" onClick={handleLogout}>
+      <Button data-color="accent" variant="primary" onClick={handleLogout}>
         Logg ut
       </Button>
     </Card>
