@@ -1,7 +1,6 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy ASP.Net Core app to Azure Web App - altinn-support-dashboard-test-app
+name: Build and deploy to test
 
 on:
   push:
@@ -33,7 +32,7 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
-  deploy:
+  deploy-to-test:
     runs-on: ubuntu-latest
     needs: build
     environment:
@@ -51,9 +50,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A7F5C53EBF1A42DBA7D1EE13DFA92261 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7C8B3DF7317F46A3AAC25B40FA566052 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_28FE5282307C470D87CA6B93F5B46732 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_PROD }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENTANID_PROD }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_PROD }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -62,4 +61,4 @@ jobs:
           app-name: 'altinn-support-dashboard-test-app'
           slot-name: 'Production'
           package: .
-          
+
