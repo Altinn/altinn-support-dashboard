@@ -11,8 +11,7 @@ import { SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
 import {
   Card
-} from "@digdir/designsystemet-react"
-import style from "../styles/DetailedOrgViewContainer.module.css"; 
+} from "@digdir/designsystemet-react";
 import styles from "../styles/DetailedOrgView.module.css";                                   
 
 interface DetailedOrgViewProps {
@@ -66,7 +65,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
               <Heading>
                 Varslingsadresser for virksomheten
               </Heading>
-              <Card className={style["OfficialContactContainer"]} >
+              <Card className={styles["OfficialContactContainer"]} >
                 <OfficialContactFieldTable
                   title="Mobilnummer"
                   field="MobileNumber"
