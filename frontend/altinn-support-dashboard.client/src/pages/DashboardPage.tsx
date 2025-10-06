@@ -21,7 +21,11 @@ export const DashboardPage: React.FC = () => {
 
       <Box sx={dashboardContainer}>
         <Box sx={orgListBox}>
-          <OrganizationList setSelectedOrg={setSelectedOrg} query={query} />
+          <OrganizationList
+            setSelectedOrg={setSelectedOrg}
+            selectedOrg={selectedOrg}
+            query={query}
+          />
         </Box>
 
         <Box sx={detailedOrgBox}>
