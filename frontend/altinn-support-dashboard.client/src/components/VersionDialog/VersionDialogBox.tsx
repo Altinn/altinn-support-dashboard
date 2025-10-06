@@ -25,7 +25,6 @@ const VersionDialogBox: React.FC<VersionDialogBoxProps> =({
     <Dialog
         open={open}
         onClose={onClose}
-        data-size="lg"
         aria-labelledby="version-dialog-title"
       >
         <VersionDialogTitle versionInfo={versionInfo} />
