@@ -1,4 +1,8 @@
-import { Alert, Typography } from "@mui/material";
+import {
+  Alert,
+  Heading,
+  Paragraph
+} from "@digdir/designsystemet-react"
 
 interface ErrorAlertProps {
   error: {
@@ -11,14 +15,14 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({ error }) => {
   if (!error?.message) return null;
 
   return (
-    <Alert severity="error" sx={{ mb: 2 }}>
-      <Typography variant="h6" component="div">
+    <Alert data-color="danger">
+      <Heading>
         {error.message}
-      </Typography>
+      </Heading>
       {error.response && (
-        <Typography variant="body2" component="div">
+        <Heading>
           {error.response}
-        </Typography>
+        </Heading>
       )}
     </Alert>
   );
