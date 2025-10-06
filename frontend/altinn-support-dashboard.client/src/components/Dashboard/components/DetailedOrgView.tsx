@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Typography } from "@mui/material";
-
+import { Heading } from "@digdir/designsystemet-react";
 import { PersonalContact } from "../models/mainContentTypes";
 import ERRolesTable from "./ERRolesTable";
 import { RoleDetails } from "./RoleDetails";
@@ -9,8 +8,8 @@ import ContactsTable from "./contacts/ContactsTable";
 import { useOrgDetails } from "../../../hooks/hooks";
 import { SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
-import { Card, Heading } from "@digdir/designsystemet-react";
-import styles from "../styles/DetailedOrgViewConatiner.module.css";
+import { Card } from "@digdir/designsystemet-react";
+import styles from "../styles/DetailedOrgView.module.css";
 import NotificationContactTable from "./contacts/NotificationContactTable";
 
 interface DetailedOrgViewProps {
@@ -40,12 +39,10 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
     <div className="results-section">
       {selectedOrg && (
         <div className={`org-details ${selectedContact ? "full-width" : ""}`}>
-          <Typography variant="subtitle1" gutterBottom>
+          <Heading className={styles.orgNumer}>
             Org Nr: {selectedOrg.OrganizationNumber}
-          </Typography>
-          <Typography variant="h4" gutterBottom>
-            {selectedOrg.Name}
-          </Typography>
+          </Heading>
+          <Heading className={styles.orgName}>{selectedOrg.Name}</Heading>
 
           {!selectedContact ? (
             <>
