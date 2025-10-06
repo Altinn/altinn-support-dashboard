@@ -1,15 +1,16 @@
-
-
-
-.Card {
-    overflow-y: auto;
-    max-height: 40vh;
+.Container {
+  overflow-y: auto;
+  max-height: 40vh;
+  box-shadow:
+    0px 1px 3px rgba(0, 0, 0, 0.12),
+    0px 1px 2px rgba(0, 0, 0, 0.24);
 }
 
-.heading{
-    margin-bottom: 0.5rem;
+.heading {
+  margin-bottom: 0.5rem;
 }
 
 .paragraph {
-    text-align: center;
+  text-align: center;
 }
+

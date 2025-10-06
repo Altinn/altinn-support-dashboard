@@ -6,7 +6,7 @@ import { useOrgDetails } from "../../../hooks/hooks";
 import { SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
 import { Table, Heading, Paragraph, Card } from "@digdir/designsystemet-react";
-import style from "../styles/ERRolesTable.module.css";
+import styles from "../styles/ERRolesTable.module.css";
 
 interface ERRolesTableProps {
   selectedOrg: SelectedOrg;
@@ -65,8 +65,8 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
   );
 
   return (
-    <Card className={style["Card"]}>
-      <Heading level={2} className={style["heading"]}>
+    <Card data-color="neutral" className={styles.Container}>
+      <Heading level={2} className={styles.heading}>
         ER-roller
       </Heading>
       <Table border>
@@ -118,7 +118,7 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
           ) : (
             <Table.Row>
               <Table.Cell colSpan={4}>
-                <Paragraph className={style["paragraph"]}>
+                <Paragraph className={styles.paragraph}>
                   Ingen roller funnet
                 </Paragraph>
               </Table.Cell>
