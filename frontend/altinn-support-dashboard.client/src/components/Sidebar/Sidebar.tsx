@@ -1,12 +1,4 @@
 import React from "react";
-import {
-  Dashboard,
-  Search,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-  Add,
-} from "@mui/icons-material";
 import logo from "../../assets/logo.png";
 import whiteLogo from "/asd_128_white.png";
 import { useSidebarDrag } from "./hooks/useSidebarDrag";
@@ -14,6 +6,14 @@ import NavItem from "./NavItem";
 import SideBarDateTime from "./SidebarDateTime";
 import SidebarEnvToggle from "./SidebarEnvToggle";
 import { useUserDetails } from "../../hooks/hooks";
+import { 
+  Buildings3Icon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MagnifyingGlassIcon,
+  PlusIcon,
+  CogIcon
+} from "@navikt/aksel-icons";
 
 // design system imports
 import { Button, Divider, Label } from "@digdir/designsystemet-react";
@@ -48,25 +48,25 @@ const Sidebar: React.FC = () => {
           <NavItem
             to="/dashboard"
             title="Oppslag"
-            icon={<Dashboard />}
+            icon={<Buildings3Icon className={classes.icons} />}
             isCollapsed={isCollapsed}
           />
           <NavItem
             to="/manualrolesearch"
             title="Manuelt rollesøk"
-            icon={<Search />}
+            icon={<MagnifyingGlassIcon className={classes.icons} />}
             isCollapsed={isCollapsed}
           />
           <NavItem
             to="/new-org"
             title="Ny Organisasjon"
-            icon={<Add />}
+            icon={<PlusIcon className={classes.icons} />}
             isCollapsed={isCollapsed}
           />
           <NavItem
             to="/settings"
             title="Innstillinger"
-            icon={<Settings />}
+            icon={<CogIcon className={classes.icons} />}
             isCollapsed={isCollapsed}
           />
         </nav>
@@ -81,10 +81,10 @@ const Sidebar: React.FC = () => {
             className={classes.collapseButton}
           >
             {isCollapsed ? (
-              <ChevronRight />
+              <ChevronRightIcon className={classes.icons} />
             ) : (
               <>
-                <ChevronLeft /> Minimer sidepanel
+                <ChevronLeftIcon className={classes.icons}  /> Minimer sidepanel
               </>
             )}
           </Button>
