@@ -1,279 +1,69 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
 
 /* Global Styles */
 * {
-    margin: 0;
-    box-sizing: border-box;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 body,
 html {
-    font-family: 'Inter', sans-serif;
-    height: 100%;
-    overflow: hidden;
+  font-family: "Inter", sans-serif;
+  height: 100%;
+  overflow: hidden;
 }
 
 /* Wrapper */
 .app-wrapper {
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-}
-
-/* Navigation Buttons */
-.nav {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.nav-button {
-    display: block;
-    padding: 10px;
-    border-radius: 25px;
-    cursor: pointer;
-    text-align: center;
-    margin: 0 10px 10px 0;
-    transition: all 0.3s ease;
-    color: #fff;
-    text-decoration: none;
-    background-color: transparent;
-    position: relative;
-    width: calc(100% - 10px);
-
-}
-
-.nav-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.nav-button.selected {
-    background-color: #f0f2f5;
-    color: #004A70;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    margin-right: -32px;
-    padding-right: 32px;
-    width: calc(100% + 26px);
-}
-
-.nav-button.selected::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 0px;
-    height: 100%;
-    background-color: #004A70;
-}
-
-/* Adjust for Dark Mode */
-html[data-ds-color-mode="dark"] .nav-button {
-    color: #e0e0e0;
-}
-
-html[data-ds-color-mode="dark"] .nav-button.selected {
-    background-color: #1e1e1e;
-    color: #4dabff;
-}
-
-html[data-ds-color-mode="dark"] .nav-button:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-}
-
-html[data-ds-color-mode="dark"] .no-search-message {
-    color: #b0b0b0;
-}
-
-html[data-ds-color-mode="dark"] .error-message {
-    background-color: #2d2d2d;
-    color: #ff5c5c;
-    border-color: #ff5c5c;
-}
-
-html[data-ds-color-mode="dark"] .error-response {
-    background-color: rgba(255, 92, 92, 0.1);
-    border-color: #ff5c5c;
-    color: #ff8080;
-}
-
-html[data-ds-color-mode="dark"] .settings-content {
-    color: #e0e0e0;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* Main Content Styling */
 .main-content {
-    flex-grow: 1;
-    padding: 40px;
-    background-color: transparent;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+  flex-grow: 1;
+  padding: 40px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* Organization List and Details */
 .results-section {
-    display: flex;
-    flex-grow: 1;
-    gap: 20px;
-    overflow: hidden;
+  display: flex;
+  flex-grow: 1;
+  gap: 20px;
+  overflow: hidden;
 }
 
 .org-list {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    overflow-y: auto;
-    transition: all 0.5s ease;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  transition: all 0.5s ease;
 }
 
 .org-list.hidden {
-    opacity: 0;
-    width: 0;
-    visibility: hidden;
+  opacity: 0;
+  width: 0;
+  visibility: hidden;
 }
 
 .org-details {
-    flex: 2;
-    padding: 20px;
-    border-radius: 10px;
-    overflow-y: auto;
-    max-height: calc(100vh - 100px);
-    overflow-x: auto;
-    transition: all 0.5s ease;
+  flex: 2;
+  padding: 20px;
+  border-radius: 10px;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
+  overflow-x: auto;
+  transition: all 0.5s ease;
 }
 
 .org-details.full-width {
-    flex: 1;
-    width: 100%;
-}
-
-/* Subunits */
-.subunits {
-    margin-left: 20px;
-    margin-top: 10px;
-}
-
-/* No Search Message */
-.no-search-message {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    color: #888;
-    font-style: italic;
-    text-align: center;
-    opacity: 0.8;
-}
-
-.no-search-message p {
-    margin: 5px 0;
-    font-size: 1.1rem;
-}
-
-/* Error Message Styling */
-.error-message {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fefefe;
-    color: #d9534f;
-    font-size: 1rem;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border: 1px solid #f5c6cb;
-    max-width: 400px;
-    width: 80%;
-    text-align: center;
-    z-index: 1000;
-}
-
-.error-response {
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 8px;
-    padding: 10px;
-    font-size: 0.9rem;
-    color: #721c24;
-    white-space: pre-wrap;
-    max-height: 150px;
-    overflow-y: auto;
-    width: 100%;
-}
-
-/* Settings Content Styles */
-.settings-content {
-    padding: 20px;
-    overflow-y: auto;
-    max-height: calc(100vh - 100px);
-    color: #333;
-    border-radius: 10px;
-}
-
-.settings-section {
-    margin-bottom: 30px;
-}
-
-.settings-footer {
-    margin-top: 40px;
-    border-top: 1px solid #ccc;
-    padding-top: 20px;
-}
-
-.settings-footer p {
-    margin: 5px 0;
-    color: #666;
-}
-
-/* Sidebar Time and Date Styling */
-.sidebar-time-date {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.sidebar-time {
-    font-size: 2em; /* Make the time big */
-    font-weight: bold;
-    color: #fff;
-}
-
-.sidebar-date {
-    font-size: 1em; /* Make the date smaller */
-    color: #fff;
-}
-
-/* Styles for the no-search message */
-.no-search-message {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px; /* Adjust as needed */
-    color: #888; /* Light gray color for low-key appearance */
-    font-style: italic;
-    text-align: center;
-    opacity: 0.8; /* Slightly transparent */
-}
-
-/* Smooth transitions for sidebar collapse/expand */
-.MuiBox-root {
-    transition: width 0.3s ease, min-width 0.3s ease;
-}
-
-/* Tooltip animations */
-.MuiTooltip-popper {
-    transition: opacity 0.2s ease !important;
-}
-
-/* Icon button hover effect */
-.MuiIconButton-root:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+  flex: 1;
+  width: 100%;
 }
