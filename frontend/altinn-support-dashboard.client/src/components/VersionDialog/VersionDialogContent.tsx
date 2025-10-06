@@ -24,7 +24,7 @@ const VersionDialogContent: React.FC<VersionDialogContentProps> = ({versionInfo}
                         {versionInfo.changes[0].description}
                     </Paragraph>
                     {versionInfo.changes[0].details.length > 0 && (
-                    <List.Unordered>
+                    <List.Unordered className={styles.list}>
                             {versionInfo.changes[0].details.map((detail, index) => (
                                 <List.Item key={index} className={styles.listItem}>
                                     {detail}
