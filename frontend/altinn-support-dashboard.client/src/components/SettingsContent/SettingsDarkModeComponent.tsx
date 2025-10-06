@@ -14,7 +14,7 @@ const SettingsDarkModeComponent: React.FC = () => {
   };
 
   return (
-    <Card className={classes.container}>
+    <Card data-color="neutral" className={classes.container}>
       <Heading level={6}>Darkmode</Heading>
       <Switch
         checked={isDarkMode}
