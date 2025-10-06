@@ -1,7 +1,6 @@
 import {
   Alert,
-  Heading,
-  Paragraph
+  Heading
 } from "@digdir/designsystemet-react"
 
 interface ErrorAlertProps {
