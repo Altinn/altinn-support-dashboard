@@ -9,6 +9,7 @@
     width 0.3s ease,
     min-width 0.3s ease;
   background-color: var(--ds-color-base-default);
+  overflow: hidden;
 }
 
 [data-color-scheme="dark"] .sidebar {
@@ -30,12 +31,12 @@
   right: -6px;
   top: 50%;
   transform: translateY(-50%);
-  width: 12px;
-  height: 12px;
+  width: 1.3rem;
+  height: 1.3rem;
   border-radius: 50%;
   cursor: ew-resize;
   transition: all 0.2s ease;
-  background-color: #fff;
+  background-color: var(--ds-color-background-default);
   border: 2px solid #004a70;
 }
 
@@ -101,6 +102,6 @@
   color: #fff;
 }
 
-.icons{
+.icons {
   font-size: 1.5rem;
 }

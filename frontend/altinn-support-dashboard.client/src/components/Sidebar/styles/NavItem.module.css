@@ -1,15 +1,14 @@
 /* Base nav button */
 .navButton {
   display: block;
+  position: relative;
   padding: 10px;
   border-radius: 25px;
   cursor: pointer;
   text-align: center;
-  margin: 0 10px 10px 0;
   transition: all 0.3s ease;
-  color: #ffffff;
   text-decoration: none;
-  position: relative;
+  color: #ffffff;
 }
 
 .navButtonCollapsed {
@@ -30,5 +29,4 @@
   margin-right: -32px;
   padding-right: 32px;
   width: calc(100% + 20px);
-  position: relative;
 }
