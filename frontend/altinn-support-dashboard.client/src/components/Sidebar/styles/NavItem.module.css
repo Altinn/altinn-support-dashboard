@@ -24,11 +24,10 @@
   text-align: center;
   margin: 0 10px 10px 0;
   transition: all 0.3s ease;
-  color: #fff;
+  color: #ffffff;
   text-decoration: none;
   background-color: transparent;
   position: relative;
-  width: calc(100% - 10px);
 }
 
 .navButton:not(.navButtonSelected):hover {
@@ -37,8 +36,8 @@
 
 /* Selected state */
 .navButtonSelected {
-  background-color: #f0f2f5;
-  color: #004a70;
+  background-color: var(--ds-color-accent-background-default);
+  color: var(--ds-color-accent-text-default);
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   margin-right: -32px;

@@ -6,13 +6,13 @@ import NavItem from "./NavItem";
 import SideBarDateTime from "./SidebarDateTime";
 import SidebarEnvToggle from "./SidebarEnvToggle";
 import { useUserDetails } from "../../hooks/hooks";
-import { 
+import {
   Buildings3Icon,
   ChevronLeftIcon,
   ChevronRightIcon,
   MagnifyingGlassIcon,
   PlusIcon,
-  CogIcon
+  CogIcon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -84,7 +84,7 @@ const Sidebar: React.FC = () => {
               <ChevronRightIcon className={classes.icons} />
             ) : (
               <>
-                <ChevronLeftIcon className={classes.icons}  /> Minimer sidepanel
+                <ChevronLeftIcon className={classes.icons} /> Minimer sidepanel
               </>
             )}
           </Button>
