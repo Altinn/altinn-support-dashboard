@@ -44,6 +44,25 @@ const Sidebar: React.FC = () => {
           />
         </div>
 
+        {/* Collapse button */}
+        <div className={classes.collapseContainer}>
+          <Button
+            data-color="accent"
+            onClick={toggleCollapse}
+            className={classes.collapseButton}
+          >
+            {isCollapsed ? (
+              <ChevronRightIcon className={classes.icons} />
+            ) : (
+              <>
+                <ChevronLeftIcon className={classes.icons} /> Minimer sidepanel
+              </>
+            )}
+          </Button>
+        </div>
+
+        <Divider className={classes.divider} />
+
         <nav className={classes.nav}>
           <NavItem
             to="/dashboard"
@@ -73,23 +92,6 @@ const Sidebar: React.FC = () => {
       </div>
 
       <div>
-        {/* Collapse button */}
-        <div className={classes.collapseContainer}>
-          <Button
-            data-color="accent"
-            onClick={toggleCollapse}
-            className={classes.collapseButton}
-          >
-            {isCollapsed ? (
-              <ChevronRightIcon className={classes.icons} />
-            ) : (
-              <>
-                <ChevronLeftIcon className={classes.icons} /> Minimer sidepanel
-              </>
-            )}
-          </Button>
-        </div>
-
         <Divider className={classes.divider} />
 
         {/* Extra info when expanded */}
