@@ -1,20 +1,3 @@
-.navLink {
-  text-decoration: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.navLinkCollpased {
-}
-
-/* Navigation container */
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 /* Base nav button */
 .navButton {
   display: block;
@@ -26,8 +9,12 @@
   transition: all 0.3s ease;
   color: #ffffff;
   text-decoration: none;
-  background-color: transparent;
   position: relative;
+}
+
+.navButtonCollapsed {
+  width: 70px;
+  min-width: 70px;
 }
 
 .navButton:not(.navButtonSelected):hover {
