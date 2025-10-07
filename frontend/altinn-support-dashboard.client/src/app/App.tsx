@@ -9,7 +9,6 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { ThemeProvider, CssBaseline } from "@mui/material";
 import { useVersionCheck } from "../hooks/useVersionCheck";
 import { DashboardPage } from "../pages/DashboardPage";
 import SignOutPage from "../pages/SignOutPage";
@@ -27,7 +26,6 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <CssBaseline />
       {/* Vis versjonsoppdateringsmelding hvis ny versjon er tilgjengelig */}
       <VersionDialog
         versionInfo={versionInfo}
