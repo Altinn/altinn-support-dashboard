@@ -9,9 +9,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { ThemeProvider, CssBaseline } from "@mui/material";
 import { useVersionCheck } from "../hooks/useVersionCheck";
-import { getPalleteTheme } from "../theme/palette";
 import { DashboardPage } from "../pages/DashboardPage";
 import SignOutPage from "../pages/SignOutPage";
 import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
@@ -21,15 +19,13 @@ import { useAppStore } from "../stores/Appstore";
 
 const App: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
-  const theme = React.useMemo(() => getPalleteTheme(isDarkMode), [isDarkMode]);
 
   // Sjekk etter nye versjoner
   const { versionInfo, shouldShowDialog, acknowledgeVersion } =
     useVersionCheck();
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <div>
       {/* Vis versjonsoppdateringsmelding hvis ny versjon er tilgjengelig */}
       <VersionDialog
         versionInfo={versionInfo}
@@ -41,8 +37,10 @@ const App: React.FC = () => {
           <Sidebar />
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
               <Route
                 path="/manualrolesearch"
                 element={<ManualRoleSearchPage />}
@@ -50,12 +48,11 @@ const App: React.FC = () => {
               <Route path="/new-org" element={<NewOrganizationPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/signout" element={<SignOutPage />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </main>
         </div>
       </Router>
-    </ThemeProvider>
+    </div>
   );
 };
 
