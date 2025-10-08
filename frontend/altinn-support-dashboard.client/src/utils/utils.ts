@@ -2,11 +2,9 @@ export function getBaseUrl(environment: string): string {
   const apiHost = window.location.hostname;
 
   // Determine if this is local development
-  const localDev =
-    typeof process !== "undefined" && process.env.REACT_APP_LOCAL_DEV
-      ? process.env.REACT_APP_LOCAL_DEV === "true" ||
-        process.env.REACT_APP_LOCAL_DEV === "1"
-      : window.location.hostname === "localhost";
+  const localDev = window.location.hostname === "localhost";
+
+  console.log(window.location.hostname);
 
   // Set protocol based on environment
   const protocol = localDev ? "http:" : "https:";
