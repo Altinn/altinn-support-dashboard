@@ -103,13 +103,21 @@ namespace altinn_support_dashboard.Server.Services
             return await _client.GetPersonRoles(subject, reportee, environment);
         }
 
-        public async Task<string> GetOfficialContacts(string orgNumber, string environment)
+        public async Task<List<OfficialContact>> GetOfficialContacts(string orgNumber, string environment)
         {
-            if(!ValidationService.IsValidOrgNumber(orgNumber))
+            if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
                 throw new ArgumentException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
-            return await _client.GetOfficialContacts(orgNumber, environment);
+
+            var result = await _client.GetOfficialContacts(orgNumber, environment);
+            List<OfficialContact> officialContacts = JsonSerializer.Deserialize<List<OfficialContact>>(result, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true
+            });
+
+            return officialContacts;
         }
 
     }
