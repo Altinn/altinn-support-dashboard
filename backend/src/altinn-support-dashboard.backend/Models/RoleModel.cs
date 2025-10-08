@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace altinn_support_dashboard.Server.Models
 {
     public class Role
@@ -8,6 +10,8 @@ namespace altinn_support_dashboard.Server.Models
         public string? RoleName { get; set; }
         public string? RoleDescription { get; set; }
         public string? RoleDefinitionCode { get; set; }
+
+        [JsonPropertyName("_links")]
         public List<RoleLink>? Links { get; set; }
 
 
