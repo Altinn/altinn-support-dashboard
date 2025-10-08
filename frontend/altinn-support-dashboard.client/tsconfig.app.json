@@ -26,6 +26,7 @@
     "skipLibCheck": true
   },
 
-"include": ["src/**/*.{ts,tsx,js,jsx,css,scss}", "types.d.ts"],
+"include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/node_modules", "./dist"],
   "types": [  ]
 }

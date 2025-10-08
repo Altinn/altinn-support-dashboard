@@ -1,0 +1,19 @@
+
+
+.heading {
+    font-size: larger;
+}
+
+.paragraph {
+    font-size: large;
+}
+
+.list {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+}
+
+.listItem {
+    font-size: medium;
+}

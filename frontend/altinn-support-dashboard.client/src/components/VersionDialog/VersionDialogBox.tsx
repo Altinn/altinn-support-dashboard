@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Dialog
-} from '@mui/material';
+} from '@digdir/designsystemet-react';
 import type { VersionInfo } from '../../hooks/useVersionCheck';
 import VersionDialogTitle  from './VersionDialogTitle';
 import VersionDialogContent from './VersionDialogContent';
@@ -25,10 +25,8 @@ const VersionDialogBox: React.FC<VersionDialogBoxProps> =({
     <Dialog
         open={open}
         onClose={onClose}
-        maxWidth="md"
-        fullWidth
         aria-labelledby="version-dialog-title"
-    >
+      >
         <VersionDialogTitle versionInfo={versionInfo} />
       <VersionDialogContent versionInfo={versionInfo} />
       <VersionDialogButton onClose={onClose} />
