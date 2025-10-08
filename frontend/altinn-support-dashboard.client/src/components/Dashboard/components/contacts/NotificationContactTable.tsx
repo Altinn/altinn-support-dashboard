@@ -1,9 +1,9 @@
 import React from "react";
-import { OfficialContact } from "../../models/mainContentTypes";
 import { formatDate } from "../../utils/dateUtils";
 import NotificationContactCell from "./NotificationContactCell";
 import { Table, Paragraph } from "@digdir/designsystemet-react";
 import styles from "../../styles/NotificationContactTable.module.css";
+import { OfficialContact } from "../../../../models/models";
 
 interface ContactFieldTableProps {
   title: string;

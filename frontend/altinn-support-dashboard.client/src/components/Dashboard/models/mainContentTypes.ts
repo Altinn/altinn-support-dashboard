@@ -1,11 +1,8 @@
-import type { PersonalContact, ERRole } from "../../../models/models";
-export type { PersonalContact };
-
-export interface OfficialContact {
-  MobileNumber: string;
-  MobileNumberChanged: string;
-  EMailAddress: string;
-  EMailAddressChanged: string;
+export interface fficialContact {
+  mobileNumber: string;
+  mobileNumberChanged: string;
+  eMailAddress: string;
+  eMailAddressChanged: string;
   fratraadt?: boolean;
   erDoed?: boolean;
 }

@@ -31,6 +31,15 @@ export interface PersonalContact {
   _links: PersonalContactLink[];
 }
 
+export interface OfficialContact {
+  mobileNumber: string;
+  mobileNumberChanged: string;
+  eMailAddress: string;
+  eMailAddressChanged: string;
+  fratraadt?: boolean;
+  erDoed?: boolean;
+}
+
 export interface PersonalContactLink {
   rel: string;
   href: string;
