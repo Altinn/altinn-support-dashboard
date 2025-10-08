@@ -15,7 +15,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, title, icon, isCollapsed }) => {
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `${classes.navButton} ${isActive ? classes.navButtonSelected : ""}`
+        `${classes.navButton} ${isActive ? classes.navButtonSelected : ""} ${isCollapsed ? classes.navButtonCollapsed : ""}`
       }
     >
       {isCollapsed ? (

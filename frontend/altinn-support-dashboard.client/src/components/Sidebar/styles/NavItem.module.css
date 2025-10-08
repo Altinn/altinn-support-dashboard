@@ -1,34 +1,19 @@
-.navLink {
-  text-decoration: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.navLinkCollpased {
-}
-
-/* Navigation container */
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 /* Base nav button */
 .navButton {
   display: block;
+  position: relative;
   padding: 10px;
   border-radius: 25px;
   cursor: pointer;
   text-align: center;
-  margin: 0 10px 10px 0;
   transition: all 0.3s ease;
-  color: #fff;
   text-decoration: none;
-  background-color: transparent;
-  position: relative;
-  width: calc(100% - 10px);
+  color: #ffffff;
+}
+
+.navButtonCollapsed {
+  width: 70px;
+  min-width: 70px;
 }
 
 .navButton:not(.navButtonSelected):hover {
@@ -37,12 +22,11 @@
 
 /* Selected state */
 .navButtonSelected {
-  background-color: #f0f2f5;
-  color: #004a70;
+  background-color: var(--ds-color-accent-background-default);
+  color: var(--ds-color-accent-text-default);
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   margin-right: -32px;
   padding-right: 32px;
   width: calc(100% + 20px);
-  position: relative;
 }
