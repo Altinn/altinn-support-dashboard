@@ -31,6 +31,15 @@ export interface PersonalContact {
   _links: PersonalContactLink[];
 }
 
+export interface OfficialContact {
+  mobileNumber: string;
+  mobileNumberChanged: string;
+  eMailAddress: string;
+  eMailAddressChanged: string;
+  fratraadt?: boolean;
+  erDoed?: boolean;
+}
+
 export interface PersonalContactLink {
   rel: string;
   href: string;
@@ -85,12 +94,12 @@ export interface ERRole {
 }
 
 export interface Role {
-  RoleId?: number;
-  RoleType: string;
-  RoleDefinitionId: number;
-  RoleName: string;
-  RoleDescription: string;
-  RoleDefinitionCode: string;
+  roleId?: number;
+  roleType: string;
+  roleDefinitionId: number;
+  roleName: string;
+  roleDescription: string;
+  roleDefinitionCode: string;
   _links?: any;
 }
 export interface SelectedOrg {

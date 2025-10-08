@@ -1,15 +1,3 @@
-import type { PersonalContact, ERRole } from "../../../models/models";
-export type { PersonalContact };
-
-export interface OfficialContact {
-  MobileNumber: string;
-  MobileNumberChanged: string;
-  EMailAddress: string;
-  EMailAddressChanged: string;
-  fratraadt?: boolean;
-  erDoed?: boolean;
-}
-
 export type SortDirection = "ascending" | "descending" | "none" | undefined;
 
 export type ERRolesSortField = "type" | "person" | "sistEndret" | null;

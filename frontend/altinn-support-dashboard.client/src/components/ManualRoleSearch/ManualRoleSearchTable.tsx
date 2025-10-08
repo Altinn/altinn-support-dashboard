@@ -1,11 +1,8 @@
-import { Role } from "./models/manualRoleSearchTypes";
 import React from "react";
 import RoleTypeCell from "../RoleTypeCell";
-import {
-  Table
-} from "@digdir/designsystemet-react";
-import  styles from "./styles/RoleTable.module.css";
-
+import { Table } from "@digdir/designsystemet-react";
+import styles from "./styles/RoleTable.module.css";
+import { Role } from "../../models/models";
 
 interface RoleTableProps {
   roles: Role[];
@@ -17,27 +14,19 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles }) => {
       <Table stickyHeader border data-color="neutral">
         <Table.Head>
           <Table.Row>
-            <Table.HeaderCell>
-              Rolletype
-            </Table.HeaderCell>
-            <Table.HeaderCell>
-              Rollenavn
-            </Table.HeaderCell>
-            <Table.HeaderCell>
-              Beskrivelse
-            </Table.HeaderCell>
-            <Table.HeaderCell>
-              Rolledefinisjonskode
-            </Table.HeaderCell>
+            <Table.HeaderCell>Rolletype</Table.HeaderCell>
+            <Table.HeaderCell>Rollenavn</Table.HeaderCell>
+            <Table.HeaderCell>Beskrivelse</Table.HeaderCell>
+            <Table.HeaderCell>Rolledefinisjonskode</Table.HeaderCell>
           </Table.Row>
         </Table.Head>
         <Table.Body>
           {roles.map((role, index) => (
             <Table.Row key={index}>
-              <RoleTypeCell roleType = {role.RoleType} />
-              <Table.Cell>{role.RoleName}</Table.Cell>
-              <Table.Cell>{role.RoleDescription}</Table.Cell>
-              <Table.Cell>{role.RoleDefinitionCode}</Table.Cell>
+              <RoleTypeCell roleType={role.roleType} />
+              <Table.Cell>{role.roleName}</Table.Cell>
+              <Table.Cell>{role.roleDescription}</Table.Cell>
+              <Table.Cell>{role.roleDefinitionCode}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
@@ -46,5 +35,5 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles }) => {
   );
 };
 
-
 export default RoleTable;
+

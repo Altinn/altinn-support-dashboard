@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Heading } from "@digdir/designsystemet-react";
-import { PersonalContact } from "../models/mainContentTypes";
 import ERRolesTable from "./ERRolesTable";
 import { RoleDetails } from "./RoleDetails";
 import ContactsSearchBar from "./contacts/ContactsSearchBar";
 import ContactsTable from "./contacts/ContactsTable";
 import { useOrgDetails } from "../../../hooks/hooks";
-import { SelectedOrg } from "../../../models/models";
+import { PersonalContact, SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
 import { Card } from "@digdir/designsystemet-react";
 import styles from "../styles/DetailedOrgView.module.css";
@@ -67,15 +66,15 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
                 <Heading level={6}>Varslingsadresser for virksomheten</Heading>
                 <div className={styles.OfficialContactBottom}>
                   <NotificationContactTable
-                    title="Mobilnummer"
-                    field="MobileNumber"
-                    changedField="MobileNumberChanged"
+                    title="mobilnummer"
+                    field="mobileNumber"
+                    changedField="mobileNumberChanged"
                     contacts={officialContactsQuery.data ?? []}
                   />
                   <NotificationContactTable
                     title="E-post"
-                    field="EMailAddress"
-                    changedField="EMailAddressChanged"
+                    field="eMailAddress"
+                    changedField="eMailAddressChanged"
                     contacts={officialContactsQuery.data ?? []}
                   />
                 </div>

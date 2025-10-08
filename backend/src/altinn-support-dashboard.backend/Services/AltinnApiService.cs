@@ -1,4 +1,5 @@
-﻿using altinn_support_dashboard.Server.Services.Interfaces;
+﻿using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
 using System.Text.Json;
 
@@ -93,23 +94,40 @@ namespace altinn_support_dashboard.Server.Services
             return personalContacts;
         }
 
-        public async Task<string> GetPersonRoles(string subject, string reportee, string environment)
+        public async Task<List<Role>> GetPersonRoles(string subject, string reportee, string environment)
         {
             if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))
             {
                 throw new ArgumentException("Subject eller Reportee er ugyldig.");
             }
 
-            return await _client.GetPersonRoles(subject, reportee, environment);
+            var result = await _client.GetPersonRoles(subject, reportee, environment);
+
+            var roles = JsonSerializer.Deserialize<List<Role>>(result, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true
+            });
+
+            return roles ?? new List<Role>();
+
         }
 
-        public async Task<string> GetOfficialContacts(string orgNumber, string environment)
+        public async Task<List<OfficialContact>> GetOfficialContacts(string orgNumber, string environment)
         {
-            if(!ValidationService.IsValidOrgNumber(orgNumber))
+            if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
                 throw new ArgumentException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
-            return await _client.GetOfficialContacts(orgNumber, environment);
+
+            var result = await _client.GetOfficialContacts(orgNumber, environment);
+            List<OfficialContact> officialContacts = JsonSerializer.Deserialize<List<OfficialContact>>(result, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true
+            });
+
+            return officialContacts;
         }
 
     }

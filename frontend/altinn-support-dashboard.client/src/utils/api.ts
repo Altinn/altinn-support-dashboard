@@ -1,6 +1,5 @@
-import { OfficialContact } from "../components/Dashboard/models/mainContentTypes";
 import { authorizedFetch, getBaseUrl } from "./utils";
-import { Role } from "../models/models";
+import { OfficialContact, Role } from "../models/models";
 
 //this file defines which which api endpoints we want to fetch data from
 

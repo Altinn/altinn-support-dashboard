@@ -59,8 +59,8 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
           {roleInfo && roleInfo.length > 0 ? (
             roleInfo.map((role, index) => (
               <Table.Row key={index}>
-                <RoleTypeCell roleType={role.RoleType} />
-                <Table.Cell>{role.RoleName}</Table.Cell>
+                <RoleTypeCell roleType={role.roleType} />
+                <Table.Cell>{role.roleName}</Table.Cell>
               </Table.Row>
             ))
           ) : (
