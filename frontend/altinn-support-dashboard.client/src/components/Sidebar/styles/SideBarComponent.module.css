@@ -78,7 +78,7 @@
 
 .collapseButton {
   height: 36px;
-  background-color: var(--ds-color-accent-base-default);
+  background-color: transparent;
   border-radius: 18px;
   padding: 6px 12px;
   font-size: 0.9rem;
@@ -89,12 +89,12 @@
   transition: background-color 0.2s ease;
 }
 
-[data-color-scheme="dark"] .collapseButton {
-  background-color: var(--ds-color-surface-default);
-}
-
 .collapseButton:hover {
   background-color: var(--ds-color-accent-base-hover);
+}
+
+[data-color-scheme="dark"] .collapseButton:hover {
+  background-color: var(--ds-color-accent-surface-hover);
 }
 
 .divider {

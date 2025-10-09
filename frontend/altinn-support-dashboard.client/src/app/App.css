@@ -19,11 +19,7 @@ html {
   height: 100vh;
   overflow: hidden;
 
-  background-color: #f0f2f5;
-}
-
-[data-color-scheme="dark"] .app-wrapper {
-  background-color: var(--ds-color-background-default);
+  background-color: var(--ds-color-neutral-background-tinted);
 }
 
 /* Main Content Styling */
