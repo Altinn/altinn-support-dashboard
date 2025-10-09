@@ -25,86 +25,87 @@ const Sidebar: React.FC = () => {
   const { userName, userEmail } = useUserDetails();
 
   return (
-    <div
-      data-color="brand3"
-      className={`${classes.sidebar} ${
-        isCollapsed ? classes.collapsed : classes.expanded
-      }`}
-    >
+    <div className={classes.sidebarWrapper}>
       <div className={classes.dragHandle} onMouseDown={handleDragStart} />
+      <div
+        className={`${classes.sidebar} ${
+          isCollapsed ? classes.collapsed : classes.expanded
+        }`}
+      >
+        <div>
+          <div className={classes.logoBox}>
+            <img
+              src={isCollapsed ? whiteLogo : logo}
+              alt="logo"
+              className={`${classes.logoImg} ${
+                isCollapsed ? classes.logoCollapsed : classes.logoExpanded
+              }`}
+            />
+          </div>
 
-      <div>
-        <div className={classes.logoBox}>
-          <img
-            src={isCollapsed ? whiteLogo : logo}
-            alt="logo"
-            className={`${classes.logoImg} ${
-              isCollapsed ? classes.logoCollapsed : classes.logoExpanded
-            }`}
-          />
+          {/* Collapse button */}
+          <div className={classes.collapseContainer}>
+            <Button
+              data-color="accent"
+              onClick={toggleCollapse}
+              className={classes.collapseButton}
+            >
+              {isCollapsed ? (
+                <ChevronRightIcon className={classes.icons} />
+              ) : (
+                <>
+                  <ChevronLeftIcon className={classes.icons} /> Minimer
+                  sidepanel
+                </>
+              )}
+            </Button>
+          </div>
+
+          <Divider className={classes.divider} />
+
+          <nav className={classes.nav}>
+            <NavItem
+              to="/dashboard"
+              title="Oppslag"
+              icon={<Buildings3Icon className={classes.icons} />}
+              isCollapsed={isCollapsed}
+            />
+            <NavItem
+              to="/manualrolesearch"
+              title="Manuelt rollesøk"
+              icon={<MagnifyingGlassIcon className={classes.icons} />}
+              isCollapsed={isCollapsed}
+            />
+            <NavItem
+              to="/new-org"
+              title="Ny Organisasjon"
+              icon={<PlusIcon className={classes.icons} />}
+              isCollapsed={isCollapsed}
+            />
+            <NavItem
+              to="/settings"
+              title="Innstillinger"
+              icon={<CogIcon className={classes.icons} />}
+              isCollapsed={isCollapsed}
+            />
+          </nav>
         </div>
 
-        {/* Collapse button */}
-        <div className={classes.collapseContainer}>
-          <Button
-            data-color="accent"
-            onClick={toggleCollapse}
-            className={classes.collapseButton}
-          >
-            {isCollapsed ? (
-              <ChevronRightIcon className={classes.icons} />
-            ) : (
-              <>
-                <ChevronLeftIcon className={classes.icons} /> Minimer sidepanel
-              </>
-            )}
-          </Button>
+        <div>
+          <Divider className={classes.divider} />
+
+          {/* Extra info when expanded */}
+          {!isCollapsed && (
+            <>
+              <SideBarDateTime />
+              <SidebarEnvToggle />
+              <div className={classes.userInfo}>
+                <Label>{userName}</Label>
+                <Label>{userEmail}</Label>
+              </div>
+            </>
+          )}
         </div>
-
-        <Divider className={classes.divider} />
-
-        <nav className={classes.nav}>
-          <NavItem
-            to="/dashboard"
-            title="Oppslag"
-            icon={<Buildings3Icon className={classes.icons} />}
-            isCollapsed={isCollapsed}
-          />
-          <NavItem
-            to="/manualrolesearch"
-            title="Manuelt rollesøk"
-            icon={<MagnifyingGlassIcon className={classes.icons} />}
-            isCollapsed={isCollapsed}
-          />
-          <NavItem
-            to="/new-org"
-            title="Ny Organisasjon"
-            icon={<PlusIcon className={classes.icons} />}
-            isCollapsed={isCollapsed}
-          />
-          <NavItem
-            to="/settings"
-            title="Innstillinger"
-            icon={<CogIcon className={classes.icons} />}
-            isCollapsed={isCollapsed}
-          />
-        </nav>
-      </div>
-
-      <div>
-        <Divider className={classes.divider} />
-
-        {/* Extra info when expanded */}
-        {!isCollapsed && (
-          <>
-            <SideBarDateTime />
-            <SidebarEnvToggle />
-            <div className={classes.userInfo}>
-              <Label>{userName}</Label>
-              <Label>{userEmail}</Label>
-            </div>
-          </>
-        )}
       </div>
     </div>
   );

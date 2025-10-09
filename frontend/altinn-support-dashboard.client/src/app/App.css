@@ -13,17 +13,34 @@ html {
   overflow: hidden;
 }
 
+/* Animate background, text, and border colors smoothly when switching darkmode */
+html,
+body,
+[data-color-scheme] * {
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease,
+    border-color 0.5s ease,
+    fill 0.5s ease,
+    stroke 0.5s ease;
+}
+
+html.theme-transition,
+html.theme-transition * {
+  transition:
+    background-color 0.25s ease-out,
+    color 0.25s ease-out,
+    border-color 0.25s ease-out,
+    fill 0.25s ease-out,
+    stroke 0.25s ease-out;
+}
 /* Wrapper */
 .app-wrapper {
   display: flex;
   height: 100vh;
   overflow: hidden;
 
-  background-color: #f0f2f5;
-}
-
-[data-color-scheme="dark"] .app-wrapper {
-  background-color: var(--ds-color-background-default);
+  background-color: var(--ds-color-neutral-background-tinted);
 }
 
 /* Main Content Styling */

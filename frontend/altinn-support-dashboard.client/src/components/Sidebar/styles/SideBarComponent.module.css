@@ -1,3 +1,7 @@
+.sidebarWrapper {
+  position: relative;
+  display: flex;
+}
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -8,7 +12,7 @@
   transition:
     width 0.3s ease,
     min-width 0.3s ease;
-  background-color: #004a70;
+  background-color: var(--ds-color-accent-base-default);
   overflow: hidden;
 }
 
@@ -28,16 +32,18 @@
 
 .dragHandle {
   position: absolute;
-  right: -6px;
   top: 50%;
+  left: 97%;
   transform: translateY(-50%);
   width: 1.3rem;
   height: 1.3rem;
   border-radius: 50%;
   cursor: ew-resize;
   transition: all 0.2s ease;
-  background-color: var(--ds-color-background-default);
-  border: 2px solid #004a70;
+  background-color: var(--ds-color-background-tinted);
+  border: 2px solid var(--ds-color-accent-base-default);
+
+  z-index: 10;
 }
 
 .dragHandle:hover {
@@ -78,7 +84,7 @@
 
 .collapseButton {
   height: 36px;
-  background-color: #004a70;
+  background-color: transparent;
   border-radius: 18px;
   padding: 6px 12px;
   font-size: 0.9rem;
@@ -89,19 +95,19 @@
   transition: background-color 0.2s ease;
 }
 
-[data-color-scheme="dark"] .collapseButton {
-  background-color: var(--ds-color-surface-default);
+.collapseButton:hover {
+  background-color: var(--ds-color-accent-base-hover);
 }
 
-.collapseButton:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+[data-color-scheme="dark"] .collapseButton:hover {
+  background-color: var(--ds-color-accent-surface-hover);
 }
 
 .divider {
   margin: 16px 0;
   height: 1px;
   border: none;
-  background-color: #ccc;
+  background-color: #f3f3f4;
 }
 
 .userInfo {
