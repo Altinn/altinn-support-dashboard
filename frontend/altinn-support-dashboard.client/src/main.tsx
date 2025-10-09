@@ -12,7 +12,10 @@ const Root = () => {
   const isDarkmode = useAppStore((state) => state.isDarkMode);
 
   return (
-    <div data-color-scheme={isDarkmode ? "dark" : "light"}>
+    <div
+      className="app-background"
+      data-color-scheme={isDarkmode ? "dark" : "light"}
+    >
       <App />
     </div>
   );
