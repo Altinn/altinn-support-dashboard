@@ -5,6 +5,7 @@ import "@digdir/designsystemet-theme";
 import "@digdir/designsystemet-css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAppStore } from "./stores/Appstore";
+import "../design-tokens-build/test2.css";
 
 const queryClient = new QueryClient();
 

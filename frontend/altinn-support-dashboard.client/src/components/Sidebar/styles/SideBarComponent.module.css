@@ -8,7 +8,7 @@
   transition:
     width 0.3s ease,
     min-width 0.3s ease;
-  background-color: #004a70;
+  background-color: var(--ds-color-accent-base-default);
   overflow: hidden;
 }
 
@@ -78,7 +78,7 @@
 
 .collapseButton {
   height: 36px;
-  background-color: #004a70;
+  background-color: var(--ds-color-accent-base-default);
   border-radius: 18px;
   padding: 6px 12px;
   font-size: 0.9rem;
@@ -94,7 +94,7 @@
 }
 
 .collapseButton:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--ds-color-accent-base-hover);
 }
 
 .divider {

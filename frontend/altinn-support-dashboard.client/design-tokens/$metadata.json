@@ -8,17 +8,18 @@
     "primitives/modes/typography/size/small",
     "primitives/modes/typography/size/medium",
     "primitives/modes/typography/size/large",
-    "primitives/modes/typography/primary/theme-test",
-    "primitives/modes/typography/secondary/theme-test",
+    "primitives/modes/typography/primary/test2",
+    "primitives/modes/typography/secondary/test2",
     "primitives/modes/color-scheme/dark/global",
-    "primitives/modes/color-scheme/dark/theme-test",
+    "primitives/modes/color-scheme/dark/test2",
     "primitives/modes/color-scheme/light/global",
-    "primitives/modes/color-scheme/light/theme-test",
-    "themes/theme-test",
+    "primitives/modes/color-scheme/light/test2",
+    "themes/test2",
     "semantic/color",
     "semantic/modes/main-color/accent",
     "semantic/modes/support-color/brand1",
     "semantic/modes/support-color/brand2",
+    "semantic/modes/support-color/brand3",
     "semantic/style"
   ]
 }
