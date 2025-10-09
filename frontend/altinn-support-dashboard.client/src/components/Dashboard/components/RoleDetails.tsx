@@ -1,6 +1,5 @@
 import React from "react";
 import { useRoles } from "../../../hooks/hooks";
-import { PersonalContact } from "../models/mainContentTypes";
 import { useAppStore } from "../../../stores/Appstore";
 import RoleTypeCell from "../../RoleTypeCell";
 import {
@@ -11,6 +10,7 @@ import {
   Paragraph,
 } from "@digdir/designsystemet-react";
 import styles from "../styles/RoleDetails.module.css";
+import { PersonalContact } from "../../../models/models";
 
 interface RoleDetailsProps {
   selectedContact: PersonalContact;

@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { PersonalContact, ERRole, Role } from "../models/models";
+import {
+  PersonalContact,
+  ERRole,
+  Role,
+  OfficialContact,
+} from "../models/models";
 import {
   getBaseUrl,
   getFormattedDateTime,
@@ -14,7 +19,6 @@ import {
   fetchRolesForOrg,
   fetchSubunits,
 } from "../utils/api";
-import { OfficialContact } from "../components/Dashboard/models/mainContentTypes";
 import { useAppStore } from "../stores/Appstore";
 
 export function useUserDetails() {

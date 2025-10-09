@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import classes from "../../styles/ContactsTable.module.css";
-import { PersonalContact, SortDirection } from "../../models/mainContentTypes";
+import { SortDirection } from "../../models/mainContentTypes";
 import { filterContacts, sortContacts } from "../../utils/contactUtils";
 import { useOrgDetails } from "../../../../hooks/hooks";
-import { SelectedOrg } from "../../../../models/models";
+import { PersonalContact, SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import ContactInfoCell from "./ContactInfoCell";
 import {
