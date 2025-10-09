@@ -8,7 +8,7 @@
   transition:
     width 0.3s ease,
     min-width 0.3s ease;
-  background-color: var(--ds-color-base-default);
+  background-color: #004a70;
   overflow: hidden;
 }
 
@@ -74,11 +74,11 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 8px;
-  color: var(--ds-color-text-default);
 }
 
 .collapseButton {
   height: 36px;
+  background-color: #004a70;
   border-radius: 18px;
   padding: 6px 12px;
   font-size: 0.9rem;
@@ -86,6 +86,15 @@
   gap: 4px;
   cursor: pointer;
   color: #fff;
+  transition: background-color 0.2s ease;
+}
+
+[data-color-scheme="dark"] .collapseButton {
+  background-color: var(--ds-color-surface-default);
+}
+
+.collapseButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .divider {
