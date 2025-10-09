@@ -22,7 +22,7 @@
 
 /* Selected state */
 .navButtonSelected {
-  background-color: var(--ds-color-accent-background-default);
+  background-color: var(--ds-color-neutral-background-tinted);
   color: var(--ds-color-accent-text-default);
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
