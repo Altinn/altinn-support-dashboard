@@ -20,6 +20,10 @@ html {
   overflow: hidden;
 }
 
+.app-background {
+  background-color: #f0f2f5;
+}
+
 /* Main Content Styling */
 .main-content {
   flex-grow: 1;
