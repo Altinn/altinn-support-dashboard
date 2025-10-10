@@ -75,12 +75,14 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
             <Table.HeaderCell
               sort={erRoleSortField === "type" ? erRoleSortDirection : "none"}
               onClick={() => handleERRoleSort("type")}
+              className={styles["header-font"]}
             >
               Rolletype
             </Table.HeaderCell>
             <Table.HeaderCell
               sort={erRoleSortField === "person" ? erRoleSortDirection : "none"}
               onClick={() => handleERRoleSort("person")}
+              className={styles["header-font"]}
             >
               Person/Virksomhet
             </Table.HeaderCell>
@@ -89,26 +91,33 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
                 erRoleSortField === "sistEndret" ? erRoleSortDirection : "none"
               }
               onClick={() => handleERRoleSort("sistEndret")}
+              className={styles["header-font"]}
             >
               Dato Endret
             </Table.HeaderCell>
-            <Table.HeaderCell>Status</Table.HeaderCell>
+            <Table.HeaderCell className={styles["header-font"]}>
+              Status
+            </Table.HeaderCell>
           </Table.Row>
         </Table.Head>
         <Table.Body>
           {sortedERRoles && sortedERRoles.length > 0 ? (
             sortedERRoles.map((role, index) => (
               <Table.Row key={index}>
-                <Table.Cell>{role.type?.beskrivelse || ""}</Table.Cell>
-                <Table.Cell>
+                <Table.Cell className={styles["cell-font"]}>
+                  {role.type?.beskrivelse || ""}
+                </Table.Cell>
+                <Table.Cell className={styles["cell-font"]}>
                   {role.person
                     ? `${role.person?.navn?.fornavn || ""} ${role.person?.navn?.etternavn || ""}`.trim()
                     : role.enhet
                       ? `${role.enhet.navn?.[0] || ""} (${role.enhet.organisasjonsnummer})`
                       : ""}
                 </Table.Cell>
-                <Table.Cell>{formatDate(role.sistEndret)}</Table.Cell>
-                <Table.Cell>
+                <Table.Cell className={styles["cell-font"]}>
+                  {formatDate(role.sistEndret)}
+                </Table.Cell>
+                <Table.Cell className={styles["cell-font"]}>
                   {role.fratraadt ? "Fratrådt" : "Aktiv"}
                   {role.person?.erDoed ? " (Død)" : ""}
                   {role.enhet?.erSlettet ? " (Slettet)" : ""}
