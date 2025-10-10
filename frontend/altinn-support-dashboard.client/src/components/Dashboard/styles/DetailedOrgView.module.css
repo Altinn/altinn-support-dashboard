@@ -40,4 +40,5 @@
   display: flex;
   gap: 2rem;
   flex: 1;
+  overflow-x: auto;
 }
