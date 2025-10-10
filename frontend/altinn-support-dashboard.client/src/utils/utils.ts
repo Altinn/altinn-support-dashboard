@@ -64,7 +64,6 @@ export async function fetchUserDetails(): Promise<{
 }> {
   try {
     const response = await fetch("/.auth/me");
-    console.log(response);
     const data = await response.json();
     if (Array.isArray(data) && data.length > 0) {
       const user = data[0];
