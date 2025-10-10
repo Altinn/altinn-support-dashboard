@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRoles } from "../../../hooks/hooks";
 import { useAppStore } from "../../../stores/Appstore";
 import RoleTypeCell from "../../RoleTypeCell";
@@ -8,6 +8,8 @@ import {
   Table,
   Card,
   Paragraph,
+  Skeleton,
+  Alert,
 } from "@digdir/designsystemet-react";
 import styles from "../styles/RoleDetails.module.css";
 import { PersonalContact } from "../../../models/models";
@@ -25,11 +27,19 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
 }) => {
   const environment = useAppStore((state) => state.environment);
 
-  const roleInfo = useRoles(
+  const roleQuery = useRoles(
     environment,
     selectedContact.socialSecurityNumber,
     organizationNumber,
-  ).data;
+  );
+  const roleInfo = roleQuery.data;
+
+  if (roleQuery.isLoading) {
+    return <Skeleton variant="rectangle" height={300} />;
+  }
+  if (roleQuery.isError) {
+    return <Alert data-color="danger">Error when fetching roles</Alert>;
+  }
 
   const handleBack = () => {
     onBack();
