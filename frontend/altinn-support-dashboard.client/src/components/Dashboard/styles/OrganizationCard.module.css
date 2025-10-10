@@ -7,6 +7,9 @@
   position: absolute;
   right: 10px;
   bottom: 10px;
+  padding-top: -0.5;
+  min-height: 1rem;
+  max-height: 3rem;
 }
 .card {
   position: relative;
