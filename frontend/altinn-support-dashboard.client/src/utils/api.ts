@@ -46,6 +46,13 @@ export const fetchERoles = async (environment: string, orgNumber: string) => {
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/brreg/${orgNumber}`,
   );
+
+  if (res.status === 404) {
+    return [];
+  }
+
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching ERoles");
+
   const data = await res.json();
   return data.rollegrupper;
 };
@@ -69,7 +76,6 @@ export const fetchRolesForOrg = async (
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/serviceowner/${rollehaver}/roles/${rollegiver}`,
   );
-
   if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
 
   const data = await res.json();

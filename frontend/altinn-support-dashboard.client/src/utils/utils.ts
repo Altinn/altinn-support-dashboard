@@ -28,10 +28,6 @@ export async function authorizedFetch(
     "Content-Type": "application/json",
   };
   const response = await fetch(url, { ...options, headers });
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`${response.statusText}: ${errorText}`);
-  }
   return response;
 }
 
