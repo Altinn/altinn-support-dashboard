@@ -6,6 +6,19 @@
   overflow-x: auto;
 }
 
+.table {
+  width: 100%;
+  table-layout: auto;
+}
+
+.table td:not(:has(button)),
+th:not(:has(button)) {
+  word-break: break-word;
+  overflow-wrap: break-word;
+
+  font-size: clamp(12px, 2vw, 16px);
+}
+
 .tableHeaderCell {
   cursor: pointer;
 }

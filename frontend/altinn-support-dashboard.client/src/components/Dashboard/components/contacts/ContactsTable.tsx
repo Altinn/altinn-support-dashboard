@@ -66,7 +66,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
 
   return (
     <Card data-color="neutral" className={classes.tableContainer}>
-      <Table data-color="neutral" border>
+      <Table className={classes.table} data-color="neutral" border>
         <caption>Din kontaktinformasjon</caption>
         <Table.Head>
           <Table.Row>
