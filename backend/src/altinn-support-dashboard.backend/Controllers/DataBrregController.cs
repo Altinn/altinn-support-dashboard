@@ -1,6 +1,7 @@
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 [ApiController]
 [Route("api/{environmentName}/brreg/{orgNumber}")]
@@ -29,7 +30,7 @@ public class ER_Roller_APIController : ControllerBase
         try
         {
             var result = await _dataBrregService.GetRolesAsync(orgNumber, environmentName);
-            if (result == null)
+            if (result == null || result.Rollegrupper.IsNullOrEmpty() || result.ApiRoller.IsNullOrEmpty())
             {
                 return NotFound("Ingen data funnet");
             }
