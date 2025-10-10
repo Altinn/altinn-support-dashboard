@@ -12,6 +12,14 @@ export const fetchOrganizations = async (
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`,
   );
+
+  if (res.status === 404) {
+    return [];
+  }
+
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching organizations");
+
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
 };
@@ -20,6 +28,13 @@ export const fetchSubunits = async (environment: string, orgNumber: string) => {
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/brreg/${orgNumber}/underenheter`,
   );
+
+  if (res.status === 404) {
+    return [];
+  }
+
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching Subunits");
+
   const data = await res.json();
   if (!data?._embedded?.underenheter) return [];
   return data._embedded.underenheter.map((sub: any) => ({
@@ -37,6 +52,14 @@ export const fetchPersonalContacts = async (
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/serviceowner/organizations/${orgNumber}/personalcontacts`,
   );
+
+  if (res.status === 404) {
+    return [];
+  }
+
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching PersonalContacts");
+
   const data = await res.json();
 
   return Array.isArray(data) ? data : [data];
@@ -46,6 +69,13 @@ export const fetchERoles = async (environment: string, orgNumber: string) => {
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/brreg/${orgNumber}`,
   );
+
+  if (res.status === 404) {
+    return [];
+  }
+
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching ERoles");
+
   const data = await res.json();
   return data.rollegrupper;
 };
@@ -57,6 +87,13 @@ export const fetchOfficialContacts = async (
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/serviceowner/organizations/${orgNumber}/officialcontacts`,
   );
+  if (res.status === 404) {
+    return [];
+  }
+
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching Official contacts");
+
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
 };
@@ -69,7 +106,6 @@ export const fetchRolesForOrg = async (
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/serviceowner/${rollehaver}/roles/${rollegiver}`,
   );
-
   if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
 
   const data = await res.json();

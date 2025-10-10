@@ -31,6 +31,14 @@ namespace altinn_support_dashboard.Server.Services
             }
 
             var result = await _client.GetRolesAsync(orgNumber, environmentName);
+            if (String.IsNullOrEmpty(result))
+            {
+                return new ErRollerModel
+                {
+                    Rollegrupper = new List<Rollegrupper>(),
+                };
+
+            }
             var rollerMain = JsonSerializer.Deserialize<ErRollerModel>(result, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -83,18 +91,18 @@ namespace altinn_support_dashboard.Server.Services
             try
             {
                 var result = await _client.GetEnhetsdetaljer(orgNumber, environmentName);
-                
+
                 // Definerer klasse for å deserialisere Brreg API respons
                 var options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 };
-                
+
                 // Deserialiserer organisasjonsinformasjonen fra Brreg
                 var enhet = JsonSerializer.Deserialize<BrregEnhet>(result, options);
-                
+
                 // Plukker ut relevante data for organisasjonen
-                var enhetsDetaljer = new 
+                var enhetsDetaljer = new
                 {
                     organisasjonsnummer = enhet.Organisasjonsnummer,
                     navn = enhet.Navn,
@@ -102,7 +110,7 @@ namespace altinn_support_dashboard.Server.Services
                     epostadresse = enhet.Epostadresse,
                     aktivitet = enhet.Aktivitet,
                     registreringsdatoEnhetsregisteret = enhet.RegistreringsdatoEnhetsregisteret,
-                    forretningsadresse = enhet.Forretningsadresse != null ? new 
+                    forretningsadresse = enhet.Forretningsadresse != null ? new
                     {
                         adresse = enhet.Forretningsadresse.Adresse?.FirstOrDefault(),
                         postnummer = enhet.Forretningsadresse.Postnummer,
@@ -111,7 +119,7 @@ namespace altinn_support_dashboard.Server.Services
                         land = enhet.Forretningsadresse.Land
                     } : null
                 };
-                
+
                 return enhetsDetaljer;
             }
             catch (Exception ex)
@@ -120,7 +128,7 @@ namespace altinn_support_dashboard.Server.Services
                 throw;
             }
         }
-        
+
         /// <summary>
         /// Oppretter en mock-respons for organisasjonsinformasjon
         /// </summary>

@@ -2,6 +2,7 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -58,6 +59,10 @@ namespace altinn_support_dashboard.Server.Services
                 if (response.IsSuccessStatusCode)
                 {
                     return await response.Content.ReadAsStringAsync();
+                }
+                else if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return String.Empty;
                 }
                 else
                 {
