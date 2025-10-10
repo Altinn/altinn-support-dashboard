@@ -67,7 +67,7 @@ export const fetchRolesForOrg = async (
   rollegiver: string,
 ): Promise<Role[]> => {
   const res = await authorizedFetch(
-    `/api/${environment}/serviceowner/${rollehaver}/roles/${rollegiver}`,
+    `${getBaseUrl(environment)}/serviceowner/${rollehaver}/roles/${rollegiver}`,
   );
 
   if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
