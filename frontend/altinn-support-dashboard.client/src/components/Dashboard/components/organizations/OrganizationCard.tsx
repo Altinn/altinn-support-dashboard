@@ -56,6 +56,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           <Button
             className={classes.expandButton}
             variant="secondary"
+            data-size="sm"
             onClick={(e) => {
               handleExpanded(e);
             }}
