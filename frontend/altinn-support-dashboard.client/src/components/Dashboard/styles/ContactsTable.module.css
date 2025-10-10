@@ -8,12 +8,11 @@
 
 .table {
   width: 100%;
-  table-layout: auto;
+  table-layout: fixed;
 }
 
 .table td:not(:has(button)),
 th:not(:has(button)) {
-  word-break: break-word;
   overflow-wrap: break-word;
 
   font-size: clamp(12px, 2vw, 16px);
@@ -21,4 +20,6 @@ th:not(:has(button)) {
 
 .tableHeaderCell {
   cursor: pointer;
+
+  word-break: break-all;
 }
