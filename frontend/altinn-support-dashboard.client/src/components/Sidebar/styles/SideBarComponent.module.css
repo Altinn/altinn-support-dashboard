@@ -120,3 +120,11 @@
 .icons {
   font-size: 1.5rem;
 }
+
+@media (max-width: 1439px){
+  .expanded {
+    width: 200px;
+    min-width: 200px;
+  }
+  
+}
