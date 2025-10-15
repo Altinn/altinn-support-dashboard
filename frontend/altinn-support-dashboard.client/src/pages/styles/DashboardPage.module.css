@@ -1,23 +1,22 @@
-
-
 .dashboard-page-container {
-    height: 100%;
-    overflow-y: auto;
-    padding-right: 2rem;
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 2rem;
 }
 
 .dashboard-container {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
 
 .org-list-container {
-    flex: 1;
-    min-width: 25%;
-    max-width: 40%;
+  flex: 2;
+  min-width: 25%;
+  max-width: 40%;
 }
 .detailed-org-container {
-    flex: 2;
-    min-width: 30%;
+  flex: 8;
+  min-width: 30%;
 }
+
