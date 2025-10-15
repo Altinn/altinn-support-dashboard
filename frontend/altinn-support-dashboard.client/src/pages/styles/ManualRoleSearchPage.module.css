@@ -28,13 +28,8 @@
 
 @media (min-width:1024px){
     .result-area {
-        width: 100%;
         max-height: 70vh;
     }
 }
-@media (min-width:1440px){
-    .result-area {
-        width: 100%;
-    }
-}
+
 
