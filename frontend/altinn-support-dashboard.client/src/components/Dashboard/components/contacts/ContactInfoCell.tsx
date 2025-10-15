@@ -27,13 +27,13 @@ const ContactInfoCell: React.FC<ContactInfoCellProps> = ({
     }
   }, [userInput]);
   return (
-    <Table.Cell className={classes.tableCell}>
+    <div>
       {contactLastChanged && (
         <Tooltip content={`Dato endret: ${formatDate(contactLastChanged)}`}>
           <Label className={isBold ? classes.bold : ""}>{contact || "-"}</Label>
         </Tooltip>
       )}
-    </Table.Cell>
+    </div>
   );
 };
 

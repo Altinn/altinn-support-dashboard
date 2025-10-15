@@ -6,12 +6,36 @@
   max-width: 100%;
 }
 
-.cellText {
-  font-size: 0.875rem;
+@media (min-width: 1024px) {
+  .cellText {
+    font-size: var(--ds-font-size-2);
+  }
+
+  .tableCell {
+    font-size: var(--ds-font-size-2);
+  }
+}
+@media (min-width: 1440px) {
+  .cellText {
+    font-size: var(--ds-font-size-3);
+  }
+
+  .tableCell {
+    font-size: var(--ds-font-size-3);
+  }
+}
+
+@media (min-width: 1800px) {
+  .cellText {
+    font-size: var(--ds-font-size-4);
+  }
+
+  .tableCell {
+    font-size: var(--ds-font-size-4);
+  }
 }
 
 .paragraph {
   text-align: center;
-  font-size: 0.875rem;
+  font-size: var(--ds-font-size-4);
 }
-
