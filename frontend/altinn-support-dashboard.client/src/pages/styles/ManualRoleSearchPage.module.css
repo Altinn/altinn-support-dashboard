@@ -19,22 +19,22 @@
     }
 }
 
-
-@media (min-width:1440px){
-    .result-area {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-    }
+.result-area {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 }
 
 @media (min-width:1024px){
     .result-area {
         width: 100%;
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
         max-height: 70vh;
     }
 }
+@media (min-width:1440px){
+    .result-area {
+        width: 100%;
+    }
+}
+
