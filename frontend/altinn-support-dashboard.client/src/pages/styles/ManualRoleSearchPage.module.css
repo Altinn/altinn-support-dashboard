@@ -1,4 +1,5 @@
 
+
 .input-row {
     display: flex;
     flex: 1;
@@ -8,8 +9,22 @@
     margin-bottom: 2rem;
 }
 
-.result-area {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+
+@media (min-width:1440px){
+    .result-area {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+}
+
+@media (min-width:1024px){
+    .result-area {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        max-height: 67vh;
+    }
 }
