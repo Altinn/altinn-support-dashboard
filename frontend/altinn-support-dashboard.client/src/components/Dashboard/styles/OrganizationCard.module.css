@@ -55,4 +55,8 @@
   .cardParagraph {
     font-size: var(--ds-font-size-2);
   }
+  .subunit .card{
+    min-height: 5rem;
+    max-height: 6rem;
+  }
 }

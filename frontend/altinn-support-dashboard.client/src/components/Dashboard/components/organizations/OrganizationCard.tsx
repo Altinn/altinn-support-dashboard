@@ -86,8 +86,8 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                   })
                 }
               >
-                <Paragraph variant="short">{sub.navn}</Paragraph>
-                <Paragraph variant="short">
+                <Paragraph variant="short" className={classes.cardHeader}>{sub.navn}</Paragraph>
+                <Paragraph variant="short" className={classes.cardParagraph}>
                   Org Nr: {sub.organisasjonsnummer}
                 </Paragraph>
               </Card>
