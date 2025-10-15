@@ -10,11 +10,6 @@
 
 @media (max-width:1439px) {
     .input-row {
-        display: flex;
-        flex: 1;
-        width: 100%;
-        gap: 0.5rem;
-        align-items: center;
         margin-bottom: 1rem;
     }
 }

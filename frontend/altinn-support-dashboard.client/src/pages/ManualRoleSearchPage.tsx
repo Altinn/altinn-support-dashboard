@@ -27,7 +27,7 @@ export const ManualRoleSearchPage: React.FC = () => {
   } = UseManualRoleSearch(rollehaver, rollegiver, environment);
 
   return (
-    <div className={styles["overall-container"]}>
+    <div>
       <Heading level={1} data-size="sm" >
         Manuelt Rollesøk
       </Heading>

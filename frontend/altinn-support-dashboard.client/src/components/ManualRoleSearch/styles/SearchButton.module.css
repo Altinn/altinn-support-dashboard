@@ -7,8 +7,6 @@
 
 @media (max-width:1439px) {
     .search-button {
-        align-self: flex-end;
-        margin-left: 0;
         font-size: var(--ds-font-size-3);
     }
 }
