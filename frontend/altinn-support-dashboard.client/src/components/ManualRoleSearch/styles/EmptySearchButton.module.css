@@ -4,3 +4,9 @@
     margin-bottom: 0.2rem;
     align-self: flex-end;
 }
+
+@media (max-width:1439px) {
+    .empty-search-button {
+        font-size: var(--ds-font-size-3);
+    }
+}

@@ -4,3 +4,10 @@
     display: flex;
     gap: 1rem;
 }
+
+@media (max-width:1439px) {
+    .input-fields {
+        gap: 0.5rem;
+        font-size: var(--ds-font-size-3);
+    }
+}

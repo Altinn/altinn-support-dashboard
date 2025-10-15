@@ -4,3 +4,9 @@
     align-self: flex-end;
     margin-left: 0;
 }
+
+@media (max-width:1439px) {
+    .search-button {
+        font-size: var(--ds-font-size-3);
+    }
+}
