@@ -8,23 +8,28 @@
 
 .table {
   width: 100%;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
-.table td:not(:has(button)),
-th:not(:has(button)) {
+.tableCell {
   overflow-wrap: break-word;
 }
 
-@media (min-width: 1440px) {
+@media (min-width: 1440) {
   .tableCell {
-    font-size: var(--ds-font-size-8);
+    font-size: var(--ds-font-size-2);
+  }
+
+  .tableHeaderCell {
+    font-size: var(--ds-font-size-2);
   }
 }
-
-@media (min-width: 1024px) {
+@media (min-width: 1800px) {
   .tableCell {
-    font-size: var(--ds-font-size-4);
+    font-size: var(--ds-font-size-5);
+  }
+  .tableHeaderCell {
+    font-size: var(--ds-font-size-5);
   }
 }
 

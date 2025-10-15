@@ -24,7 +24,7 @@ interface ContactsTableProps {
 
 const ContactsTable: React.FC<ContactsTableProps> = ({
   searchQuery,
-      selectedOrg,
+  selectedOrg,
   setSelectedContact,
 }) => {
   const [sortField, setSortField] = useState<keyof PersonalContact | null>(
@@ -34,7 +34,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
   const environment = useAppStore((state) => state.environment);
   const { contactsQuery } = useOrgDetails(
     environment,
-       selectedOrg?.OrganizationNumber,
+    selectedOrg?.OrganizationNumber,
   );
 
   const filteredContacts = filterContacts(
@@ -112,22 +112,27 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
           {sortedContacts.length > 0 ? (
             sortedContacts.map((contact, index) => (
               <Table.Row key={`${contact.personalContactId}-${index}`}>
-                <Table.Cell className={classes.tableCell}>{contact.name}</Table.Cell>
-                <Table.Cell className={classes.tableCell}>{contact.socialSecurityNumber}</Table.Cell>
+                <Table.Cell className={classes.tableCell}>
+                  {contact.name}
+                </Table.Cell>
+                <Table.Cell className={classes.tableCell}>
+                  {contact.socialSecurityNumber}
+                </Table.Cell>
                 <Table.Cell className={classes.tableCell}>
                   <ContactInfoCell
-                  contact={contact.mobileNumber}
-                  contactLastChanged={contact.mobileNumberChanged}
-                />
-                </Table.Cell >
+                    contact={contact.mobileNumber}
+                    contactLastChanged={contact.mobileNumberChanged}
+                  />
+                </Table.Cell>
 
-                <Table.Cell className={classes.tableCell}>                <ContactInfoCell
-                  contact={contact.eMailAddress}
-                  contactLastChanged={contact.eMailAddressChanged}
-                />
-</Table.Cell>
+                <Table.Cell className={classes.tableCell}>
+                  <ContactInfoCell
+                    contact={contact.eMailAddress}
+                    contactLastChanged={contact.eMailAddressChanged}
+                  />
+                </Table.Cell>
 
-                <Table.Cell>
+                <Table.Cell className={classes.buttonCell}>
                   <Button
                     data-color="accent"
                     variant="primary"
@@ -139,7 +144,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
                     Vis
                   </Button>
                 </Table.Cell>
-              </Table.Cell>
+              </Table.Row>
             ))
           ) : (
             <Table.Row>
