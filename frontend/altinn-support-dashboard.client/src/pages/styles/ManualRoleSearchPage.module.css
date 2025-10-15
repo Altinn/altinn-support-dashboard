@@ -1,5 +1,4 @@
 
-
 .input-row {
     display: flex;
     flex: 1;
@@ -7,6 +6,17 @@
     gap: 1rem;
     align-items: center;
     margin-bottom: 2rem;
+}
+
+@media (max-width:1439px) {
+    .input-row {
+        display: flex;
+        flex: 1;
+        width: 100%;
+        gap: 0.5rem;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
 }
 
 
@@ -25,6 +35,6 @@
         display: flex;
         flex-direction: column;
         overflow-y: auto;
-        max-height: 67vh;
+        max-height: 70vh;
     }
 }
