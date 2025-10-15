@@ -126,5 +126,10 @@
     width: 200px;
     min-width: 200px;
   }
-  
+  .userInfo{
+    font-size: var(--ds-font-size-3);
+  }
+  .nav{
+    font-size: var(--ds-font-size-3);
+  }
 }

@@ -6,3 +6,14 @@
 .select {
   border-radius: 100px;
 }
+
+@media (max-width: 1439px) {
+  .container {
+    font-size: var(--ds-font-size-3);
+  }
+  .select{
+    max-height: 2.5rem;
+    text-align: center;
+    max-width: fit-content;
+  }
+}
