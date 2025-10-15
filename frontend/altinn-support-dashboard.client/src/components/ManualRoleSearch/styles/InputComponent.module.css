@@ -4,3 +4,11 @@
     display: flex;
     gap: 1rem;
 }
+
+@media (max-width:1439px) {
+    .input-fields {
+        display: flex;
+        gap: 0.5rem;
+        font-size: medium;
+    }
+}
