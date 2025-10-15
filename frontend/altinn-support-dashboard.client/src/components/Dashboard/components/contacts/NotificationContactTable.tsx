@@ -25,8 +25,12 @@ const NotificationContactTable: React.FC<ContactFieldTableProps> = ({
       <Table border className={styles["table"]}>
         <Table.Head>
           <Table.Row>
-            <Table.HeaderCell>{title}</Table.HeaderCell>
-            <Table.HeaderCell>{"Endret " + title}</Table.HeaderCell>
+            <Table.HeaderCell className={styles.tableCell}>
+              {title}
+            </Table.HeaderCell>
+            <Table.HeaderCell className={styles.tableCell}>
+              {"Endret " + title}
+            </Table.HeaderCell>
           </Table.Row>
         </Table.Head>
         <Table.Body>

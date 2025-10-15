@@ -112,17 +112,27 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
           {sortedContacts.length > 0 ? (
             sortedContacts.map((contact, index) => (
               <Table.Row key={`${contact.personalContactId}-${index}`}>
-                <Table.Cell>{contact.name}</Table.Cell>
-                <Table.Cell>{contact.socialSecurityNumber}</Table.Cell>
-                <ContactInfoCell
-                  contact={contact.mobileNumber}
-                  contactLastChanged={contact.mobileNumberChanged}
-                />
-                <ContactInfoCell
-                  contact={contact.eMailAddress}
-                  contactLastChanged={contact.eMailAddressChanged}
-                />
-                <Table.Cell>
+                <Table.Cell className={classes.tableCell}>
+                  {contact.name}
+                </Table.Cell>
+                <Table.Cell className={classes.tableCell}>
+                  {contact.socialSecurityNumber}
+                </Table.Cell>
+                <Table.Cell className={classes.tableCell}>
+                  <ContactInfoCell
+                    contact={contact.mobileNumber}
+                    contactLastChanged={contact.mobileNumberChanged}
+                  />
+                </Table.Cell>
+
+                <Table.Cell className={classes.tableCell}>
+                  <ContactInfoCell
+                    contact={contact.eMailAddress}
+                    contactLastChanged={contact.eMailAddressChanged}
+                  />
+                </Table.Cell>
+
+                <Table.Cell className={classes.buttonCell}>
                   <Button
                     data-color="accent"
                     variant="primary"

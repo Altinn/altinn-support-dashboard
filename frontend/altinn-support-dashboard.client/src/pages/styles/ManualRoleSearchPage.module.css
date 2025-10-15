@@ -8,8 +8,23 @@
     margin-bottom: 2rem;
 }
 
+@media (max-width:1439px) {
+    .input-row {
+        margin-bottom: 1rem;
+    }
+}
+
 .result-area {
     width: 100%;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
+
+@media (min-width:1024px){
+    .result-area {
+        max-height: 70vh;
+    }
+}
+
+
