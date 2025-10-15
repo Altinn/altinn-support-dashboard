@@ -11,6 +11,6 @@
 @media (max-width:1439px) {
   .table-div {
     max-height: 60vh;
-    font-size: medium;
+    font-size: var(--ds-font-size-3);
   }
 }
