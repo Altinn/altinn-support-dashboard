@@ -48,9 +48,9 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
         className={classes.card}
         onClick={() => handleSelectedOrg()}
       >
-        <Heading level={6}>{org.name}</Heading>
-        <Paragraph variant="short">Org Nr: {org.organizationNumber}</Paragraph>
-        <Paragraph variant="short">Type: {org.type}</Paragraph>
+        <Heading level={6} className={classes.cardHeader}>{org.name}</Heading>
+        <Paragraph variant="short" className={classes.cardParagraph}>Org Nr: {org.organizationNumber}</Paragraph>
+        <Paragraph variant="short" className={classes.cardParagraph}>Type: {org.type}</Paragraph>
 
         {hasSubUnits && (
           <Button
