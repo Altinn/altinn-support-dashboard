@@ -1,5 +1,6 @@
 .container {
   max-height: 40vh;
+  overflow: auto;
   box-shadow: var(--ds-shadow-sm);
 }
 .heading {
@@ -8,6 +9,13 @@
 
 .paragraph {
   text-align: center;
+  font-size: var(--ds-font-size-2);
+}
+.header-font {
+  font-size: var(--ds-font-size-2);
+}
+.cell-font {
+  font-size: var(--ds-font-size-2);
 }
 
 @media (min-width: 1024px) {

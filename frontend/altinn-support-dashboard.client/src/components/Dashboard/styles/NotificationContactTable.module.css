@@ -6,6 +6,14 @@
   max-width: 100%;
 }
 
+.cellText {
+  font-size: var(--ds-font-size-2);
+}
+
+.tableCell {
+  font-size: var(--ds-font-size-2);
+}
+
 @media (min-width: 1024px) {
   .cellText {
     font-size: var(--ds-font-size-3);
