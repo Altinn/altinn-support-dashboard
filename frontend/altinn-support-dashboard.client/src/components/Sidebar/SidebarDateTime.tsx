@@ -6,8 +6,12 @@ const SideBarDateTime: React.FC = () => {
   const { formattedDate, formattedTime } = useCurrentDateTime();
   return (
     <div className={classes.container}>
-      <Heading level={5}>{formattedTime}</Heading>
-      <Heading level={6}>{formattedDate}</Heading>
+      <Heading className={classes.time} level={5}>
+        {formattedTime}
+      </Heading>
+      <Heading className={classes.date} level={6}>
+        {formattedDate}
+      </Heading>
     </div>
   );
 };
