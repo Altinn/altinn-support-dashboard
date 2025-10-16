@@ -32,3 +32,13 @@
     font-size: var(--ds-font-size-4);
   }
 }
+
+@media (min-width: 1800px) {
+  .cellText {
+    font-size: var(--ds-font-size-5);
+  }
+
+  .tableCell {
+    font-size: var(--ds-font-size-5);
+  }
+}
