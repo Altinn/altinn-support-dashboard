@@ -61,7 +61,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
 
               <Card
                 data-color="neutral"
-                className={styles.OfficialContactContainer}
+                className={styles.officialContactContainer}
               >
                 <Heading level={6}>Varslingsadresser for virksomheten</Heading>
                 <div className={styles.OfficialContactBottom}>
