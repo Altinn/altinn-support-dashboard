@@ -35,9 +35,16 @@
   box-shadow: var(--ds-shadow-sm);
 }
 
-.OfficialContactBottom {
+.officialContactBottom {
   display: flex;
   gap: 2rem;
   flex: 1;
   overflow-x: auto;
+  flex-direction: column;
+}
+
+@media (min-width: 2100px) {
+  .officialContactBottom {
+    flex-direction: row;
+  }
 }

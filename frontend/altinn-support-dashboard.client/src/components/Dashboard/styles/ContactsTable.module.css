@@ -9,8 +9,22 @@
   table-layout: auto;
 }
 
+.tableTitle {
+  font-size: var(--ds-font-size-6);
+}
+
 .tableCell {
   overflow-wrap: break-word;
+}
+
+@media (min-width: 1024px) {
+  .tableCell {
+    font-size: var(--ds-font-size-3);
+  }
+
+  .tableHeaderCell {
+    font-size: var(--ds-font-size-3);
+  }
 }
 
 @media (min-width: 1440px) {

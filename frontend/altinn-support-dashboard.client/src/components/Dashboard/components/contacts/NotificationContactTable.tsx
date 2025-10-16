@@ -48,7 +48,7 @@ const NotificationContactTable: React.FC<ContactFieldTableProps> = ({
           ) : (
             <Table.Row>
               <Table.Cell colSpan={2}>
-                <Paragraph className={styles["paragraph"]}>
+                <Paragraph className={styles["cellText"]}>
                   Her var det tomt
                 </Paragraph>
               </Table.Cell>

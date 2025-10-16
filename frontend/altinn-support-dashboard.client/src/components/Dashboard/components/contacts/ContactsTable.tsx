@@ -72,7 +72,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
         data-color="neutral"
         border
       >
-        <caption>Din kontaktinformasjon</caption>
+        <caption className={classes.tableTitle}>Din kontaktinformasjon</caption>
         <Table.Head>
           <Table.Row>
             <Table.HeaderCell
