@@ -4,13 +4,43 @@
   overflow-x: auto;
 }
 
+.button {
+  font-size: var(--ds-font-size-2);
+}
+
 .table {
   width: 100%;
   table-layout: auto;
 }
 
+.tableTitle {
+  font-size: var(--ds-font-size-6);
+}
+
 .tableCell {
   overflow-wrap: break-word;
+  font-size: var(--ds-font-size-2);
+}
+
+.tableHeaderCell {
+  cursor: pointer;
+
+  font-size: var(--ds-font-size-2);
+
+  word-break: break-all;
+}
+
+@media (min-width: 1024px) {
+  .tableCell {
+    font-size: var(--ds-font-size-3);
+  }
+
+  .tableHeaderCell {
+    font-size: var(--ds-font-size-3);
+  }
+  .button {
+    font-size: var(--ds-font-size-3);
+  }
 }
 
 @media (min-width: 1440px) {
@@ -21,6 +51,9 @@
   .tableHeaderCell {
     font-size: var(--ds-font-size-4);
   }
+  .button {
+    font-size: var(--ds-font-size-4);
+  }
 }
 @media (min-width: 1800px) {
   .tableCell {
@@ -29,10 +62,7 @@
   .tableHeaderCell {
     font-size: var(--ds-font-size-5);
   }
-}
-
-.tableHeaderCell {
-  cursor: pointer;
-
-  word-break: break-all;
+  .button {
+    font-size: var(--ds-font-size-5);
+  }
 }

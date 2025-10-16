@@ -72,7 +72,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
         data-color="neutral"
         border
       >
-        <caption>Din kontaktinformasjon</caption>
+        <caption className={classes.tableTitle}>Din kontaktinformasjon</caption>
         <Table.Head>
           <Table.Row>
             <Table.HeaderCell
@@ -134,9 +134,9 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
 
                 <Table.Cell className={classes.buttonCell}>
                   <Button
+                    className={classes.button}
                     data-color="accent"
                     variant="primary"
-                    data-size="sm"
                     onClick={() => {
                       setSelectedContact(contact);
                     }}
