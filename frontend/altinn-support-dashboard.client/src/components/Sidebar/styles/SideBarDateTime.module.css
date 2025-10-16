@@ -12,3 +12,9 @@
 .date {
   font-size: var(--ds-font-size-4);
 }
+
+@media (max-width: 1439px){
+  .container {
+    font-size: var(--ds-font-size-2);
+  }
+}
