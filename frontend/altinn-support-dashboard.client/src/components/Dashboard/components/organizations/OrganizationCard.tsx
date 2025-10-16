@@ -48,9 +48,15 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
         className={classes.card}
         onClick={() => handleSelectedOrg()}
       >
-        <Heading level={6} className={classes.cardHeader}>{org.name}</Heading>
-        <Paragraph variant="short" className={classes.cardParagraph}>Org Nr: {org.organizationNumber}</Paragraph>
-        <Paragraph variant="short" className={classes.cardParagraph}>Type: {org.type}</Paragraph>
+        <Heading level={6} className={classes.cardHeader}>
+          {org.name}
+        </Heading>
+        <Paragraph variant="short" className={classes.cardParagraph}>
+          Org Nr: {org.organizationNumber}
+        </Paragraph>
+        <Paragraph variant="short" className={classes.cardParagraph}>
+          Type: {org.type}
+        </Paragraph>
 
         {hasSubUnits && (
           <Button
@@ -86,7 +92,9 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                   })
                 }
               >
-                <Paragraph variant="short" className={classes.cardHeader}>{sub.navn}</Paragraph>
+                <Paragraph variant="short" className={classes.cardHeader}>
+                  {sub.navn}
+                </Paragraph>
                 <Paragraph variant="short" className={classes.cardParagraph}>
                   Org Nr: {sub.organisasjonsnummer}
                 </Paragraph>

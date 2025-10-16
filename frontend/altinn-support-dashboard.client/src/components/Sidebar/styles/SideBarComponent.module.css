@@ -111,10 +111,12 @@
 }
 
 .userInfo {
+  display: flex;
+  flex-direction: column;
   text-align: center;
   color: var(--ds-color-text-default);
-  display: flex;
   color: #fff;
+  font-size: var(--ds-font-size-4);
 }
 
 .icons {
@@ -137,4 +139,3 @@
     font-size: var(--ds-font-size-1);
   }
 }
-
