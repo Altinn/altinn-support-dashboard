@@ -2,7 +2,8 @@
   display: flex;
   flex-grow: 1;
   gap: 20px;
-  overflow: hidden;
+  overflow: auto;
+  max-height: 80vh;
 }
 
 .orgDetails {

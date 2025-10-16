@@ -3,3 +3,9 @@
   margin-bottom: 20px;
   color: #fff;
 }
+
+@media (max-width: 1439px){
+  .container {
+    font-size: var(--ds-font-size-2);
+  }
+}
