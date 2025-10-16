@@ -134,9 +134,9 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
 
                 <Table.Cell className={classes.buttonCell}>
                   <Button
+                    className={classes.button}
                     data-color="accent"
                     variant="primary"
-                    data-size="sm"
                     onClick={() => {
                       setSelectedContact(contact);
                     }}

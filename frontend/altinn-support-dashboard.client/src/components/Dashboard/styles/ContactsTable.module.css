@@ -4,6 +4,10 @@
   overflow-x: auto;
 }
 
+.button {
+  font-size: var(--ds-font-size-2);
+}
+
 .table {
   width: 100%;
   table-layout: auto;
@@ -34,6 +38,9 @@
   .tableHeaderCell {
     font-size: var(--ds-font-size-3);
   }
+  .button {
+    font-size: var(--ds-font-size-3);
+  }
 }
 
 @media (min-width: 1440px) {
@@ -44,12 +51,18 @@
   .tableHeaderCell {
     font-size: var(--ds-font-size-4);
   }
+  .button {
+    font-size: var(--ds-font-size-4);
+  }
 }
 @media (min-width: 1800px) {
   .tableCell {
     font-size: var(--ds-font-size-5);
   }
   .tableHeaderCell {
+    font-size: var(--ds-font-size-5);
+  }
+  .button {
     font-size: var(--ds-font-size-5);
   }
 }
