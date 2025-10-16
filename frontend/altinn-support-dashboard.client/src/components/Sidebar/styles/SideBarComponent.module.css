@@ -87,7 +87,7 @@
   background-color: transparent;
   border-radius: 18px;
   padding: 6px 12px;
-  font-size: 0.9rem;
+  font-size: var(--ds-font-size-3);
   align-items: center;
   gap: 4px;
   cursor: pointer;
@@ -121,15 +121,20 @@
   font-size: 1.5rem;
 }
 
-@media (max-width: 1439px){
+@media (max-width: 1439px) {
   .expanded {
     width: 200px;
     min-width: 200px;
   }
-  .userInfo{
+  .userInfo {
     font-size: var(--ds-font-size-3);
   }
-  .nav{
+  .nav {
     font-size: var(--ds-font-size-3);
+  }
+
+  .collapseButton {
+    font-size: var(--ds-font-size-1);
   }
 }
+
