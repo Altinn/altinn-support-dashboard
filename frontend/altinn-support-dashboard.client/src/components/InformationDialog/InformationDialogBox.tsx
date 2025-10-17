@@ -1,8 +1,10 @@
 import React from 'react';
 import {
     Dialog,
+    Heading,
     Paragraph
 } from '@digdir/designsystemet-react';
+import InformationDialogContent from './InformationDialogContent';
 
 interface InformationDialogBoxProps {
     dialogRef: React.RefObject<HTMLDialogElement>;
@@ -15,9 +17,10 @@ const InformationDialogBox: React.FC<InformationDialogBoxProps> = (
     }) => {
     return (
         <Dialog ref={dialogRef}>
-            <Paragraph>
-                Dette er en informasjonsdialog
-            </Paragraph>
+            <Heading>
+                Dette verktøyet skal kun brukes til å bekrefte informasjon
+            </Heading>
+            <InformationDialogContent/>
         </Dialog>
     )
 } 
