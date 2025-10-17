@@ -1,0 +1,18 @@
+
+
+.listContainer {
+    display:flex;
+    flex-direction: column;
+}
+
+.paragraph {
+    font-size: var(--ds-font-size-4)
+}
+
+.listParagraph {
+    display: flex;
+}
+
+.listIcon {
+    display: end;
+}
