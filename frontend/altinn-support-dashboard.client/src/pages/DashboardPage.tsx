@@ -5,7 +5,7 @@ import { OrganizationList } from "../components/Dashboard/components/organizatio
 import { useDashboardStore } from "../stores/DashboardStore";
 import { Button } from "@digdir/designsystemet-react";
 import InformationDialogBox from "../components/InformationDialog/InformationDialogBox";
-import { InformationSquareIcon } from '@navikt/aksel-icons';
+import { InformationIcon } from '@navikt/aksel-icons';
 import styles from "./styles/DashboardPage.module.css";
 
 export const DashboardPage: React.FC = () => {
@@ -17,8 +17,14 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className={styles["dashboard-page-container"]}>
+      <Button 
+      onClick={() => dialogRef.current?.showModal()}
+      className={styles.infoButton}
+      variant="secondary">
+        <InformationIcon />
+      </Button>
+      <InformationDialogBox dialogRef={dialogRef} />
       <SearchComponent query={query} setQuery={setQuery} />
-
       <div className={styles["dashboard-container"]}>
         <div className={styles["org-list-container"]}>
           <OrganizationList
@@ -32,10 +38,6 @@ export const DashboardPage: React.FC = () => {
           <DetailedOrgView selectedOrg={selectedOrg} />
         </div>
       </div>
-      <Button onClick={() => dialogRef.current?.showModal()}>
-        <InformationSquareIcon title="Informasjonsikon" />
-      </Button>
-      <InformationDialogBox dialogRef={dialogRef} />
     </div>
   );
 };
