@@ -6,9 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
-namespace AnsattportenAuthentication;
+namespace Security;
 
-public static class AnsattportenAuthentication
+public static class AnsattportenExtensions
 {
     public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
