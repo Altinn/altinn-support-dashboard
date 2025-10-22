@@ -1,18 +1,38 @@
 
 
-.listContainer {
-    display:flex;
-    flex-direction: column;
-}
-
 .paragraph {
-    font-size: var(--ds-font-size-4)
+    font-size: var(--ds-font-size-4);
+    margin-bottom: 1rem;
 }
-
-.listParagraph {
+.itemContainer {
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: var(--ds-font-size-4);
+}
+.listParagraph {
+    display: 1 1 0;
+    font-style: italic;
+    min-width: 0;
+    max-width: 85%;
 }
 
-.listIcon {
-    display: end;
+.listIconCorrect,
+.listIconWrong {
+    display: flex;
+    margin-left: auto;
+    width: 40px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.listIconCorrect {
+    color: green;
+    font-size: var(--ds-font-size-8);
+}
+
+.listIconWrong {
+    color: red;
+    font-size: var(--ds-font-size-7);
 }
