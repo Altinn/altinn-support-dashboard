@@ -3,6 +3,7 @@ using Altinn.ApiClients.Maskinporten.Services;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using AnsattportenAuthentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,6 +23,7 @@ namespace AltinnSupportDashboard
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
                 })
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
@@ -69,6 +71,10 @@ namespace AltinnSupportDashboard
                     services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(
                         nameof(config.TT02),
                         config.TT02.MaskinportenSettings);
+
+                    //Ansattporten
+                    services.AddCustomAuthentication(hostContext.Configuration);
+
 
                     // Register application services
                     services.AddScoped<DataBrregClient>();
