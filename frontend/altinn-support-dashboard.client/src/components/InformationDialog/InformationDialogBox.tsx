@@ -17,7 +17,9 @@ const InformationDialogBox: React.FC<InformationDialogBoxProps> = (
         dialogRef 
     }) => {
     return (
-        <Dialog ref={dialogRef} className={styles.dialogBox}>
+        <Dialog ref={dialogRef} className={styles.dialogBox}
+        closedby="any"
+        >
             <Heading>
                 Dette verktøyet skal kun brukes til å bekrefte informasjon
             </Heading>
