@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Cors;
 namespace AltinnSupportDashboard.Controllers
 {
 
+    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [ApiController]
     [Route("api/{environmentName}")]
     public class HealthController : ControllerBase
