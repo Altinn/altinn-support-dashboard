@@ -1,7 +1,6 @@
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Altinn.Studio.Designer.Configuration;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -69,7 +68,7 @@ public static class AnsattPortenExtensions
                         options.Scope.Add(scope);
                     }
 
-                    options.CallbackPath = "/ansattporten-signin-oidc";
+                    options.CallbackPath = "/dashboard";
 
                     options.UsePkce = true;
                     options.GetClaimsFromUserInfoEndpoint = true;

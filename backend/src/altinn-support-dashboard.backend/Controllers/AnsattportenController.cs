@@ -1,7 +1,8 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Security;
 
 
 namespace AltinnSupportDashboard.Controllers;
@@ -10,12 +11,13 @@ namespace AltinnSupportDashboard.Controllers;
 [Route("api/auth")]
 public class AnsattportenController : ControllerBase
 {
+    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [HttpGet("login")]
     public async Task<IActionResult> Login([FromQuery] string? returnUrl = "/")
     {
         await Task.CompletedTask;
 
-        return Challenge(new AuthenticationProperties { RedirectUri = returnUrl }, OpenIdConnectDefaults.AuthenticationScheme);
+        return Challenge(new AuthenticationProperties { RedirectUri = returnUrl }, AnsattportenConstants.AnsattportenAuthenticationScheme);
     }
 
     [HttpGet("auth-status")]
@@ -23,8 +25,9 @@ public class AnsattportenController : ControllerBase
     {
         await Task.CompletedTask;
 
-        var result = await HttpContext.AuthenticateAsync("Cookies");
+        var result = await HttpContext.AuthenticateAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
 
+        return Ok(new { isLoggedIn = result.Succeeded });
     }
 
 

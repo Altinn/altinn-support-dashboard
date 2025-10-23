@@ -38,15 +38,16 @@ namespace AltinnSupportDashboard
             services.AddScoped<IGiteaService, GiteaService>();
             services.AddScoped<IDataBrregService, DataBrregService>();
             services.AddScoped<IAltinnApiService, AltinnApiService>();
-           
+
             // Add controllers for the API
             services.AddControllers();
 
             // Register Swagger for API documentation
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { 
-                    Title = "Altinn Support Dashboard API", 
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Altinn Support Dashboard API",
                     Version = "v1",
                     Description = "API for å administrere Altinn Support Dashboard og opprette organisasjoner i Altinn Studio"
                 });
@@ -100,6 +101,7 @@ namespace AltinnSupportDashboard
             // Enable Authentication and Authorization middleware
             app.UseAuthentication();  // Ensure authentication is used
             app.UseAuthorization();   // Ensure authorization is used
+
 
             // Configure endpoints for API controllers
             app.UseEndpoints(endpoints =>
