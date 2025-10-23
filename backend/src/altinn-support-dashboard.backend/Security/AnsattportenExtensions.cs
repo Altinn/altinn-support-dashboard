@@ -78,7 +78,7 @@ public static class AnsattPortenExtensions
 
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
-                        if (String.IsNullOrEmpty(oidcSettings.ArcValues))
+                        if (!String.IsNullOrEmpty(oidcSettings.ArcValues))
                         {
                             context.ProtocolMessage.SetParameter("arc_values", oidcSettings.ArcValues);
                         }
