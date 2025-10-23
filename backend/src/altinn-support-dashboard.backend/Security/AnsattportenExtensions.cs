@@ -68,7 +68,7 @@ public static class AnsattPortenExtensions
                         options.Scope.Add(scope);
                     }
 
-                    options.CallbackPath = "/dashboard";
+                    options.CallbackPath = "/ansattporten-signin-oidc";
 
                     options.UsePkce = true;
                     options.GetClaimsFromUserInfoEndpoint = true;

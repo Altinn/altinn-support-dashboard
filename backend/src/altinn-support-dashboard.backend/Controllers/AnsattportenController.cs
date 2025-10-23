@@ -13,11 +13,11 @@ public class AnsattportenController : ControllerBase
 {
     [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [HttpGet("login")]
-    public async Task<IActionResult> Login([FromQuery] string? returnUrl = "/")
+    public async Task<IActionResult> Login([FromQuery] string? redirectTo = "/")
     {
         await Task.CompletedTask;
 
-        return Challenge(new AuthenticationProperties { RedirectUri = returnUrl }, AnsattportenConstants.AnsattportenAuthenticationScheme);
+        return Challenge(new AuthenticationProperties { RedirectUri = redirectTo }, AnsattportenConstants.AnsattportenAuthenticationScheme);
     }
 
     [HttpGet("auth-status")]
