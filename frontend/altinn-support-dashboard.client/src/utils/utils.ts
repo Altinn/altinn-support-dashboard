@@ -9,7 +9,7 @@ export function getBaseUrl(environment: string): string {
       : window.location.hostname === "localhost";
 
   // Set protocol based on environment
-  const protocol = localDev ? "http:" : "https:";
+  const protocol = "https:";
 
   // Port for local development
   const portSegment = localDev ? ":5237" : "";
