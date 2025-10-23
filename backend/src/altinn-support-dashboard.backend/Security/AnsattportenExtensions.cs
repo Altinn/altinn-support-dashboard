@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +11,7 @@ using Security;
 
 
 
-//The configuration for Ansattporten has been taken from altinn studio, with tweeks to make it work well for ASD
+//The configuration for Ansattporten has been taken from altinn studio, with a few tweeks to make it work well for ASD
 namespace Altinn.Studio.Designer.Infrastructure.AnsattPorten;
 
 public static class AnsattPortenExtensions

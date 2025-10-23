@@ -27,7 +27,11 @@ export async function authorizedFetch(
     Authorization: `Basic ${token}`,
     "Content-Type": "application/json",
   };
-  const response = await fetch(url, { ...options, headers });
+  const response = await fetch(url, {
+    ...options,
+    headers,
+    credentials: "include",
+  });
   return response;
 }
 

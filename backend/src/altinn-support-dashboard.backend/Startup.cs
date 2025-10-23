@@ -61,7 +61,17 @@ namespace AltinnSupportDashboard
                 {
                     builder.AllowAnyOrigin()   // Allow all origins
                            .AllowAnyMethod()   // Allow all methods (GET, POST, PUT, DELETE, etc.)
-                           .AllowAnyHeader();  // Allow all headers (Authorization, Content-Type, etc.)
+                           .AllowAnyHeader();   // Allow all headers (Authorization, Content-Type, etc.)
+
+                });
+
+                options.AddPolicy("AllowFrontend", builder =>
+                {
+                    builder.WithOrigins("https://localhost:5173")   // Allow only localhost origin
+                           .AllowAnyMethod()   // Allow all methods (GET, POST, PUT, DELETE, etc.)
+                           .AllowAnyHeader()   // Allow all headers (Authorization, Content-Type, etc.)
+                           .AllowCredentials();
+
                 });
             });
         }
@@ -79,7 +89,7 @@ namespace AltinnSupportDashboard
             }
 
             // Enable CORS immediately
-            app.UseCors("AllowAll");  // Globally apply the "AllowAll" CORS policy
+            app.UseCors("AllowFrontend");  // Globally apply the "AllowAll" CORS policy
 
             // Use HTTPS redirection
             app.UseHttpsRedirection();
