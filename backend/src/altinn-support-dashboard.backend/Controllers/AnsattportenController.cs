@@ -7,7 +7,6 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace AltinnSupportDashboard.Controllers;
 
-[Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
 [ApiController]
 [Route("api/auth")]
 public class AnsattportenController : ControllerBase
@@ -18,6 +17,7 @@ public class AnsattportenController : ControllerBase
         ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
     }
 
+    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [HttpGet("login")]
     public async Task<IActionResult> Login([FromQuery] string? redirectTo = "/")
     {

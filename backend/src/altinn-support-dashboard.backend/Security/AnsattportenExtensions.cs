@@ -80,7 +80,6 @@ public static class AnsattPortenExtensions
                     options.RequireHttpsMetadata = true;
 
                     options.TokenValidationParameters.NameClaimType = JwtRegisteredClaimNames.Name;
-                    options.TokenValidationParameters.RoleClaimType = "roles";
 
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {

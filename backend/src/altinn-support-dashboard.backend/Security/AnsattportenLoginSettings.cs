@@ -1,11 +1,15 @@
 
+using System.Text.Json.Serialization;
+
 namespace Security;
 
 public class AnsattportenLoginSettings
 {
     public string ArcValues { get; set; }
 
+    [JsonPropertyName("authorization_details")]
     public AuthorizationDetail[] AuthorizationDetails { get; set; }
+
 
     /// <summary>
     /// Sets the cookie expiry time in minutes.
@@ -41,9 +45,14 @@ public class AnsattportenLoginSettings
 
 public class AuthorizationDetail
 {
+
+    [JsonPropertyName("type")]
     public string Type { get; set; }
+
+    [JsonPropertyName("resource")]
     public string Resource { get; set; }
 
-    public bool? RepresentationIsRequierd { get; set; }
+    [JsonPropertyName("representation_is_required")]
+    public bool? RepresentationIsRequired { get; set; }
 }
 
