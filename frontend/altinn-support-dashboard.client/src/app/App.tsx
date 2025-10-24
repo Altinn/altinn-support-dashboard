@@ -16,6 +16,7 @@ import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
 import NewOrganizationPage from "../pages/NewOrganizationPage";
 import SettingsPage from "../pages/SettingsPage";
 import { useAppStore } from "../stores/Appstore";
+import SignInPage from "../pages/SignInPage";
 
 const App: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
@@ -48,6 +49,7 @@ const App: React.FC = () => {
               <Route path="/new-org" element={<NewOrganizationPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/signout" element={<SignOutPage />} />
+              <Route path="/signin" element={<SignInPage />} />
             </Routes>
           </main>
         </div>
