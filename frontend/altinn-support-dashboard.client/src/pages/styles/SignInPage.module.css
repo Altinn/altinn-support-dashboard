@@ -1,0 +1,25 @@
+
+
+.container {
+    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo{
+    max-width: fit-content;
+}
+
+.container button {
+    font-size: var(--ds-font-size-5);
+    padding: 20px 50px;
+}
+
+.ansattPortenButton {
+    margin-top: 3rem;
+}
+
+.aidevButton {
+    margin-top: 1.5rem;
+}
