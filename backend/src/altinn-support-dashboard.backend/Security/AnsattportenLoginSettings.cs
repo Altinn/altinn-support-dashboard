@@ -5,6 +5,8 @@ public class AnsattportenLoginSettings
 {
     public string ArcValues { get; set; }
 
+    public AuthorizationDetail[] AuthorizationDetails { get; set; }
+
     /// <summary>
     /// Sets the cookie expiry time in minutes.
     /// </summary>
@@ -37,4 +39,11 @@ public class AnsattportenLoginSettings
 
 }
 
+public class AuthorizationDetail
+{
+    public string Type { get; set; }
+    public string Resource { get; set; }
+
+    public bool? RepresentationIsRequierd { get; set; }
+}
 

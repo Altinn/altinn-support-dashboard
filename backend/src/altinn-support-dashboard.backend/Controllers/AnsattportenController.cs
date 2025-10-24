@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace AltinnSupportDashboard.Controllers;
 
+[Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
 [ApiController]
 [Route("api/auth")]
 public class AnsattportenController : ControllerBase
@@ -17,7 +18,6 @@ public class AnsattportenController : ControllerBase
         ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
     }
 
-    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [HttpGet("login")]
     public async Task<IActionResult> Login([FromQuery] string? redirectTo = "/")
     {
@@ -42,20 +42,14 @@ public class AnsattportenController : ControllerBase
             return Ok(new
             {
                 isLoggedIn = true,
-                name = "no user"
             });
         }
 
         var result = await HttpContext.AuthenticateAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
-        var user = HttpContext.User;
-
-
-        string name = user?.FindFirst(JwtRegisteredClaimNames.Name)?.Value;
 
         return Ok(new
         {
             isLoggedIn = result.Succeeded,
-            name = name
         });
     }
 

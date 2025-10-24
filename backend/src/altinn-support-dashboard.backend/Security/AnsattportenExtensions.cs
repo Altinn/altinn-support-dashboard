@@ -1,4 +1,5 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -78,6 +79,9 @@ public static class AnsattPortenExtensions
                     options.MapInboundClaims = false;
                     options.RequireHttpsMetadata = true;
 
+                    options.TokenValidationParameters.NameClaimType = JwtRegisteredClaimNames.Name;
+                    options.TokenValidationParameters.RoleClaimType = "roles";
+
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
                         var user = context.HttpContext.User;
@@ -87,9 +91,19 @@ public static class AnsattPortenExtensions
                             //forces login
                             context.ProtocolMessage.Prompt = "login";
                         }
-                        if (!String.IsNullOrEmpty(oidcSettings.ArcValues))
+
+                        if (oidcSettings.AuthorizationDetails is not null)
                         {
-                            context.ProtocolMessage.SetParameter("arc_values", oidcSettings.ArcValues);
+                            context.ProtocolMessage.SetParameters(
+                                new System.Collections.Specialized.NameValueCollection
+                                {
+                                    ["authorization_details"] = JsonSerializer.Serialize(oidcSettings.AuthorizationDetails, new JsonSerializerOptions()
+                                    {
+                                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                                    }),
+                                    ["acr_values"] = oidcSettings.ArcValues
+                                }
+                            );
                         }
 
                         return Task.CompletedTask;
