@@ -7,10 +7,17 @@ import logo from '../assets/log-in-white.png'
 import coloredLogo from "../assets/log-in-blue.png";
 import { useAppStore } from "../stores/Appstore";
 import cat from '../assets/fun/sleeping cat gif.gif'
+import dog from '../assets/fun/sleeping dog.gif'
 
 
 export const SignInPage: React.FC = () => {
     const isDarkMode = useAppStore((state) => state.isDarkMode)
+
+    const selectedImage = React.useMemo(() => {
+        const images = [cat, dog];
+        return images[Math.floor(Math.random() * images.length)];
+    }, []);
+
     return (
         <div className={style.container}>
             <img 
@@ -31,7 +38,7 @@ export const SignInPage: React.FC = () => {
             </Button>
             <div>
                 <img 
-                src={cat} 
+                src={selectedImage} 
                 alt="sleeping cat gif" 
                 className={style.catGif}
                 />
