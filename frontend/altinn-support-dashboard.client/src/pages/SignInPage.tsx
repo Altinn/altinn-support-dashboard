@@ -10,11 +10,12 @@ import { useAppStore } from "../stores/Appstore";
 
 
 export const SignInPage: React.FC = () => {
-    const isDarkMode = useAppStore((state) => state.setIsDarkMode)
+    const isDarkMode = useAppStore((state) => state.isDarkMode)
+    const toggleDarkMode = useAppStore((state) => state.setIsDarkMode)
     return (
         <div>
             <img 
-            src={isDarkMode ? coloredLogo : logo} 
+            src={isDarkMode ? logo : coloredLogo} 
             alt="logo"/>
             <Heading>Internt dashboard</Heading>
             <Button variant="primary">
@@ -23,6 +24,10 @@ export const SignInPage: React.FC = () => {
             <Button variant="primary">
                 Logg inn med AI-dev
             </Button>
+
+            <Button 
+            onClick={() => toggleDarkMode(!isDarkMode)} 
+            variant="secondary">Toggle Dark Mode</Button>
         </div>
     )
 }
