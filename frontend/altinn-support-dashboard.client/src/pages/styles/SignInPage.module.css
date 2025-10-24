@@ -23,3 +23,8 @@
 .aidevButton {
     margin-top: 1.5rem;
 }
+
+.gifContainer {
+    position: fixed;
+    bottom: 0.5rem;
+}

@@ -6,7 +6,7 @@ import style from './styles/SignInPage.module.css';
 import logo from '../assets/log-in-white.png'
 import coloredLogo from "../assets/log-in-blue.png";
 import { useAppStore } from "../stores/Appstore";
-import cat from '../assets/fun/sleeping cat gif.gif'
+import cat from '../assets/fun/sleeping cat.gif'
 import dog from '../assets/fun/sleeping dog.gif'
 
 
@@ -36,7 +36,7 @@ export const SignInPage: React.FC = () => {
             >
                 Logg inn med AI-dev
             </Button>
-            <div>
+            <div className ={style.gifContainer}>
                 <img 
                 src={selectedImage} 
                 alt="sleeping cat gif" 
