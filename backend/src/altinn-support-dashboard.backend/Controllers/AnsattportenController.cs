@@ -29,6 +29,26 @@ public class AnsattportenController : ControllerBase
         return Ok(new { isLoggedIn = result.Succeeded });
     }
 
+    [HttpGet("logout")]
+    public async Task<IActionResult> Logout([FromQuery] string? redirectTo = "/")
+    {
+
+        await Task.CompletedTask;
+
+        //clears local cookies
+        await HttpContext.SignOutAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
+
+        //signs user out of ansattporten
+        await HttpContext.SignOutAsync(AnsattportenConstants.AnsattportenAuthenticationScheme, new AuthenticationProperties
+        {
+            RedirectUri = redirectTo
+        });
+
+        return Redirect(redirectTo);
+
+    }
+
+
 
 
 
