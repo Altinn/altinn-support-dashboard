@@ -70,6 +70,7 @@ public static class AnsattPortenExtensions
                     }
 
                     options.CallbackPath = "/ansattporten-signin-oidc";
+                    options.SignedOutCallbackPath = "/ansattporten-signout-oidc";
 
                     options.UsePkce = true;
                     options.GetClaimsFromUserInfoEndpoint = true;
@@ -79,6 +80,13 @@ public static class AnsattPortenExtensions
 
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
+                        var user = context.HttpContext.User;
+                        if (user?.Identity?.IsAuthenticated != true)
+                        {
+
+                            //forces login
+                            context.ProtocolMessage.Prompt = "login";
+                        }
                         if (!String.IsNullOrEmpty(oidcSettings.ArcValues))
                         {
                             context.ProtocolMessage.SetParameter("arc_values", oidcSettings.ArcValues);

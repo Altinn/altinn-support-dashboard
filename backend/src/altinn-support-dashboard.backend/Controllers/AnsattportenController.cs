@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Security;
+using System.IdentityModel.Tokens.Jwt;
 
 
 namespace AltinnSupportDashboard.Controllers;
@@ -15,8 +16,9 @@ public class AnsattportenController : ControllerBase
     public async Task<IActionResult> Login([FromQuery] string? redirectTo = "/")
     {
         await Task.CompletedTask;
+        var props = new AuthenticationProperties { RedirectUri = redirectTo };
 
-        return Challenge(new AuthenticationProperties { RedirectUri = redirectTo }, AnsattportenConstants.AnsattportenAuthenticationScheme);
+        return Challenge(props, AnsattportenConstants.AnsattportenAuthenticationScheme);
     }
 
     [HttpGet("auth-status")]
@@ -25,8 +27,16 @@ public class AnsattportenController : ControllerBase
         await Task.CompletedTask;
 
         var result = await HttpContext.AuthenticateAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
+        var user = HttpContext.User;
 
-        return Ok(new { isLoggedIn = result.Succeeded });
+
+        string name = user?.FindFirst(JwtRegisteredClaimNames.Name)?.Value;
+
+        return Ok(new
+        {
+            isLoggedIn = result.Succeeded,
+            name = name
+        });
     }
 
     [HttpGet("logout")]
