@@ -11,10 +11,21 @@ namespace AltinnSupportDashboard.Controllers;
 [Route("api/auth")]
 public class AnsattportenController : ControllerBase
 {
+    private bool ansattportenFeatureFlag;
+    public AnsattportenController(IConfiguration configuration)
+    {
+        ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
+    }
+
     [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [HttpGet("login")]
     public async Task<IActionResult> Login([FromQuery] string? redirectTo = "/")
     {
+        if (ansattportenFeatureFlag != true)
+        {
+            return Redirect(redirectTo);
+        }
+
         await Task.CompletedTask;
         var props = new AuthenticationProperties { RedirectUri = redirectTo };
 
@@ -25,6 +36,15 @@ public class AnsattportenController : ControllerBase
     public async Task<IActionResult> AuthStatus()
     {
         await Task.CompletedTask;
+
+        if (ansattportenFeatureFlag != true)
+        {
+            return Ok(new
+            {
+                isLoggedIn = true,
+                name = "no user"
+            });
+        }
 
         var result = await HttpContext.AuthenticateAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
         var user = HttpContext.User;
@@ -42,6 +62,11 @@ public class AnsattportenController : ControllerBase
     [HttpGet("logout")]
     public async Task<IActionResult> Logout([FromQuery] string? redirectTo = "/")
     {
+        if (ansattportenFeatureFlag != true)
+        {
+
+            return Redirect(redirectTo);
+        }
 
         await Task.CompletedTask;
 

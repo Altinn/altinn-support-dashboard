@@ -101,13 +101,30 @@ public static class AnsattPortenExtensions
 
     private static IServiceCollection AddAnsattPortenAuthorization(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAuthorizationBuilder()
-            .AddPolicy(AnsattportenConstants.AnsattportenAuthorizationPolicy, policy =>
-                {
-                    policy.AuthenticationSchemes.Add(AnsattportenConstants.AnsattportenAuthenticationScheme);
-                    policy.RequireAuthenticatedUser();
-                }
-            );
+
+        //only authorizes if flag is set to true
+        bool ansattPortenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
+        if (ansattPortenFeatureFlag)
+        {
+            services.AddAuthorizationBuilder()
+                .AddPolicy(AnsattportenConstants.AnsattportenAuthorizationPolicy, policy =>
+                    {
+                        policy.AuthenticationSchemes.Add(AnsattportenConstants.AnsattportenAuthenticationScheme);
+                        policy.RequireAuthenticatedUser();
+                    }
+                );
+        }
+        else
+        {
+            services.AddAuthorization(options =>
+                   {
+                       options.AddPolicy(AnsattportenConstants.AnsattportenAuthorizationPolicy, policy =>
+                       {
+                           policy.RequireAssertion(_ => true);
+                       });
+                   });
+        }
+
         return services;
     }
 }
