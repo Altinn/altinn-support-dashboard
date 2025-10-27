@@ -37,3 +37,9 @@
     object-fit: contain;                   
     display: block;
 }
+
+@media (max-height: 700px) {
+    .gifContainer img {
+        display: none;
+    }
+}
