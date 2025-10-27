@@ -11,6 +11,7 @@ import { OrganizationFormData, OrganizationFormErrors } from './models/organizat
 import { useOrganizationCreation } from './hooks/useOrganizationCreation';
 import { validateForm, hasErrors, requiredFieldsPresent } from './utils/validationUtils';
 import { OrganizationFormContent } from './OrganizationFormContent';
+import partyParrot from '../../assets/fun/partyparrot.gif';
 
 interface OrganizationCreationProps {
     environment: string;
@@ -215,6 +216,8 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
                     >
                         Gå til innstillinger
                     </Button>
+                    
+                    <img src={partyParrot} alt="gif" style={{marginLeft:'15rem', height: '50px'}}  />
                 </div>
             )}
             

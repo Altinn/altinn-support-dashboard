@@ -1,5 +1,6 @@
 import { Card, Button } from "@digdir/designsystemet-react";
 import classes from "./styles/SettingsActionsButtons.module.css";
+import partyMeow from "../../assets/fun/partymeow.gif";
 
 const SettingsActionButtons: React.FC = () => {
   const handleReload = () => {
@@ -22,6 +23,7 @@ const SettingsActionButtons: React.FC = () => {
       <Button data-color="accent" variant="primary" onClick={handleLogout}>
         Logg ut
       </Button>
+      <img src={partyMeow} alt="gif" className={classes.gif} />
     </Card>
   );
 };
