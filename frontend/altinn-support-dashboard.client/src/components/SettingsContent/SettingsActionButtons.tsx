@@ -23,7 +23,6 @@ const SettingsActionButtons: React.FC = () => {
       <Button data-color="accent" variant="primary" onClick={handleLogout}>
         Logg ut
       </Button>
-      <img src={partyMeow} alt="gif" className={classes.gif} />
     </Card>
   );
 };

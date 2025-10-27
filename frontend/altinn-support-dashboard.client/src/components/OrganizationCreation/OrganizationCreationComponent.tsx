@@ -217,7 +217,6 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({ en
                         Gå til innstillinger
                     </Button>
                     
-                    <img src={partyParrot} alt="gif" style={{marginLeft:'15rem', height: '50px'}}  />
                 </div>
             )}
             
