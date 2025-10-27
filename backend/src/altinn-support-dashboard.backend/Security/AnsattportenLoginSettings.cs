@@ -5,9 +5,8 @@ namespace Security;
 
 public class AnsattportenLoginSettings
 {
-    public string ArcValues { get; set; }
+    public string AcrValues { get; set; }
 
-    [JsonPropertyName("authorization_details")]
     public AuthorizationDetail[] AuthorizationDetails { get; set; }
 
 
@@ -46,13 +45,10 @@ public class AnsattportenLoginSettings
 public class AuthorizationDetail
 {
 
-    [JsonPropertyName("type")]
     public string Type { get; set; }
 
-    [JsonPropertyName("resource")]
     public string Resource { get; set; }
 
-    [JsonPropertyName("representation_is_required")]
     public bool? RepresentationIsRequired { get; set; }
 }
 

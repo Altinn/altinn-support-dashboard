@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ using Security;
 //The configuration for Ansattporten has been taken from altinn studio, with a few tweeks to make it work well for ASD
 namespace Altinn.Studio.Designer.Infrastructure.AnsattPorten;
 
-public static class AnsattPortenExtensions
+public static class AnsattportenExtensions
 {
     public static IServiceCollection AddAnsattPortenAuthenticationAndAuthorization(this IServiceCollection services, IConfiguration configuration)
     {
@@ -97,16 +98,14 @@ public static class AnsattPortenExtensions
 
                         if (oidcSettings.AuthorizationDetails is not null)
                         {
-                            context.ProtocolMessage.SetParameters(
-                                new System.Collections.Specialized.NameValueCollection
-                                {
-                                    ["authorization_details"] = JsonSerializer.Serialize(oidcSettings.AuthorizationDetails, new JsonSerializerOptions()
-                                    {
-                                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                                    }),
-                                    ["acr_values"] = oidcSettings.ArcValues
-                                }
-                            );
+                            context.ProtocolMessage.SetParameter("authorization_details", JsonSerializer.Serialize(oidcSettings.AuthorizationDetails, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+                        }
+
+
+                        if (!String.IsNullOrEmpty(oidcSettings.AcrValues))
+                        {
+                            context.ProtocolMessage.SetParameter("acr_values", oidcSettings.AcrValues);
+
                         }
 
                         return Task.CompletedTask;
