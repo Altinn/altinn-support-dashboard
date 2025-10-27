@@ -39,7 +39,7 @@ export const SignInPage: React.FC = () => {
             <div className ={style.gifContainer}>
                 <img 
                 src={selectedImage} 
-                alt="sleeping cat gif" 
+                alt="gif" 
                 className={style.catGif}
                 />
             </div>
