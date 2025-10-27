@@ -84,7 +84,11 @@ public static class AnsattPortenExtensions
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
                         var user = context.HttpContext.User;
-                        if (user?.Identity?.IsAuthenticated != true)
+
+                        //Forces Ansattporten login popup even if SSO is on
+                        bool forceLogin = configuration.GetSection($"FeatureManagement:ForceLogin").Get<bool>();
+
+                        if (forceLogin && user?.Identity?.IsAuthenticated != true)
                         {
 
                             //forces login
