@@ -49,6 +49,6 @@ public class AuthorizationDetail
 
     public string Resource { get; set; }
 
-    public bool? RepresentationIsRequired { get; set; }
+    public bool? representation_is_required { get; set; }
 }
 
