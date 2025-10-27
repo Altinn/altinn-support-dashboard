@@ -28,3 +28,12 @@
     position: fixed;
     bottom: 0.5rem;
 }
+
+.gifContainer img {
+   width: auto;
+    height: auto;
+    max-height: clamp(60px, 30vh, 300px);
+    max-width: 40vw;           
+    object-fit: contain;                   
+    display: block;
+}
