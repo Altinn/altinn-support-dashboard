@@ -1,5 +1,6 @@
 import { Card, Button } from "@digdir/designsystemet-react";
 import classes from "./styles/SettingsActionsButtons.module.css";
+import partyMeow from "../../assets/fun/partymeow.gif";
 
 const SettingsActionButtons: React.FC = () => {
   const handleReload = () => {
