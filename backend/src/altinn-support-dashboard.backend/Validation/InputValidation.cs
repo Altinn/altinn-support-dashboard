@@ -43,7 +43,7 @@ namespace altinn_support_dashboard.Server.Validation
         public static bool IsValidRedirectUrl(string url)
         {
             //only relative redirect url's allowed
-            if (url.StartsWith("/") && !url.StartsWith("//") && !url.StartsWith(":"))
+            if (!String.IsNullOrEmpty(url) && url.StartsWith('/') && !url.StartsWith("//") && !url.StartsWith(':'))
             {
                 return true;
             }
