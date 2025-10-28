@@ -40,14 +40,14 @@ namespace altinn_support_dashboard.Server.Validation
         }
 
 
-        public static bool IsValidRedirectUrl(string url)
+        public static string SanethizeRedirectUrl(string url)
         {
             //only relative redirect url's allowed
             if (!String.IsNullOrEmpty(url) && url.StartsWith('/') && !url.StartsWith("//") && !url.StartsWith(':'))
             {
-                return true;
+                return url;
             }
-            return false;
+            return "/";
         }
     }
 }
