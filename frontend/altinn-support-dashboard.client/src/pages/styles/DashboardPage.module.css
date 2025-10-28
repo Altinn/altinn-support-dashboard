@@ -20,3 +20,11 @@
   min-width: 30%;
 }
 
+.infoButton {
+  margin-bottom: -1.5rem;
+  height: 30px;
+  min-height: 0;
+  width: 20px;
+  min-width: 0;
+  margin-left: auto;
+}

@@ -9,7 +9,7 @@ interface NotificationContactCellProps {
 const NotificationContactCell: React.FC<NotificationContactCellProps> = ({
   contact,
 }) => {
-  const userInput = useDashboardStore((s) => s.query.replace(/\s/g, ""));
+  const userInput = useDashboardStore((s) => s.query.replace(/\s/g, "").toLowerCase());
 
   //outlines if searchquery is part of the cell
   const boldened = contact === userInput ? { fontWeight: "bold" } : undefined;
