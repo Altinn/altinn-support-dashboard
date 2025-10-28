@@ -19,5 +19,5 @@ export const initiateSignIn = async (redirectTo: string) => {
 };
 
 export const initiateSignOut = async (redirectTo: string) => {
-  window.location.href = `${getBaseUrl()}/auth/login?redirectTo=${redirectTo}`;
+  window.location.href = `${getBaseUrl()}/auth/logout?redirectTo=${redirectTo}`;
 };

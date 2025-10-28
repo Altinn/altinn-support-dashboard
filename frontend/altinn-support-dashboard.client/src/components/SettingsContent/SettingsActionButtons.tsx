@@ -1,6 +1,7 @@
 import { Card, Button } from "@digdir/designsystemet-react";
 import classes from "./styles/SettingsActionsButtons.module.css";
 import partyMeow from "../../assets/fun/partymeow.gif";
+import { initiateSignOut } from "../../utils/ansattportenApi";
 
 const SettingsActionButtons: React.FC = () => {
   const handleReload = () => {
@@ -8,7 +9,7 @@ const SettingsActionButtons: React.FC = () => {
   };
 
   const handleLogout = () => {
-    window.location.href = "/.auth/logout?post_logout_redirect_uri=/signout";
+    initiateSignOut("/signin");
   };
   return (
     <Card data-color="neutral" className={classes.container}>
