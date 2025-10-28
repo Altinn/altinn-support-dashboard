@@ -13,3 +13,11 @@ export const fetchAuthDetails = async (): Promise<authDetails> => {
 
   return authDetails;
 };
+
+export const initiateSignIn = async (redirectTo: string) => {
+  window.location.href = `${getBaseUrl()}/auth/login?redirectTo=${redirectTo}`;
+};
+
+export const initiateSignOut = async (redirectTo: string) => {
+  window.location.href = `${getBaseUrl()}/auth/login?redirectTo=${redirectTo}`;
+};
