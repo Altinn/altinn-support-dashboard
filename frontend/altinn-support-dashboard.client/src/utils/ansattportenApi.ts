@@ -1,7 +1,7 @@
 import { authDetails } from "../models/ansattportenModels";
 import { authorizedFetch, getBaseUrl } from "./utils";
 
-export const authStatus = async (environment: string): Promise<authDetails> => {
+export const fetchAuthDetails = async (): Promise<authDetails> => {
   const res = await authorizedFetch(`${getBaseUrl()}auth/auth-status`);
 
   if (res.status != 200) {
