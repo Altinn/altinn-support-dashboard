@@ -2,10 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
+using Security;
+using Microsoft.AspNetCore.Cors;
 
 namespace AltinnSupportDashboard.Controllers
 {
 
+    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [ApiController]
     [Route("api/{environmentName}")]
     public class HealthController : ControllerBase
@@ -18,6 +21,7 @@ namespace AltinnSupportDashboard.Controllers
     }
 
 
+    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [ApiController]
     [Route("api/{environmentName}/serviceowner/organizations")]
     public class Altinn_Intern_APIController : ControllerBase

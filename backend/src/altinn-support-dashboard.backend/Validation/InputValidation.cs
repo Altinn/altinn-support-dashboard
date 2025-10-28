@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
+
 namespace altinn_support_dashboard.Server.Validation
 {
     public static class ValidationService
@@ -36,6 +37,17 @@ namespace altinn_support_dashboard.Server.Validation
             }
 
             return false;
+        }
+
+
+        public static string SanitizeRedirectUrl(string url)
+        {
+            //only relative redirect url's allowed
+            if (!String.IsNullOrEmpty(url) && url.StartsWith('/') && !url.StartsWith("//") && !url.StartsWith(':'))
+            {
+                return url;
+            }
+            return "/";
         }
     }
 }

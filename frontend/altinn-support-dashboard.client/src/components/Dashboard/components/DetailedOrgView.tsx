@@ -66,7 +66,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
                 <Heading level={6}>Varslingsadresser for virksomheten</Heading>
                 <div className={styles.officialContactBottom}>
                   <NotificationContactTable
-                    title="mobilnummer"
+                    title="Mobilnummer"
                     field="mobileNumber"
                     changedField="mobileNumberChanged"
                     contacts={officialContactsQuery.data ?? []}

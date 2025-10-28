@@ -1,8 +1,12 @@
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Security;
 
+
+[Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
 [ApiController]
 [Route("api/{environmentName}/brreg/{orgNumber}")]
 public class ER_Roller_APIController : ControllerBase

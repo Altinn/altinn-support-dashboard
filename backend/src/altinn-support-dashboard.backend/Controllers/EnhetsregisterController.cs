@@ -1,9 +1,13 @@
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Security;
 
 namespace altinn_support_dashboard.Server.Controllers
 {
+
+    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [ApiController]
     [Route("api/{environmentName}/brreg/enhet/{orgNumber}")]
     public class EnhetsregisterController : ControllerBase
