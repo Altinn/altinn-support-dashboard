@@ -2,10 +2,10 @@ import { authDetails } from "../models/ansattportenModels";
 import { authorizedFetch, getBaseUrl } from "./utils";
 
 export const fetchAuthDetails = async (): Promise<authDetails> => {
-  const res = await authorizedFetch(`${getBaseUrl()}auth/auth-status`);
+  const res = await authorizedFetch(`${getBaseUrl()}/auth/auth-status`);
 
   if (res.status != 200) {
-    return { authStatus: false };
+    return { isLoggedIn: false };
   }
 
   const data = await res.json();

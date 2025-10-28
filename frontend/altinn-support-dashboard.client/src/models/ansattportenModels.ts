@@ -1,3 +1,3 @@
 export interface authDetails {
-  authStatus: boolean;
+  isLoggedIn: boolean;
 }
