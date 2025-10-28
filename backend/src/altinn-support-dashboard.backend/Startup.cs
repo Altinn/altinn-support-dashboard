@@ -64,16 +64,28 @@ namespace AltinnSupportDashboard
                            .AllowAnyHeader();   // Allow all headers (Authorization, Content-Type, etc.)
 
                 });
+            });
 
-                options.AddPolicy("AllowFrontend", builder =>
+
+            //enables only from frontend
+            string baseUrl = Configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
+            if (!String.IsNullOrEmpty(baseUrl))
+            {
+                services.AddCors(options =>
                 {
-                    builder.WithOrigins("https://localhost:5173")   // Allow only localhost origin
-                           .AllowAnyMethod()   // Allow all methods (GET, POST, PUT, DELETE, etc.)
-                           .AllowAnyHeader()   // Allow all headers (Authorization, Content-Type, etc.)
-                           .AllowCredentials();
+
+                    options.AddPolicy("AllowFrontend", builder =>
+                    {
+                        builder.WithOrigins(baseUrl)   // Allow only frontend origin
+                               .AllowAnyMethod()
+                               .AllowAnyHeader()
+                               .AllowCredentials();
+
+                    });
 
                 });
-            });
+
+            }
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
