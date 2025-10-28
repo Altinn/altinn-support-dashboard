@@ -6,6 +6,7 @@ import NavItem from "./NavItem";
 import SideBarDateTime from "./SidebarDateTime";
 import SidebarEnvToggle from "./SidebarEnvToggle";
 import { useUserDetails } from "../../hooks/hooks";
+import { initiateSignOut } from "../../utils/ansattportenApi";
 import {
   Buildings3Icon,
   ChevronLeftIcon,
@@ -25,6 +26,9 @@ const Sidebar: React.FC = () => {
   const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();
   const { userName, userEmail } = useUserDetails();
   const authDetails = useAuthDetails();
+  const handleLogout = () => {
+      initiateSignOut("/signin");
+    };
 
   if (authDetails.isLoading || !authDetails.data.isLoggedIn) {
     return;
@@ -96,7 +100,9 @@ const Sidebar: React.FC = () => {
             />
           </nav>
         </div>
-
+        {!isCollapsed && (
+          <SidebarEnvToggle/>
+        )}
         <div>
           <Divider className={classes.divider} />
 
@@ -104,7 +110,9 @@ const Sidebar: React.FC = () => {
           {!isCollapsed && (
             <>
               <SideBarDateTime />
-              <SidebarEnvToggle />
+              <Button data-color="accent" variant="primary" onClick={handleLogout}>
+                Logg ut
+              </Button>
               <div className={classes.userInfo}>
                 <Label>{userName}</Label>
                 <Label>{userEmail}</Label>
