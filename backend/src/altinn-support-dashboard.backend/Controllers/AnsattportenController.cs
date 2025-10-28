@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Security;
 using System.IdentityModel.Tokens.Jwt;
+using altinn_support_dashboard.Server.Validation;
 
 
 namespace AltinnSupportDashboard.Controllers;
@@ -12,22 +13,34 @@ namespace AltinnSupportDashboard.Controllers;
 public class AnsattportenController : ControllerBase
 {
     private bool ansattportenFeatureFlag;
+    private string baseUrl;
     public AnsattportenController(IConfiguration configuration)
     {
         ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
+        baseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
     }
 
     [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [HttpGet("login")]
     public async Task<IActionResult> Login([FromQuery] string? redirectTo = "/")
     {
+
+        //Sanethizes redirectpath
+        string relativeUrl = "/";
+        if (ValidationService.IsValidRedirectUrl(redirectTo))
+        {
+            relativeUrl = redirectTo;
+        }
+
+        string redirectPath = baseUrl + relativeUrl;
+
         if (ansattportenFeatureFlag != true)
         {
-            return Redirect(redirectTo);
+            return Redirect(redirectPath);
         }
 
         await Task.CompletedTask;
-        var props = new AuthenticationProperties { RedirectUri = redirectTo };
+        var props = new AuthenticationProperties { RedirectUri = redirectPath };
 
         return Challenge(props, AnsattportenConstants.AnsattportenAuthenticationScheme);
     }
@@ -56,10 +69,20 @@ public class AnsattportenController : ControllerBase
     [HttpGet("logout")]
     public async Task<IActionResult> Logout([FromQuery] string? redirectTo = "/")
     {
+
+        string relativeUrl = "/";
+        if (ValidationService.IsValidRedirectUrl(redirectTo))
+        {
+            relativeUrl = redirectTo;
+        }
+
+        string redirectPath = baseUrl + relativeUrl;
+
+
         if (ansattportenFeatureFlag != true)
         {
 
-            return Redirect(redirectTo);
+            return Redirect(redirectPath);
         }
 
         await Task.CompletedTask;
@@ -70,10 +93,10 @@ public class AnsattportenController : ControllerBase
         //signs user out of ansattporten
         await HttpContext.SignOutAsync(AnsattportenConstants.AnsattportenAuthenticationScheme, new AuthenticationProperties
         {
-            RedirectUri = redirectTo
+            RedirectUri = redirectPath
         });
 
-        return Redirect(redirectTo);
+        return Redirect(redirectPath);
 
     }
 
