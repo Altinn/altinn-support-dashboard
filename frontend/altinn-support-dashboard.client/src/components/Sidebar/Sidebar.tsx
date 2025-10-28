@@ -19,10 +19,16 @@ import {
 import { Button, Divider, Label } from "@digdir/designsystemet-react";
 
 import classes from "./styles/SideBarComponent.module.css";
+import { useAuthDetails } from "../../hooks/ansattportenHooks";
 
 const Sidebar: React.FC = () => {
   const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();
   const { userName, userEmail } = useUserDetails();
+  const authDetails = useAuthDetails();
+
+  if (authDetails.isLoading || !authDetails.data.isLoggedIn) {
+    return;
+  }
 
   return (
     <div className={classes.sidebarWrapper}>
