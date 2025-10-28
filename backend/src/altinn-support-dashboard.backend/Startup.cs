@@ -38,15 +38,16 @@ namespace AltinnSupportDashboard
             services.AddScoped<IGiteaService, GiteaService>();
             services.AddScoped<IDataBrregService, DataBrregService>();
             services.AddScoped<IAltinnApiService, AltinnApiService>();
-           
+
             // Add controllers for the API
             services.AddControllers();
 
             // Register Swagger for API documentation
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { 
-                    Title = "Altinn Support Dashboard API", 
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Altinn Support Dashboard API",
                     Version = "v1",
                     Description = "API for å administrere Altinn Support Dashboard og opprette organisasjoner i Altinn Studio"
                 });
@@ -60,9 +61,31 @@ namespace AltinnSupportDashboard
                 {
                     builder.AllowAnyOrigin()   // Allow all origins
                            .AllowAnyMethod()   // Allow all methods (GET, POST, PUT, DELETE, etc.)
-                           .AllowAnyHeader();  // Allow all headers (Authorization, Content-Type, etc.)
+                           .AllowAnyHeader();   // Allow all headers (Authorization, Content-Type, etc.)
+
                 });
             });
+
+
+            //enables only from frontend
+            string baseUrl = Configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
+            if (!String.IsNullOrEmpty(baseUrl))
+            {
+                services.AddCors(options =>
+                {
+
+                    options.AddPolicy("AllowFrontend", builder =>
+                    {
+                        builder.WithOrigins(baseUrl)   // Allow only frontend origin
+                               .AllowAnyMethod()
+                               .AllowAnyHeader()
+                               .AllowCredentials();
+
+                    });
+
+                });
+
+            }
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -78,7 +101,7 @@ namespace AltinnSupportDashboard
             }
 
             // Enable CORS immediately
-            app.UseCors("AllowAll");  // Globally apply the "AllowAll" CORS policy
+            app.UseCors("AllowFrontend");  // Globally apply the "AllowAll" CORS policy
 
             // Use HTTPS redirection
             app.UseHttpsRedirection();
@@ -100,6 +123,7 @@ namespace AltinnSupportDashboard
             // Enable Authentication and Authorization middleware
             app.UseAuthentication();  // Ensure authentication is used
             app.UseAuthorization();   // Ensure authorization is used
+
 
             // Configure endpoints for API controllers
             app.UseEndpoints(endpoints =>

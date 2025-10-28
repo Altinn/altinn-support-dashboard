@@ -9,7 +9,7 @@ export function getBaseUrl(environment: string): string {
       : window.location.hostname === "localhost";
 
   // Set protocol based on environment
-  const protocol = localDev ? "http:" : "https:";
+  const protocol = "https:";
 
   // Port for local development
   const portSegment = localDev ? ":5237" : "";
@@ -27,7 +27,11 @@ export async function authorizedFetch(
     Authorization: `Basic ${token}`,
     "Content-Type": "application/json",
   };
-  const response = await fetch(url, { ...options, headers });
+  const response = await fetch(url, {
+    ...options,
+    headers,
+    credentials: "include",
+  });
   return response;
 }
 
