@@ -32,15 +32,15 @@ public class AnsattportenController : ControllerBase
             relativeUrl = redirectTo;
         }
 
-        string redirectPath = baseUrl + relativeUrl;
+        string safeRedirectPath = baseUrl + relativeUrl;
 
         if (ansattportenFeatureFlag != true)
         {
-            return Redirect(redirectPath);
+            return Redirect(safeRedirectPath);
         }
 
         await Task.CompletedTask;
-        var props = new AuthenticationProperties { RedirectUri = redirectPath };
+        var props = new AuthenticationProperties { RedirectUri = safeRedirectPath };
 
         return Challenge(props, AnsattportenConstants.AnsattportenAuthenticationScheme);
     }
@@ -76,13 +76,13 @@ public class AnsattportenController : ControllerBase
             relativeUrl = redirectTo;
         }
 
-        string redirectPath = baseUrl + relativeUrl;
+        string safeRedirectPath = baseUrl + relativeUrl;
 
 
         if (ansattportenFeatureFlag != true)
         {
 
-            return Redirect(redirectPath);
+            return Redirect(safeRedirectPath);
         }
 
         await Task.CompletedTask;
@@ -93,10 +93,10 @@ public class AnsattportenController : ControllerBase
         //signs user out of ansattporten
         await HttpContext.SignOutAsync(AnsattportenConstants.AnsattportenAuthenticationScheme, new AuthenticationProperties
         {
-            RedirectUri = redirectPath
+            RedirectUri = safeRedirectPath
         });
 
-        return Redirect(redirectPath);
+        return Redirect(safeRedirectPath);
 
     }
 
