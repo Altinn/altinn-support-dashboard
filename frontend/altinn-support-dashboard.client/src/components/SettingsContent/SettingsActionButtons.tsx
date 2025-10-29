@@ -1,6 +1,5 @@
 import { Card, Button } from "@digdir/designsystemet-react";
 import classes from "./styles/SettingsActionsButtons.module.css";
-import partyMeow from "../../assets/fun/partymeow.gif";
 import { initiateSignOut } from "../../utils/ansattportenApi";
 
 const SettingsActionButtons: React.FC = () => {
