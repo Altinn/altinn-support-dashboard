@@ -28,7 +28,7 @@ const Sidebar: React.FC = () => {
   const authDetails = useAuthDetails();
   const handleLogout = () => {
       initiateSignOut("/signin");
-    };
+  };
 
   if (authDetails.isLoading || !authDetails.data.isLoggedIn) {
     return;
