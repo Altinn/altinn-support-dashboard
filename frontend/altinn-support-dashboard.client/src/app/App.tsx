@@ -17,6 +17,7 @@ import NewOrganizationPage from "../pages/NewOrganizationPage";
 import SettingsPage from "../pages/SettingsPage";
 import { useAppStore } from "../stores/Appstore";
 import SignInPage from "../pages/SignInPage";
+import PrivateRoutes from "./PrivateRoutes";
 
 const App: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
@@ -38,18 +39,28 @@ const App: React.FC = () => {
           <Sidebar />
           <main className="main-content">
             <Routes>
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-
-              <Route
-                path="/manualrolesearch"
-                element={<ManualRoleSearchPage />}
-              />
-              <Route path="/new-org" element={<NewOrganizationPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-              <Route path="/signout" element={<SignOutPage />} />
               <Route path="/signin" element={<SignInPage />} />
+
+              {/*Forces signin screen if user not logged in */}
+              <Route element={<PrivateRoutes />}>
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route
+                  path="*"
+                  element={<Navigate to="/dashboard" replace />}
+                />
+                <Route
+                  path="/"
+                  element={<Navigate to="/dashboard" replace />}
+                />
+
+                <Route
+                  path="/manualrolesearch"
+                  element={<ManualRoleSearchPage />}
+                />
+                <Route path="/new-org" element={<NewOrganizationPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/signout" element={<SignOutPage />} />
+              </Route>
             </Routes>
           </main>
         </div>

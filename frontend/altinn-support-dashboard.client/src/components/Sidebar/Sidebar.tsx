@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/logo.png";
 import whiteLogo from "/asd_128_white.png";
 import { useSidebarDrag } from "./hooks/useSidebarDrag";
@@ -6,6 +6,7 @@ import NavItem from "./NavItem";
 import SideBarDateTime from "./SidebarDateTime";
 import SidebarEnvToggle from "./SidebarEnvToggle";
 import { useUserDetails } from "../../hooks/hooks";
+import { initiateSignOut } from "../../utils/ansattportenApi";
 import {
   Buildings3Icon,
   ChevronLeftIcon,
@@ -19,10 +20,30 @@ import {
 import { Button, Divider, Label } from "@digdir/designsystemet-react";
 
 import classes from "./styles/SideBarComponent.module.css";
+import { useAuthDetails } from "../../hooks/ansattportenHooks";
 
 const Sidebar: React.FC = () => {
   const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();
+
+  //old user details (will be removed in the future)
   const { userName, userEmail } = useUserDetails();
+
+  const [newUsername, setNewUsername] = useState("");
+  const authDetails = useAuthDetails();
+
+  const handleLogout = () => {
+    initiateSignOut("/signin");
+  };
+
+  useEffect(() => {
+    if (authDetails?.data?.isLoggedIn) {
+      setNewUsername(authDetails.data.name);
+    }
+  }, [authDetails.data?.isLoggedIn, authDetails.data?.name]);
+
+  if (authDetails.isLoading || !authDetails.data.isLoggedIn) {
+    return;
+  }
 
   return (
     <div className={classes.sidebarWrapper}>
@@ -90,7 +111,9 @@ const Sidebar: React.FC = () => {
             />
           </nav>
         </div>
-
+        <div className={classes.envToggleContainer}>
+          {!isCollapsed && <SidebarEnvToggle />}
+        </div>
         <div>
           <Divider className={classes.divider} />
 
@@ -98,9 +121,17 @@ const Sidebar: React.FC = () => {
           {!isCollapsed && (
             <>
               <SideBarDateTime />
-              <SidebarEnvToggle />
+              <Button
+                variant="primary"
+                onClick={handleLogout}
+                className={classes.logoutButton}
+              >
+                Logg ut
+              </Button>
               <div className={classes.userInfo}>
-                <Label>{userName}</Label>
+                <Label>
+                  {authDetails?.data?.name ? newUsername : userName}
+                </Label>
                 <Label>{userEmail}</Label>
               </div>
             </>

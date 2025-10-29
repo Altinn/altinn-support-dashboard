@@ -1,4 +1,4 @@
-export function getBaseUrl(environment: string): string {
+export function getBaseUrl(environment?: string): string {
   const apiHost = window.location.hostname;
 
   // Determine if this is local development
@@ -14,7 +14,15 @@ export function getBaseUrl(environment: string): string {
   // Port for local development
   const portSegment = localDev ? ":5237" : "";
 
-  return `${protocol}//${apiHost}${portSegment}/api/${environment === "TT02" ? "TT02" : "Production"}`;
+  var baseUrl = "";
+
+  if (environment === "TT02" || environment === "Production") {
+    baseUrl = `${protocol}//${apiHost}${portSegment}/api/${environment === "TT02" ? "TT02" : "Production"}`;
+  } else {
+    baseUrl = `${protocol}//${apiHost}${portSegment}/api`;
+  }
+
+  return baseUrl;
 }
 export async function authorizedFetch(
   url: string,

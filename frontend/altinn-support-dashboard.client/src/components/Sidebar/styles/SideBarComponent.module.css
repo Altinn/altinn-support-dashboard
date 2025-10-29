@@ -73,6 +73,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 1rem;
 }
 
 .collapseContainer {
@@ -123,6 +124,29 @@
   font-size: 1.5rem;
 }
 
+.envToggleContainer{
+  margin-top: auto;
+  margin-bottom: -1rem;
+}
+
+.logoutButton {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1rem;
+}
+
+[data-color-scheme="light"] .logoutButton {
+  background-color: var(--ds-color-surface-default);
+  color: var(--ds-color-text-default);
+}
+
+[data-color-scheme="dark"] .logoutButton {
+  background-color: var(--ds-color-neutral-surface-default);
+  color: var(--ds-color-text-default);
+  border-color: var(--ds-color-text-subtle);
+  border-width: 0.1px;
+}
+
 @media (max-width: 1439px) {
   .expanded {
     width: 200px;
@@ -137,5 +161,9 @@
 
   .collapseButton {
     font-size: var(--ds-font-size-1);
+  }
+
+  .logoutButton {
+    font-size: var(--ds-font-size-3);
   }
 }
