@@ -139,8 +139,9 @@
 }
 
 [data-color-scheme="dark"] .logoutButton {
-  background-color: #739CB1;
-  color: #00001C;
+  background-color: #26282B;
+  color: var(--ds-color-text-default);
+  border-color: #f3f3f4;
 }
 
 @media (max-width: 1439px) {
