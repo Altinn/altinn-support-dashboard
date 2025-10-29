@@ -1,9 +1,12 @@
+// Models/EnvironmentConfiguration.cs
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Security;
 using System.IdentityModel.Tokens.Jwt;
 using altinn_support_dashboard.Server.Validation;
+using altinn_support_dashboard.Server.Models.ansattporten;
 
 
 namespace AltinnSupportDashboard.Controllers;
@@ -45,17 +48,19 @@ public class AnsattportenController : ControllerBase
 
         if (ansattportenFeatureFlag != true)
         {
-            return Ok(new
+            return Ok(new AuthDetails
             {
-                isLoggedIn = true,
+                IsLoggedIn = true,
+                Name = "no user"
             });
         }
 
         var result = await HttpContext.AuthenticateAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
 
-        return Ok(new
+        return Ok(new AuthDetails
         {
-            isLoggedIn = result.Succeeded,
+            IsLoggedIn = result.Succeeded,
+            Name = User?.Identity?.Name
         });
     }
 
