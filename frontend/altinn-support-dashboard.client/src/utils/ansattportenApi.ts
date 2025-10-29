@@ -5,7 +5,7 @@ export const fetchAuthDetails = async (): Promise<authDetails> => {
   const res = await authorizedFetch(`${getBaseUrl()}/auth/auth-status`);
 
   if (res.status != 200) {
-    return { isLoggedIn: false };
+    return { isLoggedIn: false, name: null };
   }
 
   const data = await res.json();
