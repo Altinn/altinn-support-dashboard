@@ -51,7 +51,7 @@ public class AnsattportenController : ControllerBase
             return Ok(new AuthDetails
             {
                 IsLoggedIn = true,
-                Name = "no user"
+                Name = null
             });
         }
 
