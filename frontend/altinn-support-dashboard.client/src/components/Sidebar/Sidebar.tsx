@@ -100,9 +100,11 @@ const Sidebar: React.FC = () => {
             />
           </nav>
         </div>
-        {!isCollapsed && (
-          <SidebarEnvToggle/>
-        )}
+        <div className={classes.envToggleContainer}>
+          {!isCollapsed && (
+            <SidebarEnvToggle />
+          )}
+        </div>
         <div>
           <Divider className={classes.divider} />
 
@@ -110,7 +112,8 @@ const Sidebar: React.FC = () => {
           {!isCollapsed && (
             <>
               <SideBarDateTime />
-              <Button data-color="accent" variant="primary" onClick={handleLogout}>
+              <Button variant="primary" onClick={handleLogout}
+               className={classes.logoutButton}>
                 Logg ut
               </Button>
               <div className={classes.userInfo}>

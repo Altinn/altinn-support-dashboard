@@ -123,6 +123,26 @@
   font-size: 1.5rem;
 }
 
+.envToggleContainer{
+  margin-top: auto;
+}
+
+.logoutButton {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1rem;
+}
+
+[data-color-scheme="light"] .logoutButton {
+  background-color: var(--ds-color-surface-default);
+  color: var(--ds-color-text-default);
+}
+
+[data-color-scheme="dark"] .logoutButton {
+  background-color: #739CB1;
+  color: #00001C;
+}
+
 @media (max-width: 1439px) {
   .expanded {
     width: 200px;
