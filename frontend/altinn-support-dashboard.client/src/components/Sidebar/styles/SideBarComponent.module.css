@@ -73,6 +73,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 1rem;
 }
 
 .collapseContainer {
@@ -125,6 +126,7 @@
 
 .envToggleContainer{
   margin-top: auto;
+  margin-bottom: -01rem;
 }
 
 .logoutButton {
@@ -159,5 +161,9 @@
 
   .collapseButton {
     font-size: var(--ds-font-size-1);
+  }
+
+  .logoutButton {
+    font-size: var(--ds-font-size-3);
   }
 }
