@@ -1,5 +1,3 @@
-import create from "zustand";
-
 export interface AppState {
   environment: string;
   isDarkMode: boolean;
