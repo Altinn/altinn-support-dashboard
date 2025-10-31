@@ -18,6 +18,7 @@ import SettingsPage from "../pages/SettingsPage";
 import { useAppStore } from "../stores/Appstore";
 import SignInPage from "../pages/SignInPage";
 import PrivateRoutes from "./PrivateRoutes";
+import { ToastContainer } from "react-toastify";
 
 const App: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
@@ -36,6 +37,7 @@ const App: React.FC = () => {
       />
       <Router>
         <div className="app-wrapper">
+          <ToastContainer />
           <Sidebar />
           <main className="main-content">
             <Routes>

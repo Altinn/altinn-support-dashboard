@@ -7,8 +7,6 @@ import { Button } from "@digdir/designsystemet-react";
 import InformationDialogBox from "../components/InformationDialog/InformationDialogBox";
 import { InformationIcon } from '@navikt/aksel-icons';
 import styles from "./styles/DashboardPage.module.css";
-import { ToastContainer } from "react-toastify";
-
 export const DashboardPage: React.FC = () => {
   const query = useDashboardStore((s) => s.query);
   const setQuery = useDashboardStore((s) => s.setQuery);
@@ -18,7 +16,6 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className={styles["dashboard-page-container"]}>
-      <ToastContainer />
       <Button 
       onClick={() => dialogRef.current?.showModal()}
       className={styles.infoButton}
