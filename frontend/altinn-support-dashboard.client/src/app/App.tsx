@@ -30,6 +30,7 @@ const App: React.FC = () => {
   return (
     <div>
       {/* Vis versjonsoppdateringsmelding hvis ny versjon er tilgjengelig */}
+      <ToastContainer />
       <VersionDialog
         versionInfo={versionInfo}
         open={shouldShowDialog}
@@ -37,7 +38,6 @@ const App: React.FC = () => {
       />
       <Router>
         <div className="app-wrapper">
-          <ToastContainer />
           <Sidebar />
           <main className="main-content">
             <Routes>
