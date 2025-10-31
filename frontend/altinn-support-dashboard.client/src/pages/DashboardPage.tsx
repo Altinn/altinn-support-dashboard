@@ -7,6 +7,7 @@ import { Button } from "@digdir/designsystemet-react";
 import InformationDialogBox from "../components/InformationDialog/InformationDialogBox";
 import { InformationIcon } from '@navikt/aksel-icons';
 import styles from "./styles/DashboardPage.module.css";
+import { ToastContainer } from "react-toastify";
 
 export const DashboardPage: React.FC = () => {
   const query = useDashboardStore((s) => s.query);
@@ -27,6 +28,7 @@ export const DashboardPage: React.FC = () => {
       <SearchComponent query={query} setQuery={setQuery} />
       <div className={styles["dashboard-container"]}>
         <div className={styles["org-list-container"]}>
+          <ToastContainer />
           <OrganizationList
             setSelectedOrg={setSelectedOrg}
             selectedOrg={selectedOrg}

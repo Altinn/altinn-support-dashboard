@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { OrganizationCard } from "./OrganizationCard";
 import { useOrgSearch } from "../../../../hooks/hooks";
 import { ErrorAlert } from "../ErrorAlert";
 import { SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import classes from "../../styles/OrganizationList.module.css";
+import { ToastContainer, toast } from "react-toastify"; 
 
 import { Skeleton, Alert, Heading } from "@digdir/designsystemet-react";
 
@@ -24,6 +25,18 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
   const organizations = orgQuery.data ?? [];
   const subUnits = subunitQuery.data ?? [];
 
+  useEffect(() => {
+    if (orgQuery.isError) {
+      const errorMessage = orgQuery.error?.message.toString() ?? "Ukjent feil oppstod";
+      toast.error(errorMessage, {
+        position: "bottom-left",
+        autoClose: 5000,
+        theme: "colored"
+      });
+    }
+  }, [orgQuery.isError, orgQuery.error]);
+
+
   if (orgQuery.isLoading) {
     return (
       <div role="progressbar">
@@ -32,10 +45,6 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
     );
   }
 
-  if (orgQuery.isError) {
-    const error = { message: orgQuery.error.message.toString() };
-    return <ErrorAlert error={error} />;
-  }
 
   if (organizations.length <= 0 && query.length > 0) {
     return (
