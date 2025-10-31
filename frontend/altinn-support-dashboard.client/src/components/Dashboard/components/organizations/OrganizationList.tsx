@@ -5,7 +5,7 @@ import { ErrorAlert } from "../ErrorAlert";
 import { SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import classes from "../../styles/OrganizationList.module.css";
-import { ToastContainer, toast } from "react-toastify"; 
+import { toast } from "react-toastify"; 
 
 import { Skeleton, Alert, Heading } from "@digdir/designsystemet-react";
 
