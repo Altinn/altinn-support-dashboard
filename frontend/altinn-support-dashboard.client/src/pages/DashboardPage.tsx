@@ -18,6 +18,7 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className={styles["dashboard-page-container"]}>
+      <ToastContainer />
       <Button 
       onClick={() => dialogRef.current?.showModal()}
       className={styles.infoButton}
@@ -28,7 +29,6 @@ export const DashboardPage: React.FC = () => {
       <SearchComponent query={query} setQuery={setQuery} />
       <div className={styles["dashboard-container"]}>
         <div className={styles["org-list-container"]}>
-          <ToastContainer />
           <OrganizationList
             setSelectedOrg={setSelectedOrg}
             selectedOrg={selectedOrg}

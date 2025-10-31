@@ -29,7 +29,7 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
     if (orgQuery.isError) {
       const errorMessage = orgQuery.error?.message.toString() ?? "Ukjent feil oppstod";
       toast.error(errorMessage, {
-        position: "bottom-left",
+        position: "bottom-right",
         autoClose: 5000,
         theme: "colored"
       });
