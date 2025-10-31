@@ -7,7 +7,6 @@ import { Button } from "@digdir/designsystemet-react";
 import InformationDialogBox from "../components/InformationDialog/InformationDialogBox";
 import { InformationIcon } from '@navikt/aksel-icons';
 import styles from "./styles/DashboardPage.module.css";
-
 export const DashboardPage: React.FC = () => {
   const query = useDashboardStore((s) => s.query);
   const setQuery = useDashboardStore((s) => s.setQuery);

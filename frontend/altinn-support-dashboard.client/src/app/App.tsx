@@ -18,6 +18,7 @@ import SettingsPage from "../pages/SettingsPage";
 import { useAppStore } from "../stores/Appstore";
 import SignInPage from "../pages/SignInPage";
 import PrivateRoutes from "./PrivateRoutes";
+import { ToastContainer } from "react-toastify";
 
 const App: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
@@ -29,6 +30,7 @@ const App: React.FC = () => {
   return (
     <div>
       {/* Vis versjonsoppdateringsmelding hvis ny versjon er tilgjengelig */}
+      <ToastContainer />
       <VersionDialog
         versionInfo={versionInfo}
         open={shouldShowDialog}
