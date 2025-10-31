@@ -88,7 +88,7 @@ public static class AnsattportenExtensions
                         var redirectBaseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
                         var error = context?.Failure?.Message ?? "uknown message";
 
-                        context.Response.Redirect(redirectBaseUrl + "/");
+                        context.Response.Redirect(redirectBaseUrl + "/signin?error=loginFailed");
                         context.HandleResponse();
 
                         return Task.CompletedTask;
