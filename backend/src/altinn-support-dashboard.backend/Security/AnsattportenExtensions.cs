@@ -82,6 +82,20 @@ public static class AnsattportenExtensions
 
                     options.TokenValidationParameters.NameClaimType = JwtRegisteredClaimNames.Name;
 
+                    //handles errors and redirects correctly
+                    options.Events.OnRemoteFailure = context =>
+                    {
+                        var redirectBaseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
+                        var error = context?.Failure?.Message ?? "uknown message";
+
+                        context.Response.Redirect(redirectBaseUrl + "/");
+                        context.HandleResponse();
+
+                        return Task.CompletedTask;
+                    };
+
+
+
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
                         var user = context.HttpContext.User;
