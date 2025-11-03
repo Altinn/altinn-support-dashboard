@@ -50,8 +50,11 @@ public static class AnsattportenExtensions
 
                 options.Events.OnRedirectToAccessDenied = context =>
                 {
-                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                    var redirectBaseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
+                    context.Response.Redirect(redirectBaseUrl + "/signin?error=loginFailed");
                     return Task.CompletedTask;
+
+
                 };
             })
             .AddOpenIdConnect(AnsattportenConstants.AnsattportenAuthenticationScheme,
