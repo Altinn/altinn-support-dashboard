@@ -5,7 +5,8 @@ import { ErrorAlert } from "../ErrorAlert";
 import { SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import classes from "../../styles/OrganizationList.module.css";
-import { toast } from "react-toastify"; 
+import { showPopup } from "../../../Popup";
+
 
 import { Skeleton, Alert, Heading } from "@digdir/designsystemet-react";
 
@@ -28,11 +29,7 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
   useEffect(() => {
     if (orgQuery.isError) {
       const errorMessage = orgQuery.error?.message.toString() ?? "Ukjent feil oppstod";
-      toast.error(errorMessage, {
-        position: "bottom-right",
-        autoClose: 5000,
-        theme: "colored"
-      });
+      showPopup(errorMessage, "error");
     }
   }, [orgQuery.isError, orgQuery.error]);
 

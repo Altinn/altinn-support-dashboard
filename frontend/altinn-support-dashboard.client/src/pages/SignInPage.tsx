@@ -8,7 +8,7 @@ import cat from "../assets/fun/sleeping cat.gif";
 import dog from "../assets/fun/sleeping dog.gif";
 import { initiateSignIn, initiateSignOut } from "../utils/ansattportenApi";
 import { useLocation } from "react-router-dom";
-import { toast } from "react-toastify";
+import { showPopup } from "../components/Popup";
 
 export const SignInPage: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
@@ -24,7 +24,7 @@ export const SignInPage: React.FC = () => {
     console.log(errorParam);
 
     if (errorParam === "loginFailed") {
-      toast.error("Innlogging feilet, prøv igjen");
+      showPopup("Innlogging feilet, prøv igjen", "error");
     }
   }, []);
 
