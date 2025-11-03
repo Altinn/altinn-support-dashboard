@@ -7,11 +7,11 @@
 :global([data-color-scheme="dark"] .Toastify__toast--error)
 {
     background-color: #7a1f1f;
-    color: #ffffff;
+    color: var(--ds-color-text-default);
 }
 
 :global([data-color-scheme="light"] .Toastify__toast--error)
 {
     background-color: #f7f7f8;
-    color: #001b29;
+    color: var(--ds-color-neutral-text-subtle);
 }
