@@ -6,7 +6,7 @@
 
 :global([data-color-scheme="dark"] .Toastify__toast--error)
 {
-    background-color: #7a1f1f;
+    background-color: #772222;
     color: var(--ds-color-text-default);
 }
 
@@ -14,4 +14,14 @@
 {
     background-color: #f7f7f8;
     color: var(--ds-color-neutral-text-subtle);
+}
+
+:global([data-color-scheme="light"] .Toastify__progress-bar--error)
+{
+    background: #E74D3C;
+}
+
+:global([data-color-scheme="dark"] .Toastify__progress-bar--error)
+{
+    background: #E74D3C;
 }
