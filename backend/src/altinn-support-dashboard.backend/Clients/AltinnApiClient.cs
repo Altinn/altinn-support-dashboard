@@ -4,12 +4,13 @@ using Altinn.ApiClients.Maskinporten.Factories;
 using Altinn.ApiClients.Maskinporten.Services;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
+using System.Text;
 
 public class AltinnApiClient
 {
     private readonly IHttpClientFactory _clientFactory;
     private readonly Dictionary<string, HttpClient> _clients = new();
-    
+
     public AltinnApiClient(IOptions<Configuration> configuration, IHttpClientFactory clientFactory)
     {
         _clientFactory = clientFactory;
@@ -24,16 +25,16 @@ public class AltinnApiClient
         client.Timeout = TimeSpan.FromSeconds(configuration.Timeout);
         client.DefaultRequestHeaders.Add("ApiKey", configuration.ApiKey);
         Console.WriteLine($"API Key {configuration.ApiKey} added to request headers.");
-        
+
         _clients.Add(environmentName, client);
     }
-    
+
     public async Task<string> GetOrganizationInfo(string orgNumber, string environmentName)
     {
         try
         {
             var client = _clients[environmentName];
-            
+
             // Construct the full request URL
             var requestUrl = $"organizations/{orgNumber}";
             Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
@@ -144,7 +145,7 @@ public class AltinnApiClient
         try
         {
             var client = _clients[environmentName];
-            
+
             var requestUrl = $"authorization/roles?subject={subject}&reportee={reportee}&language=1044&";
             Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
 
@@ -163,6 +164,45 @@ public class AltinnApiClient
         {
             throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
+    }
+
+    public async Task<string> GetParty(string orgNumber, string environmentName)
+    {
+        try
+        {
+            var client = _clients[environmentName];
+
+            string requestUrl = "https://platform.tt02.altinn.no/register/api/v1/parties/lookup";
+            var requestBody = new
+            {
+                OrgNumber = orgNumber,
+                SSN = (string)null
+            };
+
+            var jsonBody = JsonSerializer.Serialize(requestBody);
+
+            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(requestUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the APILLL: {ex.Message}", ex);
+
+        }
+
     }
 
     public async Task<string> GetOfficialContacts(string orgNumber, string environmentName)

@@ -20,6 +20,24 @@ namespace AltinnSupportDashboard.Controllers
         }
     }
 
+    [ApiController]
+    [Route("api/{environmentName}/platform")]
+    public class Altinn_platform_APIController : ControllerBase
+    {
+        private AltinnApiClient _client;
+        public Altinn_platform_APIController(AltinnApiClient client)
+        {
+            _client = client;
+
+        }
+
+        [HttpGet("parties/{orgNumber}")]
+        public async Task<string> GetParty([FromRoute] string environmentName, string orgNumber)
+        {
+            return await _client.GetParty(orgNumber, environmentName);
+        }
+    }
+
 
     [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [ApiController]
