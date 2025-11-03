@@ -9,6 +9,7 @@ import dog from "../assets/fun/sleeping dog.gif";
 import { initiateSignIn, initiateSignOut } from "../utils/ansattportenApi";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import popupStyle from '../components/Popup.module.css';
 
 export const SignInPage: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
@@ -24,7 +25,11 @@ export const SignInPage: React.FC = () => {
     console.log(errorParam);
 
     if (errorParam === "loginFailed") {
-      toast.error("Innlogging feilet, prøv igjen");
+      toast.error("Innlogging feilet, prøv igjen", {
+        position: "bottom-right",
+        autoClose: 5000,
+        className: popupStyle.errorMessage,
+      });
     }
   }, []);
 

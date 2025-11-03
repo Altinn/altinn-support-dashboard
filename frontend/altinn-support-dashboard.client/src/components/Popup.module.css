@@ -1,0 +1,17 @@
+
+
+.errorMessage {
+    font-size: 18px;
+}
+
+:global([data-color-scheme="dark"] .Toastify__toast--error)
+{
+    background-color: #7a1f1f;
+    color: #ffffff;
+}
+
+:global([data-color-scheme="light"] .Toastify__toast--error)
+{
+    background-color: #f7f7f8;
+    color: #001b29;
+}
