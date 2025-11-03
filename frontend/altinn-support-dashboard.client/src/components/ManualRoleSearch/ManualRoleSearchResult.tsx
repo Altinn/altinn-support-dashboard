@@ -3,6 +3,8 @@ import RoleTable from "./ManualRoleSearchTable";
 import { Alert, Heading } from "@digdir/designsystemet-react";
 import styles from "./styles/ResultTable.module.css";
 import { Role } from "../../models/models";
+import popupStyle from '../Popup.module.css';
+import { toast } from "react-toastify";
 
 type ManualRoleSearchResultProps = {
   error: Error | null;
@@ -19,7 +21,7 @@ const ManualRoleSearchResult: React.FC<ManualRoleSearchResultProps> = ({
 }) => {
   return (
     <div className={styles["result-area"]}>
-      {error && <Alert data-color="danger">{error.message}</Alert>}
+      {error && <Alert data-color="danger">{error.message}</Alert> }
       {isLoading && <Heading level={2}> Laster roller...</Heading>}
       {!isLoading && hasSearched && roles.length === 0 && !error && (
         <Alert data-color="info">Ingen roller funnet.</Alert>
