@@ -8,8 +8,6 @@ import cat from "../assets/fun/sleeping cat.gif";
 import dog from "../assets/fun/sleeping dog.gif";
 import { initiateSignIn, initiateSignOut } from "../utils/ansattportenApi";
 import { useLocation } from "react-router-dom";
-import { toast } from "react-toastify";
-import popupStyle from '../components/Popup.module.css';
 import { showPopup } from "../components/Popup";
 
 export const SignInPage: React.FC = () => {
