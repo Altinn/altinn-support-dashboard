@@ -3,8 +3,6 @@ import RoleTable from "./ManualRoleSearchTable";
 import { Alert, Heading } from "@digdir/designsystemet-react";
 import styles from "./styles/ResultTable.module.css";
 import { Role } from "../../models/models";
-import popupStyle from '../Popup.module.css';
-import { toast } from "react-toastify";
 
 type ManualRoleSearchResultProps = {
   error: Error | null;
