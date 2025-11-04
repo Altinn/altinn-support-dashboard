@@ -77,7 +77,7 @@ namespace AltinnSupportDashboard
 
                     options.AddPolicy("AllowFrontend", builder =>
                     {
-                        builder.WithOrigins(baseUrl)   // Allow only frontend origin
+                        builder.WithOrigins(baseUrl, "https://login.test.ansattporten.no")   // Allow only frontend origin
                                .AllowAnyMethod()
                                .AllowAnyHeader()
                                .AllowCredentials();
