@@ -5,6 +5,7 @@ using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -119,6 +120,12 @@ namespace AltinnSupportDashboard
 
             // Enable routing
             app.UseRouting();
+
+            //to fix 403 forbidden by ansattporten
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedProto
+            });
 
             // Enable Authentication and Authorization middleware
             app.UseAuthentication();  // Ensure authentication is used
