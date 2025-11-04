@@ -77,7 +77,7 @@ namespace AltinnSupportDashboard
 
                     options.AddPolicy("AllowFrontend", builder =>
                     {
-                        builder.WithOrigins(baseUrl, "https://login.test.ansattporten.no")   // Allow only frontend origin
+                        builder.WithOrigins(baseUrl)   // Allow only frontend origin
                                .AllowAnyMethod()
                                .AllowAnyHeader()
                                .AllowCredentials();
@@ -122,10 +122,13 @@ namespace AltinnSupportDashboard
             app.UseRouting();
 
             //to fix 403 forbidden by ansattporten
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            var forwardedOptions = new ForwardedHeadersOptions
             {
-                ForwardedHeaders = ForwardedHeaders.XForwardedProto
-            });
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+            forwardedOptions.KnownNetworks.Clear();
+            forwardedOptions.KnownProxies.Clear();
+            app.UseForwardedHeaders(forwardedOptions);
 
             // Enable Authentication and Authorization middleware
             app.UseAuthentication();  // Ensure authentication is used
