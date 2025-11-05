@@ -13,6 +13,8 @@ public class PartyApiClient
 
         string registerSubscriptionKey = settingsConfiguration.GetSection("Configuration:Ocp-Apim-Subscription-Key").Get<string>();
         _client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", registerSubscriptionKey);
+
+        _client.BaseAddress = new Uri("https://platform.tt02.altinn.no/register/api/v1/");
     }
 
 
@@ -20,7 +22,7 @@ public class PartyApiClient
     {
         try
         {
-            string requestUrl = "https://platform.tt02.altinn.no/register/api/v1/parties/lookup";
+            string requestUrl = "parties/lookup";
             var requestBody = new
             {
                 OrgNo = (string)null,
@@ -75,7 +77,7 @@ public class PartyApiClient
         try
         {
 
-            var requestUrl = $"https://platform.tt02.altinn.no/register/api/v1/correspondence/parties/{partyUuid}/roles/correspondence-roles";
+            var requestUrl = $"correspondence/parties/{partyUuid}/roles/correspondence-roles";
 
 
 
@@ -103,5 +105,39 @@ public class PartyApiClient
         }
 
     }
+    public async Task<string> GetPartyByUuid(string partyUuid)
+    {
+
+        try
+        {
+
+            var requestUrl = $"parties/byuuid/{partyUuid}";
+
+
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+            var response = await _client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the APILLL: {ex.Message}", ex);
+
+        }
+
+    }
+
+
 
 }

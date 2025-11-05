@@ -26,8 +26,14 @@ public class Altinn_party_APIController : ControllerBase
     }
 
     [HttpGet("parties/roles/{Uuid}")]
-    public async Task<string> GetDagligLeder([FromRoute] string Uuid)
+    public async Task<string> GetPartyRoles([FromRoute] string Uuid)
     {
         return await _client.GetPartyRoles(Uuid);
+    }
+
+    [HttpGet("parties/lookup/uuid/{Uuid}")]
+    public async Task<string> GetPartyUuid([FromRoute] string Uuid)
+    {
+        return await _client.GetPartyByUuid(Uuid);
     }
 }
