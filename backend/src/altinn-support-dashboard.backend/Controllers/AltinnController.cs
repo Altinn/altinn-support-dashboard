@@ -20,35 +20,6 @@ namespace AltinnSupportDashboard.Controllers
         }
     }
 
-    [ApiController]
-    [Route("api/{environmentName}/platform")]
-    public class Altinn_platform_APIController : ControllerBase
-    {
-        private AltinnApiClient _client;
-        public Altinn_platform_APIController(AltinnApiClient client)
-        {
-            _client = client;
-
-        }
-
-        [HttpGet("parties/lookup/org/{orgNumber}")]
-        public async Task<string> GetPartyOrg([FromRoute] string environmentName, string orgNumber)
-        {
-            return await _client.GetParty(orgNumber, environmentName, true);
-        }
-
-        [HttpGet("parties/lookup/ssn/{orgNumber}")]
-        public async Task<string> GetPartySsn([FromRoute] string environmentName, string orgNumber)
-        {
-            return await _client.GetParty(orgNumber, environmentName, false);
-        }
-
-        [HttpGet("parties/dagligLeder/{Uuid}")]
-        public async Task<string> GetDagligLeder([FromRoute] string Uuid)
-        {
-            return await _client.GetPartyRole(Uuid);
-        }
-    }
 
 
     [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
