@@ -1,6 +1,7 @@
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -11,11 +12,13 @@ namespace altinn_support_dashboard.Server.Services
     public class DataBrregService : IDataBrregService
     {
         private readonly DataBrregClient _client;
+        private readonly IPartyApiService _partyService;
         private readonly List<string> _validEnvironmentNames = new List<string> { "Production", "TT02" };
 
-        public DataBrregService(DataBrregClient client)
+        public DataBrregService(DataBrregClient client, IPartyApiService partyApiService)
         {
             _client = client;
+            _partyService = partyApiService;
         }
 
         public async Task<ErRollerModel> GetRolesAsync(string orgNumber, string environmentName)
@@ -31,6 +34,18 @@ namespace altinn_support_dashboard.Server.Services
             }
 
             var result = await _client.GetRolesAsync(orgNumber, environmentName);
+
+            if (environmentName == "TT02" && result.IsNullOrEmpty())
+            {
+                var partyResult = await _partyService.GetRolesAsync(orgNumber);
+
+                if (partyResult != null)
+                {
+                    return partyResult;
+                }
+
+            }
+
             if (String.IsNullOrEmpty(result))
             {
                 return new ErRollerModel
