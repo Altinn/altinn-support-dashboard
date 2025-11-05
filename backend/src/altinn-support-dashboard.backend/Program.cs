@@ -70,7 +70,10 @@ namespace AltinnSupportDashboard
 
                     services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(
                         nameof(config.TT02),
-                        config.TT02.MaskinportenSettings);
+                        config.TT02.MaskinportenSettings, configureClientDefinition =>
+                        {
+                            configureClientDefinition.ClientSettings.ExhangeToAltinnToken = true;
+                        });
 
                     //Ansattporten
                     services.AddAnsattPortenAuthenticationAndAuthorization(hostContext.Configuration);

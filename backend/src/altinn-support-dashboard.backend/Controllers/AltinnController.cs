@@ -31,10 +31,22 @@ namespace AltinnSupportDashboard.Controllers
 
         }
 
-        [HttpGet("parties/{orgNumber}")]
-        public async Task<string> GetParty([FromRoute] string environmentName, string orgNumber)
+        [HttpGet("parties/lookup/org/{orgNumber}")]
+        public async Task<string> GetPartyOrg([FromRoute] string environmentName, string orgNumber)
         {
-            return await _client.GetParty(orgNumber, environmentName);
+            return await _client.GetParty(orgNumber, environmentName, true);
+        }
+
+        [HttpGet("parties/lookup/ssn/{orgNumber}")]
+        public async Task<string> GetPartySsn([FromRoute] string environmentName, string orgNumber)
+        {
+            return await _client.GetParty(orgNumber, environmentName, false);
+        }
+
+        [HttpGet("parties/dagligLeder/{Uuid}")]
+        public async Task<string> GetDagligLeder([FromRoute] string Uuid)
+        {
+            return await _client.GetPartyRole(Uuid);
         }
     }
 

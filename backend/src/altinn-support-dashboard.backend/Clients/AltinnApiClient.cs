@@ -5,6 +5,7 @@ using Altinn.ApiClients.Maskinporten.Services;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Text;
+using System.Net;
 
 public class AltinnApiClient
 {
@@ -23,7 +24,9 @@ public class AltinnApiClient
     public void InitClient(string environmentName, EnvironmentConfiguration configuration)
     {
         var client = _clientFactory.CreateClient(environmentName);
+        client.BaseAddress = new Uri(configuration.BaseAddress);
         client.Timeout = TimeSpan.FromSeconds(configuration.Timeout);
+        client.DefaultRequestHeaders.Add("ApiKey", configuration.ApiKey);
         Console.WriteLine($"API Key {configuration.ApiKey} added to request headers.");
 
         _clients.Add(environmentName, client);
@@ -166,7 +169,7 @@ public class AltinnApiClient
         }
     }
 
-    public async Task<string> GetParty(string orgNumber, string environmentName)
+    public async Task<string> GetParty(string orgNumber, string environmentName, bool isOrg)
     {
         try
         {
@@ -175,9 +178,19 @@ public class AltinnApiClient
             string requestUrl = "https://platform.tt02.altinn.no/register/api/v1/parties/lookup";
             var requestBody = new
             {
-                OrgNumber = orgNumber,
-                SSN = (string)null
+                OrgNo = (string)null,
+                Ssn = (string)null
             };
+
+            if (isOrg)
+            {
+                requestBody = new { OrgNo = orgNumber, Ssn = (string)null };
+            }
+            else
+            {
+
+                requestBody = new { OrgNo = (string)null, Ssn = orgNumber };
+            }
 
             var jsonBody = JsonSerializer.Serialize(requestBody);
 
@@ -187,6 +200,45 @@ public class AltinnApiClient
             {
                 Content = content
             };
+
+            request.Headers.Add("Ocp-Apim-Subscription-Key", registerSubscriptionKey);
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the APILLL: {ex.Message}", ex);
+
+        }
+
+    }
+
+    public async Task<string> GetPartyRole(string partyUuid)
+    {
+
+        try
+        {
+            var client = _clients["TT02"];
+
+            var requestUrl = $"https://platform.tt02.altinn.no/register/api/v1/correspondence/parties/{partyUuid}/roles/correspondence-roles";
+
+
+
+
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
 
             request.Headers.Add("Ocp-Apim-Subscription-Key", registerSubscriptionKey);
 
