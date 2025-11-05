@@ -10,20 +10,20 @@ public class AltinnApiClient
 {
     private readonly IHttpClientFactory _clientFactory;
     private readonly Dictionary<string, HttpClient> _clients = new();
+    private readonly string registerSubscriptionKey;
 
-    public AltinnApiClient(IOptions<Configuration> configuration, IHttpClientFactory clientFactory)
+    public AltinnApiClient(IOptions<Configuration> configuration, IHttpClientFactory clientFactory, IConfiguration settingsConfiguration)
     {
         _clientFactory = clientFactory;
         InitClient(nameof(configuration.Value.Production), configuration.Value.Production);
         InitClient(nameof(configuration.Value.TT02), configuration.Value.TT02);
+        registerSubscriptionKey = settingsConfiguration.GetSection("Configuration:Ocp-Apim-Subscription-Key").Get<string>();
     }
 
     public void InitClient(string environmentName, EnvironmentConfiguration configuration)
     {
         var client = _clientFactory.CreateClient(environmentName);
-        client.BaseAddress = new Uri(configuration.BaseAddress);
         client.Timeout = TimeSpan.FromSeconds(configuration.Timeout);
-        client.DefaultRequestHeaders.Add("ApiKey", configuration.ApiKey);
         Console.WriteLine($"API Key {configuration.ApiKey} added to request headers.");
 
         _clients.Add(environmentName, client);
@@ -183,7 +183,14 @@ public class AltinnApiClient
 
             var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync(requestUrl, content);
+            var request = new HttpRequestMessage(HttpMethod.Post, requestUrl)
+            {
+                Content = content
+            };
+
+            request.Headers.Add("Ocp-Apim-Subscription-Key", registerSubscriptionKey);
+
+            var response = await client.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
