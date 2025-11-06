@@ -83,6 +83,12 @@ public static class AnsattportenExtensions
                     options.MapInboundClaims = false;
                     options.RequireHttpsMetadata = true;
 
+
+                    options.CorrelationCookie.SameSite = SameSiteMode.None;
+                    options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.NonceCookie.SameSite = SameSiteMode.None;
+                    options.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
+
                     options.TokenValidationParameters.NameClaimType = JwtRegisteredClaimNames.Name;
 
                     //handles errors and redirects correctly
