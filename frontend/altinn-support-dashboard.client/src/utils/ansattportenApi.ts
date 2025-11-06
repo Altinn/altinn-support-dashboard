@@ -5,7 +5,7 @@ export const fetchAuthDetails = async (): Promise<authDetails> => {
   const res = await authorizedFetch(`${getBaseUrl()}/auth/auth-status`);
 
   if (res.status != 200) {
-    return { isLoggedIn: false, name: null };
+    return { isLoggedIn: false, name: null, ansattportenActive: true };
   }
 
   const data = await res.json();
@@ -19,5 +19,11 @@ export const initiateSignIn = async (redirectTo: string) => {
 };
 
 export const initiateSignOut = async (redirectTo: string) => {
-  window.location.href = `${getBaseUrl()}/auth/logout?redirectTo=${redirectTo}`;
+  const authDetails = await fetchAuthDetails();
+
+  if (authDetails.ansattportenActive) {
+    window.location.href = `${getBaseUrl()}/auth/logout?redirectTo=${redirectTo}`;
+  } else {
+    window.location.href = "/.auth/logout?post_logout_redirect_uri=/signout";
+  }
 };

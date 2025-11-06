@@ -51,7 +51,8 @@ public class AnsattportenController : ControllerBase
             return Ok(new AuthDetails
             {
                 IsLoggedIn = true,
-                Name = null
+                Name = null,
+                AnsattportenActive = false
             });
         }
 
@@ -60,7 +61,8 @@ public class AnsattportenController : ControllerBase
         return Ok(new AuthDetails
         {
             IsLoggedIn = result.Succeeded,
-            Name = User?.Identity?.Name
+            Name = User?.Identity?.Name,
+            AnsattportenActive = true
         });
     }
 
