@@ -45,6 +45,7 @@ public static class AnsattportenExtensions
                 options.Cookie.SameSite = SameSiteMode.None;
                 options.Cookie.IsEssential = true;
 
+
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(oidcSettings.CookieExpiryTimeInMinutes);
                 options.SlidingExpiration = true;
 
@@ -63,6 +64,12 @@ public static class AnsattportenExtensions
                     options.Authority = oidcSettings.Authority;
                     options.ClientId = oidcSettings.ClientId;
                     options.ClientSecret = oidcSettings.ClientSecret;
+
+                    //try to see if this fixes cookie problem
+                    options.CorrelationCookie.SameSite = SameSiteMode.None;
+                    options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.NonceCookie.SameSite = SameSiteMode.None;
+                    options.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
 
                     options.ResponseType = OpenIdConnectResponseType.Code;
                     options.SignInScheme = AnsattportenConstants.AnsattportenCookiesAuthenticationScheme;
