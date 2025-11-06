@@ -11,7 +11,7 @@ public class PartyApiClient
     {
         _client = clientFactory.CreateClient("TT02");
 
-        string registerSubscriptionKey = settingsConfiguration.GetSection("Configuration:Ocp-Apim-Subscription-Key").Get<string>();
+        string registerSubscriptionKey = settingsConfiguration.GetSection("Configuration:Ocp_Apim_Subscription_Key").Get<string>();
         _client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", registerSubscriptionKey);
 
         _client.BaseAddress = new Uri("https://platform.tt02.altinn.no/register/api/v1/");
