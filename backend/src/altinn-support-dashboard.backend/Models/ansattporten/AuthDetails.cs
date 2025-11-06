@@ -8,5 +8,8 @@ public class AuthDetails
 {
     public bool IsLoggedIn { get; set; }
 
+    //Temporary 
+    public bool? AnsattportenActive { get; set; }
+
     public string? Name { get; set; }
 }
