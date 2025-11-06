@@ -1,7 +1,9 @@
 
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Security;
 
 namespace altinn_support_dashboard.Server.Controllers
 {
@@ -9,6 +11,7 @@ namespace altinn_support_dashboard.Server.Controllers
     /// Controller responsible for handling requests to the Altinn Party API.
     /// Provides endpoints to look up party information and roles by organization number, SSN, or UUID.
     /// </summary>
+    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [ApiController]
     [Route("api/tt02/platform")]
     public class Altinn_party_APIController : ControllerBase
@@ -47,10 +50,22 @@ namespace altinn_support_dashboard.Server.Controllers
         /// </summary>
         /// <param name="Uuid">The UUID of the party.</param>
         /// <returns>A JSON string containing role information for the specified party.</returns>
-        [HttpGet("parties/roles/{Uuid}")]
+        [HttpGet("parties/roles/uuid/{Uuid}")]
         public async Task<string> GetPartyRoles([FromRoute] string Uuid)
         {
             return await _service.GetRolesFromPartyAsync(Uuid);
+        }
+        /// <summary>
+        /// Retrieves all external roles associated with an organization based on its organization number.
+        /// </summary>
+        /// <param name="orgNumber">The organization number used to look up associated roles.</param>
+        /// <returns>
+        /// An <see cref="ErRollerModel"/> object containing the roles linked to the specified organization.
+        /// </returns>
+        [HttpGet("parties/roles/org/{orgNumber}")]
+        public async Task<ErRollerModel> GetRolesFromOrg([FromRoute] string orgNumber)
+        {
+            return await _service.GetRolesFromOrgAsync(orgNumber);
         }
 
         /// <summary>
