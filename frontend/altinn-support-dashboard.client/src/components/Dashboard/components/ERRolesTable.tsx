@@ -115,7 +115,9 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
                       : ""}
                 </Table.Cell>
                 <Table.Cell className={styles["cell-font"]}>
-                  {formatDate(role.sistEndret)}
+                  {role.sistEndret
+                    ? formatDate(role.sistEndret)
+                    : role.person.fodselsdato}
                 </Table.Cell>
                 <Table.Cell className={styles["cell-font"]}>
                   {role.fratraadt ? "Fratrådt" : "Aktiv"}

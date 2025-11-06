@@ -100,6 +100,7 @@ public class PartyApiService : IPartyApiService
                 },
                 Person = new Person
                 {
+                    Fodselsdato = item.party.Ssn,
                     ErDoed = false,
                     Navn = new Navn
                     {

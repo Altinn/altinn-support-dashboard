@@ -11,7 +11,6 @@ namespace altinn_support_dashboard.Server.Controllers
     /// Controller responsible for handling requests to the Altinn Party API.
     /// Provides endpoints to look up party information and roles by organization number, SSN, or UUID.
     /// </summary>
-    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [ApiController]
     [Route("api/tt02/platform")]
     public class Altinn_party_APIController : ControllerBase
