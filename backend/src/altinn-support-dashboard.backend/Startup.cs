@@ -101,6 +101,17 @@ namespace AltinnSupportDashboard
                 app.UseHsts();
             }
 
+
+            //to fix 403 forbidden by ansattporten
+            var forwardedOptions = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+            forwardedOptions.KnownNetworks.Clear();
+            forwardedOptions.KnownProxies.Clear();
+            app.UseForwardedHeaders(forwardedOptions);
+
+
             // Enable CORS immediately
             app.UseCors("AllowFrontend");  // Globally apply the "AllowAll" CORS policy
 
@@ -120,16 +131,6 @@ namespace AltinnSupportDashboard
 
             // Enable routing
             app.UseRouting();
-
-            //to fix 403 forbidden by ansattporten
-            var forwardedOptions = new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            };
-            forwardedOptions.KnownNetworks.Clear();
-            forwardedOptions.KnownProxies.Clear();
-            app.UseForwardedHeaders(forwardedOptions);
-
             // Enable Authentication and Authorization middleware
             app.UseAuthentication();  // Ensure authentication is used
             app.UseAuthorization();   // Ensure authorization is used

@@ -45,6 +45,9 @@ public static class AnsattportenExtensions
                 options.Cookie.SameSite = SameSiteMode.None;
                 options.Cookie.IsEssential = true;
 
+                options.CorrelationCookie.SameSite = SameSiteMode.None;
+                options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(oidcSettings.CookieExpiryTimeInMinutes);
                 options.SlidingExpiration = true;
 
