@@ -1,18 +1,16 @@
 {
-  "version": "3.0.0",
-  "releaseDate": "2025-06-26",
+  "version": "4.0.0",
+  "releaseDate": "2025-11-06",
   "changes": [
     {
-      "title": "Integrasjon av organisasjonsopprettelse",
-      "description": "Implementert betaversjon av organisasjonsopprettelse for devmiljøet i Altinn Studio. Funksjonaliteten gjør det enklere å opprette nye organisasjoner med automatiserte prosesser for team og tilganger. I tillegg er det gjort flere brukerorienterte endringer i manuelt rolleoppslag basert på tilbakemeldinger fra ABS.",
+      "title": "Designsystemet og refaktorering",
+      "description": "Denne releasen inkluderer implementasjon av designsystemet sitt komponentsystem, og en del mindre endringer. Både frontend og backend har blitt gjort moderate endringer på for å gjøre videreutvikling av ASD enklere og mere effektivt i fremtiden.",
       "details": [
-        "Ny (beta)funksjon for å opprette organisasjoner direkte i dev.altinn.studio",
-        "Validering av organisasjonsinformasjon mot Brønnøysundregistrene",
-        "Implementert PAT-token håndtering med sikker lagring",
-        "Automatisk opprettelse av standard teams og repositories",
-        "Forbedret UI for manuelt rolleoppslag med tydeligere terminologi",
-        "Optimalisert versjonshåndtering med forbedret varslingssystem",
-        "Forenklet brukergrensesnitt for søk etter roller og organisasjoner"
+        "Frontend er refaktorert til å bruke designsystemet i stedet for Google MUI. Layout og funksjonalitet er stort sett uendret.",
+        "Når du holder musepekeren over e-post eller telefonnummer til en kontaktperson, vises nå informasjon om når disse opplysningene sist ble endret.",
+        "I søk med testorganisasjoner i tt02 som ikke kommer fra Tenor kommer nå ER informasjon som hvem som er daglig leder og deres SSN (bare i tt02).",
+        "E-post og telefonnummer som blir brukt i søk skiller seg ut i organisasjonsinformasjonen.",
+        "Flere endringer på baksiden gjør det enklere å feilsøke problemer og videreutvikle Altinn support dashboard fremover."
       ]
     }
   ]
