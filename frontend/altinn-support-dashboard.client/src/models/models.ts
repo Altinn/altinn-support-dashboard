@@ -71,7 +71,7 @@ export interface ERRole {
       beskrivelse: string;
     };
     person: {
-      fodselsdato: string;
+      fodselsdato?: string;
       navn: {
         fornavn: string;
         mellomnavn: string | null;
