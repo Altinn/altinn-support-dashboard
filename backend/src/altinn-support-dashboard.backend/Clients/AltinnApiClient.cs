@@ -4,12 +4,14 @@ using Altinn.ApiClients.Maskinporten.Factories;
 using Altinn.ApiClients.Maskinporten.Services;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
+using System.Text;
+using System.Net;
 
 public class AltinnApiClient
 {
     private readonly IHttpClientFactory _clientFactory;
     private readonly Dictionary<string, HttpClient> _clients = new();
-    
+
     public AltinnApiClient(IOptions<Configuration> configuration, IHttpClientFactory clientFactory)
     {
         _clientFactory = clientFactory;
@@ -24,16 +26,16 @@ public class AltinnApiClient
         client.Timeout = TimeSpan.FromSeconds(configuration.Timeout);
         client.DefaultRequestHeaders.Add("ApiKey", configuration.ApiKey);
         Console.WriteLine($"API Key {configuration.ApiKey} added to request headers.");
-        
+
         _clients.Add(environmentName, client);
     }
-    
+
     public async Task<string> GetOrganizationInfo(string orgNumber, string environmentName)
     {
         try
         {
             var client = _clients[environmentName];
-            
+
             // Construct the full request URL
             var requestUrl = $"organizations/{orgNumber}";
             Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
@@ -144,7 +146,7 @@ public class AltinnApiClient
         try
         {
             var client = _clients[environmentName];
-            
+
             var requestUrl = $"authorization/roles?subject={subject}&reportee={reportee}&language=1044&";
             Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
 
@@ -164,6 +166,7 @@ public class AltinnApiClient
             throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
     }
+
 
     public async Task<string> GetOfficialContacts(string orgNumber, string environmentName)
     {
