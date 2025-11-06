@@ -9,22 +9,59 @@ namespace altinn_support_dashboard.Server.Services;
 public class PartyApiService : IPartyApiService
 {
     private PartyApiClient _client;
+    private JsonSerializerOptions jsonOptions;
     public PartyApiService(PartyApiClient client)
     {
-        _client = client;
-    }
 
-    public async Task<ErRollerModel> GetRolesAsync(string orgNumber)
-    {
-        var jsonOptions = new JsonSerializerOptions
+        jsonOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             PropertyNameCaseInsensitive = true
         };
+        _client = client;
+    }
+
+    public async Task<PartyModel> GetPartyFromOrgAsync(string orgNumber)
+    {
+        var result = await _client.GetParty(orgNumber, true);
+
+        var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
+        return party;
+    }
+
+    public async Task<PartyModel> GetPartyFromSsnAsync(string ssn)
+    {
+
+        var result = await _client.GetParty(ssn, false);
+
+        var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
+        return party;
+    }
+
+    public async Task<PartyModel> GetPartyFromUuidAsync(string uuid)
+    {
+        var result = await _client.GetPartyByUuid(uuid);
+
+        var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
+
+        return party;
+    }
+
+    public async Task<string> GetRolesFromPartyAsync(string uuid)
+    {
+        var result = await _client.GetPartyRoles(uuid);
+
+        return result;
+    }
+
+    public async Task<ErRollerModel> GetRolesFromOrgAsync(string orgNumber)
+    {
         var resultOrgParty = await _client.GetParty(orgNumber, true);
         var orgParty = JsonSerializer.Deserialize<PartyModel>(resultOrgParty, jsonOptions);
 
         var resultPartyRoles = await _client.GetPartyRoles(orgParty.PartyUuid);
+
+
 
         using JsonDocument doc = JsonDocument.Parse(resultPartyRoles);
         JsonElement root = doc.RootElement;
@@ -83,4 +120,5 @@ public class PartyApiService : IPartyApiService
 
         return erRollerModel;
     }
+
 }

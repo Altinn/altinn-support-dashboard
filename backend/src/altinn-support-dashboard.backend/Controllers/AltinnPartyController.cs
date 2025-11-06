@@ -1,39 +1,41 @@
 
+using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/tt02/platform")]
 public class Altinn_party_APIController : ControllerBase
 {
-    private PartyApiClient _client;
+    private IPartyApiService _service;
 
-    public Altinn_party_APIController(PartyApiClient client)
+    public Altinn_party_APIController(IPartyApiService service)
     {
-        _client = client;
+        _service = service;
 
     }
 
     [HttpGet("parties/lookup/org/{orgNumber}")]
-    public async Task<string> GetPartyOrg([FromRoute] string orgNumber)
+    public async Task<PartyModel> GetPartyOrg([FromRoute] string orgNumber)
     {
-        return await _client.GetParty(orgNumber, true);
+        return await _service.GetPartyFromOrgAsync(orgNumber);
     }
 
-    [HttpGet("parties/lookup/ssn/{orgNumber}")]
-    public async Task<string> GetPartySsn([FromRoute] string orgNumber)
+    [HttpGet("parties/lookup/ssn/{ssn}")]
+    public async Task<PartyModel> GetPartySsn([FromRoute] string ssn)
     {
-        return await _client.GetParty(orgNumber, false);
+        return await _service.GetPartyFromSsnAsync(ssn);
     }
 
     [HttpGet("parties/roles/{Uuid}")]
     public async Task<string> GetPartyRoles([FromRoute] string Uuid)
     {
-        return await _client.GetPartyRoles(Uuid);
+        return await _service.GetRolesFromPartyAsync(Uuid);
     }
 
     [HttpGet("parties/lookup/uuid/{Uuid}")]
-    public async Task<string> GetPartyUuid([FromRoute] string Uuid)
+    public async Task<PartyModel> GetPartyUuid([FromRoute] string Uuid)
     {
-        return await _client.GetPartyByUuid(Uuid);
+        return await _service.GetPartyFromUuidAsync(Uuid);
     }
 }
