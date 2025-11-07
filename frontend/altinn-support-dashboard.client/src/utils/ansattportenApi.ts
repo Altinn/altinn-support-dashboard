@@ -29,6 +29,7 @@ export const initiateSignOut = async (redirectTo: string) => {
   if (authDetails.ansattportenActive) {
     window.location.href = `${getBaseUrl()}/auth/logout?redirectTo=${redirectTo}`;
   } else {
-    window.location.href = "/.auth/logout?post_logout_redirect_uri=/signout";
+    window.location.href =
+      "/.auth/logout?post_logout_redirect_uri=/.auth/login/aad";
   }
 };
