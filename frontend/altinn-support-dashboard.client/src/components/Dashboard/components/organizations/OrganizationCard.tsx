@@ -73,11 +73,12 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
 
       {/* Subunits list */}
       {isExpanded && (
-        <div className={`${classes.subunit} ${classes.card}`}>
+        <div>
           {subUnits
             .filter((sub) => sub.overordnetEnhet === org.organizationNumber)
             .map((sub) => (
               <Card
+                className={`${classes.subunit} ${classes.card}`}
                 variant={
                   checkIsSelected(sub.organisasjonsnummer)
                     ? "tinted"
