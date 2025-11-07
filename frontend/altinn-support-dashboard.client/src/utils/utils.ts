@@ -16,7 +16,7 @@ export function getBaseUrl(environment?: string): string {
 
   var baseUrl = "";
 
-  if (environment === "TT02" || environment === "Production") {
+  if (environment === "TT02" || environment === "PROD") {
     baseUrl = `${protocol}//${apiHost}${portSegment}/api/${environment === "TT02" ? "TT02" : "Production"}`;
   } else {
     baseUrl = `${protocol}//${apiHost}${portSegment}/api`;
