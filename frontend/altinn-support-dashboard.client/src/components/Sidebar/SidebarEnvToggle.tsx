@@ -1,12 +1,14 @@
 import classes from "./styles/SideBarEnvToggle.module.css";
 import { useAppStore } from "../../stores/Appstore";
 import { Select, SelectOption } from "@digdir/designsystemet-react";
+import { useEffect } from "react";
 
 const SidebarEnvToggle: React.FC = () => {
   const environment = useAppStore((state) => state.environment);
+  const setEnvironment = useAppStore((state) => state.setEnvironment);
 
   const handleEnvironmentChange = (env: string) => {
-    useAppStore.getState().setEnvironment(env);
+    setEnvironment(env);
   };
 
   return (

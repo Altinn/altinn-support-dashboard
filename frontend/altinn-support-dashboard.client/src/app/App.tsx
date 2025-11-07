@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { VersionDialog } from "../components/VersionDialog/VersionDialog";
@@ -26,6 +26,18 @@ const App: React.FC = () => {
   // Sjekk etter nye versjoner
   const { versionInfo, shouldShowDialog, acknowledgeVersion } =
     useVersionCheck();
+
+  //forces zustand to store states in localstorage first time
+  useEffect(() => {
+    const stored = localStorage.getItem("app-storage");
+    if (!stored) {
+      // Force Zustand to persist its current state
+      localStorage.setItem(
+        "app-storage",
+        JSON.stringify(useAppStore.getState()),
+      );
+    }
+  }, []);
 
   return (
     <div>
