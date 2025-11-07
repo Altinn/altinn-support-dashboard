@@ -21,9 +21,12 @@ import { Button, Divider, Label } from "@digdir/designsystemet-react";
 
 import classes from "./styles/SideBarComponent.module.css";
 import { useAuthDetails } from "../../hooks/ansattportenHooks";
+import { useAppStore } from "../../stores/Appstore";
 
 const Sidebar: React.FC = () => {
   const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();
+
+  const environment = useAppStore((state) => state.environment);
 
   //old user details (will be removed in the future)
   const { userName, userEmail } = useUserDetails();

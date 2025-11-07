@@ -7,7 +7,7 @@ export const useAppStore = create<AppState>()(
   //handles persistence
   persist(
     (set) => ({
-      environment: "Production",
+      environment: "PROD",
       isDarkMode: false,
 
       setEnvironment: (env: string) => set({ environment: env }),
