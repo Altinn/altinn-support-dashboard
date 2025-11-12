@@ -23,7 +23,6 @@ public class AnsattportenController : ControllerBase
         baseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
     }
 
-    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [HttpGet("login")]
     public async Task<IActionResult> Login([FromQuery] string? redirectTo = "/")
     {
