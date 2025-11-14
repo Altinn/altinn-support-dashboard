@@ -2,6 +2,7 @@
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace altinn_support_dashboard.Server.Services
 {
@@ -41,7 +42,15 @@ namespace altinn_support_dashboard.Server.Services
                 throw new ArgumentException("Telefonnummeret er ugyldig.");
             }
 
-            var result = await _client.GetOrganizationsByPhoneNumber(phoneNumber, environment);
+
+            //strips country codes plus the two digits after when searching
+            Console.WriteLine(phoneNumber);
+            phoneNumber = phoneNumber.Trim();
+            string strippedPhoneNumber = Regex.Replace(phoneNumber, @"^\+\d{1,2}", "");
+
+            Console.WriteLine(strippedPhoneNumber);
+
+            var result = await _client.GetOrganizationsByPhoneNumber(strippedPhoneNumber, environment);
             var organizations = JsonSerializer.Deserialize<List<OrganizationByPhoneMail>>(result, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,

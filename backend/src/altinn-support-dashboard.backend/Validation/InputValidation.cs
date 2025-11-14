@@ -7,7 +7,7 @@ namespace altinn_support_dashboard.Server.Validation
     {
         public static bool IsValidPhoneNumber(string phoneNumber)
         {
-            return !string.IsNullOrWhiteSpace(phoneNumber) && phoneNumber.All(char.IsDigit);
+            return !string.IsNullOrWhiteSpace(phoneNumber) && ((phoneNumber[0] == '+' && phoneNumber.Skip(1).All(char.IsDigit)) || (phoneNumber.All(char.IsDigit)));
         }
 
         public static bool IsValidOrgNumber(string orgNumber)
