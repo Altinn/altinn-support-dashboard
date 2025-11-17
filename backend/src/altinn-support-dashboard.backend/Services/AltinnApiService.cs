@@ -35,6 +35,7 @@ namespace altinn_support_dashboard.Server.Services
             {
                 throw new Exception("Ingen data funnet for det angitte organisasjonsnummeret.");
             }
+
             return organizationInfo;
         }
 
@@ -57,6 +58,8 @@ namespace altinn_support_dashboard.Server.Services
             {
                 throw new Exception("Ingen data funnet for det angitte telefonnummeret.");
             }
+
+            organizations = RemoveOrganizationDuplicates(organizations);
             return organizations;
         }
 
@@ -73,7 +76,13 @@ namespace altinn_support_dashboard.Server.Services
             {
                 throw new Exception("Ingen data funnet for den angitte e-postadressen.");
             }
+            organizations = RemoveOrganizationDuplicates(organizations);
             return organizations;
+        }
+
+        private List<Organization> RemoveOrganizationDuplicates(List<Organization> organizations)
+        {
+            return organizations.GroupBy(o => o.OrganizationNumber).Select(o => o.First()).ToList();
         }
 
         public async Task<List<PersonalContact>> GetPersonalContacts(string orgNumber, string environment)
