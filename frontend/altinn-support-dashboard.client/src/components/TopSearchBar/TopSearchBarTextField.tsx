@@ -20,11 +20,7 @@ export const TopSearchBarTextField: React.FC<Props> = ({
     if (textFieldValue != query) {
       setSelectedOrg(null);
     }
-    if (textFieldValue[0] === "+") {
-      setQuery(textFieldValue.slice(1));
-    } else {
-      setQuery(textFieldValue);
-    }
+    setQuery(textFieldValue);
   };
 
   useEffect(() => {
