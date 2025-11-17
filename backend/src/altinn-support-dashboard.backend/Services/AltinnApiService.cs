@@ -19,7 +19,7 @@ namespace altinn_support_dashboard.Server.Services
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true
-            }
+            };
         }
 
         public async Task<Organization> GetOrganizationInfo(string orgNumber, string environment)
