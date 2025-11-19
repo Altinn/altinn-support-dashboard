@@ -21,22 +21,33 @@ namespace AltinnSupportDashboard.Controllers
     }
 
 
-
+    [ApiController]
     [Authorize(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy)]
+    [Route("api/TT02/serviceowner")]
+    public class AltinnTT02Controller : AltinnBaseController
+    {
+        public AltinnTT02Controller(IAltinnApiService altinnApiService) : base(altinnApiService, "TT02")
+        {
+        }
+    }
+
+
+
     [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [ApiController]
-    [Route("api/{environmentName}/serviceowner/organizations")]
-    public class Altinn_Intern_APIController : ControllerBase
+    public abstract class AltinnBaseController : ControllerBase
     {
         private readonly IAltinnApiService _altinnApiService;
+        protected string environmentName;
 
-        public Altinn_Intern_APIController(IAltinnApiService altinnApiService)
+        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName)
         {
+            this.environmentName = environmentName;
             _altinnApiService = altinnApiService;
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> Search([FromRoute] string environmentName, string query)
+        [HttpGet("organizations/search")]
+        public async Task<IActionResult> Search([FromQuery] string query)
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -45,23 +56,23 @@ namespace AltinnSupportDashboard.Controllers
 
             if (ValidationService.IsValidEmail(query))
             {
-                return await GetOrganizationsByEmail(environmentName, query);
+                return await GetOrganizationsByEmail(query);
             }
             if (ValidationService.IsValidOrgNumber(query))
             {
-                return await GetOrganizationInfo(environmentName, query);
+                return await GetOrganizationInfo(query);
             }
 
             if (ValidationService.IsValidPhoneNumber(query))
             {
-                return await GetOrganizationsByPhoneNumber(environmentName, query);
+                return await GetOrganizationsByPhoneNumber(query);
             }
 
             return BadRequest("Ugyldig søketerm. Angi et gyldig organisasjonsnummer, telefonnummer eller e-postadresse.");
         }
 
-        [HttpGet("{orgNumber}")]
-        public async Task<IActionResult> GetOrganizationInfo([FromRoute] string environmentName, string orgNumber)
+        [HttpGet("organizations/{orgNumber}")]
+        public async Task<IActionResult> GetOrganizationInfo([FromRoute] string orgNumber)
         {
             if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
@@ -83,8 +94,8 @@ namespace AltinnSupportDashboard.Controllers
             }
         }
 
-        [HttpGet("phonenumbers/{phoneNumber}")]
-        public async Task<IActionResult> GetOrganizationsByPhoneNumber([FromRoute] string environmentName, string phoneNumber)
+        [HttpGet("organizations/phonenumbers/{phoneNumber}")]
+        public async Task<IActionResult> GetOrganizationsByPhoneNumber([FromRoute] string phoneNumber)
         {
             if (!ValidationService.IsValidPhoneNumber(phoneNumber))
             {
@@ -102,8 +113,8 @@ namespace AltinnSupportDashboard.Controllers
             }
         }
 
-        [HttpGet("emails/{email}")]
-        public async Task<IActionResult> GetOrganizationsByEmail([FromRoute] string environmentName, string email)
+        [HttpGet("organizations/emails/{email}")]
+        public async Task<IActionResult> GetOrganizationsByEmail([FromRoute] string email)
         {
             if (!ValidationService.IsValidEmail(email))
             {
@@ -121,8 +132,8 @@ namespace AltinnSupportDashboard.Controllers
             }
         }
 
-        [HttpGet("{orgNumber}/personalcontacts")]
-        public async Task<IActionResult> GetPersonalContacts([FromRoute] string environmentName, string orgNumber)
+        [HttpGet("organizations/{orgNumber}/personalcontacts")]
+        public async Task<IActionResult> GetPersonalContacts([FromRoute] string orgNumber)
         {
             if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
@@ -140,9 +151,11 @@ namespace AltinnSupportDashboard.Controllers
             }
         }
 
-        [HttpGet("/api/{environmentName}/serviceowner/{subject}/roles/{reportee}")]
-        public async Task<IActionResult> GetPersonRoles([FromRoute] string environmentName, string subject, string reportee)
+        [HttpGet("{subject}/roles/{reportee}")]
+        public async Task<IActionResult> GetPersonRoles([FromRoute] string subject, [FromRoute] string reportee)
         {
+            Console.WriteLine(subject);
+            Console.WriteLine(reportee);
             if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))
             {
                 return BadRequest("Subject eller reportee er ugyldig.");
@@ -159,8 +172,8 @@ namespace AltinnSupportDashboard.Controllers
             }
         }
 
-        [HttpGet("{orgNumber}/officialcontacts")]
-        public async Task<IActionResult> GetOfficialContacts([FromRoute] string environmentName, string orgNumber)
+        [HttpGet("organizations/{orgNumber}/officialcontacts")]
+        public async Task<IActionResult> GetOfficialContacts([FromRoute] string orgNumber)
         {
             if (!ValidationService.IsValidOrgNumber(orgNumber))
             {
