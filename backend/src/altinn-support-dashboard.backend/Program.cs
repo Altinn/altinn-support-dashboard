@@ -4,6 +4,7 @@ using Altinn.Studio.Designer.Infrastructure.AnsattPorten;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -77,6 +78,8 @@ namespace AltinnSupportDashboard
 
                     //Ansattporten
                     services.AddAnsattPortenAuthenticationAndAuthorization(hostContext.Configuration);
+                    services.AddSingleton<IAuthorizationHandler, AltinnResourceHandler>();
+
 
                     // Register application services
                     services.AddScoped<DataBrregClient>();

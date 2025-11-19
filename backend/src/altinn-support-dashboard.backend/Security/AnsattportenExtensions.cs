@@ -154,7 +154,7 @@ public static class AnsattportenExtensions
                     }
                 ).AddPolicy(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy, policy =>
                 {
-                    policy.RequireClaim(AnsattportenConstants.AnsattportenClaimType, claims.TT02Resource);
+                    policy.Requirements.Add(new AltinnResourceRequirement(claims.TT02Resource));
                 });
         }
         else
