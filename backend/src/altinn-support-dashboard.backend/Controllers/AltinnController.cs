@@ -43,6 +43,7 @@ namespace AltinnSupportDashboard.Controllers
 
 
 
+    //Made controller abstract to be able to authorize on different environments
     [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [ApiController]
     public abstract class AltinnBaseController : ControllerBase
