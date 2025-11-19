@@ -150,6 +150,10 @@ public static class AnsattportenExtensions
                 ).AddPolicy(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy, policy =>
                 {
                     policy.Requirements.Add(new AltinnResourceRequirement(resources.TT02Resource));
+                }).AddPolicy(AnsattportenConstants.AnsattportenProductionAuthorizationPolicy, policy =>
+                {
+                    policy.Requirements.Add(new AltinnResourceRequirement(resources.ProductionResource));
+
                 });
         }
         else
