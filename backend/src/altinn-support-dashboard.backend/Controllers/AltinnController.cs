@@ -22,6 +22,7 @@ namespace AltinnSupportDashboard.Controllers
 
 
 
+    [Authorize(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy)]
     [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [ApiController]
     [Route("api/{environmentName}/serviceowner/organizations")]

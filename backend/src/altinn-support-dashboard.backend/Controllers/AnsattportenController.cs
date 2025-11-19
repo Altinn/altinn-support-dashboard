@@ -57,6 +57,13 @@ public class AnsattportenController : ControllerBase
 
         var result = await HttpContext.AuthenticateAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
 
+        return Ok(new
+        {
+            claims = User.Claims
+        .Select(c => new { c.Type, c.Value })
+        .ToList()
+        });
+
         return Ok(new AuthDetails
         {
             IsLoggedIn = result.Succeeded,

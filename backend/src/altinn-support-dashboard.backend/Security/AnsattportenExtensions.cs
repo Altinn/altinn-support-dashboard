@@ -137,15 +137,25 @@ public static class AnsattportenExtensions
 
         //only authorizes if flag is set to true
         bool ansattPortenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
+
         if (ansattPortenFeatureFlag)
         {
+
+            AnsattportenClaims claims = new AnsattportenClaims
+            {
+                TT02Resource = configuration?.GetSection($"AnsattportenLoginSettings:ResourceDetails:TT02Resource").Get<String>() ?? "",
+                ProductionResource = configuration.GetSection($"AnsattportenLoginSettings:ResourceDetails:ProductionResource").Get<String>() ?? "",
+            };
             services.AddAuthorizationBuilder()
                 .AddPolicy(AnsattportenConstants.AnsattportenAuthorizationPolicy, policy =>
                     {
                         policy.AuthenticationSchemes.Add(AnsattportenConstants.AnsattportenAuthenticationScheme);
                         policy.RequireAuthenticatedUser();
                     }
-                );
+                ).AddPolicy(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy, policy =>
+                {
+                    policy.RequireClaim(AnsattportenConstants.AnsattportenClaimType, claims.TT02Resource);
+                });
         }
         else
         {
@@ -160,4 +170,5 @@ public static class AnsattportenExtensions
 
         return services;
     }
+
 }
