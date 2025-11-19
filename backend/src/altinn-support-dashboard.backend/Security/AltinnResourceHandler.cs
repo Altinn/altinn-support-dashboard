@@ -6,7 +6,7 @@ public class AltinnResourceHandler : AuthorizationHandler<AltinnResourceRequirem
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AltinnResourceRequirement requirement)
     {
 
-        var claims = context.User.Claims.Where(c => c.Type == "authorization_detail");
+        var claims = context.User.Claims.Where(c => c.Type == "authorization_details");
 
         foreach (Claim claim in claims)
         {
@@ -14,6 +14,7 @@ public class AltinnResourceHandler : AuthorizationHandler<AltinnResourceRequirem
             if (json.RootElement.TryGetProperty("resource", out var resource))
             {
                 string resourceString = resource.ToString();
+                Console.WriteLine(resourceString);
                 if (resourceString == requirement.resource)
                 {
                     context.Succeed(requirement);
