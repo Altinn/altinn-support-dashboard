@@ -140,12 +140,7 @@ public static class AnsattportenExtensions
 
         if (ansattPortenFeatureFlag)
         {
-
-            AnsattportenClaims claims = new AnsattportenClaims
-            {
-                TT02Resource = configuration?.GetSection($"AnsattportenLoginSettings:ResourceDetails:TT02Resource").Get<String>() ?? "",
-                ProductionResource = configuration.GetSection($"AnsattportenLoginSettings:ResourceDetails:ProductionResource").Get<String>() ?? "",
-            };
+            AltinnResources resources = configuration?.GetSection("AnsattportenLoginSettings:AltinnResources")?.Get<AltinnResources>() ?? new AltinnResources();
             services.AddAuthorizationBuilder()
                 .AddPolicy(AnsattportenConstants.AnsattportenAuthorizationPolicy, policy =>
                     {
@@ -154,7 +149,7 @@ public static class AnsattportenExtensions
                     }
                 ).AddPolicy(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy, policy =>
                 {
-                    policy.Requirements.Add(new AltinnResourceRequirement(claims.TT02Resource));
+                    policy.Requirements.Add(new AltinnResourceRequirement(resources.TT02Resource));
                 });
         }
         else

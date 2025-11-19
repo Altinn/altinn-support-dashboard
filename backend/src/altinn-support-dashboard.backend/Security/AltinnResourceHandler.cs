@@ -14,7 +14,6 @@ public class AltinnResourceHandler : AuthorizationHandler<AltinnResourceRequirem
             if (json.RootElement.TryGetProperty("resource", out var resource))
             {
                 string resourceString = resource.ToString();
-                Console.WriteLine(resourceString);
                 if (resourceString == requirement.resource)
                 {
                     context.Succeed(requirement);
