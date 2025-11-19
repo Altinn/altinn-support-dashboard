@@ -137,15 +137,24 @@ public static class AnsattportenExtensions
 
         //only authorizes if flag is set to true
         bool ansattPortenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
+
         if (ansattPortenFeatureFlag)
         {
+            AltinnResources resources = configuration?.GetSection("AnsattportenLoginSettings:AltinnResources")?.Get<AltinnResources>() ?? new AltinnResources();
             services.AddAuthorizationBuilder()
                 .AddPolicy(AnsattportenConstants.AnsattportenAuthorizationPolicy, policy =>
                     {
                         policy.AuthenticationSchemes.Add(AnsattportenConstants.AnsattportenAuthenticationScheme);
                         policy.RequireAuthenticatedUser();
                     }
-                );
+                ).AddPolicy(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy, policy =>
+                {
+                    policy.Requirements.Add(new AltinnResourceRequirement(resources.TT02Resource));
+                }).AddPolicy(AnsattportenConstants.AnsattportenProductionAuthorizationPolicy, policy =>
+                {
+                    policy.Requirements.Add(new AltinnResourceRequirement(resources.ProductionResource));
+
+                });
         }
         else
         {
@@ -160,4 +169,5 @@ public static class AnsattportenExtensions
 
         return services;
     }
+
 }
