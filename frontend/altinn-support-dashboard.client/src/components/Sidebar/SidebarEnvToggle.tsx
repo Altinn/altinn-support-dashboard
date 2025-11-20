@@ -7,11 +7,29 @@ import { useAuthDetails } from "../../hooks/ansattportenHooks";
 const SidebarEnvToggle: React.FC = () => {
   const environment = useAppStore((state) => state.environment);
   const setEnvironment = useAppStore((state) => state.setEnvironment);
-  const userPolicies = useAuthDetails().data.userPolicies;
+  const authDetails = useAuthDetails();
+  const userPolicies = authDetails.data.userPolicies;
 
   const handleEnvironmentChange = (env: string) => {
     setEnvironment(env);
   };
+
+  //switched the environment if user only has access to one of the environments
+  useEffect(() => {
+    if (
+      environment == "TT02" &&
+      !userPolicies.includes("TT02Authenticated") &&
+      userPolicies.includes("ProductionAuthenticated")
+    ) {
+      setEnvironment("PROD");
+    } else if (
+      environment == "PROD" &&
+      !userPolicies.includes("ProductionAuthenticated") &&
+      userPolicies.includes("TT02Authenticated")
+    ) {
+      setEnvironment("TT02");
+    }
+  }, [authDetails.data.isLoggedIn]);
 
   return (
     <div className={classes.container}>
