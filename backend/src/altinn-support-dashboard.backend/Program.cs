@@ -79,7 +79,7 @@ namespace AltinnSupportDashboard
                     //Ansattporten
                     services.AddAnsattPortenAuthenticationAndAuthorization(hostContext.Configuration);
                     services.AddSingleton<IAuthorizationHandler, AltinnResourceHandler>();
-
+                    services.AddScoped<IAnsattportenService, AnsattportenService>();
 
                     // Register application services
                     services.AddScoped<DataBrregClient>();

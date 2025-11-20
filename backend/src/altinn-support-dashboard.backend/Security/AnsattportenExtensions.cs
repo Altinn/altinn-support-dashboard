@@ -141,19 +141,21 @@ public static class AnsattportenExtensions
         if (ansattPortenFeatureFlag)
         {
             AltinnResources resources = configuration?.GetSection("AnsattportenLoginSettings:AltinnResources")?.Get<AltinnResources>() ?? new AltinnResources();
+            //Defines access policies, if it should be dependent on a Altinn resource, AltinnResourceRequirement should be used
             services.AddAuthorizationBuilder()
                 .AddPolicy(AnsattportenConstants.AnsattportenAuthorizationPolicy, policy =>
                     {
+                        //basic access authentication, the user should have atleast one valid resource to get access
                         policy.AuthenticationSchemes.Add(AnsattportenConstants.AnsattportenAuthenticationScheme);
                         policy.RequireAuthenticatedUser();
                     }
                 ).AddPolicy(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy, policy =>
                 {
                     policy.Requirements.Add(new AltinnResourceRequirement(resources.TT02Resource));
+
                 }).AddPolicy(AnsattportenConstants.AnsattportenProductionAuthorizationPolicy, policy =>
                 {
                     policy.Requirements.Add(new AltinnResourceRequirement(resources.ProductionResource));
-
                 });
         }
         else
@@ -169,5 +171,6 @@ public static class AnsattportenExtensions
 
         return services;
     }
+
 
 }
