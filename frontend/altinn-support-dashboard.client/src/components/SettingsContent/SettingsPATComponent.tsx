@@ -122,7 +122,9 @@ const SettingsPATComponent: React.FC = () => {
             Generer et nytt PAT-token
           </Button>
           <Tooltip content="PAT-token brukes for å opprette organisasjoner, teams og repositories i Gitea. Denne må opprettes med admin-tilgang.">
-            <InformationSquareIcon className={classes.informationIcon} />
+            <div>
+              <InformationSquareIcon className={classes.informationIcon} />
+            </div>
           </Tooltip>
         </div>
 
