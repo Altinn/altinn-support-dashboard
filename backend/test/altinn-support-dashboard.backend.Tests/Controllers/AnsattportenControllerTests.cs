@@ -10,12 +10,14 @@ using AltinnSupportDashboard.Controllers;
 using altinn_support_dashboard.Server.Models.ansattporten;
 using Microsoft.Extensions.DependencyInjection;
 using Security;
+using altinn_support_dashboard.Server.Services.Interfaces;
 
 namespace AltinnSupportDashboard.Tests.Controllers
 {
     public class AnsattportenControllerTests
     {
         private readonly Mock<IConfiguration> _mockConfig;
+        private readonly Mock<IAnsattportenService> _mockAnsattportenService;
         private readonly AnsattportenController _controller;
         private readonly DefaultHttpContext _httpContext;
         private readonly Mock<IConfigurationSection> featureSection;
@@ -24,6 +26,7 @@ namespace AltinnSupportDashboard.Tests.Controllers
         public AnsattportenControllerTests()
         {
             _mockConfig = new Mock<IConfiguration>();
+            _mockAnsattportenService = new Mock<IAnsattportenService>();
 
             // Mock IConfigurationSection for the feature flag
             featureSection = new Mock<IConfigurationSection>();
@@ -36,7 +39,7 @@ namespace AltinnSupportDashboard.Tests.Controllers
             _mockConfig.Setup(c => c.GetSection("FeatureManagement:Ansattporten")).Returns(featureSection.Object);
             _mockConfig.Setup(c => c.GetSection("RedirectConfiguration:RedirectUrl")).Returns(redirectSection.Object);
 
-            _controller = new AnsattportenController(_mockConfig.Object);
+            _controller = new AnsattportenController(_mockConfig.Object, _mockAnsattportenService.Object);
             _httpContext = new DefaultHttpContext();
             _controller.ControllerContext = new ControllerContext
             {
@@ -51,7 +54,7 @@ namespace AltinnSupportDashboard.Tests.Controllers
             featureSection.Setup(s => s.Value).Returns("false");
 
             _mockConfig.Setup(c => c.GetSection("FeatureManagement:Ansattporten")).Returns(featureSection.Object);
-            var controller = new AnsattportenController(_mockConfig.Object);
+            var controller = new AnsattportenController(_mockConfig.Object, _mockAnsattportenService.Object);
 
             // Act
             var result = await controller.Login("/dashboard");
@@ -80,7 +83,8 @@ namespace AltinnSupportDashboard.Tests.Controllers
             featureSection.Setup(s => s.Value).Returns("false");
 
             _mockConfig.Setup(c => c.GetSection("FeatureManagement:Ansattporten")).Returns(featureSection.Object);
-            var controller = new AnsattportenController(_mockConfig.Object);
+
+            var controller = new AnsattportenController(_mockConfig.Object, _mockAnsattportenService.Object);
 
             // Act
             var result = await controller.AuthStatus();
@@ -129,7 +133,7 @@ namespace AltinnSupportDashboard.Tests.Controllers
 
             _mockConfig.Setup(c => c.GetSection("FeatureManagement:Ansattporten")).Returns(featureSection.Object);
 
-            var controller = new AnsattportenController(_mockConfig.Object);
+            var controller = new AnsattportenController(_mockConfig.Object, _mockAnsattportenService.Object);
 
             // Act
             var result = await controller.Logout("/done");
