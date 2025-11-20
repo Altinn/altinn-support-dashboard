@@ -6,12 +6,22 @@ export const fetchAuthDetails = async (): Promise<authDetails> => {
     const res = await authorizedFetch(`${getBaseUrl()}/auth/auth-status`);
 
     if (!res.ok) {
-      return { isLoggedIn: false, name: "", ansattportenActive: true };
+      return {
+        isLoggedIn: false,
+        name: "",
+        ansattportenActive: true,
+        userPolicies: [],
+      };
     }
     const data = await res.json();
     return data as authDetails;
   } catch (err) {
-    return { isLoggedIn: false, name: "", ansattportenActive: true };
+    return {
+      isLoggedIn: false,
+      name: "",
+      ansattportenActive: true,
+      userPolicies: [],
+    };
   }
 };
 
