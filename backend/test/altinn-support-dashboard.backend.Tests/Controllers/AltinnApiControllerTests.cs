@@ -10,13 +10,13 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 {
     public class AltinnApiControllerTests
     {
-        private readonly Altinn_Intern_APIController _controller;
+        private readonly AltinnTT02Controller _controller;
         private readonly Mock<IAltinnApiService> _mockService;
 
         public AltinnApiControllerTests()
         {
             _mockService = new Mock<IAltinnApiService>();
-            _controller = new Altinn_Intern_APIController(_mockService.Object);
+            _controller = new AltinnTT02Controller(_mockService.Object);
         }
 
         [Theory]
@@ -29,7 +29,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetOrganizationInfo_ReturnsBadRequest_WhenOrgNumberLengthIsInvalid(string invalidOrgNumber)
         {
             // Act
-            var result = await _controller.GetOrganizationInfo("foo", invalidOrgNumber);
+            var result = await _controller.GetOrganizationInfo(invalidOrgNumber);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -43,7 +43,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
 
             // Act
-            var result = await _controller.GetOrganizationsByPhoneNumber("foo", invalidPhonenumber);
+            var result = await _controller.GetOrganizationsByPhoneNumber(invalidPhonenumber);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -57,7 +57,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetOrganizationsByEmail_ReturnsBadRequest_WhenEmailIsInvalid(string invalidEmail)
         {
             // Act
-            var result = await _controller.GetOrganizationsByEmail("foo", invalidEmail);
+            var result = await _controller.GetOrganizationsByEmail(invalidEmail);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -73,7 +73,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetPersonalContacts_ReturnsBadRequest_WhenOrgNumberLengthIsInvalid(string invalidOrgNumber)
         {
             // Act
-            var result = await _controller.GetPersonalContacts("foo", invalidOrgNumber);
+            var result = await _controller.GetPersonalContacts(invalidOrgNumber);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
