@@ -12,4 +12,6 @@ public class AuthDetails
     public bool? AnsattportenActive { get; set; }
 
     public string? Name { get; set; }
+
+    public List<string>? UserPolicies { get; set; }
 }

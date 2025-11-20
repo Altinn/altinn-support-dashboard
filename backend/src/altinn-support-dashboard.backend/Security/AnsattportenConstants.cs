@@ -13,4 +13,16 @@ public class AnsattportenConstants
     public const string AnsattportenTT02AuthorizationPolicy = "TT02Authenticated";
     public const string AnsattportenProductionAuthorizationPolicy = "ProductionAuthenticated";
 
+    public static List<string> GetPolicies()
+    {
+        List<string> policies = new List<string>();
+
+        policies.Add(AnsattportenAuthorizationPolicy);
+        policies.Add(AnsattportenTT02AuthorizationPolicy);
+        policies.Add(AnsattportenProductionAuthorizationPolicy);
+
+        return policies;
+    }
+
 }
+

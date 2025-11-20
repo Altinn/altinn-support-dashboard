@@ -7,6 +7,7 @@ using Security;
 using System.IdentityModel.Tokens.Jwt;
 using altinn_support_dashboard.Server.Validation;
 using altinn_support_dashboard.Server.Models.ansattporten;
+using altinn_support_dashboard.Server.Services.Interfaces;
 
 
 namespace AltinnSupportDashboard.Controllers;
@@ -17,8 +18,10 @@ public class AnsattportenController : ControllerBase
 {
     private bool ansattportenFeatureFlag;
     private string baseUrl;
-    public AnsattportenController(IConfiguration configuration)
+    private IAnsattportenService _ansattportenService;
+    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService)
     {
+        _ansattportenService = ansattportenService;
         ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
         baseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
     }
@@ -45,13 +48,14 @@ public class AnsattportenController : ControllerBase
     {
         await Task.CompletedTask;
 
-        if (ansattportenFeatureFlag != true)
+        if (ansattportenFeatureFlag != true || User == null)
         {
             return Ok(new AuthDetails
             {
                 IsLoggedIn = true,
                 Name = null,
-                AnsattportenActive = false
+                AnsattportenActive = false,
+
             });
         }
 
@@ -61,7 +65,8 @@ public class AnsattportenController : ControllerBase
         {
             IsLoggedIn = result.Succeeded,
             Name = User?.Identity?.Name,
-            AnsattportenActive = true
+            AnsattportenActive = true,
+            UserPolicies = await _ansattportenService.GetUserPolicies(User),
         });
     }
 
@@ -93,8 +98,6 @@ public class AnsattportenController : ControllerBase
 
     }
 
-
-
-
-
 }
+
+
