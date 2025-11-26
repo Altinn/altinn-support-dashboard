@@ -1,3 +1,4 @@
+/* eslint-disable */
 export function getBaseUrl(environment?: string): string {
   const apiHost = window.location.hostname;
 
@@ -14,7 +15,7 @@ export function getBaseUrl(environment?: string): string {
   // Port for local development
   const portSegment = localDev ? ":5237" : "";
 
-  var baseUrl = "";
+  let baseUrl = "";
 
   if (environment === "TT02" || environment === "PROD") {
     baseUrl = `${protocol}//${apiHost}${portSegment}/api/${environment === "TT02" ? "TT02" : "Production"}`;

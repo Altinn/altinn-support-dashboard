@@ -57,6 +57,10 @@ export interface Subunit {
   navn: string;
   organisasjonsnummer: string;
   overordnetEnhet: string;
+  organisasjonsform?: organisasjonsform;
+}
+export interface organisasjonsform {
+  kode: string;
 }
 
 export interface ERRole {
@@ -100,7 +104,6 @@ export interface Role {
   roleName: string;
   roleDescription: string;
   roleDefinitionCode: string;
-  _links?: any;
 }
 export interface SelectedOrg {
   Name: string;
