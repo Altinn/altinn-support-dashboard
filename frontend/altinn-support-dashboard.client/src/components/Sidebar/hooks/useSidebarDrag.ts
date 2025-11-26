@@ -1,6 +1,9 @@
-
-import { useState, useEffect, MouseEvent as ReactMouseEvent } from 'react';
-
+import {
+  useState,
+  useEffect,
+  MouseEvent as ReactMouseEvent,
+  useCallback,
+} from "react";
 
 export const useSidebarDrag = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -11,23 +14,24 @@ export const useSidebarDrag = () => {
     setIsCollapsed((prev) => !prev);
   };
 
-
   const handleDragStart = (e: ReactMouseEvent) => {
-
     e.preventDefault();
     setIsDragging(true);
     setDragStartX(e.clientX);
   };
-  
-  const handleDragMove = (e: MouseEvent) => {
 
-    if (!isDragging) return;
-    const dragDistance = e.clientX - dragStartX;
-    if (Math.abs(dragDistance) > 50) { // Threshold for triggering expand/collapse
-      setIsCollapsed(dragDistance < 0);
-      setIsDragging(false);
-    }
-  };
+  const handleDragMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isDragging) return;
+      const dragDistance = e.clientX - dragStartX;
+      if (Math.abs(dragDistance) > 50) {
+        // Threshold for triggering expand/collapse
+        setIsCollapsed(dragDistance < 0);
+        setIsDragging(false);
+      }
+    },
+    [isDragging, dragStartX],
+  );
 
   const handleDragEnd = () => {
     setIsDragging(false);
@@ -35,14 +39,14 @@ export const useSidebarDrag = () => {
 
   useEffect(() => {
     if (isDragging) {
-      window.addEventListener('mousemove', handleDragMove);
-      window.addEventListener('mouseup', handleDragEnd);
+      window.addEventListener("mousemove", handleDragMove);
+      window.addEventListener("mouseup", handleDragEnd);
     }
     return () => {
-      window.removeEventListener('mousemove', handleDragMove);
-      window.removeEventListener('mouseup', handleDragEnd);
+      window.removeEventListener("mousemove", handleDragMove);
+      window.removeEventListener("mouseup", handleDragEnd);
     };
-  }, [isDragging, dragStartX]);
+  }, [isDragging, dragStartX, handleDragMove]);
 
   return { isCollapsed, toggleCollapse, handleDragStart };
 };

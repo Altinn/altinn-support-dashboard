@@ -32,7 +32,12 @@ const SidebarEnvToggle: React.FC = () => {
     ) {
       setEnvironment("TT02");
     }
-  }, [authDetails?.data?.isLoggedIn]);
+  }, [
+    authDetails?.data?.isLoggedIn,
+    environment,
+    setEnvironment,
+    userPolicies,
+  ]);
 
   return (
     <div className={classes.container}>

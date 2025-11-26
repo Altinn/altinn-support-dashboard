@@ -35,7 +35,7 @@ export const initiateSignIn = async (redirectTo: string) => {
 
 //temporary
 export const initiateAiDevSignIn = async (redirectTo: string) => {
-  window.location.href = "/.auth/login/aad?post_login_redirect_uri=/dashboard";
+  window.location.href = `/.auth/login/aad?post_login_redirect_uri=${redirectTo}`;
 };
 
 export const initiateSignOut = async (redirectTo: string) => {

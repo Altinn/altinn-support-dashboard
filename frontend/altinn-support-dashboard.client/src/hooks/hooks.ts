@@ -5,11 +5,7 @@ import {
   Role,
   OfficialContact,
 } from "../models/models";
-import {
-  getBaseUrl,
-  getFormattedDateTime,
-  fetchUserDetails,
-} from "../utils/utils";
+import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   fetchERoles,
@@ -19,7 +15,6 @@ import {
   fetchRolesForOrg,
   fetchSubunits,
 } from "../utils/api";
-import { useAppStore } from "../stores/Appstore";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
