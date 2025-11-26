@@ -44,7 +44,7 @@ const Sidebar: React.FC = () => {
     }
   }, [authDetails.data?.isLoggedIn, authDetails.data?.name]);
 
-  if (authDetails.isLoading || !authDetails.data.isLoggedIn) {
+  if (authDetails.isLoading || !authDetails?.data?.isLoggedIn) {
     return;
   }
 

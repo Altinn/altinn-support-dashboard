@@ -6,7 +6,7 @@ import { Card, Button, Heading, Paragraph } from "@digdir/designsystemet-react";
 
 interface OrganizationCardProps {
   org: Organization;
-  selectedOrg?: SelectedOrg;
+  selectedOrg?: SelectedOrg | null;
   subUnits: Subunit[];
   setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
 }

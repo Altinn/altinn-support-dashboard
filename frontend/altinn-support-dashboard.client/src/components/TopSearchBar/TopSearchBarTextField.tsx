@@ -6,7 +6,7 @@ import { SelectedOrg } from "../../models/models";
 type Props = {
   query: string;
   setQuery: (query: string) => void;
-  setSelectedOrg: (selectedOrg: SelectedOrg) => void;
+  setSelectedOrg: (selectedOrg: SelectedOrg | null) => void;
 };
 
 export const TopSearchBarTextField: React.FC<Props> = ({
