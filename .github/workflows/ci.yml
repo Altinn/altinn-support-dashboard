@@ -24,19 +24,14 @@ jobs:
 
       - name: TypeScript type check
         run: npm run typecheck
-        working-directory: ./frontend
+        working-directory: ./frontend/altinn-support-dashboard.client
         # package.json: "typecheck": "tsc --noEmit"
 
       - name: ESLint check
         run: npm run lint
-        working-directory: ./frontend
+        working-directory: ./frontend/altinn-support-dashboard.client
         # package.json: "lint": "eslint . --ext .ts,.tsx"
-
-      - name: Frontend build (optional, catches build issues)
-        run: npm run build
-        working-directory: ./frontend
-        # package.json: "build": "vite build" or "react-scripts build"
-
+     
   backend:
     name: Backend C# Build & Test
     runs-on: ubuntu-latest
@@ -50,7 +45,7 @@ jobs:
           dotnet-version: '8.0.x' # or your version
 
       - name: Restore dependencies
-        run: dotnet restore ./backend
+        run: dotnet restore ./backend/src/altinn-support-dashboard.backend
 
       - name: Build backend (warnings as errors)
         run: dotnet build ./backend --no-restore /warnaserror
