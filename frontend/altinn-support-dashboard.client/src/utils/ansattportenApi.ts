@@ -14,9 +14,7 @@ export const fetchAuthDetails = async (): Promise<authDetails> => {
       };
     }
     const data = (await res.json()) as authDetails;
-    if (data?.userPolicies == null || data?.userPolicies?.length < 1) {
-      data.userPolicies = ["ProductionAuthenticated", "TT02Authenticated"];
-    }
+
     return data;
   } catch (err) {
     return {

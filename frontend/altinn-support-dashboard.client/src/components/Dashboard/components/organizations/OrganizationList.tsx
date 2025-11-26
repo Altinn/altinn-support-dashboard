@@ -7,12 +7,11 @@ import { useAppStore } from "../../../../stores/Appstore";
 import classes from "../../styles/OrganizationList.module.css";
 import { showPopup } from "../../../Popup";
 
-
 import { Skeleton, Alert, Heading } from "@digdir/designsystemet-react";
 
 interface OrganizationListProps {
   setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
-  selectedOrg: SelectedOrg;
+  selectedOrg: SelectedOrg | null;
   query: string;
 }
 
@@ -28,11 +27,11 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
 
   useEffect(() => {
     if (orgQuery.isError) {
-      const errorMessage = orgQuery.error?.message.toString() ?? "Ukjent feil oppstod";
+      const errorMessage =
+        orgQuery.error?.message.toString() ?? "Ukjent feil oppstod";
       showPopup(errorMessage, "error");
     }
   }, [orgQuery.isError, orgQuery.error]);
-
 
   if (orgQuery.isLoading) {
     return (
@@ -41,7 +40,6 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
       </div>
     );
   }
-
 
   if (organizations.length <= 0 && query.length > 0) {
     return (

@@ -12,7 +12,7 @@ import styles from "../styles/DetailedOrgView.module.css";
 import NotificationContactTable from "./contacts/NotificationContactTable";
 
 interface DetailedOrgViewProps {
-  selectedOrg: SelectedOrg;
+  selectedOrg: SelectedOrg | null;
 }
 
 const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
