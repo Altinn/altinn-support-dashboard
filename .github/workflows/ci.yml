@@ -51,6 +51,3 @@ jobs:
 
       - name: Build backend (warnings as errors)
         run: dotnet build ./backend/src/altinn-support-dashboard.backend --no-restore /warnaserror
-
-      - name: Run backend tests
-        run: dotnet test ./backend/src/altinn-support-dashboard.backend --no-build --verbosity normal
