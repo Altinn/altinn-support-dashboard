@@ -40,9 +40,10 @@ namespace altinn_support_dashboard.Server.Validation
         }
 
 
-        public static string SanitizeRedirectUrl(string url)
+        public static string SanitizeRedirectUrl(string? url)
         {
             //only relative redirect url's allowed
+
             if (!String.IsNullOrEmpty(url) && url.StartsWith('/') && !url.StartsWith("//") && !url.StartsWith(':'))
             {
                 return url;

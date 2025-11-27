@@ -355,7 +355,11 @@ namespace altinn_support_dashboard.Server.Services
                     try
                     {
                         var createdTeam = await _giteaApiClient.CreateTeam(environmentName, orgName, team);
-                        createdTeams.Add(createdTeam);
+                        if (createdTeam != null)
+                        {
+
+                            createdTeams.Add(createdTeam);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -413,6 +417,13 @@ namespace altinn_support_dashboard.Server.Services
                 {
                     NewOwner = orgName
                 };
+
+
+                if (user == null)
+                {
+                    throw new Exception("User is null");
+                }
+
                 var transferredRepo = await _giteaApiClient.TransferRepository(
                     environmentName,
                     user.Username,

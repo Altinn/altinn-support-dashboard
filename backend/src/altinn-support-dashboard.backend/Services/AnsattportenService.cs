@@ -14,8 +14,13 @@ public class AnsattportenService : IAnsattportenService
     {
         _authorizationService = authorizationService;
     }
-    public async Task<List<string>> GetUserPolicies(ClaimsPrincipal user)
+    public async Task<List<string>> GetUserPolicies(ClaimsPrincipal? user)
     {
+        if (user == null)
+        {
+            throw new Exception("User cannot be null");
+        }
+
         List<string> policies = AnsattportenConstants.GetPolicies();
 
         List<string> userPolicies = new List<string>();

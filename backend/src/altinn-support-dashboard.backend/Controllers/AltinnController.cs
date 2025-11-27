@@ -163,8 +163,6 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("{subject}/roles/{reportee}")]
         public async Task<IActionResult> GetPersonRoles([FromRoute] string subject, [FromRoute] string reportee)
         {
-            Console.WriteLine(subject);
-            Console.WriteLine(reportee);
             if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))
             {
                 return BadRequest("Subject eller reportee er ugyldig.");

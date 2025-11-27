@@ -29,9 +29,18 @@ namespace altinn_support_dashboard.Server.Controllers
         /// <param name="orgNumber">The organization number used to look up the party.</param>
         /// <returns>A <see cref="PartyModel"/> object representing the organization party.</returns>
         [HttpGet("parties/lookup/org/{orgNumber}")]
-        public async Task<PartyModel> GetPartyOrg([FromRoute] string orgNumber)
+        public async Task<IActionResult> GetPartyOrg([FromRoute] string orgNumber)
         {
-            return await _service.GetPartyFromOrgAsync(orgNumber);
+            try
+            {
+
+                var result = await _service.GetPartyFromOrgAsync(orgNumber);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving party from org number: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -40,9 +49,18 @@ namespace altinn_support_dashboard.Server.Controllers
         /// <param name="ssn">The SSN used to look up the party.</param>
         /// <returns>A <see cref="PartyModel"/> object representing the person party.</returns>
         [HttpGet("parties/lookup/ssn/{ssn}")]
-        public async Task<PartyModel> GetPartySsn([FromRoute] string ssn)
+        public async Task<IActionResult> GetPartySsn([FromRoute] string ssn)
         {
-            return await _service.GetPartyFromSsnAsync(ssn);
+            try
+            {
+
+                var result = await _service.GetPartyFromSsnAsync(ssn);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving party from SSN: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -51,10 +69,19 @@ namespace altinn_support_dashboard.Server.Controllers
         /// <param name="Uuid">The UUID of the party.</param>
         /// <returns>A JSON string containing role information for the specified party.</returns>
         [HttpGet("parties/roles/uuid/{Uuid}")]
-        public async Task<string> GetPartyRoles([FromRoute] string Uuid)
+        public async Task<IActionResult> GetPartyRoles([FromRoute] string Uuid)
         {
-            return await _service.GetRolesFromPartyAsync(Uuid);
+            try
+            {
+                var result = await _service.GetRolesFromPartyAsync(Uuid);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving roles from UUID: {ex.Message}");
+            }
         }
+
         /// <summary>
         /// Retrieves all external roles associated with an organization based on its organization number.
         /// </summary>
@@ -63,9 +90,17 @@ namespace altinn_support_dashboard.Server.Controllers
         /// An <see cref="ErRollerModel"/> object containing the roles linked to the specified organization.
         /// </returns>
         [HttpGet("parties/roles/org/{orgNumber}")]
-        public async Task<ErRollerModel> GetRolesFromOrg([FromRoute] string orgNumber)
+        public async Task<IActionResult> GetRolesFromOrg([FromRoute] string orgNumber)
         {
-            return await _service.GetRolesFromOrgAsync(orgNumber);
+            try
+            {
+                var result = await _service.GetRolesFromOrgAsync(orgNumber);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving roles from org number: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -74,9 +109,18 @@ namespace altinn_support_dashboard.Server.Controllers
         /// <param name="Uuid">The UUID of the party.</param>
         /// <returns>A <see cref="PartyModel"/> object representing the party.</returns>
         [HttpGet("parties/lookup/uuid/{Uuid}")]
-        public async Task<PartyModel> GetPartyUuid([FromRoute] string Uuid)
+        public async Task<IActionResult> GetPartyUuid([FromRoute] string Uuid)
         {
-            return await _service.GetPartyFromUuidAsync(Uuid);
+            try
+            {
+
+                var result = await _service.GetPartyFromUuidAsync(Uuid);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving party from UUID: {ex.Message}");
+            }
         }
     }
 }

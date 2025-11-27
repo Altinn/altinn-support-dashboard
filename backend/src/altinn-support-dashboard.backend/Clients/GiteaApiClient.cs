@@ -56,7 +56,7 @@ namespace altinn_support_dashboard.Server.Clients
         /// </summary>
         public void SetAuthToken(string environmentName, string token)
         {
-            if (_clients.TryGetValue(environmentName, out HttpClient client))
+            if (_clients.TryGetValue(environmentName, out var client))
             {
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add("Authorization", $"token {token}");
@@ -78,7 +78,7 @@ namespace altinn_support_dashboard.Server.Clients
                 }
 
                 var client = _clientFactory.CreateClient();
-                string baseUrl = null;
+                string baseUrl = "";
 
                 // Finn riktig base URL basert på valgt miljø
                 if (environmentName.Equals("development", StringComparison.OrdinalIgnoreCase))
@@ -133,7 +133,7 @@ namespace altinn_support_dashboard.Server.Clients
         /// <summary>
         /// Henter autentisert bruker
         /// </summary>
-        public async Task<GiteaUser> GetAuthenticatedUser(string environmentName)
+        public async Task<GiteaUser?> GetAuthenticatedUser(string environmentName)
         {
             try
             {
@@ -226,7 +226,7 @@ namespace altinn_support_dashboard.Server.Clients
         /// <summary>
         /// Oppretter et nytt team for en organisasjon
         /// </summary>
-        public async Task<GiteaTeam> CreateTeam(string environmentName, string orgName, GiteaTeamCreate team)
+        public async Task<GiteaTeam?> CreateTeam(string environmentName, string orgName, GiteaTeamCreate team)
         {
             try
             {
@@ -255,7 +255,7 @@ namespace altinn_support_dashboard.Server.Clients
         /// <summary>
         /// Oppretter et nytt repository under den autentiserte brukeren
         /// </summary>
-        public async Task<GiteaRepository> CreateRepository(string environmentName, GiteaRepositoryCreate repo)
+        public async Task<GiteaRepository?> CreateRepository(string environmentName, GiteaRepositoryCreate repo)
         {
             try
             {
@@ -284,7 +284,7 @@ namespace altinn_support_dashboard.Server.Clients
         /// <summary>
         /// Overfører eierskap av et repository
         /// </summary>
-        public async Task<GiteaRepository> TransferRepository(string environmentName, string owner, string repo, GiteaRepositoryTransfer transfer)
+        public async Task<GiteaRepository?> TransferRepository(string environmentName, string owner, string repo, GiteaRepositoryTransfer transfer)
         {
             try
             {
