@@ -6,15 +6,7 @@ import { useOrgDetails } from "../../../../hooks/hooks";
 import { PersonalContact, SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import ContactInfoCell from "./ContactInfoCell";
-import {
-  Button,
-  Heading,
-  Table,
-  TableHeaderCell,
-  Label,
-  Paragraph,
-  Card,
-} from "@digdir/designsystemet-react";
+import { Button, Table, Paragraph, Card } from "@digdir/designsystemet-react";
 
 interface ContactsTableProps {
   searchQuery: string;

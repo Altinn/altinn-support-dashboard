@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { OrganizationCard } from "./OrganizationCard";
 import { useOrgSearch } from "../../../../hooks/hooks";
-import { ErrorAlert } from "../ErrorAlert";
 import { SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import classes from "../../styles/OrganizationList.module.css";
