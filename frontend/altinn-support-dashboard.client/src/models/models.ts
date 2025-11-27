@@ -63,41 +63,55 @@ export interface organisasjonsform {
   kode: string;
 }
 
-export interface rollegruppe {
+export interface ERRoles {
   type: {
     kode: string;
     beskrivelse: string;
   };
   sistEndret: string;
-  roller: {
-    type: {
-      kode: string;
-      beskrivelse: string;
-    };
-    person: {
-      fodselsdato?: string;
-      navn: {
-        fornavn: string;
-        mellomnavn: string | null;
-        etternavn: string;
-      };
-      erDoed: boolean;
-    };
-    enhet?: {
-      organisasjonsnummer: string;
-      organisasjonsform: {
-        kode: string;
-        beskrivelse: string;
-      };
-      navn: string[];
-      erSlettet: boolean;
-    };
-    fratraadt: boolean;
-    rekkefolge?: number;
-  };
+  roller: ErRole[];
 }
-export interface ERRoles {
-  rolegrupper: rollegruppe[];
+
+export interface ErRole {
+  type: ErType;
+  person: person;
+  enhet?: enhet;
+  fratraadt: boolean;
+  rekkefolge?: number;
+}
+
+export interface ErType {
+  kode: string;
+  beskrivelse: string;
+}
+
+export interface enhet {
+  organisasjonsnummer: string;
+  organisasjonsform: {
+    kode: string;
+    beskrivelse: string;
+  };
+  navn: string[];
+  erSlettet: boolean;
+}
+export interface person {
+  fodselsdato?: string;
+  navn: {
+    fornavn: string;
+    mellomnavn: string | null;
+    etternavn: string;
+  };
+  erDoed: boolean;
+}
+
+export interface ErRoleTableItem {
+  sistEndret: string;
+  type: ErType;
+  enhet?: enhet;
+  person?: person;
+  fraatraadt: boolean;
+
+  groupType: ErType;
 }
 
 export interface Role {

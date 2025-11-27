@@ -3,7 +3,7 @@ import { formatDate } from "../utils/dateUtils";
 import { ERRolesSortField, SortDirection } from "../models/mainContentTypes";
 import { sortERRoles } from "../utils/contactUtils";
 import { useOrgDetails } from "../../../hooks/hooks";
-import { SelectedOrg } from "../../../models/models";
+import { ERRoles, ErRoleTableItem, SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
 import { Table, Heading, Paragraph, Card } from "@digdir/designsystemet-react";
 import styles from "../styles/ERRolesTable.module.css";
@@ -40,30 +40,36 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
       setERRoleSortDirection("ascending");
     }
   };
-  const flatERRoles =
-    roles
-      ?.flatMap((roleGroup) =>
-        roleGroup?.roller?.map((role) => ({
-          ...role,
-          sistEndret: roleGroup.sistEndret,
-          // Use the role's own type instead of the group type
-          type: role.type || roleGroup.type,
+
+  const getErRoleItems = (rolegroups: ERRoles[]): ErRoleTableItem[] => {
+    const erRoleItems: ErRoleTableItem[] = [];
+    if (rolegroups == null) {
+      return [];
+    }
+
+    for (const rolegroup of rolegroups) {
+      for (const role of rolegroup.roller) {
+        erRoleItems.push({
+          fratraadt: role.fratraadt,
+          sistEndret: rolegroup.sistEndret,
+          type: role.type,
           enhet: role.enhet,
           person: role.person,
-          fratraadt: role.fratraadt,
-          // Store the group type for reference if needed
-          groupType: roleGroup.type,
-        })),
-      )
-      .filter(Boolean) || [];
+          groupType: rolegroup.type,
+        });
+      }
+    }
+    return erRoleItems;
+  };
+
   const sortedERRoles = sortERRoles(
-    flatERRoles,
+    getErRoleItems(roles),
     erRoleSortField,
     erRoleSortDirection,
   );
 
   return (
-    <Card data-color="neutral" className={styles.container}>
+    <Card data-color="neutral" className={styles.Container}>
       <Heading level={2} className={styles.heading}>
         ER-roller
       </Heading>

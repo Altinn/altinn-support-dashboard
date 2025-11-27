@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import {
   PersonalContact,
-  ERRole,
   Role,
   OfficialContact,
+  ERRoles,
 } from "../models/models";
 import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
@@ -78,7 +78,7 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     enabled: !!orgNumber,
   });
 
-  const ERolesQuery: UseQueryResult<ERRole[], Error> = useQuery({
+  const ERolesQuery: UseQueryResult<ERRoles, Error> = useQuery({
     queryKey: ["erroles", environment, orgNumber],
     queryFn: () => fetchERoles(environment, orgNumber!),
     enabled: !!orgNumber,
