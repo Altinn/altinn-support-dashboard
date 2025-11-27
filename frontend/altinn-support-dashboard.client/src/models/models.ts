@@ -63,7 +63,7 @@ export interface organisasjonsform {
   kode: string;
 }
 
-export interface ERRole {
+export interface rollegruppe {
   type: {
     kode: string;
     beskrivelse: string;
@@ -94,7 +94,10 @@ export interface ERRole {
     };
     fratraadt: boolean;
     rekkefolge?: number;
-  }[];
+  };
+}
+export interface ERRoles {
+  rolegrupper: rollegruppe[];
 }
 
 export interface Role {

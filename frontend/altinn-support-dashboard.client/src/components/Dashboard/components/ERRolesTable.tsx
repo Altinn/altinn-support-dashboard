@@ -40,8 +40,6 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
       setERRoleSortDirection("ascending");
     }
   };
-  //Kan kanskje fjernes når alt er migrert over til designsystemet?
-
   const flatERRoles =
     roles
       ?.flatMap((roleGroup) =>

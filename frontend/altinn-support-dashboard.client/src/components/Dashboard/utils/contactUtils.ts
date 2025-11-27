@@ -1,4 +1,4 @@
-import { PersonalContact } from "../../../models/models";
+import { ERRoles, PersonalContact } from "../../../models/models";
 import { ERRolesSortField, SortDirection } from "../models/mainContentTypes";
 
 export const filterContacts = (
@@ -31,10 +31,10 @@ export const sortContacts = (
 };
 
 export const sortERRoles = (
-  roles: any[],
+  roles: ERRoles,
   sortField: ERRolesSortField,
   sortDirection: SortDirection,
-): any[] => {
+): ERRoles => {
   if (!sortField) return roles;
   return [...roles].sort((a, b) => {
     if (sortField === "type") {
