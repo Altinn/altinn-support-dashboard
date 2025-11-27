@@ -41,7 +41,9 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
     }
   };
 
-  const getErRoleItems = (rolegroups: ERRoles[]): ErRoleTableItem[] => {
+  const getErRoleItems = (
+    rolegroups: ERRoles[] | undefined,
+  ): ErRoleTableItem[] => {
     const erRoleItems: ErRoleTableItem[] = [];
     if (rolegroups == null) {
       return [];

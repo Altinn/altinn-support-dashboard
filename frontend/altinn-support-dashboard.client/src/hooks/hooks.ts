@@ -78,7 +78,7 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     enabled: !!orgNumber,
   });
 
-  const ERolesQuery: UseQueryResult<ERRoles, Error> = useQuery({
+  const ERolesQuery: UseQueryResult<ERRoles[], Error> = useQuery({
     queryKey: ["erroles", environment, orgNumber],
     queryFn: () => fetchERoles(environment, orgNumber!),
     enabled: !!orgNumber,
