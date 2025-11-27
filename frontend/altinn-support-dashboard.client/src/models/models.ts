@@ -109,7 +109,7 @@ export interface ErRoleTableItem {
   type: ErType;
   enhet?: enhet;
   person?: person;
-  fraatraadt: boolean;
+  fratraadt: boolean;
 
   groupType: ErType;
 }

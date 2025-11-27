@@ -9,7 +9,7 @@ namespace altinn_support_dashboard.Server.Models
         /// Development miljø konfigurasjon (dev.altinn.studio)
         /// </summary>
         public required GiteaEnvironmentConfiguration Development { get; set; }
-        
+
         /// <summary>
         /// Production miljø konfigurasjon (altinn.studio)
         /// </summary>
@@ -25,7 +25,7 @@ namespace altinn_support_dashboard.Server.Models
         /// Base URL for Gitea API
         /// </summary>
         public required string BaseUrl { get; set; }
-        
+
         /// <summary>
         /// Timeout i sekunder for API-kall
         /// </summary>

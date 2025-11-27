@@ -9,7 +9,7 @@ namespace altinn_support_dashboard.Server.Models
         /// Base URL for Brønnøysundregistrene API
         /// </summary>
         public required string BaseUrl { get; set; }
-        
+
         /// <summary>
         /// Timeout i sekunder for API-kall
         /// </summary>

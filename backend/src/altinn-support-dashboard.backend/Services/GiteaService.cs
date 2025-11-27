@@ -44,19 +44,19 @@ namespace altinn_support_dashboard.Server.Services
             try
             {
                 bool isValid = await _giteaApiClient.ValidateToken(environmentName, token);
-                
+
                 if (isValid)
                 {
                     _tokens[environmentName] = token;
                     _giteaApiClient.SetAuthToken(environmentName, token);
-                    
+
                     return new PatValidationResult
                     {
                         IsValid = true,
                         Message = "Token er gyldig og lagret"
                     };
                 }
-                
+
                 return new PatValidationResult
                 {
                     IsValid = false,
@@ -66,7 +66,7 @@ namespace altinn_support_dashboard.Server.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Feil ved validering av token for miljø {environmentName}");
-                
+
                 return new PatValidationResult
                 {
                     IsValid = false,
@@ -159,7 +159,7 @@ namespace altinn_support_dashboard.Server.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Feil ved opprettelse av organisasjon for {environmentName}");
-                
+
                 return new OrganizationCreationResult
                 {
                     Success = false,
@@ -290,7 +290,7 @@ namespace altinn_support_dashboard.Server.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Feil ved opprettelse av organisasjon for {environmentName}");
-                
+
                 return new OrganizationCreationResult
                 {
                     Success = false,
@@ -375,7 +375,7 @@ namespace altinn_support_dashboard.Server.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Feil ved opprettelse av standardteam for {orgName}");
-                
+
                 return new OrganizationCreationResult
                 {
                     Success = false,
@@ -414,9 +414,9 @@ namespace altinn_support_dashboard.Server.Services
                     NewOwner = orgName
                 };
                 var transferredRepo = await _giteaApiClient.TransferRepository(
-                    environmentName, 
-                    user.Username, 
-                    repoName, 
+                    environmentName,
+                    user.Username,
+                    repoName,
                     transferRequest);
 
                 return new OrganizationCreationResult
@@ -429,7 +429,7 @@ namespace altinn_support_dashboard.Server.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Feil ved opprettelse av standard repository for {orgName}");
-                
+
                 return new OrganizationCreationResult
                 {
                     Success = false,
