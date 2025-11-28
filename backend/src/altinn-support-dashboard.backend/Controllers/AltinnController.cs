@@ -28,6 +28,15 @@ namespace AltinnSupportDashboard.Controllers
         public AltinnTT02Controller(IAltinnApiService altinnApiService) : base(altinnApiService, "TT02")
         {
         }
+
+        [HttpGet("organizations/{orgnumber}/altinn3/personalcontacts")]
+        public async Task<IActionResult> GetPersonalContactsAltinn3([FromRoute] string orgnumber)
+        {
+            var result = await _altinnApiService.GetPersonalContactsAltinn3(orgnumber, environmentName);
+
+            return Ok(result);
+
+        }
     }
 
     [ApiController]
@@ -46,7 +55,7 @@ namespace AltinnSupportDashboard.Controllers
     [ApiController]
     public abstract class AltinnBaseController : ControllerBase
     {
-        private readonly IAltinnApiService _altinnApiService;
+        protected readonly IAltinnApiService _altinnApiService;
         protected string environmentName;
 
         public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName)

@@ -22,7 +22,7 @@ public class AltinnApiClient
     public void InitClient(string environmentName, EnvironmentConfiguration configuration)
     {
         var client = _clientFactory.CreateClient(environmentName);
-        client.BaseAddress = new Uri(configuration.BaseAddress);
+        client.BaseAddress = new Uri(configuration.BaseAddressAltinn2);
         client.Timeout = TimeSpan.FromSeconds(configuration.Timeout);
         client.DefaultRequestHeaders.Add("ApiKey", configuration.ApiKey);
         Console.WriteLine($"API Key {configuration.ApiKey} added to request headers.");
@@ -194,30 +194,5 @@ public class AltinnApiClient
             throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
     }
-
-    public async Task<string> GetPersonalContactsAltinn3(string orgNumber, string environmentName)
-    {
-        try
-        {
-            var client = _clients[environmentName];
-
-            var requestUrl = $"/profile/api/v1/dashboard/organizations/{orgNumber}/contactinformation";
-
-            var response = await client.GetAsync(requestUrl);
-            var responseBody = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
-            }
-            return responseBody;
-
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
-        }
-    }
-
 
 }
