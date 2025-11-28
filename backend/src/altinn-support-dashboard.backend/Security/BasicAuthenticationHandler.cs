@@ -1,3 +1,5 @@
+#pragma warning disable
+//warning disable because this code is outdated and will soon be replaced
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -64,3 +66,5 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
         }
     }
 }
+
+#pragma warning restore

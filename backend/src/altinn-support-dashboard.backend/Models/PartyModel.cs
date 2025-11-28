@@ -3,7 +3,7 @@ namespace altinn_support_dashboard.Server.Models;
 
 public class PartyModel
 {
-    public string PartyUuid { get; set; }
+    public required string PartyUuid { get; set; }
     public string? OrgNumber { get; set; }
     public string? Ssn { get; set; }
     public string? Name { get; set; }

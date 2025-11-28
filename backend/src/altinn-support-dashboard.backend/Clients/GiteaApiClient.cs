@@ -214,7 +214,12 @@ namespace altinn_support_dashboard.Server.Clients
                 }
 
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<GiteaOrganization>(content, _jsonOptions);
+                var result = JsonSerializer.Deserialize<GiteaOrganization>(content, _jsonOptions);
+                if (result == null)
+                {
+                    throw new Exception("Error when deserializing result");
+                }
+                return result;
             }
             catch (Exception ex) when (!(ex is ArgumentException) && !(ex is HttpRequestException))
             {

@@ -5,9 +5,9 @@ namespace Security;
 
 public class AnsattportenLoginSettings
 {
-    public string AcrValues { get; set; }
+    public string? AcrValues { get; set; }
 
-    public AuthorizationDetail[] AuthorizationDetails { get; set; }
+    public AuthorizationDetail[]? AuthorizationDetails { get; set; }
 
 
     /// <summary>
@@ -18,22 +18,22 @@ public class AnsattportenLoginSettings
     /// <summary>
     /// Url of the identity provider.
     /// </summary>
-    public string Authority { get; set; }
+    public required string Authority { get; set; }
 
     /// <summary>
     /// Client ID for the OpenID Connect provider.
     /// </summary>
-    public string ClientId { get; set; }
+    public required string ClientId { get; set; }
 
     /// <summary>
     /// Client secret for the OpenID Connect provider.
     /// </summary>
-    public string ClientSecret { get; set; }
+    public required string ClientSecret { get; set; }
 
     /// <summary>
     /// Scopes for the OpenID Connect provider.
     /// </summary>
-    public string[] Scopes { get; set; }
+    public required string[] Scopes { get; set; }
 
     /// <summary>
     /// Flag to indicate if HTTPS metadata is required. In non-local environments this should be true.
@@ -45,10 +45,10 @@ public class AnsattportenLoginSettings
 public class AuthorizationDetail
 {
 
-    public string Type { get; set; }
+    public required string Type { get; set; }
 
-    public string Resource { get; set; }
+    public required string Resource { get; set; }
 
-    public bool? representation_is_required { get; set; }
+    public required bool? representation_is_required { get; set; }
 }
 

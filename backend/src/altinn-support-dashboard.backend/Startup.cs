@@ -3,14 +3,8 @@ using altinn_support_dashboard.Server.Clients;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System;
 
 
 namespace AltinnSupportDashboard
@@ -69,7 +63,7 @@ namespace AltinnSupportDashboard
 
 
             //enables only from frontend
-            string baseUrl = Configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
+            string baseUrl = Configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>() ?? throw new Exception("Redirecrt url not set");
             if (!String.IsNullOrEmpty(baseUrl))
             {
                 services.AddCors(options =>
