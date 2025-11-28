@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
+//altinn 2 model, will be replaced with PersonalContactDto(altinn3)
 public class PersonalContact
 {
     public string? PersonalContactId { get; set; }
