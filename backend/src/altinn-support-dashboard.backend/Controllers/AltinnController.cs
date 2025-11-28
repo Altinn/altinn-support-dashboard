@@ -32,9 +32,16 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("organizations/{orgnumber}/altinn3/personalcontacts")]
         public async Task<IActionResult> GetPersonalContactsAltinn3([FromRoute] string orgnumber)
         {
-            var result = await _altinnApiService.GetPersonalContactsAltinn3(orgnumber, environmentName);
+            try
+            {
+                var result = await _altinnApiService.GetPersonalContactsAltinn3(orgnumber, environmentName);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
 
         }
     }
