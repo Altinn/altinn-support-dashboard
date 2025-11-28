@@ -195,5 +195,29 @@ public class AltinnApiClient
         }
     }
 
+    public async Task<string> GetPersonalContactsAltinn3(string orgNumber, string environmentName)
+    {
+        try
+        {
+            var client = _clients[environmentName];
+
+            var requestUrl = $"/profile/api/v1/dashboard/organizations/{orgNumber}/contactinformation";
+
+            var response = await client.GetAsync(requestUrl);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+            return responseBody;
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
+        }
+    }
+
 
 }
