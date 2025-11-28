@@ -22,7 +22,7 @@ public class AltinnApiClient
     public void InitClient(string environmentName, EnvironmentConfiguration configuration)
     {
         var client = _clientFactory.CreateClient(environmentName);
-        client.BaseAddress = new Uri(configuration.BaseAddress);
+        client.BaseAddress = new Uri(configuration.BaseAddressAltinn2);
         client.Timeout = TimeSpan.FromSeconds(configuration.Timeout);
         client.DefaultRequestHeaders.Add("ApiKey", configuration.ApiKey);
         Console.WriteLine($"API Key {configuration.ApiKey} added to request headers.");
@@ -194,6 +194,5 @@ public class AltinnApiClient
             throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
     }
-
 
 }
