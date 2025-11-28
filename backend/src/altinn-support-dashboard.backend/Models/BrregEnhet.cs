@@ -10,31 +10,31 @@ namespace altinn_support_dashboard.Server.Models
     public class BrregEnhet
     {
         [JsonPropertyName("organisasjonsnummer")]
-        public string Organisasjonsnummer { get; set; }
+        public required string Organisasjonsnummer { get; set; }
 
         [JsonPropertyName("navn")]
-        public string Navn { get; set; }
+        public required string Navn { get; set; }
 
         [JsonPropertyName("organisasjonsform")]
-        public BrregOrganisasjonsform Organisasjonsform { get; set; }
+        public required BrregOrganisasjonsform Organisasjonsform { get; set; }
 
         [JsonPropertyName("hjemmeside")]
-        public string Hjemmeside { get; set; }
+        public string? Hjemmeside { get; set; }
 
         [JsonPropertyName("registreringsdatoEnhetsregisteret")]
-        public string RegistreringsdatoEnhetsregisteret { get; set; }
+        public string? RegistreringsdatoEnhetsregisteret { get; set; }
 
         [JsonPropertyName("forretningsadresse")]
-        public BrregAdresse Forretningsadresse { get; set; }
+        public BrregAdresse? Forretningsadresse { get; set; }
 
         [JsonPropertyName("epostadresse")]
-        public string Epostadresse { get; set; }
+        public string? Epostadresse { get; set; }
 
         [JsonPropertyName("telefon")]
-        public string Telefon { get; set; }
+        public string? Telefon { get; set; }
 
         [JsonPropertyName("aktivitet")]
-        public List<string> Aktivitet { get; set; }
+        public List<string>? Aktivitet { get; set; }
     }
 
     /// <summary>
@@ -43,10 +43,10 @@ namespace altinn_support_dashboard.Server.Models
     public class BrregOrganisasjonsform
     {
         [JsonPropertyName("kode")]
-        public string Kode { get; set; }
+        public required string Kode { get; set; }
 
         [JsonPropertyName("beskrivelse")]
-        public string Beskrivelse { get; set; }
+        public required string Beskrivelse { get; set; }
     }
 
     /// <summary>
@@ -55,21 +55,21 @@ namespace altinn_support_dashboard.Server.Models
     public class BrregAdresse
     {
         [JsonPropertyName("adresse")]
-        public List<string> Adresse { get; set; }
+        public required List<string> Adresse { get; set; }
 
         [JsonPropertyName("postnummer")]
-        public string Postnummer { get; set; }
+        public required string Postnummer { get; set; }
 
         [JsonPropertyName("poststed")]
-        public string Poststed { get; set; }
+        public required string Poststed { get; set; }
 
         [JsonPropertyName("kommune")]
-        public string Kommune { get; set; }
+        public required string Kommune { get; set; }
 
         [JsonPropertyName("kommunenummer")]
-        public string Kommunenummer { get; set; }
+        public string? Kommunenummer { get; set; }
 
         [JsonPropertyName("land")]
-        public string Land { get; set; }
+        public required string Land { get; set; }
     }
 }

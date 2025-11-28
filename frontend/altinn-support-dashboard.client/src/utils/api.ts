@@ -1,5 +1,5 @@
 import { authorizedFetch, getBaseUrl } from "./utils";
-import { OfficialContact, Role } from "../models/models";
+import { OfficialContact, Role, Subunit } from "../models/models";
 
 //this file defines which which api endpoints we want to fetch data from
 
@@ -7,7 +7,7 @@ export const fetchOrganizations = async (
   environment: string,
   query: string,
 ) => {
-  var trimmedQuery = query.replace(/\s/g, "");
+  const trimmedQuery = query.replace(/\s/g, "");
 
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`,
@@ -37,7 +37,7 @@ export const fetchSubunits = async (environment: string, orgNumber: string) => {
 
   const data = await res.json();
   if (!data?._embedded?.underenheter) return [];
-  return data._embedded.underenheter.map((sub: any) => ({
+  return data._embedded.underenheter.map((sub: Subunit) => ({
     navn: sub.navn,
     organisasjonsnummer: sub.organisasjonsnummer,
     overordnetEnhet: sub.overordnetEnhet,

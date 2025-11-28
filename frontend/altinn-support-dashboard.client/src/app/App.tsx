@@ -21,8 +21,6 @@ import PrivateRoutes from "./PrivateRoutes";
 import { ToastContainer } from "react-toastify";
 
 const App: React.FC = () => {
-  const isDarkMode = useAppStore((state) => state.isDarkMode);
-
   // Sjekk etter nye versjoner
   const { versionInfo, shouldShowDialog, acknowledgeVersion } =
     useVersionCheck();

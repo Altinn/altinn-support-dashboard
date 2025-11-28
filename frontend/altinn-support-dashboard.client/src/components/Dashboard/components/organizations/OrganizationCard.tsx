@@ -1,12 +1,12 @@
 import classes from "../../styles/OrganizationCard.module.css";
 import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
 import { Organization, SelectedOrg, Subunit } from "../../../../models/models";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card, Button, Heading, Paragraph } from "@digdir/designsystemet-react";
 
 interface OrganizationCardProps {
   org: Organization;
-  selectedOrg?: SelectedOrg;
+  selectedOrg?: SelectedOrg | null;
   subUnits: Subunit[];
   setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
 }

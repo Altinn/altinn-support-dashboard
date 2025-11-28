@@ -1,7 +1,5 @@
 import React from "react";
-import {
-  Textfield,
-} from "@digdir/designsystemet-react";
+import { Textfield } from "@digdir/designsystemet-react";
 import styles from "../../styles/ContactsSearchBar.module.css";
 
 interface SearchContactsBarProps {
@@ -13,7 +11,6 @@ interface SearchContactsBarProps {
 const SearchContactsBar: React.FC<SearchContactsBarProps> = ({
   searchQuery,
   setSearchQuery,
-  handleClearSearch,
 }) => {
   return (
     <Textfield

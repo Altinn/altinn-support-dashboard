@@ -23,14 +23,14 @@ public class AnsattportenController : ControllerBase
     {
         _ansattportenService = ansattportenService;
         ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
-        baseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
+        baseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>() ?? "";
     }
 
     [HttpGet("login")]
     public async Task<IActionResult> Login([FromQuery] string? redirectTo = "/")
     {
 
-        string safeRedirectPath = baseUrl + ValidationService.SanitizeRedirectUrl(redirectTo);
+        string safeRedirectPath = baseUrl + ValidationService.SanitizeRedirectUrl(redirectTo ?? "");
 
         if (ansattportenFeatureFlag != true)
         {
@@ -48,7 +48,7 @@ public class AnsattportenController : ControllerBase
     {
         await Task.CompletedTask;
 
-        if (ansattportenFeatureFlag != true || User == null)
+        if (User == null || ansattportenFeatureFlag != true)
         {
             return Ok(new AuthDetails
             {
@@ -60,6 +60,7 @@ public class AnsattportenController : ControllerBase
         }
 
         var result = await HttpContext.AuthenticateAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
+
 
         return Ok(new AuthDetails
         {

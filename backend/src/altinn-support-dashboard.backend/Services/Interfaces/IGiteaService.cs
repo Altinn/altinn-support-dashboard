@@ -30,7 +30,7 @@ namespace altinn_support_dashboard.Server.Services.Interfaces
         /// <param name="orgName">Organisasjonens kortnavn</param>
         /// <returns>True hvis organisasjonen eksisterer</returns>
         Task<bool> OrganizationExistsAsync(string environmentName, string orgName);
-        
+
         /// <summary>
         /// Oppretter en ny organisasjon med standard team og repository
         /// </summary>

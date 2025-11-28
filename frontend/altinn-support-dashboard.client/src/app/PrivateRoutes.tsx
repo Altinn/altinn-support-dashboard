@@ -9,7 +9,7 @@ const PrivateRoutes = () => {
     return <Spinner aria-label="authorizing" data-size="xl" />;
   }
 
-  return authDetails.data.isLoggedIn ? <Outlet /> : <Navigate to="/signin" />;
+  return authDetails?.data?.isLoggedIn ? <Outlet /> : <Navigate to="/signin" />;
 };
 
 export default PrivateRoutes;

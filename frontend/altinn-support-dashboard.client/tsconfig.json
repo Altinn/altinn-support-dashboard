@@ -1,14 +1,8 @@
 {
   "compilerOptions": {
     // Reduserer strenge typekontroller for å unngå lint-feil
-    "noImplicitAny": false,
-    "strictNullChecks": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "skipLibCheck": true,
-    "suppressExcessPropertyErrors": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "types": [],
+    "strict": true,
+    "types": []
   },
   "files": [],
   "references": [
@@ -19,5 +13,10 @@
       "path": "./tsconfig.node.json"
     }
   ],
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/node_modules", "./dist"]
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/node_modules",
+    "./dist"
+  ]
 }

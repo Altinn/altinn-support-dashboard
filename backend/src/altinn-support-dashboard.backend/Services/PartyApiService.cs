@@ -26,6 +26,10 @@ public class PartyApiService : IPartyApiService
         var result = await _client.GetParty(orgNumber, true);
 
         var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
+        if (party == null)
+        {
+            throw new Exception("Party not valid");
+        }
         return party;
     }
 
@@ -35,6 +39,10 @@ public class PartyApiService : IPartyApiService
         var result = await _client.GetParty(ssn, false);
 
         var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
+        if (party == null)
+        {
+            throw new Exception("Party not valid");
+        }
         return party;
     }
 
@@ -44,6 +52,10 @@ public class PartyApiService : IPartyApiService
 
         var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
 
+        if (party == null)
+        {
+            throw new Exception("Party not valid");
+        }
         return party;
     }
 
@@ -59,6 +71,11 @@ public class PartyApiService : IPartyApiService
         var resultOrgParty = await _client.GetParty(orgNumber, true);
         var orgParty = JsonSerializer.Deserialize<PartyModel>(resultOrgParty, jsonOptions);
 
+        if (orgParty == null)
+        {
+            throw new Exception("OrgParty not valid");
+        }
+
         var resultPartyRoles = await _client.GetPartyRoles(orgParty.PartyUuid);
 
 
@@ -70,10 +87,15 @@ public class PartyApiService : IPartyApiService
         List<(PartyModel party, string identifier)> partyRoles = new();
         foreach (var item in root.GetProperty("data").EnumerateArray())
         {
-            string identifier = item.GetProperty("role").GetProperty("identifier").GetString();
-            string toUuid = item.GetProperty("to").GetProperty("partyUuid").GetString();
+            string identifier = item.GetProperty("role").GetProperty("identifier").GetString() ?? "";
+            string toUuid = item.GetProperty("to").GetProperty("partyUuid").GetString() ?? "";
             var partyResult = await _client.GetPartyByUuid(toUuid);
             var party = JsonSerializer.Deserialize<PartyModel>(partyResult, jsonOptions);
+
+            if (party == null || String.IsNullOrEmpty(identifier))
+            {
+                continue;
+            }
 
             partyRoles.Add((party, identifier));
         }
@@ -88,6 +110,11 @@ public class PartyApiService : IPartyApiService
 
         foreach (var item in partyRoles)
         {
+            if (item.party.Person == null)
+            {
+                continue;
+            }
+
             var rolle = new Roller
             {
                 Type = new Models.Type

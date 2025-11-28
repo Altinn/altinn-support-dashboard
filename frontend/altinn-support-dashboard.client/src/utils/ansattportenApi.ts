@@ -14,9 +14,7 @@ export const fetchAuthDetails = async (): Promise<authDetails> => {
       };
     }
     const data = (await res.json()) as authDetails;
-    if (data?.userPolicies == null || data?.userPolicies?.length < 1) {
-      data.userPolicies = ["ProductionAuthenticated", "TT02Authenticated"];
-    }
+
     return data;
   } catch (err) {
     return {
@@ -37,7 +35,7 @@ export const initiateSignIn = async (redirectTo: string) => {
 
 //temporary
 export const initiateAiDevSignIn = async (redirectTo: string) => {
-  window.location.href = "/.auth/login/aad?post_login_redirect_uri=/dashboard";
+  window.location.href = `/.auth/login/aad?post_login_redirect_uri=${redirectTo}`;
 };
 
 export const initiateSignOut = async (redirectTo: string) => {

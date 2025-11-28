@@ -48,7 +48,7 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest(new PatValidationResult
                 {
-                    IsValid = false, 
+                    IsValid = false,
                     Message = "Token kan ikke være tom"
                 });
             }
@@ -57,7 +57,7 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest(new PatValidationResult
                 {
-                    IsValid = false, 
+                    IsValid = false,
                     Message = "Miljø må være enten 'development' eller 'production'"
                 });
             }
@@ -65,12 +65,12 @@ namespace AltinnSupportDashboard.Controllers
             try
             {
                 var result = await _giteaService.ValidateTokenAsync(environmentName, tokenRequest.Token);
-                
+
                 if (result.IsValid)
                 {
                     _giteaService.SetToken(environmentName, tokenRequest.Token);
                 }
-                
+
                 return Ok(result);
             }
             catch (Exception ex)
@@ -78,7 +78,7 @@ namespace AltinnSupportDashboard.Controllers
                 _logger.LogError(ex, $"Feil ved validering av token for miljø {environmentName}");
                 return StatusCode(500, new PatValidationResult
                 {
-                    IsValid = false, 
+                    IsValid = false,
                     Message = $"Serverfeil: {ex.Message}"
                 });
             }
@@ -122,10 +122,10 @@ namespace AltinnSupportDashboard.Controllers
 
                 // Hent ut tokenet fra Bearer-formatet
                 string token = authHeader.Substring("Bearer ".Length).Trim();
-                
+
                 // Sett token på klienten før API-kall
                 _giteaService.SetToken(environmentName, token);
-                
+
                 bool exists = await _giteaService.OrganizationExistsAsync(environmentName, orgName);
                 return Ok(exists);
             }
@@ -178,17 +178,17 @@ namespace AltinnSupportDashboard.Controllers
 
                 // Hent ut tokenet fra Bearer-formatet
                 string token = authHeader.Substring("Bearer ".Length).Trim();
-                
+
                 // Sett token på klienten før API-kall
                 _giteaService.SetToken(environmentName, token);
 
                 var result = await _giteaService.CreateOrganizationAsync(environmentName, request);
-                
+
                 if (!result.Success)
                 {
                     return BadRequest(result);
                 }
-                
+
                 // Returner 201 Created med resultatet
                 return Created($"api/gitea/{environmentName}/organizations/{request.ShortName}", result);
             }

@@ -60,7 +60,7 @@ namespace altinn_support_dashboard.Server.Services
                 PropertyNameCaseInsensitive = true
             });
 
-            return rollerMain;
+            return rollerMain ?? new ErRollerModel();
         }
 
         public async Task<UnderenhetRootObject> GetUnderenheter(string orgNumber, string environmentName)
@@ -82,7 +82,7 @@ namespace altinn_support_dashboard.Server.Services
                 PropertyNameCaseInsensitive = true
             });
 
-            return underenheter;
+            return underenheter ?? new UnderenhetRootObject();
         }
 
         /// <summary>
@@ -115,6 +115,11 @@ namespace altinn_support_dashboard.Server.Services
 
                 // Deserialiserer organisasjonsinformasjonen fra Brreg
                 var enhet = JsonSerializer.Deserialize<BrregEnhet>(result, options);
+
+                if (enhet == null)
+                {
+                    throw new Exception("Enhet not found");
+                }
 
                 // Plukker ut relevante data for organisasjonen
                 var enhetsDetaljer = new

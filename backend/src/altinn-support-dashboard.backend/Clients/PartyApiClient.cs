@@ -11,32 +11,35 @@ public class PartyApiClient
     {
         _client = clientFactory.CreateClient("TT02");
 
-        string registerSubscriptionKey = settingsConfiguration.GetSection("Configuration:Ocp_Apim_Subscription_Key").Get<string>();
+        string registerSubscriptionKey = settingsConfiguration.GetSection("Configuration:Ocp_Apim_Subscription_Key").Get<string>() ?? "";
         _client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", registerSubscriptionKey);
 
         _client.BaseAddress = new Uri("https://platform.tt02.altinn.no/register/api/v1/");
     }
 
+    //request of party
+    public class LookupRequest
+    {
+        public string? OrgNo { get; set; }
+        public string? Ssn { get; set; }
+    }
 
     public async Task<string> GetParty(string orgNumber, bool isOrg)
     {
         try
         {
             string requestUrl = "parties/lookup";
-            var requestBody = new
-            {
-                OrgNo = (string)null,
-                Ssn = (string)null
-            };
+            var requestBody = new LookupRequest();
+
 
             if (isOrg)
             {
-                requestBody = new { OrgNo = orgNumber, Ssn = (string)null };
+                requestBody.OrgNo = orgNumber;
             }
             else
             {
+                requestBody.Ssn = orgNumber;
 
-                requestBody = new { OrgNo = (string)null, Ssn = orgNumber };
             }
 
             var jsonBody = JsonSerializer.Serialize(requestBody);

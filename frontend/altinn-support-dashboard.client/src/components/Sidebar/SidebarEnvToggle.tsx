@@ -8,14 +8,17 @@ const SidebarEnvToggle: React.FC = () => {
   const environment = useAppStore((state) => state.environment);
   const setEnvironment = useAppStore((state) => state.setEnvironment);
   const authDetails = useAuthDetails();
-  const userPolicies = authDetails.data.userPolicies;
+  const userPolicies = authDetails?.data?.userPolicies;
 
   const handleEnvironmentChange = (env: string) => {
     setEnvironment(env);
   };
 
-  //switched the environment if user only has access to one of the environments
   useEffect(() => {
+    if (userPolicies == null) {
+      return;
+    }
+
     if (
       environment == "TT02" &&
       !userPolicies.includes("TT02Authenticated") &&
@@ -29,7 +32,12 @@ const SidebarEnvToggle: React.FC = () => {
     ) {
       setEnvironment("TT02");
     }
-  }, [authDetails.data.isLoggedIn]);
+  }, [
+    authDetails?.data?.isLoggedIn,
+    environment,
+    setEnvironment,
+    userPolicies,
+  ]);
 
   return (
     <div className={classes.container}>
@@ -38,10 +46,12 @@ const SidebarEnvToggle: React.FC = () => {
         value={environment}
         onChange={(e) => handleEnvironmentChange(e.target.value)}
       >
-        {userPolicies.includes("ProductionAuthenticated") && (
+        {(!authDetails.data?.ansattportenActive ||
+          userPolicies?.includes("ProductionAuthenticated")) && (
           <SelectOption value="PROD">PROD</SelectOption>
         )}
-        {userPolicies.includes("TT02Authenticated") && (
+        {(!authDetails.data?.ansattportenActive ||
+          userPolicies?.includes("TT02Authenticated")) && (
           <SelectOption value="TT02">TT02</SelectOption>
         )}
       </Select>

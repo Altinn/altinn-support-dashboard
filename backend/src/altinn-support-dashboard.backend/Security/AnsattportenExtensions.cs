@@ -34,7 +34,7 @@ public static class AnsattportenExtensions
             return services;
         }
 
-        AnsattportenLoginSettings oidcSettings = configuration.GetSection(nameof(AnsattportenLoginSettings)).Get<AnsattportenLoginSettings>();
+        AnsattportenLoginSettings oidcSettings = configuration.GetSection(nameof(AnsattportenLoginSettings)).Get<AnsattportenLoginSettings>() ?? throw new Exception("AnsattportenLoginSettings not set"); ;
 
         services
             .AddAuthentication(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme)
@@ -91,8 +91,9 @@ public static class AnsattportenExtensions
                         var redirectBaseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
                         var error = context?.Failure?.Message ?? "uknown message";
 
-                        context.Response.Redirect(redirectBaseUrl + "/signin?error=loginFailed");
-                        context.HandleResponse();
+                        context?.Response.Redirect(redirectBaseUrl + "/signin?error=loginFailed");
+
+                        context?.HandleResponse();
 
                         return Task.CompletedTask;
                     };
@@ -140,7 +141,7 @@ public static class AnsattportenExtensions
 
         if (ansattPortenFeatureFlag)
         {
-            AltinnResources resources = configuration?.GetSection("AnsattportenLoginSettings:AltinnResources")?.Get<AltinnResources>() ?? new AltinnResources();
+            AltinnResources resources = configuration?.GetSection("AnsattportenLoginSettings:AltinnResources")?.Get<AltinnResources>() ?? throw new Exception(" One or more AltinnResources not defined in AnsattportenLoginSettings");
             //Defines access policies, if it should be dependent on a Altinn resource, AltinnResourceRequirement should be used
             services.AddAuthorizationBuilder()
                 .AddPolicy(AnsattportenConstants.AnsattportenAuthorizationPolicy, policy =>

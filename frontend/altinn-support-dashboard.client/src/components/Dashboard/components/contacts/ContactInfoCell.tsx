@@ -1,6 +1,6 @@
 import { useDashboardStore } from "../../../../stores/DashboardStore";
 
-import { Table, Tooltip, Label } from "@digdir/designsystemet-react";
+import { Tooltip, Label } from "@digdir/designsystemet-react";
 
 import { formatDate } from "../../utils/dateUtils";
 import { useEffect, useState } from "react";

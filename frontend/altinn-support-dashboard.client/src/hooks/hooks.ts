@@ -1,15 +1,11 @@
 import { useState, useEffect } from "react";
 import {
   PersonalContact,
-  ERRole,
   Role,
   OfficialContact,
+  ERRoles,
 } from "../models/models";
-import {
-  getBaseUrl,
-  getFormattedDateTime,
-  fetchUserDetails,
-} from "../utils/utils";
+import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   fetchERoles,
@@ -19,7 +15,6 @@ import {
   fetchRolesForOrg,
   fetchSubunits,
 } from "../utils/api";
-import { useAppStore } from "../stores/Appstore";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -83,7 +78,7 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     enabled: !!orgNumber,
   });
 
-  const ERolesQuery: UseQueryResult<ERRole[], Error> = useQuery({
+  const ERolesQuery: UseQueryResult<ERRoles[], Error> = useQuery({
     queryKey: ["erroles", environment, orgNumber],
     queryFn: () => fetchERoles(environment, orgNumber!),
     enabled: !!orgNumber,

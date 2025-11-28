@@ -9,7 +9,7 @@ import "../design-tokens-build/test2.css";
 
 const queryClient = new QueryClient();
 
-const Root = () => {
+export const Root = () => {
   const isDarkmode = useAppStore((state) => state.isDarkMode);
 
   return (

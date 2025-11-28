@@ -6,7 +6,7 @@ import { SelectedOrg } from "../../models/models";
 type SearchComponentProps = {
   query: string;
   setQuery: (query: string) => void;
-  setSelectedOrg: (selectedOrg: SelectedOrg) => void;
+  setSelectedOrg: (selectedOrg: SelectedOrg | null) => void;
 };
 
 const SearchComponent: React.FC<SearchComponentProps> = ({

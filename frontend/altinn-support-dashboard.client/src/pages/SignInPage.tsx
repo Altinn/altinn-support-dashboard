@@ -6,11 +6,7 @@ import coloredLogo from "../assets/log-in-blue.png";
 import { useAppStore } from "../stores/Appstore";
 import cat from "../assets/fun/sleeping cat.gif";
 import dog from "../assets/fun/sleeping dog.gif";
-import {
-  initiateAiDevSignIn,
-  initiateSignIn,
-  initiateSignOut,
-} from "../utils/ansattportenApi";
+import { initiateAiDevSignIn, initiateSignIn } from "../utils/ansattportenApi";
 import { useLocation } from "react-router-dom";
 import { showPopup } from "../components/Popup";
 
@@ -18,10 +14,11 @@ export const SignInPage: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
   const location = useLocation();
 
-  const selectedImage = React.useMemo(() => {
-    const images = [cat, dog];
+  const images = [cat, dog];
+
+  const [selectedImage] = React.useState(() => {
     return images[Math.floor(Math.random() * images.length)];
-  }, []);
+  });
 
   useEffect(() => {
     const errorParam = new URLSearchParams(location.search).get("error");
@@ -30,7 +27,7 @@ export const SignInPage: React.FC = () => {
     if (errorParam === "loginFailed") {
       showPopup("Innlogging feilet, prøv igjen", "error");
     }
-  }, []);
+  }, [location.search]);
 
   const handleSignInAnsattporten = () => {
     initiateSignIn("/dashboard");

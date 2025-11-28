@@ -124,7 +124,7 @@ namespace altinn_support_dashboard.Server.Services
             }
 
             var result = await _client.GetOfficialContacts(orgNumber, environment);
-            List<OfficialContact> officialContacts = JsonSerializer.Deserialize<List<OfficialContact>>(result, jsonOptions);
+            List<OfficialContact> officialContacts = JsonSerializer.Deserialize<List<OfficialContact>>(result, jsonOptions) ?? new List<OfficialContact>();
 
             return officialContacts;
         }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Textfield, Button, Search } from "@digdir/designsystemet-react";
 import styles from "./styles/TopSearchBarTextfield.module.css";
 import { SelectedOrg } from "../../models/models";
@@ -6,7 +6,7 @@ import { SelectedOrg } from "../../models/models";
 type Props = {
   query: string;
   setQuery: (query: string) => void;
-  setSelectedOrg: (selectedOrg: SelectedOrg) => void;
+  setSelectedOrg: (selectedOrg: SelectedOrg | null) => void;
 };
 
 export const TopSearchBarTextField: React.FC<Props> = ({
@@ -14,20 +14,17 @@ export const TopSearchBarTextField: React.FC<Props> = ({
   setQuery,
   setSelectedOrg,
 }) => {
-  const [textFieldValue, setTextFieldValue] = useState("");
+  const [textFieldValue, setTextFieldValue] = useState(() => {
+    if (query != null && query !== "") return query;
+    return "";
+  });
   const handleSearch = () => {
-    //Ignores + for countrycodes for phonenumbers
     if (textFieldValue != query) {
       setSelectedOrg(null);
     }
     setQuery(textFieldValue);
   };
 
-  useEffect(() => {
-    if (textFieldValue === "" && query != null) {
-      setTextFieldValue(query);
-    }
-  }, []);
   return (
     <div className={styles["Container"]}>
       <Textfield

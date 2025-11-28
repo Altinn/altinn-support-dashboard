@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import logo from "../../assets/logo.png";
 import whiteLogo from "/asd_128_white.png";
 import { useSidebarDrag } from "./hooks/useSidebarDrag";
@@ -21,30 +20,22 @@ import { Button, Divider, Label } from "@digdir/designsystemet-react";
 
 import classes from "./styles/SideBarComponent.module.css";
 import { useAuthDetails } from "../../hooks/ansattportenHooks";
-import { useAppStore } from "../../stores/Appstore";
 
 const Sidebar: React.FC = () => {
   const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();
 
-  const environment = useAppStore((state) => state.environment);
-
   //old user details (will be removed in the future)
   const { userName, userEmail } = useUserDetails();
 
-  const [newUsername, setNewUsername] = useState("");
   const authDetails = useAuthDetails();
+
+  const newUsername = authDetails?.data?.name;
 
   const handleLogout = () => {
     initiateSignOut("/signin");
   };
 
-  useEffect(() => {
-    if (authDetails?.data?.isLoggedIn) {
-      setNewUsername(authDetails.data.name);
-    }
-  }, [authDetails.data?.isLoggedIn, authDetails.data?.name]);
-
-  if (authDetails.isLoading || !authDetails.data.isLoggedIn) {
+  if (authDetails.isLoading || !authDetails?.data?.isLoggedIn) {
     return;
   }
 

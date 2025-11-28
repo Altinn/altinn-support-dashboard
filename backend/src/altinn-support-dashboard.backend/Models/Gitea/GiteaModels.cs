@@ -12,23 +12,23 @@ namespace altinn_support_dashboard.Server.Models.Gitea
         /// Lesetilgang
         /// </summary>
         Read,
-        
+
         /// <summary>
         /// Skrivetilgang
         /// </summary>
         Write,
-        
+
         /// <summary>
         /// Administratortilgang
         /// </summary>
         Admin,
-        
+
         /// <summary>
         /// Ingen tilgang
         /// </summary>
         None
     }
-    
+
     /// <summary>
     /// Representerer en Gitea-bruker
     /// </summary>
@@ -132,7 +132,7 @@ namespace altinn_support_dashboard.Server.Models.Gitea
 
         [JsonPropertyName("permission")]
         public required string Permission { get; set; }
-        
+
         [JsonPropertyName("units_permission")]
         public required string UnitsPermission { get; set; }
 
@@ -141,7 +141,7 @@ namespace altinn_support_dashboard.Server.Models.Gitea
 
         [JsonPropertyName("can_create_org_repo")]
         public bool CanCreateOrgRepo { get; set; }
-        
+
         [JsonPropertyName("units")]
         public List<string> Units { get; set; } = new List<string> { "repo.code", "repo.issues", "repo.ext_issues", "repo.wiki", "repo.pulls", "repo.releases", "repo.ext_wiki" };
     }
@@ -174,7 +174,7 @@ namespace altinn_support_dashboard.Server.Models.Gitea
     {
         [JsonPropertyName("name")]
         public required string Name { get; set; }
-        
+
         [JsonPropertyName("description")]
         public string? Description { get; set; }
 
@@ -190,7 +190,7 @@ namespace altinn_support_dashboard.Server.Models.Gitea
         [JsonPropertyName("trust_model")]
         public string TrustModel { get; set; } = "default";
     }
-    
+
     /// <summary>
     /// Modell for overføring av repository til ny eier
     /// </summary>
@@ -198,7 +198,7 @@ namespace altinn_support_dashboard.Server.Models.Gitea
     {
         [JsonPropertyName("new_owner")]
         public required string NewOwner { get; set; }
-        
+
         [JsonPropertyName("team_ids")]
         public List<int>? TeamIds { get; set; } = new List<int>();
     }
