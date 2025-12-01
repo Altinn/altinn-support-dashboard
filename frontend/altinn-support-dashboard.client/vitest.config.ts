@@ -10,14 +10,9 @@ export default defineConfig({
 
     coverage: {
       provider: "v8",
-      reporter: [["cobertura", { package: "frontend" }], "text-summary"],
+      reporter: ["cobertura", "text-summary"],
       reportsDirectory: "./.coverage",
-      include: [
-        "src/components/**",
-        "src/utils/**",
-        "src/services/**",
-        "src/pages/**",
-      ],
+      include: ["src/components", "src/utils", "src/services", "src/pages"],
     },
   },
 
