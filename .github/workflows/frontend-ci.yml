@@ -44,7 +44,7 @@ jobs:
       - name: Generate Coverage Summary
         uses: irongut/CodeCoverageSummary@f13848964841ca2f7a63343b287493e17dc645de
         with:
-          format: badge
+          format: markdown
           filename: "frontend/altinn-support-dashboard.client/.coverage/cobertura-coverage.xml"
           output: "both"
           fail_below_min: false
