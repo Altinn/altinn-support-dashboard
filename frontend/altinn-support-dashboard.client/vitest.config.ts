@@ -12,7 +12,12 @@ export default defineConfig({
       provider: "v8",
       reporter: ["cobertura", "text-summary"],
       reportsDirectory: "./.coverage",
-      include: ["src/components", "src/utils", "src/services", "src/pages"],
+      include: [
+        "src/components/*",
+        "src/utils/*",
+        "src/services/*",
+        "src/pages/*",
+      ],
       exclude: ["**/styles/**", "**/models/**"],
     },
   },
