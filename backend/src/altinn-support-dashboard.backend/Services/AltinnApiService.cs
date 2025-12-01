@@ -172,21 +172,6 @@ public class AltinnApiService : IAltinnApiService
         var result = await _altinn3client.GetNotificationAddresses(orgNumber, environment);
         var notificationAddresses = JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
-        List<NotificationAddressDto> NAddresses = [];
-        foreach (NotificationAddressDto address in notificationAddresses)
-        {
-            var newAddress = new NotificationAddressDto
-            {
-                NotificationAddressId = address.NotificationAddressId,
-                CountryCode = address.CountryCode,
-                Email = address.Email,
-                Phone = address.Phone,
-                SourceOrgNumber = address.SourceOrgNumber,
-                RequestedOrgNumber = address.RequestedOrgNumber,
-                LastChanged = address.LastChanged
-            };
-            NAddresses.Add(newAddress);
-        }
-        return NAddresses;
+        return notificationAddresses;
     }
 }
