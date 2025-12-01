@@ -9,7 +9,7 @@ export default defineConfig({
     setupFiles: ["./src/setupTests.ts"],
 
     coverage: {
-      provider: "istanbul",
+      provider: "c8",
       reporter: ["text", "lcov", "json-summary"],
       reportsDirectory: "./coverage",
     },
