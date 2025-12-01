@@ -13,6 +13,7 @@ export default defineConfig({
       reporter: ["cobertura", "text-summary"],
       reportsDirectory: "./.coverage",
       include: ["src/components", "src/utils", "src/services", "src/pages"],
+      exclude: ["**/styles/**", "**/models/**"],
     },
   },
 
