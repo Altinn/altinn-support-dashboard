@@ -36,7 +36,7 @@ jobs:
         badge_upper: 75 
 
     - name: Post PR Comment
-      uses: marocchino/sticky-pull-request-comment@v2
+      uses: marocchino/sticky-pull-request-comment@5060d4700a91de252c87eeddd2da026382d9298a
       with:
         header: "🟪 Backend Code Coverage"
         recreate: true
