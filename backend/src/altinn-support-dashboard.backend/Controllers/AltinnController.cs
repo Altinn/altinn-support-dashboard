@@ -45,7 +45,7 @@ namespace AltinnSupportDashboard.Controllers
 
         }
 
-        [HttpGet("organizations/{orgnumber}/altinn3/notificationaddresses")]
+        [HttpGet("organizations/{orgNumber}/altinn3/notificationaddresses")]
         public async Task<IActionResult> GetNotificationAddresses([FromRoute] string orgnumber)
         {
             try

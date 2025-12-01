@@ -53,12 +53,12 @@ public class Altinn3ApiClient
         }
     }
 
-    public async Task<string> GetNotificationAddresses( string orgnNumber, string environmentName)
+    public async Task<string> GetNotificationAddresses( string orgNumber, string environmentName)
     {
         try
         {
             var client = _clients[environmentName];
-            var requestUrl = $"profile/api/v1/dashboard/organizations/{orgnNumber}/notificationaddresses";
+            var requestUrl = $"profile/api/v1/dashboard/organizations/{orgNumber}/notificationaddresses";
 
             var response = await client.GetAsync(requestUrl);
             var responseBody = await response.Content.ReadAsStringAsync();
@@ -71,7 +71,7 @@ public class Altinn3ApiClient
         }
         catch (Exception ex)
         {
-            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
     }
 

@@ -17,6 +17,6 @@ namespace altinn_support_dashboard.Server.Services.Interfaces
 
         Task<List<PersonalContact>> GetPersonalContactsAltinn3(string orgNumber, string environment);
 
-        Task<List<NotificationAddressDto>> GetNotificationAddressesAltinn3(string orgnNumber, string environment);
+        Task<List<NotificationAddressDto>> GetNotificationAddressesAltinn3(string orgNumber, string environment);
     }
 }
