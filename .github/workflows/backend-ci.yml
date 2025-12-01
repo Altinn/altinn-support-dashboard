@@ -46,5 +46,4 @@ jobs:
         with:
           header: "Backend Code Coverage"
           recreate: true
-          delete: true
           path: "code-coverage-results.md"

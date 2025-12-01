@@ -44,7 +44,7 @@ jobs:
         uses: irongut/CodeCoverageSummary@f13848964841ca2f7a63343b287493e17dc645de
         with:
           format: markdown
-          filename: "./frontend/altinn-support-dashboard.client/coverage/lcov.info"
+          filename: "frontend/altinn-support-dashboard.client/coverage/lcov.info"
           output: "both"
           fail_below_min: false
           badge: true
@@ -54,5 +54,4 @@ jobs:
         with:
           header: "Frontend Code Coverage"
           recreate: true
-          delete: true
  
