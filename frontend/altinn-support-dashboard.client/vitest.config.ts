@@ -17,6 +17,7 @@ export default defineConfig({
         "src/utils/*",
         "src/services/*",
         "src/pages/*",
+        "src/hooks/*",
       ],
       exclude: ["**/styles/**", "**/models/**"],
     },
