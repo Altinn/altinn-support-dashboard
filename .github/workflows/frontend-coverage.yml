@@ -38,6 +38,9 @@ jobs:
         files: "frontend/altinn-support-dashboard.client/coverage/lcov.info"
         output: "both"
         fail_below_min: false
+        badge: true                 
+        badge_lower: 50           
+        badge_upper: 75 
 
     - name: Post PR Comment
       uses: marocchino/sticky-pull-request-comment@v2
