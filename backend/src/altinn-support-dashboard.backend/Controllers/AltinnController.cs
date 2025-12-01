@@ -44,6 +44,22 @@ namespace AltinnSupportDashboard.Controllers
             }
 
         }
+
+        [HttpGet("organizations/{orgnumber}/altinn3/notificationaddresses")]
+        public async Task<IActionResult> GetNotificationAddresses([FromRoute] string orgnumber)
+        {
+            try
+            {
+                var result = await _altinnApiService.GetNotificationAddressesAltinn3(orgnumber, environmentName);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+
+        }
     }
 
     [ApiController]

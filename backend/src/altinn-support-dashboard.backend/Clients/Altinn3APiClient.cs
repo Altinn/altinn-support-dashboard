@@ -53,5 +53,27 @@ public class Altinn3ApiClient
         }
     }
 
+    public async Task<string> GetNotificationAddresses( string orgnNumber, string environmentName)
+    {
+        try
+        {
+            var client = _clients[environmentName];
+            var requestUrl = $"profile/api/v1/dashboard/organizations/{orgnNumber}/notificationaddresses";
+
+            var response = await client.GetAsync(requestUrl);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if(!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+            return responseBody;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
+        }
+    }
+
 
 }

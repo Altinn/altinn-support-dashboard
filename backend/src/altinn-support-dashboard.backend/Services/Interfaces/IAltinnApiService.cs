@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using altinn_support_dashboard.Server.Models;
+using Models.altinn3Dtos;
 
 namespace altinn_support_dashboard.Server.Services.Interfaces
 {
@@ -15,5 +16,7 @@ namespace altinn_support_dashboard.Server.Services.Interfaces
         Task<List<Role>> GetPersonRoles(string subject, string reportee, string environment);
 
         Task<List<PersonalContact>> GetPersonalContactsAltinn3(string orgNumber, string environment);
+
+        Task<List<NotificationAddressDto>> GetNotificationAddressesAltinn3(string orgnNumber, string environment);
     }
 }
