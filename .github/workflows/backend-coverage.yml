@@ -25,7 +25,7 @@ jobs:
       run: dotnet test --collect:"XPlat Code Coverage"
 
     - name: Generate Coverage Summary
-      uses: irongut/CodeCoverageSummary@v1.3.0
+      uses: irongut/CodeCoverageSummary@f13848964841ca2f7a63343b287493e17dc645de
       with:
         format: markdown
         files: "**/coverage.cobertura.xml"
