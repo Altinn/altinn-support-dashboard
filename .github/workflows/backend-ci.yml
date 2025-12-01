@@ -1,4 +1,14 @@
-     
+name: Backend CI checks
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
   backend:
     name: Backend C# Build & Test
     runs-on: ubuntu-latest
