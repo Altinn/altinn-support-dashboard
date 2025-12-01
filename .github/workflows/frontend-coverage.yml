@@ -6,7 +6,7 @@ permissions:
 on:
   pull_request:
     paths:
-      - "frontend/altinn-support-dashboard.client"
+      - "frontend/altinn-support-dashboard.client/**"
 
 jobs:
   coverage:

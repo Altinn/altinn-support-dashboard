@@ -1,9 +1,8 @@
 name: Backend Coverage
-
 on:
   pull_request:
     paths:
-      - "backend/**"
+      - "backend/src/altinn-support-dashboard.backend/**"
 
 permissions:
   contents: read
@@ -22,7 +21,7 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Run tests with coverage
-      working-directory: backend
+      working-directory: backend/src/altinn-support-dashboard.backend
       run: dotnet test --collect:"XPlat Code Coverage"
 
     - name: Generate Coverage Summary
