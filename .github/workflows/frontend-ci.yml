@@ -1,4 +1,4 @@
-name: Full CI Checks
+name: Frontend CI checks
 permissions:
   contents: read
 
@@ -33,21 +33,25 @@ jobs:
         run: npm run lint
         working-directory: ./frontend/altinn-support-dashboard.client
         # package.json: "lint": "eslint . --ext .ts,.tsx"
-     
-  backend:
-    name: Backend C# Build & Test
-    runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        #Tests and coverage report
+      - name: Run tests with coverage
+        working-directory: frontend/altinn-support-dashboard.client
+        run: npm test -- --coverage
+
+      - name: Generate Coverage Summary
+        uses: irongut/CodeCoverageSummary@f13848964841ca2f7a63343b287493e17dc645de
         with:
-          dotnet-version: '8.0.x' # or your version
+          format: markdown
+          filename: "frontend/altinn-support-dashboard.client/coverage/lcov.info"
+          output: "both"
+          fail_below_min: false
+          badge: true
 
-      - name: Restore dependencies
-        run: dotnet restore ./backend/src/altinn-support-dashboard.backend
-
-      - name: Build backend (warnings as errors)
-        run: dotnet build ./backend/src/altinn-support-dashboard.backend --no-restore /warnaserror
+      - name: Post PR Comment
+        uses: marocchino/sticky-pull-request-comment@5060d4700a91de252c87eeddd2da026382d9298a
+        with:
+          header: "🟦 Frontend Code Coverage"
+          recreate: true
+ 
