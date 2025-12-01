@@ -10,7 +10,8 @@ export default defineConfig({
 
     coverage: {
       provider: "istanbul",
-      reporter: ["cobertura", "text"],
+      reporter: [["cobertura", { package: "frontend" }], "text"],
+
       reportsDirectory: "./.coverage",
     },
   },
