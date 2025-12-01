@@ -2,7 +2,7 @@ name: Backend Coverage
 on:
   pull_request:
     paths:
-      - "backend/src/altinn-support-dashboard.backend/**"
+      - "backend/**"
 
 permissions:
   contents: read
@@ -28,7 +28,7 @@ jobs:
       uses: irongut/CodeCoverageSummary@f13848964841ca2f7a63343b287493e17dc645de
       with:
         format: markdown
-        files: "altinn-support-dashboard.backend.Tests/TestResults/**/coverage.cobertura.xml"
+        files: "backend/altinn-support-dashboard.backend.Tests/TestResults/**/coverage.cobertura.xml"
         output: "both"
         fail_below_min: false
         badge: true                 
