@@ -9,10 +9,11 @@ export default defineConfig({
     setupFiles: ["./src/setupTests.ts"],
 
     coverage: {
-      provider: "istanbul",
-      reporter: [["cobertura", { package: "frontend" }], "text"],
-
+      provider: "v8",
+      reporter: [["cobertura", { package: "frontend" }], "text-summary"],
       reportsDirectory: "./.coverage",
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: ["src/**/*.d.ts"],
     },
   },
 
