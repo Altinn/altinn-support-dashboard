@@ -11,7 +11,7 @@ export default defineConfig({
     coverage: {
       provider: "istanbul",
       reporter: ["cobertura", "text"],
-      reportsDirectory: "./coverage",
+      reportsDirectory: "./.coverage",
     },
   },
 
