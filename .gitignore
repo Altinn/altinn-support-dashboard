@@ -146,6 +146,11 @@ _TeamCity*
 coverage*.json
 coverage*.xml
 coverage*.info
+*.info
+
+
+#ignores coverage folder
+.coverage
 
 # Visual Studio code coverage results
 *.coverage
