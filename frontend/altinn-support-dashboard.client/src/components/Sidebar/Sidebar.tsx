@@ -25,7 +25,7 @@ const Sidebar: React.FC = () => {
   const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();
 
   //old user details (will be removed in the future)
-  const { userName, userEmail } = useUserDetails();
+  const { userName } = useUserDetails();
 
   const authDetails = useAuthDetails();
 
@@ -126,7 +126,7 @@ const Sidebar: React.FC = () => {
                 <Label>
                   {authDetails?.data?.name ? newUsername : userName}
                 </Label>
-                <Label>{userEmail}</Label>
+                <label>{authDetails?.data?.orgName}</label>
               </div>
             </>
           )}

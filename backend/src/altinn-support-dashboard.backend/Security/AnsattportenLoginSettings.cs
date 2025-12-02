@@ -50,5 +50,7 @@ public class AuthorizationDetail
     public required string Resource { get; set; }
 
     public required bool? representation_is_required { get; set; }
+
+    public required string organizationform { get; set; }
 }
 
