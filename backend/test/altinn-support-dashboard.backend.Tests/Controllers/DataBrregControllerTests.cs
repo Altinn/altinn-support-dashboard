@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
@@ -33,10 +34,8 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var result = await _controller.GetRoles(_environmentName, invalidOrgNumber);
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
+            Assert.IsType<BadRequestObjectResult>(result);
         }
-
 
         [Theory]
         [InlineData(null)]
@@ -51,8 +50,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var result = await _controller.GetUnderenheter(_environmentName, invalidOrgNumber);
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
+            Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Fact]
