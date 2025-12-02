@@ -30,7 +30,7 @@ public class AltinnApiClient
         _clients.Add(environmentName, client);
     }
 
-    public async Task<string> GetOrganizationInfo(string orgNumber, string environmentName)
+    public virtual async Task<string> GetOrganizationInfo(string orgNumber, string environmentName)
     {
         try
         {

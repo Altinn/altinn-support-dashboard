@@ -53,7 +53,7 @@ public class Altinn3ApiClient
         }
     }
 
-    public async Task<string> GetNotificationAddresses( string orgNumber, string environmentName)
+    public virtual async Task<string> GetNotificationAddresses( string orgNumber, string environmentName)
     {
         try
         {
