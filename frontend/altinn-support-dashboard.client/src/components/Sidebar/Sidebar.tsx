@@ -126,7 +126,9 @@ const Sidebar: React.FC = () => {
                 <Label>
                   {authDetails?.data?.name ? newUsername : userName}
                 </Label>
-                <label>{authDetails?.data?.orgName}</label>
+                <Label className={classes.loggedInOrgName}>
+                  {authDetails?.data?.orgName}
+                </Label>
               </div>
             </>
           )}
