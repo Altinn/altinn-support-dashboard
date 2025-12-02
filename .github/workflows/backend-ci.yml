@@ -30,7 +30,8 @@ jobs:
 
         # Test pluss coverage
       - name: Run tests with coverage
-        run: dotnet test --collect:"XPlat Code Coverage" || true
+        run: dotnet test --settings coverlet.runsettings
+        working-directory: ./backend/test/altinn-support-dashboard-tests
 
       - name: Generate Coverage Summary
         uses: irongut/CodeCoverageSummary@f13848964841ca2f7a63343b287493e17dc645de
