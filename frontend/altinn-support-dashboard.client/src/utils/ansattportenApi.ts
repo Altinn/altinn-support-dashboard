@@ -11,6 +11,7 @@ export const fetchAuthDetails = async (): Promise<authDetails> => {
         name: "",
         ansattportenActive: true,
         userPolicies: [],
+        orgName: "",
       };
     }
     const data = (await res.json()) as authDetails;
@@ -22,6 +23,7 @@ export const fetchAuthDetails = async (): Promise<authDetails> => {
       name: "",
       ansattportenActive: true,
       userPolicies: [],
+      orgName: "",
     };
   }
 };
