@@ -55,6 +55,5 @@ jobs:
         with:
           header: "Frontend Code Coverage"
           recreate: true
-          hide_and_recreate: true
           path: "code-coverage-results.md"
  
