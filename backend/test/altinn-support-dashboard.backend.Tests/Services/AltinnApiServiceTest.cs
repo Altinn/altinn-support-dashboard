@@ -236,9 +236,55 @@ public class AltinnApiServiceTest
     [InlineData("", "12345678901")]
     [InlineData("123456789", "")]
     [InlineData("abcde", "12345678901")]
+    [InlineData("1234569", "1234567")]
     public async Task GetPersonRoles_ThrowsArgumentException_WhenSubjectOrReporteeIsInvalid(string invalidSubject, string invalidReportee)
     {
         await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetPersonRoles(invalidSubject, invalidReportee, "TT02"));
+    }
+
+    [Fact]
+    public async Task GetOfficialContacts_ReturnsContacts_WhenOrgNumberIsValid()
+    {
+        var validOrgNumber = "123456789";
+        var jsonResponse = @"[
+            {
+                ""MobileNumber"": ""12345678"",
+                ""MobileNumberChanged"": ""2024-12-01T10:00:00""
+            },
+            {
+                ""EMailAddress"": ""test@test.no"",
+                ""EMailAddressChanged"": ""2024-11-30T15:30:00""
+            }
+        ]";
+        _mockAltinn2Client
+        .Setup(x => x.GetOfficialContacts(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync(jsonResponse);
+
+        var resultList = await _altinnApiService.GetOfficialContacts(validOrgNumber, "TT02");
+
+        Assert.NotNull(resultList);
+        Assert.Equal(2, resultList.Count);
+        Assert.Equal("12345678", resultList[0].MobileNumber);
+        Assert.Equal(DateTime.Parse("2024-12-01T10:00:00"), resultList[0].MobileNumberChanged);
+        Assert.Null(resultList[0].EMailAddress);
+        Assert.Null(resultList[0].EMailAddressChanged);
+        Assert.Equal("test@test.no", resultList[1].EMailAddress);
+        Assert.Equal(DateTime.Parse("2024-11-30T15:30:00"), resultList[1].EMailAddressChanged);
+        Assert.Null(resultList[1].MobileNumber);
+        Assert.Null(resultList[1].MobileNumberChanged);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("999")]
+    [InlineData("12345678")]
+    [InlineData("1234567890")]
+    [InlineData("abcdefghi")]
+    [InlineData("abcdefghij")]
+    [InlineData("1d2d3d4d5")]
+    public async Task GetOfficialContacts_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+    {
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetOfficialContacts(invalidOrgNumber, "TT02"));
     }
 
 
