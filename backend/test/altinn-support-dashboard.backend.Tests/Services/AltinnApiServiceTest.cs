@@ -79,6 +79,7 @@ public class AltinnApiServiceTest
     [InlineData("1234567890")]
     [InlineData("abcdefghi")]
     [InlineData("abcdefghij")]
+    [InlineData("1d2d3d4d5")]
     public async Task GetOrganizationInfo_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
     {
 
@@ -142,6 +143,102 @@ public class AltinnApiServiceTest
         Assert.Equal(2, resultList.Count);
         Assert.Equal("123456789", resultList[0].OrganizationNumber);
         Assert.Equal("987654321", resultList[1].OrganizationNumber);
+    }
+    [Theory]
+    [InlineData("")]
+    [InlineData("invalid-email")]
+    [InlineData("test@.no")]
+    [InlineData("test@test")]
+    [InlineData("testtest.no")]
+    public async Task GetOrganizationByEmail_ThrowsAnArgumentException_WhenEmailIsInvalid(string invalidEmail)
+    {
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetOrganizationsByEmail(invalidEmail, "TT02"));
+    }
+
+    [Fact]
+    public async Task GetPersonalContacts_ReturnsContacts_WhenOrgNumberIsValid()
+    {
+        var validOrgNumber = "123456789";
+        var jsonResponse = @"[
+        {
+            ""PersonalContactId"": ""1"",
+            ""Name"": ""Ola"",
+            ""MobileNumber"": ""12345678""
+            },
+            {
+            ""PersonalContactId"": ""2"",
+            ""Name"": ""Kari"",
+            ""MobileNumber"": ""87654321""
+            }
+            
+        ]";
+        _mockAltinn2Client
+        .Setup(x => x.GetPersonalContacts(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync(jsonResponse);
+
+        var resultList = await _altinnApiService.GetPersonalContacts(validOrgNumber, "TT02");
+
+        Assert.NotNull(resultList);
+        Assert.Equal(2, resultList.Count);
+        Assert.Equal("1", resultList[0].PersonalContactId);
+        Assert.Equal("Ola", resultList[0].Name);
+        Assert.Equal("2", resultList[1].PersonalContactId);
+        Assert.Equal("Kari", resultList[1].Name);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("999")]
+    [InlineData("12345678")]
+    [InlineData("1234567890")]
+    [InlineData("abcdefghi")]
+    [InlineData("abcdefghij")]
+    [InlineData("1d2d3d4d5")]
+    public async Task GetPersonalContacts_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+    {
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetPersonalContacts(invalidOrgNumber, "TT02"));
+    }
+
+    [Fact]
+    public async Task GetPersonRoles_ReturnsRoles_WhenSubjectAndReporteeAreValid()
+    {
+        var validSubject = "123456789";
+        var validReportee = "12345678901";
+        var jsonResponse = @"[
+            {
+                ""RoleId"": 1,
+                ""RoleType"": ""Altinn"",
+                ""RoleName"": ""Daglig Leder""
+            },
+            {
+                ""RoleId"": 2,
+                ""RoleType"": ""Ekstern"",
+                ""RoleName"": ""Styremedlem""
+            }
+        ]";
+        _mockAltinn2Client
+        .Setup(x => x.GetPersonRoles(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync(jsonResponse);
+
+        var resultList = await _altinnApiService.GetPersonRoles(validSubject, validReportee, "TT02");
+
+        Assert.NotNull(resultList);
+        Assert.Equal(2, resultList.Count);
+        Assert.Equal("1", resultList[0].RoleId.ToString());
+        Assert.Equal("Altinn", resultList[0].RoleType);
+        Assert.Equal("Daglig Leder", resultList[0].RoleName);
+        Assert.Equal("2", resultList[1].RoleId.ToString());
+        Assert.Equal("Ekstern", resultList[1].RoleType);
+        Assert.Equal("Styremedlem", resultList[1].RoleName);
+    }
+
+    [Theory]
+    [InlineData("", "12345678901")]
+    [InlineData("123456789", "")]
+    [InlineData("abcde", "12345678901")]
+    public async Task GetPersonRoles_ThrowsArgumentException_WhenSubjectOrReporteeIsInvalid(string invalidSubject, string invalidReportee)
+    {
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetPersonRoles(invalidSubject, invalidReportee, "TT02"));
     }
 
 
