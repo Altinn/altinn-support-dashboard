@@ -57,7 +57,7 @@ public class AltinnApiClient
         }
     }
 
-    public async Task<string> GetOrganizationsByPhoneNumber(string phoneNumber, string environmentName)
+    public virtual async Task<string> GetOrganizationsByPhoneNumber(string phoneNumber, string environmentName)
     {
         try
         {
@@ -85,7 +85,7 @@ public class AltinnApiClient
         }
     }
 
-    public async Task<string> GetOrganizationsByEmail(string email, string environmentName)
+    public virtual async Task<string> GetOrganizationsByEmail(string email, string environmentName)
     {
         try
         {
@@ -114,7 +114,7 @@ public class AltinnApiClient
         }
     }
 
-    public async Task<string> GetPersonalContacts(string orgNumber, string environmentName)
+    public virtual async Task<string> GetPersonalContacts(string orgNumber, string environmentName)
     {
         try
         {
@@ -141,7 +141,7 @@ public class AltinnApiClient
         }
     }
 
-    public async Task<string> GetPersonRoles(string subject, string reportee, string environmentName)
+    public virtual async Task<string> GetPersonRoles(string subject, string reportee, string environmentName)
     {
         try
         {
@@ -168,7 +168,7 @@ public class AltinnApiClient
     }
 
 
-    public async Task<string> GetOfficialContacts(string orgNumber, string environmentName)
+    public virtual async Task<string> GetOfficialContacts(string orgNumber, string environmentName)
     {
         try
         {
