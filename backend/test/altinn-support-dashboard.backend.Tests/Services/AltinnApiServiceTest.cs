@@ -97,6 +97,18 @@ public class AltinnApiServiceTest
     }
 
     [Fact]
+    public async Task GetOrganizationInfo_UsesCorrectEnvironment()
+    {
+        _mockAltinn2Client
+        .Setup(x => x.GetOrganizationInfo("123456789", "Production"))
+        .ReturnsAsync("{\"organizationNumber\": \"123456789\"}");
+
+        await _altinnApiService.GetOrganizationInfo("123456789", "Production");
+
+        _mockAltinn2Client.Verify(x => x.GetOrganizationInfo("123456789", "Production"), Times.Once);
+    }
+
+    [Fact]
     public async Task GetOrganizationsByPhoneNumber_ReturnsOrganizations_WhenPhoneNumberIsValid()
     {
         var validPhoneNumber = "+4712345678";
@@ -148,6 +160,18 @@ public class AltinnApiServiceTest
     public async Task GetOrganizationsByPhoneNumber_ThrowsArgumentException_WhenPhoneNumberIsInvalid(string invalidPhonenumber)
     {
         await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetOrganizationsByPhoneNumber(invalidPhonenumber, "TT02"));
+    }
+
+    [Fact]
+    public async Task GetOrganizationByPhoneNumber_UsesCorrectEnvironment()
+    {
+        _mockAltinn2Client
+        .Setup(x => x.GetOrganizationsByPhoneNumber("12345678", "Production"))
+        .ReturnsAsync("[]");
+
+        await _altinnApiService.GetOrganizationsByPhoneNumber("12345678", "Production");
+
+        _mockAltinn2Client.Verify(x => x.GetOrganizationsByPhoneNumber("12345678", "Production"), Times.Once);
     }
 
     [Fact]
@@ -207,6 +231,18 @@ public class AltinnApiServiceTest
     }
 
     [Fact]
+    public async Task GetOrganizationsByEmail_UsesCorrectEnvironment()
+    {
+        _mockAltinn2Client
+        .Setup(x => x.GetOrganizationsByEmail("test@test.no", "Production"))
+        .ReturnsAsync("[]");
+
+        await _altinnApiService.GetOrganizationsByEmail("test@test.no", "Production");
+
+        _mockAltinn2Client.Verify(x => x.GetOrganizationsByEmail("test@test.no", "Production"), Times.Once);
+    }
+
+    [Fact]
     public async Task GetPersonalContacts_ReturnsContacts_WhenOrgNumberIsValid()
     {
         var validOrgNumber = "123456789";
@@ -261,6 +297,18 @@ public class AltinnApiServiceTest
     }
 
     [Fact]
+    public async Task GetPersonalContacts_UsesCorrectEnvironment()
+    {
+        _mockAltinn2Client
+        .Setup(x => x.GetPersonalContacts("123456789", "Production"))
+        .ReturnsAsync("[]");
+
+        await _altinnApiService.GetPersonalContacts("123456789", "Production");
+
+        _mockAltinn2Client.Verify(x => x.GetPersonalContacts("123456789", "Production"), Times.Once);
+    }
+
+    [Fact]
     public async Task GetPersonRoles_ReturnsRoles_WhenSubjectAndReporteeAreValid()
     {
         var validSubject = "123456789";
@@ -301,6 +349,18 @@ public class AltinnApiServiceTest
     public async Task GetPersonRoles_ThrowsArgumentException_WhenSubjectOrReporteeIsInvalid(string invalidSubject, string invalidReportee)
     {
         await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetPersonRoles(invalidSubject, invalidReportee, "TT02"));
+    }
+
+    [Fact]
+    public async Task GetPersonRoles_UsesCorrectEnvironment()
+    {
+        _mockAltinn2Client
+        .Setup(x => x.GetPersonRoles("123456789", "12345678901", "Production"))
+        .ReturnsAsync("[]");
+
+        await _altinnApiService.GetPersonRoles("123456789", "12345678901", "Production");
+
+        _mockAltinn2Client.Verify(x => x.GetPersonRoles("123456789", "12345678901", "Production"), Times.Once);
     }
 
     [Fact]
@@ -346,6 +406,18 @@ public class AltinnApiServiceTest
     public async Task GetOfficialContacts_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
     {
         await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetOfficialContacts(invalidOrgNumber, "TT02"));
+    }
+
+    [Fact]
+    public async Task GetOfficialContacts_UsesCorrectEnvironment()
+    {
+        _mockAltinn2Client
+        .Setup(x => x.GetOfficialContacts("123456789", "Production"))
+        .ReturnsAsync("[]");
+
+        await _altinnApiService.GetOfficialContacts("123456789", "Production");
+
+        _mockAltinn2Client.Verify(x => x.GetOfficialContacts("123456789", "Production"), Times.Once);
     }
 
     [Fact]
@@ -402,6 +474,18 @@ public class AltinnApiServiceTest
     }
 
     [Fact]
+    public async Task GetPersonalContactsAltinn3_UsesCorrectEnvironment()
+    {
+        _mockAltinn3Client
+        .Setup(x => x.GetPersonalContactsAltinn3("123456789", "Production"))
+        .ReturnsAsync("[]");
+
+        await _altinnApiService.GetPersonalContactsAltinn3("123456789", "Production");
+
+        _mockAltinn3Client.Verify(x => x.GetPersonalContactsAltinn3("123456789", "Production"), Times.Once);
+    }
+
+    [Fact]
     public async Task GetNotificationAddressesAltinn3_ReturnsData_WhenOrgNumberIsValid()
     {
         var validOrgNumber = "123456789";
@@ -444,6 +528,18 @@ public class AltinnApiServiceTest
     public async Task GetNotificationAddressesAltinn3_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
     {
         await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetNotificationAddressesAltinn3(invalidOrgNumber, "TT02"));
+    }
+
+    [Fact]
+    public async Task GetNotificationAddressesAltinn3_UsesCorrectEnvironment()
+    {
+        _mockAltinn3Client
+        .Setup(x => x.GetNotificationAddresses("123456789", "Production"))
+        .ReturnsAsync("[]");
+
+        await _altinnApiService.GetNotificationAddressesAltinn3("123456789", "Production");
+
+        _mockAltinn3Client.Verify(x => x.GetNotificationAddresses("123456789", "Production"), Times.Once);
     }
 
 
