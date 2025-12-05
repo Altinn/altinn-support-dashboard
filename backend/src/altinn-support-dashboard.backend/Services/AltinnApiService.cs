@@ -162,4 +162,16 @@ public class AltinnApiService : IAltinnApiService
         }
         return contacts;
     }
+
+    public async Task<List<NotificationAddressDto>> GetNotificationAddressesAltinn3(string orgNumber, string environment)
+    {
+        if (!ValidationService.IsValidOrgNumber(orgNumber))
+        {
+            throw new ArgumentException("Organization number invalid. It must be 9 digits long.");
+        }
+        var result = await _altinn3client.GetNotificationAddresses(orgNumber, environment);
+        var notificationAddresses = JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+
+        return notificationAddresses;
+    }
 }

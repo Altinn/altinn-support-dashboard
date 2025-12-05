@@ -119,12 +119,16 @@
   color: #fff;
   font-size: var(--ds-font-size-4);
 }
+.loggedInOrgName {
+  font-style: italic;
+  font-size: var(--ds-font-size-1);
+}
 
 .icons {
   font-size: 1.5rem;
 }
 
-.envToggleContainer{
+.envToggleContainer {
   margin-top: auto;
   margin-bottom: -1rem;
 }

@@ -1,0 +1,59 @@
+name: Frontend CI checks
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  frontend:
+    name: Frontend Full TypeScript Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./frontend/altinn-support-dashboard.client
+
+      - name: TypeScript type check
+        run: npm run typecheck
+        working-directory: ./frontend/altinn-support-dashboard.client
+        # package.json: "typecheck": "tsc --noEmit"
+
+      - name: ESLint check
+        run: npm run lint
+        working-directory: ./frontend/altinn-support-dashboard.client
+        # package.json: "lint": "eslint . --ext .ts,.tsx"
+
+
+        #Tests and coverage report
+      - name: Run tests with coverage
+        working-directory: ./frontend/altinn-support-dashboard.client
+        run: npm test -- --coverage
+
+      - name: Generate Coverage Summary
+        uses: irongut/CodeCoverageSummary@f13848964841ca2f7a63343b287493e17dc645de
+        with:
+          format: markdown
+          filename: "frontend/altinn-support-dashboard.client/.coverage/cobertura-coverage.xml"
+          output: "both"
+          fail_below_min: false
+          badge: true
+
+      - name: Post PR Comment
+        uses: marocchino/sticky-pull-request-comment@5060d4700a91de252c87eeddd2da026382d9298a
+        with:
+          header: "Frontend Code Coverage"
+          recreate: true
+          path: "code-coverage-results.md"
+ 

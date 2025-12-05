@@ -14,4 +14,6 @@ public class AuthDetails
     public string? Name { get; set; }
 
     public List<string>? UserPolicies { get; set; }
+
+    public string? OrgName { get; set; }
 }
