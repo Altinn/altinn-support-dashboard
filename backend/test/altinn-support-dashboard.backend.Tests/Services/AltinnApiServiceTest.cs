@@ -148,7 +148,7 @@ public class AltinnApiServiceTest
         .Setup(x => x.GetOrganizationsByPhoneNumber(It.Is<string>(p => !p.StartsWith("+")), It.IsAny<string>()))
         .ReturnsAsync("[]");
 
-        var resultList = await _altinnApiService.GetOrganizationsByPhoneNumber(phoneNumberWithCountryCode, "TT02");
+        await _altinnApiService.GetOrganizationsByPhoneNumber(phoneNumberWithCountryCode, "TT02");
 
         _mockAltinn2Client.Verify(x => x.GetOrganizationsByPhoneNumber(It.Is<string>(p => !p.StartsWith("+")), It.IsAny<string>()), Times.Once);
 
