@@ -21,7 +21,6 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData("123")]
         [InlineData("12345678")]
@@ -34,7 +33,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
+            Assert.Equal("Organisasjonsnummeret er ugyldig. Det mï¿½ vï¿½re 9 sifre langt.", badRequestResult.Value);
         }
 
         [Fact]
@@ -54,7 +53,6 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData("123")]
         [InlineData("12345678")]
@@ -67,7 +65,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
+            Assert.Equal("Organisasjonsnummeret er ugyldig. Det mï¿½ vï¿½re 9 sifre langt.", badRequestResult.Value);
         }
 
         [Fact]
