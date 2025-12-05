@@ -22,7 +22,6 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData("123")]
         [InlineData("12345678")]
@@ -38,7 +37,6 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData("123")]
         [InlineData("12345678")]

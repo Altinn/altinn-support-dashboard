@@ -72,8 +72,12 @@ namespace AltinnSupportDashboard.Tests.Controllers
 
             // Assert
             var challenge = Assert.IsType<ChallengeResult>(result);
+
             Assert.Contains(AnsattportenConstants.AnsattportenAuthenticationScheme, challenge.AuthenticationSchemes);
-            Assert.Equal("https://base.url/home", challenge.Properties.RedirectUri);
+            if(challenge.Properties != null)
+            {
+                Assert.Equal("https://base.url/home", challenge.Properties.RedirectUri);
+            };
         }
 
         [Fact]

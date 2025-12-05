@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Text;
 using System.Net;
 
-public class AltinnApiClient
+public class AltinnApiClient : IAltinnApiClient
 {
     private readonly IHttpClientFactory _clientFactory;
     private readonly Dictionary<string, HttpClient> _clients = new();
