@@ -11,7 +11,7 @@ namespace altinn_support_dashboard.backend.Tests.Services;
 public class AltinnApiServiceTest
 {
     private readonly AltinnApiService _altinnApiService;
-    private readonly Mock<AltinnApiClient> _mockAltinn2Client;
+    private readonly Mock<IAltinnApiClient> _mockAltinn2Client;
     private readonly Mock<IAltinn3ApiClient> _mockAltinn3Client;
 
     public AltinnApiServiceTest()
@@ -47,10 +47,7 @@ public class AltinnApiServiceTest
     mockHttpClient.Setup(x => x.CreateClient(It.IsAny<string>()))
         .Returns(new HttpClient());
 
-        _mockAltinn2Client = new Mock<AltinnApiClient>(
-            mockConfig.Object, 
-            mockHttpClient.Object
-        );
+        _mockAltinn2Client = new Mock<IAltinnApiClient>();
         _mockAltinn3Client = new Mock<IAltinn3ApiClient>();
         _altinnApiService = new AltinnApiService(_mockAltinn2Client.Object, _mockAltinn3Client.Object);        
     }

@@ -10,11 +10,11 @@ namespace altinn_support_dashboard.Server.Services;
 
 public class AltinnApiService : IAltinnApiService
 {
-    private readonly AltinnApiClient _client;
+    private readonly IAltinnApiClient _client;
     private readonly IAltinn3ApiClient _altinn3client;
     private readonly JsonSerializerOptions jsonOptions;
 
-    public AltinnApiService(AltinnApiClient altinn2Client, IAltinn3ApiClient altinn3Client)
+    public AltinnApiService(IAltinnApiClient altinn2Client, IAltinn3ApiClient altinn3Client)
     {
         _client = altinn2Client;
         _altinn3client = altinn3Client;

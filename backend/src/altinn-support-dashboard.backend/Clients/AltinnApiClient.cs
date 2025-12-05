@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Text;
 using System.Net;
 
-public class AltinnApiClient
+public class AltinnApiClient : IAltinnApiClient
 {
     private readonly IHttpClientFactory _clientFactory;
     private readonly Dictionary<string, HttpClient> _clients = new();
@@ -30,7 +30,7 @@ public class AltinnApiClient
         _clients.Add(environmentName, client);
     }
 
-    public virtual async Task<string> GetOrganizationInfo(string orgNumber, string environmentName)
+    public async Task<string> GetOrganizationInfo(string orgNumber, string environmentName)
     {
         try
         {
@@ -57,7 +57,7 @@ public class AltinnApiClient
         }
     }
 
-    public virtual async Task<string> GetOrganizationsByPhoneNumber(string phoneNumber, string environmentName)
+    public async Task<string> GetOrganizationsByPhoneNumber(string phoneNumber, string environmentName)
     {
         try
         {
@@ -85,7 +85,7 @@ public class AltinnApiClient
         }
     }
 
-    public virtual async Task<string> GetOrganizationsByEmail(string email, string environmentName)
+    public async Task<string> GetOrganizationsByEmail(string email, string environmentName)
     {
         try
         {
@@ -114,7 +114,7 @@ public class AltinnApiClient
         }
     }
 
-    public virtual async Task<string> GetPersonalContacts(string orgNumber, string environmentName)
+    public async Task<string> GetPersonalContacts(string orgNumber, string environmentName)
     {
         try
         {
@@ -141,7 +141,7 @@ public class AltinnApiClient
         }
     }
 
-    public virtual async Task<string> GetPersonRoles(string subject, string reportee, string environmentName)
+    public async Task<string> GetPersonRoles(string subject, string reportee, string environmentName)
     {
         try
         {
@@ -168,7 +168,7 @@ public class AltinnApiClient
     }
 
 
-    public virtual async Task<string> GetOfficialContacts(string orgNumber, string environmentName)
+    public async Task<string> GetOfficialContacts(string orgNumber, string environmentName)
     {
         try
         {
