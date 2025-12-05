@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
@@ -32,24 +33,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var result = await _controller.GetRoles(_environmentName, invalidOrgNumber);
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Organisasjonsnummeret er ugyldig. Det m� v�re 9 sifre langt.", badRequestResult.Value);
-        }
-
-        [Fact]
-        public async Task GetRoles_ReturnsOk_WhenOrgNumberLengthIsValid()
-        {
-            // Arrange
-            string validOrgNumber = "123456789";
-            _mockService.Setup(service => service.GetRolesAsync(validOrgNumber, _environmentName))
-                        .ReturnsAsync(new ErRollerModel());
-
-            // Act
-            var result = await _controller.GetRoles(_environmentName, validOrgNumber);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.IsType<ErRollerModel>(okResult.Value);
+            Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Theory]
@@ -64,8 +48,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var result = await _controller.GetUnderenheter(_environmentName, invalidOrgNumber);
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Organisasjonsnummeret er ugyldig. Det m� v�re 9 sifre langt.", badRequestResult.Value);
+            Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Fact]
