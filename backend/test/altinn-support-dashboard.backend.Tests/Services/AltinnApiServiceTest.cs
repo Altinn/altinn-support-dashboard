@@ -364,6 +364,16 @@ public class AltinnApiServiceTest
     }
 
     [Fact]
+    public async Task GetPersonRoles_ThrowsException_WhenResponseIsNull()
+    {
+        _mockAltinn2Client
+        .Setup(x => x.GetPersonRoles(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetPersonRoles("123456789", "12345678901", "TT02"));
+    }
+
+    [Fact]
     public async Task GetOfficialContacts_ReturnsContacts_WhenOrgNumberIsValid()
     {
         var validOrgNumber = "123456789";
@@ -418,6 +428,16 @@ public class AltinnApiServiceTest
         await _altinnApiService.GetOfficialContacts("123456789", "Production");
 
         _mockAltinn2Client.Verify(x => x.GetOfficialContacts("123456789", "Production"), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetOfficialContacts_ThrowsException_WhenResponseIsNull()
+    {
+        _mockAltinn2Client
+        .Setup(x => x.GetOfficialContacts(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetOfficialContacts("123456789", "TT02"));
     }
 
     [Fact]
@@ -486,6 +506,16 @@ public class AltinnApiServiceTest
     }
 
     [Fact]
+    public async Task GetPersonalContactsAltinn3_ThrowsException_WhenResponseIsNull()
+    {
+        _mockAltinn3Client
+        .Setup(x => x.GetPersonalContactsAltinn3(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetPersonalContactsAltinn3("123456789", "TT02"));
+    }
+
+    [Fact]
     public async Task GetNotificationAddressesAltinn3_ReturnsData_WhenOrgNumberIsValid()
     {
         var validOrgNumber = "123456789";
@@ -540,6 +570,16 @@ public class AltinnApiServiceTest
         await _altinnApiService.GetNotificationAddressesAltinn3("123456789", "Production");
 
         _mockAltinn3Client.Verify(x => x.GetNotificationAddresses("123456789", "Production"), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetNotificationAddressesAltinn3_ThrowsException_WhenResponseIsNull()
+    {
+        _mockAltinn3Client
+        .Setup(x => x.GetNotificationAddresses(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetNotificationAddressesAltinn3("123456789", "TT02"));
     }
 
 
