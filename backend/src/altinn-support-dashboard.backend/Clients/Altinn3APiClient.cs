@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Text;
 using System.Net;
 
-public class Altinn3ApiClient
+public class Altinn3ApiClient : IAltinn3ApiClient
 {
     private readonly IHttpClientFactory _clientFactory;
     private readonly Dictionary<string, HttpClient> _clients = new();
@@ -29,7 +29,7 @@ public class Altinn3ApiClient
 
         _clients.Add(environmentName, client);
     }
-    public virtual async Task<string> GetPersonalContactsAltinn3(string orgNumber, string environmentName)
+    public async Task<string> GetPersonalContactsAltinn3(string orgNumber, string environmentName)
     {
         try
         {
@@ -53,7 +53,7 @@ public class Altinn3ApiClient
         }
     }
 
-    public virtual async Task<string> GetNotificationAddresses( string orgNumber, string environmentName)
+    public async Task<string> GetNotificationAddresses( string orgNumber, string environmentName)
     {
         try
         {
