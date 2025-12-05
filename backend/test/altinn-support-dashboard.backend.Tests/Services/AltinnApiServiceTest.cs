@@ -534,16 +534,16 @@ public class AltinnApiServiceTest
     {
         var validOrgNumber = "123456789";
         var jsonResponse = @"[
-        {
-            ""notificationAddressId"": 1,
-            ""countryCode"": ""NO"",
-            ""email"": ""test@test.no"",
-            ""phone"": ""12345678"",
-            ""sourceOrgNumber"": ""123456789"",
-            ""requestedOrgNumber"": ""987654321"",
-            ""lastChanged"": ""2024-12-02T10:00:00""
-        }
-    ]";        
+            {
+                ""notificationAddressId"": 1,
+                ""countryCode"": ""NO"",
+                ""email"": ""test@test.no"",
+                ""phone"": ""12345678"",
+                ""sourceOrgNumber"": ""123456789"",
+                ""requestedOrgNumber"": ""987654321"",
+                ""lastChanged"": ""2024-12-02T10:00:00""
+            }
+        ]";        
         _mockAltinn3Client
         .Setup(x => x.GetNotificationAddresses(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(jsonResponse);
