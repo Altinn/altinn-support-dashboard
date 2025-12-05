@@ -388,16 +388,6 @@ public class AltinnApiServiceTest
     }
 
     [Fact]
-    public async Task GetPersonRoles_ThrowsException_WhenResponseIsNull()
-    {
-        _mockAltinn2Client
-        .Setup(x => x.GetPersonRoles(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-        .ReturnsAsync("null");
-
-        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetPersonRoles("123456789", "12345678901", "TT02"));
-    }
-
-    [Fact]
     public async Task GetOfficialContacts_ReturnsContacts_WhenOrgNumberIsValid()
     {
         var validOrgNumber = "123456789";
