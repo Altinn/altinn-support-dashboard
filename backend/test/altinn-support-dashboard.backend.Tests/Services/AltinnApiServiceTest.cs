@@ -167,7 +167,7 @@ public class AltinnApiServiceTest
 
     [Theory]
     [InlineData("+4712345678")]
-    [InlineData("+112345678")]
+    [InlineData("+1112345678")]
     public async Task GetOrganizationsByPhoneNumber_StripsCountryCode(string phoneNumberWithCountryCode)
     {
 
@@ -190,7 +190,7 @@ public class AltinnApiServiceTest
     }
 
     [Fact]
-    public async Task GetOrganizationByPhoneNumber_UsesCorrectEnvironment()
+    public async Task GetOrganizationsByPhoneNumber_UsesCorrectEnvironment()
     {
         _mockAltinn2Client
         .Setup(x => x.GetOrganizationsByPhoneNumber("12345678", "Production"))
@@ -202,7 +202,7 @@ public class AltinnApiServiceTest
     }
 
     [Fact]
-    public async Task GetOrganizationByPhoneNumber_ThrowsException_WhenResponseIsNull()
+    public async Task GetOrganizationsByPhoneNumber_ThrowsException_WhenResponseIsNull()
     {
         _mockAltinn2Client
         .Setup(x => x.GetOrganizationsByPhoneNumber(It.IsAny<string>(), It.IsAny<string>()))
@@ -240,12 +240,12 @@ public class AltinnApiServiceTest
     [InlineData("test@.no")]
     [InlineData("test@test")]
     [InlineData("testtest.no")]
-    public async Task GetOrganizationByEmail_ThrowsAnArgumentException_WhenEmailIsInvalid(string invalidEmail)
+    public async Task GetOrganizationsByEmail_ThrowsAnArgumentException_WhenEmailIsInvalid(string invalidEmail)
     {
         await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetOrganizationsByEmail(invalidEmail, "TT02"));
     }
     [Fact]
-    public async Task GetOrganizationByEmail_ThrowsException_WhenResponseIsNull()
+    public async Task GetOrganizationsByEmail_ThrowsException_WhenResponseIsNull()
     {
         _mockAltinn2Client
         .Setup(x => x.GetOrganizationsByEmail(It.IsAny<string>(), It.IsAny<string>()))
