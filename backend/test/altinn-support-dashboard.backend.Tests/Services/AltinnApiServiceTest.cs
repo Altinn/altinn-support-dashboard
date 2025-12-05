@@ -124,8 +124,6 @@ public class AltinnApiServiceTest
         Assert.NotNull(resultList);
         Assert.Equal(2, resultList.Count);
         Assert.IsType<List<Organization>>(resultList);
-
-        
     }
 
     [Fact]
