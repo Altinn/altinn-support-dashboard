@@ -87,6 +87,16 @@ public class AltinnApiServiceTest
     }
 
     [Fact]
+    public async Task GetOrganizationInfo_ThrowsException_WhenResponseIsNull()
+    {
+        _mockAltinn2Client
+        .Setup(x => x.GetOrganizationInfo(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetOrganizationInfo("123456789", "TT02"));
+    }
+
+    [Fact]
     public async Task GetOrganizationsByPhoneNumber_ReturnsOrganizations_WhenPhoneNumberIsValid()
     {
         var validPhoneNumber = "+4712345678";
@@ -94,6 +104,9 @@ public class AltinnApiServiceTest
         var jsonResponse = @"[
         {
             ""organizationNumber"": ""123456789""
+        },
+        {
+            ""organizationNumber"": ""987654321""
         },
         {
             ""organizationNumber"": ""987654321""
@@ -114,11 +127,37 @@ public class AltinnApiServiceTest
     }
 
     [Theory]
+    [InlineData("+4712345678")]
+    [InlineData("+112345678")]
+    public async Task GetOrganizationsByPhoneNumber_StripsCountryCode(string phoneNumberWithCountryCode)
+    {
+
+        _mockAltinn2Client
+        .Setup(x => x.GetOrganizationsByPhoneNumber(It.Is<string>(p => !p.StartsWith("+")), It.IsAny<string>()))
+        .ReturnsAsync("[]");
+
+        var resultList = await _altinnApiService.GetOrganizationsByPhoneNumber(phoneNumberWithCountryCode, "TT02");
+
+        _mockAltinn2Client.Verify(x => x.GetOrganizationsByPhoneNumber(It.Is<string>(p => !p.StartsWith("+")), It.IsAny<string>()), Times.Once);
+
+    }
+
+    [Theory]
     [InlineData("")]
     [InlineData("ahjhsjh")]
     public async Task GetOrganizationsByPhoneNumber_ThrowsArgumentException_WhenPhoneNumberIsInvalid(string invalidPhonenumber)
     {
         await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetOrganizationsByPhoneNumber(invalidPhonenumber, "TT02"));
+    }
+
+    [Fact]
+    public async Task GetOrganizationByPhoneNumber_ThrowsException_WhenResponseIsNull()
+    {
+        _mockAltinn2Client
+        .Setup(x => x.GetOrganizationInfo(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetOrganizationInfo("123456789", "TT02"));
     }
 
     [Fact]
@@ -128,6 +167,9 @@ public class AltinnApiServiceTest
         var jsonResponse = @"[
         {
             ""organizationNumber"": ""123456789""
+        },
+        {
+            ""organizationNumber"": ""987654321""
         },
         {
             ""organizationNumber"": ""987654321""
@@ -153,6 +195,15 @@ public class AltinnApiServiceTest
     public async Task GetOrganizationByEmail_ThrowsAnArgumentException_WhenEmailIsInvalid(string invalidEmail)
     {
         await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetOrganizationsByEmail(invalidEmail, "TT02"));
+    }
+    [Fact]
+    public async Task GetOrganizationByEmail_ThrowsException_WhenResponseIsNull()
+    {
+        _mockAltinn2Client
+        .Setup(x => x.GetOrganizationInfo(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetOrganizationInfo("123456789", "TT02"));
     }
 
     [Fact]
@@ -197,6 +248,16 @@ public class AltinnApiServiceTest
     public async Task GetPersonalContacts_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
     {
         await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetPersonalContacts(invalidOrgNumber, "TT02"));
+    }
+    
+    [Fact]
+    public async Task GetPersonalContacts_ThrowsException_WhenResponseIsNull()
+    {
+        _mockAltinn2Client
+        .Setup(x => x.GetPersonalContacts(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetPersonalContacts("123456789", "TT02"));
     }
 
     [Fact]
@@ -287,6 +348,58 @@ public class AltinnApiServiceTest
         await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetOfficialContacts(invalidOrgNumber, "TT02"));
     }
 
+    [Fact]
+    public async Task GetPersonalContactsAltinn3_ReturnsContacts_WhenOrgNumberIsValid()
+    {
+        var validOrgNumber = "123456789";
+        var jsonResponse = @"[
+            {
+                ""OrgNumber"": ""123456789"",
+                ""NationalIdentityNumber"": ""01010112345"",
+                ""Name"": ""Ola Nordmann"",
+                ""Email"": ""test@test.no"",
+                ""Phone"": ""12345678"",
+                ""LastChanged"": ""2024-12-01T10:00:00""    
+            },
+            {
+                ""OrgNumber"": ""123456789"",
+                ""NationalIdentityNumber"": ""02020254321"",
+                ""Name"": ""Kari Nordmann"",
+                ""Email"": ""test1@test.no"",
+                ""Phone"": ""87654321"",
+                ""LastChanged"": ""2024-12-02T11:00:00""
+            }
+        ]";
+        _mockAltinn3Client
+        .Setup(x => x.GetPersonalContactsAltinn3(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync(jsonResponse);
+
+        var resultList = await _altinnApiService.GetPersonalContactsAltinn3(validOrgNumber, "TT02");
+
+        Assert.NotNull(resultList);
+        Assert.Equal(2, resultList.Count);
+        Assert.Equal("Ola Nordmann", resultList[0].Name);
+        Assert.Equal("Kari Nordmann", resultList[1].Name);
+        Assert.Equal("test@test.no", resultList[0].EMailAddress);
+        Assert.Equal("test1@test.no", resultList[1].EMailAddress);
+        Assert.Equal("12345678", resultList[0].MobileNumber);
+        Assert.Equal("87654321", resultList[1].MobileNumber);
+        Assert.Equal(DateTime.Parse("2024-12-01T10:00:00"), resultList[0].MobileNumberChanged);
+        Assert.Equal(DateTime.Parse("2024-12-02T11:00:00"), resultList[1].MobileNumberChanged);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("999")]
+    [InlineData("12345678")]
+    [InlineData("1234567890")]
+    [InlineData("abcdefghi")]
+    [InlineData("abcdefghij")]
+    [InlineData("1d2d3d4d5")]
+    public async Task GetPersonalContactsAltinn3_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+    {
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetPersonalContactsAltinn3(invalidOrgNumber, "TT02"));
+    }
 
     [Fact]
     public async Task GetNotificationAddressesAltinn3_ReturnsData_WhenOrgNumberIsValid()
@@ -318,6 +431,19 @@ public class AltinnApiServiceTest
         Assert.Equal("123456789", result.SourceOrgNumber);
         Assert.Equal("987654321", result.RequestedOrgNumber);
         Assert.Equal(DateTime.Parse("2024-12-02T10:00:00"), result.LastChanged);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("999")]
+    [InlineData("12345678")]
+    [InlineData("1234567890")]
+    [InlineData("abcdefghi")]
+    [InlineData("abcdefghij")]
+    [InlineData("1d2d3d4d5")]
+    public async Task GetNotificationAddressesAltinn3_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+    {
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetNotificationAddressesAltinn3(invalidOrgNumber, "TT02"));
     }
 
 

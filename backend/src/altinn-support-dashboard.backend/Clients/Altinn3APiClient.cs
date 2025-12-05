@@ -29,7 +29,7 @@ public class Altinn3ApiClient
 
         _clients.Add(environmentName, client);
     }
-    public async Task<string> GetPersonalContactsAltinn3(string orgNumber, string environmentName)
+    public virtual async Task<string> GetPersonalContactsAltinn3(string orgNumber, string environmentName)
     {
         try
         {
