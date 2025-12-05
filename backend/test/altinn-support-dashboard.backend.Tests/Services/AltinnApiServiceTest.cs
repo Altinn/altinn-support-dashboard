@@ -119,9 +119,6 @@ public class AltinnApiServiceTest
         },
         {
             ""organizationNumber"": ""987654321""
-        },
-        {
-            ""organizationNumber"": ""987654321""
         }
         ]";
         _mockAltinn2Client
@@ -136,6 +133,36 @@ public class AltinnApiServiceTest
         Assert.Equal("987654321", resultList[1].OrganizationNumber);
 
         
+    }
+
+    [Fact]
+    public async Task RemovesDuplicates_FromOrganizationList()
+    {
+        //Using GetOrganizationsByPhoneNumber to check the private function RemoveOrganizationDuplicates, this is the one all the list with organizations go through
+        var validPhoneNumber = "+4712345678";
+
+        var jsonResponse = @"[
+        {
+            ""organizationNumber"": ""123456789""
+        },
+        {
+            ""organizationNumber"": ""987654321""
+        },
+        {
+            ""organizationNumber"": ""987654321""
+        }
+        ]";
+
+        _mockAltinn2Client
+        .Setup(x => x.GetOrganizationsByPhoneNumber(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync(jsonResponse);
+
+        var resultList = await _altinnApiService.GetOrganizationsByPhoneNumber(validPhoneNumber, "TT02");
+
+        Assert.NotNull(resultList);
+        Assert.Equal(2, resultList.Count);
+        Assert.Equal("123456789", resultList[0].OrganizationNumber);
+        Assert.Equal("987654321", resultList[1].OrganizationNumber);
     }
 
     [Theory]
@@ -191,9 +218,6 @@ public class AltinnApiServiceTest
         var jsonResponse = @"[
         {
             ""organizationNumber"": ""123456789""
-        },
-        {
-            ""organizationNumber"": ""987654321""
         },
         {
             ""organizationNumber"": ""987654321""
