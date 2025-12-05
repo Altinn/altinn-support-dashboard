@@ -62,12 +62,32 @@ public class AnsattportenController : ControllerBase
         var result = await HttpContext.AuthenticateAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
 
 
+        List<string> userPolicies = await _ansattportenService.GetUserPolicies(User);
+        string orgName = await _ansattportenService.GetRepresentationOrgName(User);
+
+
         return Ok(new AuthDetails
         {
             IsLoggedIn = result.Succeeded,
+            OrgName = orgName,
             Name = User?.Identity?.Name,
             AnsattportenActive = true,
-            UserPolicies = await _ansattportenService.GetUserPolicies(User),
+            UserPolicies = userPolicies
+        });
+    }
+
+    [HttpGet("claims")]
+    public async Task<IActionResult> GetClaims()
+    {
+        await Task.CompletedTask;
+
+        if (User == null || ansattportenFeatureFlag != true)
+        {
+            return BadRequest("No user found or ansattporten is not active");
+        }
+        return Ok(new
+        {
+            claims = User?.Claims.ToDictionary(c => c.Type, c => c.Value)
         });
     }
 
