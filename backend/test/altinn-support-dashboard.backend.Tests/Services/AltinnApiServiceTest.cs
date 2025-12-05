@@ -178,10 +178,10 @@ public class AltinnApiServiceTest
     public async Task GetOrganizationByPhoneNumber_ThrowsException_WhenResponseIsNull()
     {
         _mockAltinn2Client
-        .Setup(x => x.GetOrganizationInfo(It.IsAny<string>(), It.IsAny<string>()))
+        .Setup(x => x.GetOrganizationsByPhoneNumber(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync("null");
 
-        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetOrganizationInfo("123456789", "TT02"));
+        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetOrganizationsByPhoneNumber("12345678", "TT02"));
     }
 
     [Fact]
