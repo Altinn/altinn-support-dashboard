@@ -350,5 +350,60 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Subject eller reportee er ugyldig.", badRequestResult.Value);
         }
+
+        [Fact]
+        public async Task GetOfficialContacts_ReturnsContacts_WhenOrgNumberIsValid()
+        {
+            var validOrgNumber = "123456789";
+            var expectedContacts = new List<OfficialContact>
+            {
+                new OfficialContact { EMailAddress = "official1@example.com" },
+                new OfficialContact { EMailAddress = "official2@example.com" }
+            };
+
+            _mockService
+            .Setup(x => x.GetOfficialContacts(validOrgNumber, "TT02"))
+            .ReturnsAsync(expectedContacts);
+
+            var result = await _controller.GetOfficialContacts(validOrgNumber);
+
+            Assert.NotNull(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(expectedContacts, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetOfficialContacts_Returns500_WhenServiceFails()
+        {
+            var validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(x => x.GetOfficialContacts(validOrgNumber, "TT02"))
+            .ThrowsAsync(new System.Exception("Service failure"));
+
+            var result = await _controller.GetOfficialContacts(validOrgNumber);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("999")]
+        [InlineData("12345678")]
+        [InlineData("1234567890")]
+        [InlineData("abcdefghi")]
+        [InlineData("abcdefghij")]
+        [InlineData("1d2d3d4d5")]
+        [InlineData("   ")]
+        public async Task GetOfficialContacts_ReturnsBadRequest_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+        {
+            // Act
+            var result = await _controller.GetOfficialContacts(invalidOrgNumber);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
+        }
     }
 }
