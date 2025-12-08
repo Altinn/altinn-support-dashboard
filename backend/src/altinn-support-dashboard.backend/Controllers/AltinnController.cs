@@ -52,6 +52,10 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("organizations/{orgNumber}/altinn3/notificationaddresses")]
         public async Task<IActionResult> GetNotificationAddresses([FromRoute] string orgnumber)
         {
+            if (!ValidationService.IsValidOrgNumber(orgnumber))
+            {
+                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+            }
             try
             {
                 var result = await _altinnApiService.GetNotificationAddressesAltinn3(orgnumber, environmentName);
