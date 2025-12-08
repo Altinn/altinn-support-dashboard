@@ -140,13 +140,38 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("E-postadressen er ugyldig.", badRequestResult.Value);
         }
+
+        [Fact]
+        public async Task GetPersonalContacts_ReturnsContacts_WhenOrgNumberIsValid()
+        {
+            var validOrgNumber = "123456789";
+            var expectedContacts = new List<PersonalContact>
+            {
+                new PersonalContact { Name = "Contact1", EMailAddress = "contact1@test.no" },
+                new PersonalContact { Name = "Contact2", EMailAddress = "contact2@test.no" }
+            };
+
+            _mockService
+            .Setup(x => x.GetPersonalContacts(validOrgNumber, "TT02"))
+            .ReturnsAsync(expectedContacts);
+
+            var result = await _controller.GetPersonalContacts(validOrgNumber);
+
+            Assert.NotNull(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(expectedContacts, okResult.Value);
+        }
+
         [Theory]
         [InlineData("")]
-        [InlineData("123")]
+        [InlineData("999")]
         [InlineData("12345678")]
-        [InlineData("123456789333")]
+        [InlineData("1234567890")]
+        [InlineData("abcdefghi")]
         [InlineData("abcdefghij")]
-        public async Task GetPersonalContacts_ReturnsBadRequest_WhenOrgNumberLengthIsInvalid(string invalidOrgNumber)
+        [InlineData("1d2d3d4d5")]
+        [InlineData("   ")]
+        public async Task GetPersonalContacts_ReturnsBadRequest_WhenOrgNumberIsInvalid(string invalidOrgNumber)
         {
             // Act
             var result = await _controller.GetPersonalContacts(invalidOrgNumber);
