@@ -1,6 +1,3 @@
-
-
-
 public class InputValidationTest
 {
     
@@ -9,6 +6,11 @@ public class InputValidationTest
     [InlineData("12345678", true)]
     [InlineData("123-4567", false)]
     [InlineData("phone123", false)]
+    [InlineData("12345678A", false)]
+    [InlineData("+47-123-45678", false)]
+    [InlineData("+47 123 45678", false)]
+    [InlineData("(123) 4567890", false)]
+    [InlineData("+ ", false)]
     [InlineData("", false)]
     public void IsValidPhoneNumber_ShouldReturnExpectedResult(string phoneNumber, bool expectedResult)
     {
