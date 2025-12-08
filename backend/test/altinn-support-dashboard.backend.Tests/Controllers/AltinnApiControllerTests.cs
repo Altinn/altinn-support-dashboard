@@ -241,5 +241,56 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             Assert.Equal("Ugyldig søketerm. Angi et gyldig organisasjonsnummer, telefonnummer eller e-postadresse.", badRequestResult.Value);
         }
 
+        [Fact]
+        public async Task GetPersonRoles_ReturnsContacts_WhenSubjectAndReporteeIsValid()
+        {
+            var validSubjectId = "123456789";
+            var validReporteeId = "987654321";
+            var expectedRoles = new List<Role>
+            {
+                new Role { RoleName = "Role1" },
+                new Role { RoleName = "Role2" }
+            };
+
+            _mockService
+            .Setup(x => x.GetPersonRoles(validSubjectId, validReporteeId, "TT02"))
+            .ReturnsAsync(expectedRoles);
+
+            var result = await _controller.GetPersonRoles(validSubjectId, validReporteeId);
+
+            Assert.NotNull(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(expectedRoles, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetPersonRoles_Returns500_WhenServiceFails()
+        {
+            var validSubjectId = "123456789";
+            var validReporteeId = "987654321";
+
+            _mockService
+            .Setup(x => x.GetPersonRoles(validSubjectId, validReporteeId, "TT02"))
+            .ThrowsAsync(new System.Exception("Service failure"));
+
+            var result = await _controller.GetPersonRoles(validSubjectId, validReporteeId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("", "12345678901")]
+        [InlineData("123456789", "")]
+        [InlineData("abcde", "12345678901")]
+        [InlineData("1234569", "1234567")]
+        [InlineData("abcdefghi", "reportee!@#")]
+        public async Task GetPersoNRoles_ReturnsBadRequest_WhenSubjectOrReporteeIsInvalid(string invalidSubject, string invalidReportee)
+        {
+            var result = await _controller.GetPersonRoles(invalidSubject, invalidReportee);
+
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Subject eller reportee er ugyldig.", badRequestResult.Value);
+        }
     }
 }
