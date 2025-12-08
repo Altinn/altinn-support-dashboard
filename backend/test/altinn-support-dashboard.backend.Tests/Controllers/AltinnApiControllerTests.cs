@@ -42,11 +42,13 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 
         [Theory]
         [InlineData("")]
-        [InlineData("123")]
+        [InlineData("999")]
         [InlineData("12345678")]
-        [InlineData("123456789333")]
+        [InlineData("1234567890")]
+        [InlineData("abcdefghi")]
         [InlineData("abcdefghij")]
-        [InlineData("123-45678")]
+        [InlineData("1d2d3d4d5")]
+        [InlineData("   ")]
         public async Task GetOrganizationInfo_ReturnsBadRequest_WhenOrgNumberIsInvalid(string invalidOrgNumber)
         {
             // Act
