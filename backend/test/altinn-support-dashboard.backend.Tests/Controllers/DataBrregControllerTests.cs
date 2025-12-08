@@ -82,6 +82,84 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
+        [Fact]
+        public async Task GetRoles_ReturnsBadRequest_WhenArgumentExceptionIsThrown()
+        {
+            string validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(service => service.GetRolesAsync(validOrgNumber, _environmentName))
+            .ThrowsAsync(new ArgumentException("Invalid argument"));
+
+            var result = await _controller.GetRoles(_environmentName, validOrgNumber);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetRoles_ReturnsNotFound_WhenHttpRequestExceptionWithNotFoundIsThrown()
+        {
+            string validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(service => service.GetRolesAsync(validOrgNumber, _environmentName))
+            .ThrowsAsync(new HttpRequestException("NotFound"));
+
+            var result = await _controller.GetRoles(_environmentName, validOrgNumber);
+
+            Assert.IsType<NotFoundObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetRoles_Returns503_WhenHttpRequestExceptionIsThrown()
+        {
+            string validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(service => service.GetRolesAsync(validOrgNumber, _environmentName))
+            .ThrowsAsync(new HttpRequestException("Service unavailable"));
+
+            var result = await _controller.GetRoles(_environmentName, validOrgNumber);
+
+            Assert.IsType<ObjectResult>(result);
+            var objectResult = result as ObjectResult;
+            if (objectResult != null) {
+                Assert.Equal(503, objectResult.StatusCode);
+            };
+        }
+
+        [Fact]
+        public async Task GetRoles_ReturnsBadRequest_WhenKeyNotFoundExceptionIsThrown()
+        {
+            string validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(service => service.GetRolesAsync(validOrgNumber, _environmentName))
+            .ThrowsAsync(new KeyNotFoundException());
+
+            var result = await _controller.GetRoles(_environmentName, validOrgNumber);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetRoles_Returns500_WhenGenericExceptionIsThrown()
+        {
+            string validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(service => service.GetRolesAsync(validOrgNumber, _environmentName))
+            .ThrowsAsync(new Exception("Generic error"));
+
+            var result = await _controller.GetRoles(_environmentName, validOrgNumber);
+
+            Assert.IsType<ObjectResult>(result);
+            var objectResult = result as ObjectResult;
+            if (objectResult != null) {
+                Assert.Equal(500, objectResult.StatusCode);
+            };
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData("999")]
