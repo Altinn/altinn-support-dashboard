@@ -35,6 +35,9 @@ public class InputValidationTest
     [InlineData("test@test.no", true)]
     [InlineData("invalid-email", false)]
     [InlineData("test@.com", false)]
+    [InlineData("test@test", false)]
+    [InlineData("test@@test", false)]
+    [InlineData("@", false)]
     [InlineData("", false)]
     public void IsValidEmail_ShouldReturnExpectedResult(string email, bool expectedResult)
     {
