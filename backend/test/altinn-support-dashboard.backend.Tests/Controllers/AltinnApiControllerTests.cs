@@ -40,6 +40,20 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
            Assert.Equal(expectedResult, okResult.Value);
         }
 
+        [Fact]
+        public async Task GetOrganizationInfo_Returns500_WhenServiceFails()
+        {
+            var validOrgNumber = "123456789";
+            _mockService
+            .Setup(x => x.GetOrganizationInfo(validOrgNumber, "TT02"))
+            .ThrowsAsync(new System.Exception("Service failure"));
+
+            var result = await _controller.GetOrganizationInfo(validOrgNumber);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData("999")]
@@ -78,6 +92,21 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             Assert.NotNull(result);
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(expectedOrganizations, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetOrganizationsByPhoneNumber_Returns500_WhenServiceFails()
+        {
+            var validPhoneNumber = "+4712345678";
+
+            _mockService
+            .Setup(x => x.GetOrganizationsByPhoneNumber(validPhoneNumber, "TT02"))
+            .ThrowsAsync(new System.Exception("Service failure"));
+
+            var result = await _controller.GetOrganizationsByPhoneNumber(validPhoneNumber);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
         }
 
         [Theory]
@@ -123,6 +152,20 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             Assert.Equal(expectedOrganizations, okResult.Value);
         }
 
+        [Fact]
+        public async Task GetOrganizationsByEmail_Returns500_WhenServiceFails()
+        {
+            var validEmail = "test@test.no";
+            _mockService
+            .Setup(x => x.GetOrganizationsByEmail(validEmail, "TT02"))
+            .ThrowsAsync(new System.Exception("Service failure"));
+
+            var result = await _controller.GetOrganizationsByEmail(validEmail);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
         [Theory]
         [InlineData("invalid-email")]
         [InlineData("test@.com")]
@@ -160,6 +203,21 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             Assert.NotNull(result);
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(expectedContacts, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetPersonalContacts_Returns500_WhenServiceFails()
+        {
+            var validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(x => x.GetPersonalContacts(validOrgNumber, "TT02"))
+            .ThrowsAsync(new System.Exception("Service failure"));
+
+            var result = await _controller.GetPersonalContacts(validOrgNumber);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
         }
 
         [Theory]
