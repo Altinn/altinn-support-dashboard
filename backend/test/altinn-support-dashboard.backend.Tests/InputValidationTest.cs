@@ -53,6 +53,9 @@ public class InputValidationTest
     [InlineData("", false)]
     [InlineData("invalid", false)]
     [InlineData("12345678A", false)]
+    [InlineData("1234567890A", false)]
+    [InlineData("123 456 789", false)]
+    [InlineData("123 456 78901", false)]
     public void IsValidSubjectOrReportee_ShouldReturnExpectedResult(string value, bool expectedResult)
     {
         bool result = altinn_support_dashboard.Server.Validation.ValidationService.IsValidSubjectOrReportee(value);
