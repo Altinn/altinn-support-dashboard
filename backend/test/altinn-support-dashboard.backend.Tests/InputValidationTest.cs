@@ -23,6 +23,7 @@ public class InputValidationTest
     [InlineData("12345678", false)]
     [InlineData("1234567890", false)]
     [InlineData("12345678A", false)]
+    [InlineData("123 456 789", false)]
     [InlineData("", false)]
     public void IsValidOrganizationNumber_ShouldReturnExpectedResult(string orgNumber, bool expectedResult)
     {
