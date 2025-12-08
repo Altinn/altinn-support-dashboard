@@ -1,3 +1,6 @@
+
+namespace altinn_support_dashboard.backend.Tests;
+
 public class InputValidationTest
 {
     
