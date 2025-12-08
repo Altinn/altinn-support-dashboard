@@ -51,7 +51,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             // Act
             var result = await _controller.GetOrganizationInfo(invalidOrgNumber);
-
+            
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
@@ -59,7 +59,16 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 
         [Theory]
         [InlineData("")]
-        public async Task GetOrganizationsByPhoneNumber_ReturnsBadRequest_WhenPhoneNumberLengthIsInvalid(string invalidPhonenumber)
+        [InlineData("123-4567")]
+        [InlineData("phone123")]
+        [InlineData("12345678A")]
+        [InlineData("+47-123-45678")]
+        [InlineData("+47 123 45678")]
+        [InlineData("(123) 4567890")]
+        [InlineData("++4712345678")]
+        [InlineData("+ ")]
+        [InlineData("   ")]
+        public async Task GetOrganizationsByPhoneNumber_ReturnsBadRequest_WhenPhoneNumberIsInvalid(string invalidPhonenumber)
         {
 
             // Act
