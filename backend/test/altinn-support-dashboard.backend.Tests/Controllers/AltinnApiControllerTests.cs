@@ -398,10 +398,61 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [InlineData("   ")]
         public async Task GetOfficialContacts_ReturnsBadRequest_WhenOrgNumberIsInvalid(string invalidOrgNumber)
         {
-            // Act
             var result = await _controller.GetOfficialContacts(invalidOrgNumber);
 
-            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task GetPersonalContactsAltinn3_ReturnsContacts_WhenOrgNumberIsValid()
+        {
+            var validOrgNumber = "123456789";
+            var expectedContacts = new List<PersonalContact>
+            {
+                new PersonalContact { Name = "Contact1", EMailAddress = "contact1@test.no" },
+                new PersonalContact { Name = "Contact2", EMailAddress = "contact2@test.no" }
+            };
+
+            _mockService
+            .Setup(x => x.GetPersonalContactsAltinn3(validOrgNumber, "TT02"))
+            .ReturnsAsync(expectedContacts);
+
+            var result = await _controller.GetPersonalContactsAltinn3(validOrgNumber);
+
+            Assert.NotNull(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(expectedContacts, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetPersonalContactsAltinn3_Returns500_WhenServiceFails()
+        {
+            var validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(x => x.GetPersonalContactsAltinn3(validOrgNumber, "TT02"))
+            .ThrowsAsync(new System.Exception("Service failure"));
+
+            var result = await _controller.GetPersonalContactsAltinn3(validOrgNumber);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("999")]
+        [InlineData("12345678")]
+        [InlineData("1234567890")]
+        [InlineData("abcdefghi")]
+        [InlineData("abcdefghij")]
+        [InlineData("1d2d3d4d5")]
+        [InlineData("   ")]
+        public async Task GetPersonalContactsAltinn3_ReturnsBadRequest_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+        {
+            var result = await _controller.GetPersonalContactsAltinn3(invalidOrgNumber);
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
         }
