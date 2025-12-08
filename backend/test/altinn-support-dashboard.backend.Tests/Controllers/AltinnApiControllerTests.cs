@@ -70,8 +70,8 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             };
 
             _mockService
-                .Setup(x => x.GetOrganizationsByPhoneNumber(validPhoneNumber, "TT02"))
-                .ReturnsAsync(expectedOrganizations);
+            .Setup(x => x.GetOrganizationsByPhoneNumber(validPhoneNumber, "TT02"))
+            .ReturnsAsync(expectedOrganizations);
 
             var result = await _controller.GetOrganizationsByPhoneNumber(validPhoneNumber);
 
@@ -101,6 +101,28 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Telefonnummeret er ugyldig. Det kan ikke være tomt.", badRequestResult.Value);
         }
+
+        [Fact]
+        public async Task GetOrganizationsByEmail_ReturnsOrganizations_WhenEmailIsValid()
+        {
+            var validEmail = "test@test.no";
+            var expectedOrganizations = new List<Organization>
+            {
+                new Organization { OrganizationNumber = "123456789", Name = "Org1" },
+                new Organization { OrganizationNumber = "987654321", Name = "Org2" }
+            };
+
+            _mockService
+            .Setup(x => x.GetOrganizationsByEmail(validEmail, "TT02"))
+            .ReturnsAsync(expectedOrganizations);
+
+            var result = await _controller.GetOrganizationsByEmail(validEmail);
+
+            Assert.NotNull(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(expectedOrganizations, okResult.Value);
+        }
+
         [Theory]
         [InlineData("invalid-email")]
         [InlineData("test@.com")]
