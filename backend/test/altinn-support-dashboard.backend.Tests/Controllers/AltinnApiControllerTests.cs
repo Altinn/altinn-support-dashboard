@@ -6,6 +6,7 @@ using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using AltinnSupportDashboard.Controllers;
 using Microsoft.VisualBasic;
+using Models.altinn3Dtos;
 
 namespace altinn_support_dashboard.backend.Tests.Controllers
 {
@@ -452,6 +453,65 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetPersonalContactsAltinn3_ReturnsBadRequest_WhenOrgNumberIsInvalid(string invalidOrgNumber)
         {
             var result = await _controller.GetPersonalContactsAltinn3(invalidOrgNumber);
+
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task GetNotificationAddresses_ReturnsAddresses_WhenOrgNumberIsValid()
+        {
+            var validOrgNumber = "123456789";
+            var expectedAddresses = new List<NotificationAddressDto>
+            {
+                new NotificationAddressDto { 
+                    NotificationAddressId = 1,
+                    CountryCode = "NO",
+                    Email = "address1@test.no" ,
+                    Phone = "12345678",
+                    SourceOrgNumber = "123456789",
+                    RequestedOrgNumber = "123456789"
+                }
+            };
+
+            _mockService
+            .Setup(x => x.GetNotificationAddressesAltinn3(validOrgNumber, "TT02"))
+            .ReturnsAsync(expectedAddresses);
+
+            var result = await _controller.GetNotificationAddresses(validOrgNumber);
+
+            Assert.NotNull(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(expectedAddresses, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetNotificationAddresses_Returns500_WhenServiceFails()
+        {
+            var validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(x => x.GetNotificationAddressesAltinn3(validOrgNumber, "TT02"))
+            .ThrowsAsync(new System.Exception("Service failure"));
+
+            var result = await _controller.GetNotificationAddresses(validOrgNumber);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("999")]
+        [InlineData("12345678")]
+        [InlineData("1234567890")]
+        [InlineData("abcdefghi")]
+        [InlineData("abcdefghij")]
+        [InlineData("1d2d3d4d5")]
+        [InlineData("   ")]
+        public async Task GetNotificationAddresses_ReturnsBadRequest_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+        {
+            var result = await _controller.GetNotificationAddresses(invalidOrgNumber);
 
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
