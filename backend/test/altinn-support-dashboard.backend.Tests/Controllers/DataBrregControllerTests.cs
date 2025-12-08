@@ -21,48 +21,93 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             _controller = new ER_Roller_APIController(_mockService.Object);
         }
 
-        [Theory]
-        [InlineData("")]
-        [InlineData("123")]
-        [InlineData("12345678")]
-        [InlineData("123456789333")]
-        [InlineData("abcdefghij")]
-        public async Task GetRoles_ReturnsBadRequest_WhenOrgNumberLengthIsInvalid(string invalidOrgNumber)
+        [Fact]
+        public async Task GetRoles_ReturnsRoles_WhenOrgNumberIsValid()
         {
-            // Act
-            var result = await _controller.GetRoles(_environmentName, invalidOrgNumber);
+            var validOrgNumber = "123456789";
+            var expectedRoles = new ErRollerModel
+            {
+                Rollegrupper = new List<Rollegrupper>
+                {
+                    new Rollegrupper { SistEndret = "2023-01-01"}
+                },
+                ApiRoller = new List<ApiRoller>
+                {
+                    new ApiRoller { Beskrivelse = "Role1" }
+                }
+            };
 
-            // Assert
+            _mockService
+            .Setup(service => service.GetRolesAsync(validOrgNumber, _environmentName))
+            .ReturnsAsync(expectedRoles);
+
+            var result = await _controller.GetRoles(_environmentName, validOrgNumber);
+
+            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(result);
+        }
+
+        [Theory]
+        [InlineData("Production ")]
+        [InlineData("pRoduction")]
+        [InlineData("test")]
+        [InlineData("dev")]
+        [InlineData("TT01")]
+        [InlineData("")]
+        [InlineData("Tt02")]
+        [InlineData("TT02 ")] 
+
+        public async Task GetRoles_ReturnsBadRequest_WhenEnvironmentIsInvalid(string invalidEnvironment)
+        {
+            string validOrgNumber = "123456789";
+
+            var result = await _controller.GetRoles(invalidEnvironment, validOrgNumber);
+
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Theory]
         [InlineData("")]
-        [InlineData("123")]
+        [InlineData("999")]
         [InlineData("12345678")]
-        [InlineData("123456789333")]
+        [InlineData("1234567890")]
+        [InlineData("abcdefghi")]
         [InlineData("abcdefghij")]
+        [InlineData("1d2d3d4d5")]
+        [InlineData("   ")]
+        public async Task GetRoles_ReturnsBadRequest_WhenOrgNumberLengthIsInvalid(string invalidOrgNumber)
+        {
+            var result = await _controller.GetRoles(_environmentName, invalidOrgNumber);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("999")]
+        [InlineData("12345678")]
+        [InlineData("1234567890")]
+        [InlineData("abcdefghi")]
+        [InlineData("abcdefghij")]
+        [InlineData("1d2d3d4d5")]
+        [InlineData("   ")]
         public async Task GetUnderenheter_ReturnsBadRequest_WhenOrgNumberLengthIsInvalid(string invalidOrgNumber)
         {
-            // Act
             var result = await _controller.GetUnderenheter(_environmentName, invalidOrgNumber);
 
-            // Assert
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Fact]
         public async Task GetUnderenheter_ReturnsOk_WhenOrgNumberLengthIsValid()
         {
-            // Arrange
             string validOrgNumber = "123456789";
-            _mockService.Setup(service => service.GetUnderenheter(validOrgNumber, _environmentName))
-                        .ReturnsAsync(new UnderenhetRootObject());
+            _mockService.
+            Setup(service => service.GetUnderenheter(validOrgNumber, _environmentName))
+            .ReturnsAsync(new UnderenhetRootObject());
 
-            // Act
             var result = await _controller.GetUnderenheter(_environmentName, validOrgNumber);
 
-            // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.IsType<UnderenhetRootObject>(okResult.Value);
         }
