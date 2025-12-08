@@ -1,3 +1,4 @@
+using Xunit;
 
 namespace altinn_support_dashboard.backend.Tests;
 
@@ -13,8 +14,10 @@ public class InputValidationTest
     [InlineData("+47-123-45678", false)]
     [InlineData("+47 123 45678", false)]
     [InlineData("(123) 4567890", false)]
+    [InlineData("++4712345678", false)]
     [InlineData("+ ", false)]
     [InlineData("", false)]
+    [InlineData("   ", false)]
     public void IsValidPhoneNumber_ShouldReturnExpectedResult(string phoneNumber, bool expectedResult)
     {
         bool result = altinn_support_dashboard.Server.Validation.ValidationService.IsValidPhoneNumber(phoneNumber);
@@ -28,6 +31,7 @@ public class InputValidationTest
     [InlineData("12345678A", false)]
     [InlineData("123 456 789", false)]
     [InlineData("", false)]
+    [InlineData("   ", false)]
     public void IsValidOrganizationNumber_ShouldReturnExpectedResult(string orgNumber, bool expectedResult)
     {
         bool result = altinn_support_dashboard.Server.Validation.ValidationService.IsValidOrgNumber(orgNumber);
@@ -42,6 +46,7 @@ public class InputValidationTest
     [InlineData("test@@test", false)]
     [InlineData("@", false)]
     [InlineData("", false)]
+    [InlineData("   ", false)]
     public void IsValidEmail_ShouldReturnExpectedResult(string email, bool expectedResult)
     {
         bool result = altinn_support_dashboard.Server.Validation.ValidationService.IsValidEmail(email);
@@ -59,6 +64,7 @@ public class InputValidationTest
     [InlineData("1234567890A", false)]
     [InlineData("123 456 789", false)]
     [InlineData("123 456 78901", false)]
+    [InlineData("   ", false)]
     public void IsValidSubjectOrReportee_ShouldReturnExpectedResult(string value, bool expectedResult)
     {
         bool result = altinn_support_dashboard.Server.Validation.ValidationService.IsValidSubjectOrReportee(value);
@@ -70,7 +76,9 @@ public class InputValidationTest
     [InlineData("invalid-path", "/")]
     [InlineData("//malicious", "/")]
     [InlineData("/another/valid-path", "/another/valid-path")]
+    [InlineData(":external.com", "/")]
     [InlineData("", "/")]
+    [InlineData("   ", "/")]
     public void SanitizeRedirectUrl_ShouldReturnExpectedResult(string url, string expectedResult)
     {
         string result = altinn_support_dashboard.Server.Validation.ValidationService.SanitizeRedirectUrl(url);
