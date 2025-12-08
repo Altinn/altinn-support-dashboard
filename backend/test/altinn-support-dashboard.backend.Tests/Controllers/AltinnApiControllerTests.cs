@@ -181,5 +181,41 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
         }
 
+        [Fact]
+        public async Task Search_ReturnsBadRequest_WhenQueryIsEmpty()
+        {
+            var result = await _controller.Search("");
+
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Søketerm kan ikke være tom.", badRequestResult.Value);
+        }   
+
+        [Theory]
+        [InlineData("test.no")]
+        [InlineData("123-4567")]
+        [InlineData("phone123")]
+        [InlineData("12345678A")]
+        [InlineData("+47-123-45678")]
+        [InlineData("+47 123 45678")]
+        [InlineData("(123) 4567890")]
+        [InlineData("++4712345678")]
+        [InlineData("+ ")]
+        [InlineData("   ")]
+        [InlineData("invalid-email")]
+        [InlineData("test@.com")]
+        [InlineData("test@test")]
+        [InlineData("test@@test")]
+        [InlineData("@")]     
+        [InlineData("abcdefghi")]
+        [InlineData("abcdefghij")]
+        [InlineData("1d2d3d4d5")]
+        public async Task Search_ReturnsBadRequest_WhenQueryIsInvalid(string invalidQuery)
+        {
+            var result = await _controller.Search(invalidQuery);
+
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Ugyldig søketerm. Angi et gyldig organisasjonsnummer, telefonnummer eller e-postadresse.", badRequestResult.Value);
+        }
+
     }
 }
