@@ -59,6 +59,27 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
         }
 
+        [Fact]
+        public async Task GetOrganizationsByPhoneNumber_ReturnsOrganizations_WhenPhoneNumberIsValid()
+        {
+            var validPhoneNumber = "+4712345678";
+            var expectedOrganizations = new List<Organization>
+            {
+                new Organization { OrganizationNumber = "123456789", Name = "Org1" },
+                new Organization { OrganizationNumber = "987654321", Name = "Org2" }
+            };
+
+            _mockService
+                .Setup(x => x.GetOrganizationsByPhoneNumber(validPhoneNumber, "TT02"))
+                .ReturnsAsync(expectedOrganizations);
+
+            var result = await _controller.GetOrganizationsByPhoneNumber(validPhoneNumber);
+
+            Assert.NotNull(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(expectedOrganizations, okResult.Value);
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData("123-4567")]
@@ -81,10 +102,13 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             Assert.Equal("Telefonnummeret er ugyldig. Det kan ikke være tomt.", badRequestResult.Value);
         }
         [Theory]
-        [InlineData("123")]
-        [InlineData("12345678")]
-        [InlineData("123456789333")]
-        [InlineData("abcdefghij")]
+        [InlineData("invalid-email")]
+        [InlineData("test@.com")]
+        [InlineData("test@test")]
+        [InlineData("test@@test")]
+        [InlineData("@")]
+        [InlineData("")]
+        [InlineData("   ")]
         public async Task GetOrganizationsByEmail_ReturnsBadRequest_WhenEmailIsInvalid(string invalidEmail)
         {
             // Act
