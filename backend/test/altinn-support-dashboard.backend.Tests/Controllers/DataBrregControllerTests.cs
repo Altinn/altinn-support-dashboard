@@ -160,6 +160,20 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             };
         }
 
+        [Fact]
+        public async Task GetRoles_ReturnsNotFound_WhenResultIsNull()
+        {
+            string validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(service => service.GetRolesAsync(validOrgNumber, _environmentName))
+            .ReturnsAsync((ErRollerModel)null!);
+
+            var result = await _controller.GetRoles(_environmentName, validOrgNumber);
+
+            Assert.IsType<NotFoundObjectResult>(result);
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData("999")]
@@ -270,6 +284,20 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             if (objectResult != null) {
                 Assert.Equal(500, objectResult.StatusCode);
             };
+        }
+
+        [Fact]
+        public async Task GetUnderenheter_ReturnsNotFound_WhenResultIsNull()
+        {
+            string validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(service => service.GetUnderenheter(validOrgNumber, _environmentName))
+            .ReturnsAsync((UnderenhetRootObject)null!);
+
+            var result = await _controller.GetUnderenheter(_environmentName, validOrgNumber);
+
+            Assert.IsType<NotFoundObjectResult>(result);
         }
     }
 }
