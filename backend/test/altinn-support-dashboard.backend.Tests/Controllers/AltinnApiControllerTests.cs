@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using AltinnSupportDashboard.Controllers;
+using Microsoft.VisualBasic;
 
 namespace altinn_support_dashboard.backend.Tests.Controllers
 {
@@ -19,13 +20,34 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             _controller = new AltinnTT02Controller(_mockService.Object);
         }
 
+        [Fact]
+        public async Task GetOrganizationInfo_ReturnsInfo_WhenOrgNumberIsValid()
+        {
+           var validOrgNumber = "123456789";
+           var expectedResult = new Organization
+           {
+               OrganizationNumber = validOrgNumber,
+               Name = "Test Organization"
+           };   
+           _mockService
+           .Setup(x => x.GetOrganizationInfo(validOrgNumber, "TT02"))
+           .ReturnsAsync(expectedResult);
+
+           var result = await _controller.GetOrganizationInfo(validOrgNumber);
+
+           Assert.NotNull(result);
+           var okResult = Assert.IsType<OkObjectResult>(result);
+           Assert.Equal(expectedResult, okResult.Value);
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData("123")]
         [InlineData("12345678")]
         [InlineData("123456789333")]
         [InlineData("abcdefghij")]
-        public async Task GetOrganizationInfo_ReturnsBadRequest_WhenOrgNumberLengthIsInvalid(string invalidOrgNumber)
+        [InlineData("123-45678")]
+        public async Task GetOrganizationInfo_ReturnsBadRequest_WhenOrgNumberIsInvalid(string invalidOrgNumber)
         {
             // Act
             var result = await _controller.GetOrganizationInfo(invalidOrgNumber);
