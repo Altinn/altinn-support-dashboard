@@ -188,7 +188,31 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Søketerm kan ikke være tom.", badRequestResult.Value);
-        }   
+        }
+
+        [Theory]
+        [InlineData("123456789")]
+        [InlineData("+4712345678")]
+        [InlineData("test@test.no")]
+        public async Task Search_CallsService_WhenQueryIsValid(string validQuery)
+        {
+            _mockService
+            .Setup(x => x.GetOrganizationInfo(It.IsAny<string>(), "TT02"))
+            .ReturnsAsync(new Organization());
+
+            _mockService
+            .Setup(x => x.GetOrganizationsByPhoneNumber(It.IsAny<string>(), "TT02"))
+            .ReturnsAsync(new List<Organization>());
+
+            _mockService
+            .Setup(x => x.GetOrganizationsByEmail(It.IsAny<string>(), "TT02"))
+            .ReturnsAsync(new List<Organization>());
+
+            var result = await _controller.Search(validQuery);
+
+            Assert.NotNull(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+        } 
 
         [Theory]
         [InlineData("test.no")]
