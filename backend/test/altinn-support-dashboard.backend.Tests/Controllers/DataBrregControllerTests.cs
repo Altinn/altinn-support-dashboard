@@ -189,5 +189,87 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.IsType<UnderenhetRootObject>(okResult.Value);
         }
+
+        [Theory]
+        [InlineData("Production ")]
+        [InlineData("pRoduction")]
+        [InlineData("test")]
+        [InlineData("dev")]
+        [InlineData("TT01")]
+        [InlineData("")]
+        [InlineData("Tt02")]
+        [InlineData("TT02 ")] 
+        public async Task GetUnderenheter_ReturnsBadRequest_WhenEnvironmentIsInvalid(string invalidEnvironment)
+        {
+            string validOrgNumber = "123456789";
+
+            var result = await _controller.GetUnderenheter(invalidEnvironment, validOrgNumber);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetUnderenheter_ReturnsBadRequest_WhenArgumentExceptionIsThrown()
+        {
+            string validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(service => service.GetUnderenheter(validOrgNumber, _environmentName))
+            .ThrowsAsync(new ArgumentException("Invalid argument"));
+
+            var result = await _controller.GetUnderenheter(_environmentName, validOrgNumber);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetUnderenheter_Returns503_WhenHttpRequestExceptionIsThrown()
+        {
+            string validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(service => service.GetUnderenheter(validOrgNumber, _environmentName))
+            .ThrowsAsync(new HttpRequestException("Service unavailable"));
+
+            var result = await _controller.GetUnderenheter(_environmentName, validOrgNumber);
+
+            Assert.IsType<ObjectResult>(result);
+            var objectResult = result as ObjectResult;
+            if (objectResult != null) {
+                Assert.Equal(503, objectResult.StatusCode);
+            };
+        }
+
+        [Fact]
+        public async Task GetUnderenheter_ReturnsBadRequest_WhenKeyNotFoundExceptionIsThrown()
+        {
+            string validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(service => service.GetUnderenheter(validOrgNumber, _environmentName))
+            .ThrowsAsync(new KeyNotFoundException());
+
+            var result = await _controller.GetUnderenheter(_environmentName, validOrgNumber);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetUnderenheter_Returns500_WhenGenericExceptionIsThrown()
+        {
+            string validOrgNumber = "123456789";
+
+            _mockService
+            .Setup(service => service.GetUnderenheter(validOrgNumber, _environmentName))
+            .ThrowsAsync(new Exception("Generic error"));
+
+            var result = await _controller.GetUnderenheter(_environmentName, validOrgNumber);
+
+            Assert.IsType<ObjectResult>(result);
+            var objectResult = result as ObjectResult;
+            if (objectResult != null) {
+                Assert.Equal(500, objectResult.StatusCode);
+            };
+        }
     }
 }
