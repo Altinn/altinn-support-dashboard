@@ -1,8 +1,6 @@
-using System.Text.Json;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
-using Microsoft.OpenApi.Validations;
 using Moq;
 
 namespace altinn_support_dashboard.backend.Tests.Services;
