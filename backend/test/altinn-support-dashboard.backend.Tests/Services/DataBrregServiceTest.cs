@@ -169,6 +169,24 @@ public class DataBrregServiceTest
     }
 
     [Fact]
+    public async Task GetUnderenheter_ReturnsNewUnderenhetRootObject_WhenNoUnderenheterFound()
+    {
+        var validOrgNumber = "123456789";
+
+        _mockDataBrregClient
+        .Setup(x => x.GetUnderenheter(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync("null");
+
+        var result = await _dataBrregService.GetUnderenheter(validOrgNumber, "TT02");
+
+        Assert.NotNull(result);
+        Assert.IsType<UnderenhetRootObject>(result);
+        Assert.Null(result.page);
+        Assert.Null(result._embedded);
+        Assert.Null(result._links);
+    }
+
+    [Fact]
     public async Task GetEnhetsdetaljer_ReturnsEnhetsdetaljer_WhenOrgNumberIsValid()
     {
         var validOrgNumber = "123456789";
