@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace altinn_support_dashboard.backend.Tests;
+namespace altinn_support_dashboard.backend.Tests.Validation;
 
 public class InputValidationTest
 {
@@ -32,7 +32,7 @@ public class InputValidationTest
     [InlineData("123 456 789", false)]
     [InlineData("", false)]
     [InlineData("   ", false)]
-    public void IsValidOrganizationNumber_ShouldReturnExpectedResult(string orgNumber, bool expectedResult)
+    public void IsValidOrgNumber_ShouldReturnExpectedResult(string orgNumber, bool expectedResult)
     {
         bool result = altinn_support_dashboard.Server.Validation.ValidationService.IsValidOrgNumber(orgNumber);
         Assert.Equal(expectedResult, result);
@@ -43,7 +43,7 @@ public class InputValidationTest
     [InlineData("invalid-email", false)]
     [InlineData("test@.com", false)]
     [InlineData("test@test", false)]
-    [InlineData("test@@test", false)]
+    [InlineData("test@@test.no", false)]
     [InlineData("@", false)]
     [InlineData("", false)]
     [InlineData("   ", false)]
