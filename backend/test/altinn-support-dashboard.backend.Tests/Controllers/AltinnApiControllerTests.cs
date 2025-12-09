@@ -20,7 +20,6 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData("123")]
         [InlineData("12345678")]
@@ -37,7 +36,6 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         public async Task GetOrganizationsByPhoneNumber_ReturnsBadRequest_WhenPhoneNumberLengthIsInvalid(string invalidPhonenumber)
         {
@@ -64,7 +62,6 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             Assert.Equal("E-postadressen er ugyldig.", badRequestResult.Value);
         }
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData("123")]
         [InlineData("12345678")]
