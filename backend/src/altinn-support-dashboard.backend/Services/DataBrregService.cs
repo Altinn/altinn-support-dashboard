@@ -11,11 +11,11 @@ namespace altinn_support_dashboard.Server.Services
 {
     public class DataBrregService : IDataBrregService
     {
-        private readonly DataBrregClient _client;
+        private readonly IDataBrregClient _client;
         private readonly IPartyApiService _partyService;
         private readonly List<string> _validEnvironmentNames = new List<string> { "Production", "TT02" };
 
-        public DataBrregService(DataBrregClient client, IPartyApiService partyApiService)
+        public DataBrregService(IDataBrregClient client, IPartyApiService partyApiService)
         {
             _client = client;
             _partyService = partyApiService;
