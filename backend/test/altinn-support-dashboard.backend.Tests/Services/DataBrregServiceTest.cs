@@ -122,6 +122,31 @@ public class DataBrregServiceTest
     }
 
     [Fact]
+    public async Task GetRolesAsync_ReturnsNewErRollerModel_WhenNoRolesFoundInPartyApiService()
+    {
+        var validOrgNumber = "123456789";
+
+        _mockDataBrregClient
+        .Setup(x => x.GetRolesAsync(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync("");
+
+        _mockPartyApiService
+        .Setup(x => x.GetRolesFromOrgAsync(It.IsAny<string>()))
+        .ReturnsAsync((ErRollerModel)null!);
+
+        var result = await _dataBrregService.GetRolesAsync(validOrgNumber, "TT02");
+
+        Assert.NotNull(result);
+        Assert.IsType<ErRollerModel>(result);
+        if (result.Rollegrupper != null && result.ApiRoller != null)
+        {
+            Assert.Empty(result.Rollegrupper);
+            Assert.Empty(result.ApiRoller);
+            Assert.Null(result.Links);
+        }
+    }
+
+    [Fact]
     public async Task GetUnderenheter_ReturnsUnderenheter_WhenOrgNumberIsValid()
     {
         var validOrgNumber = "123456789";
