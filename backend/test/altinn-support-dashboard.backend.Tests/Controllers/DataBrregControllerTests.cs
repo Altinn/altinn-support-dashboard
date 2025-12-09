@@ -55,7 +55,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [InlineData("TT01")]
         [InlineData("")]
         [InlineData("Tt02")]
-        [InlineData("TT02 ")] 
+        [InlineData("TT02 ")]
 
         public async Task GetRoles_ReturnsBadRequest_WhenEnvironmentIsInvalid(string invalidEnvironment)
         {
@@ -212,7 +212,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [InlineData("TT01")]
         [InlineData("")]
         [InlineData("Tt02")]
-        [InlineData("TT02 ")] 
+        [InlineData("TT02 ")]
         public async Task GetUnderenheter_ReturnsBadRequest_WhenEnvironmentIsInvalid(string invalidEnvironment)
         {
             string validOrgNumber = "123456789";

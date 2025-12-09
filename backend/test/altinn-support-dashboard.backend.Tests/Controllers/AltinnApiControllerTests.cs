@@ -270,8 +270,8 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var result = await _controller.Search(validQuery);
 
             Assert.NotNull(result);
-            var okResult = Assert.IsType<OkObjectResult>(result);
-        } 
+            Assert.IsType<OkObjectResult>(result);
+        }
 
         [Theory]
         [InlineData("test.no")]
@@ -288,7 +288,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [InlineData("test@.com")]
         [InlineData("test@test")]
         [InlineData("test@@test")]
-        [InlineData("@")]     
+        [InlineData("@")]
         [InlineData("abcdefghi")]
         [InlineData("abcdefghij")]
         [InlineData("1d2d3d4d5")]
@@ -301,7 +301,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetPersonRoles_ReturnsContacts_WhenSubjectAndReporteeIsValid()
+        public async Task GetPersonRoles_ReturnsRoles_WhenSubjectAndReporteeIsValid()
         {
             var validSubjectId = "123456789";
             var validReporteeId = "987654321";
@@ -344,7 +344,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [InlineData("abcde", "12345678901")]
         [InlineData("1234569", "1234567")]
         [InlineData("abcdefghi", "reportee!@#")]
-        public async Task GetPersoNRoles_ReturnsBadRequest_WhenSubjectOrReporteeIsInvalid(string invalidSubject, string invalidReportee)
+        public async Task GetPersonRoles_ReturnsBadRequest_WhenSubjectOrReporteeIsInvalid(string invalidSubject, string invalidReportee)
         {
             var result = await _controller.GetPersonRoles(invalidSubject, invalidReportee);
 
@@ -406,7 +406,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetPersonalContactsAltinn3_ReturnsContacts_WhenOrgNumberIsValid()
+        public async Task GetPersonalContactsAltinn3_ReturnsRoles_WhenOrgNumberIsValid()
         {
             var validOrgNumber = "123456789";
             var expectedContacts = new List<PersonalContact>
