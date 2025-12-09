@@ -1,3 +1,4 @@
+using System.Text.Json;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
@@ -65,4 +66,53 @@ public class DataBrregServiceTest
 
         await Assert.ThrowsAsync<ArgumentException>(async () => await _dataBrregService.GetRolesAsync(validOrgNumber, invalidEnvironment));
     }
+
+    [Fact]
+    public async Task GetUnderenheter_ReturnsUnderenheter_WhenOrgNumberIsValid()
+    {
+        var validOrgNumber = "123456789";
+        var mockResponse = "{\"underenheter\":[{\"organisasjonsnummer\":\"987654321\",\"navn\":\"Underenhet 1\"}]}";
+
+        _mockDataBrregClient
+        .Setup(x => x.GetUnderenheter(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync(mockResponse);
+
+        var result = await _dataBrregService.GetUnderenheter(validOrgNumber, "TT02");
+
+        Assert.NotNull(result);
+        Assert.IsType<UnderenhetRootObject>(result);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("999")]
+    [InlineData("12345678")]
+    [InlineData("1234567890")]
+    [InlineData("abcdefghi")]
+    [InlineData("abcdefghij")]
+    [InlineData("1d2d3d4d5")]
+    [InlineData("123 456 789")]
+    [InlineData("      ")]
+    public async Task GetUnderenheter_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+    {
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _dataBrregService.GetUnderenheter(invalidOrgNumber, "TT02"));
+    }
+
+    [Theory]
+    [InlineData("Production ")]
+    [InlineData("pRoduction")]
+    [InlineData("test")]
+    [InlineData("dev")]
+    [InlineData("TT01")]
+    [InlineData("")]
+    [InlineData("Tt02")]
+    [InlineData("TT02 ")]
+    public async Task GetUnderenheter_ThrowsArgumentException_WhenEnvironmentIsInvalid(string invalidEnvironment)
+    {
+        var validOrgNumber = "123456789";
+
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _dataBrregService.GetUnderenheter(validOrgNumber, invalidEnvironment));
+    }
+
+    
 }
