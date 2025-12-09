@@ -34,4 +34,35 @@ public class DataBrregServiceTest
         Assert.NotNull(result);
         Assert.IsType<ErRollerModel>(result);
     }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("999")]
+    [InlineData("12345678")]
+    [InlineData("1234567890")]
+    [InlineData("abcdefghi")]
+    [InlineData("abcdefghij")]
+    [InlineData("1d2d3d4d5")]
+    [InlineData("123 456 789")]
+    [InlineData("      ")]
+    public async Task GetRolesAsync_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+    {
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _dataBrregService.GetRolesAsync(invalidOrgNumber, "TT02"));
+    }
+
+    [Theory]
+    [InlineData("Production ")]
+    [InlineData("pRoduction")]
+    [InlineData("test")]
+    [InlineData("dev")]
+    [InlineData("TT01")]
+    [InlineData("")]
+    [InlineData("Tt02")]
+    [InlineData("TT02 ")]
+    public async Task GetRolesAsync_ThrowsArgumentException_WhenEnvironmentIsInvalid(string invalidEnvironment)
+    {
+        var validOrgNumber = "123456789";
+
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _dataBrregService.GetRolesAsync(validOrgNumber, invalidEnvironment));
+    }
 }
