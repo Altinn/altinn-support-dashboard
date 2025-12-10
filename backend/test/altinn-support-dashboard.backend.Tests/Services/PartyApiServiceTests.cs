@@ -113,5 +113,38 @@ public class PartyApiServiceTests
         await Assert.ThrowsAsync<Exception>(async () => await _service.GetPartyFromUuidAsync(validUuid));
     }
 
-    
+    [Fact]
+    public async Task GetRolesFromPartyAsync_ReturnsRolesString_WhenUuidIsValid()
+    {
+        var validUuid = "11111111-1111-1111-1111-111111111111";
+        var mockResponse = @"[""Role1"", ""Role2""]";
+
+        _mockClient
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .ReturnsAsync(mockResponse);
+
+        var result = await _service.GetRolesFromPartyAsync(validUuid);
+
+        Assert.NotNull(result);
+        Assert.IsType<string>(result);
+    }
+
+    [Fact]
+    public async Task GetRolesFromOrgAsync_ReturnsErRollerModel_WhenOrgNumberIsValid()
+    {
+        var validOrgNumber = "123456789";
+        var expectedRoles = new ErRollerModel
+        {
+            Rollegrupper = new List<Rollegrupper>
+            {
+                new Rollegrupper
+                {
+                    Roller = new List<Roller>
+                    {
+                        new Roller { Type = new Server.Models.Type {Kode = "Test", Beskrivelse = "Testing" } }
+                    }
+                }
+            }
+        };
+    }
 }
