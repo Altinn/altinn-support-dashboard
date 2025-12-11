@@ -173,4 +173,17 @@ public class PartyApiServiceTests
         Assert.NotNull(result);
         Assert.IsType<ErRollerModel>(result);   
     }
+
+    [Fact]
+    public async Task GetRolesFromOrgAsync_ThrowsException_WhenOrgPartyIsNull()
+    {
+        var validOrgNumber = "123456789";
+        var mockPartyResponse = "null";
+        
+        _mockClient
+        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .ReturnsAsync(mockPartyResponse);
+
+        await Assert.ThrowsAsync<Exception>(async () => await _service.GetRolesFromOrgAsync(validOrgNumber));
+    }
 }
