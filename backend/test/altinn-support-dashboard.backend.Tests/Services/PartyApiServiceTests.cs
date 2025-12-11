@@ -179,11 +179,133 @@ public class PartyApiServiceTests
     {
         var validOrgNumber = "123456789";
         var mockPartyResponse = "null";
-        
+
         _mockClient
         .Setup(x => x.GetParty(It.IsAny<string>(), true))
         .ReturnsAsync(mockPartyResponse);
 
         await Assert.ThrowsAsync<Exception>(async () => await _service.GetRolesFromOrgAsync(validOrgNumber));
+    }
+
+    [Fact]
+    public async Task GetRolesFromOrgAsync_SkipsPartiesWithoutPerson()
+    {
+        var validOrgNumber = "123456789";
+
+        var mockPartyResponse = @"{
+            ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
+            ""OrgNumber"":""123456789"",
+            ""Name"":""Test Org""
+        }";
+
+        var mockRolesResponse = @"{
+            ""data"": [
+                {
+                    ""role"": {
+                            ""identifier"": ""DAGL""
+                    },
+                    ""to"" : {
+                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""}                 
+                }
+            ]
+        }";
+
+        var mockSubPartyResponse = @"{
+            ""partyUuid"": ""22222222-2222-2222-2222-222222222222"",
+            ""Name"":""Test Org Unit""
+        }";
+
+        _mockClient
+        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .ReturnsAsync(mockPartyResponse);
+        _mockClient
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .ReturnsAsync(mockRolesResponse);
+        _mockClient
+        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222"))
+        .ReturnsAsync(mockSubPartyResponse);
+
+        var result = await _service.GetRolesFromOrgAsync(validOrgNumber);
+
+        Assert.NotNull(result);
+        Assert.IsType<ErRollerModel>(result);
+        if (result.Rollegrupper != null)
+        {
+            Assert.Empty(result.Rollegrupper);
+        }
+    }
+
+    [Fact]
+    public async Task GetRolesFromOrgAsync_HandlesMutlipleRoles()
+    {
+        var validOrgNumber = "123456789";
+        var mockPartyResponse = @"{
+            ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
+            ""OrgNumber"":""123456789"",
+            ""Name"":""Test Org""
+        }";
+
+        var mockRolesResponse = @"{
+            ""data"": [
+                {
+                    ""role"": {
+                            ""identifier"": ""DAGL""
+                    },
+                    ""to"" : {
+                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""}                 
+                },
+                {
+                    ""role"": {
+                            ""identifier"": ""ADMIN""
+                    },
+                    ""to"" : {
+                        ""partyUuid"": ""33333333-3333-3333-3333-333333333333""}                 
+                }
+            ]
+        }";
+
+        var mockSubPartyResponse1 = @"{
+            ""partyUuid"": ""22222222-2222-2222-2222-222222222222"",
+            ""Ssn"":""12345678901"",
+            ""Name"":""Test Person1"",
+            ""person"": { 
+                ""FirstName"": ""Test"",
+                ""LastName"": ""Person1""
+            }
+        }";
+        var mockSubPartyResponse2 = @"{
+            ""partyUuid"": ""33333333-3333-3333-3333-333333333333"",
+            ""Ssn"":""10987654321"",
+            ""Name"":""Test Person2"",
+            ""person"": { 
+                ""FirstName"": ""Test"",
+                ""LastName"": ""Person2""
+            }
+        }";
+
+        _mockClient
+        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .ReturnsAsync(mockPartyResponse);
+        _mockClient
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .ReturnsAsync(mockRolesResponse);
+        _mockClient
+        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222"))
+        .ReturnsAsync(mockSubPartyResponse1);
+        _mockClient
+        .Setup(x => x.GetPartyByUuid("33333333-3333-3333-3333-333333333333"))
+        .ReturnsAsync(mockSubPartyResponse2);
+
+        var result = await _service.GetRolesFromOrgAsync(validOrgNumber);
+
+        Assert.NotNull(result);
+        Assert.IsType<ErRollerModel>(result);
+        Assert.NotNull(result.Rollegrupper);
+        Assert.Equal(2, result.Rollegrupper.Count);
+
+        var firstGroup = result.Rollegrupper[0];
+        var secondGroup = result.Rollegrupper[1];
+        Assert.NotNull(firstGroup.Roller);
+        Assert.NotNull(secondGroup.Roller);
     }
 }
