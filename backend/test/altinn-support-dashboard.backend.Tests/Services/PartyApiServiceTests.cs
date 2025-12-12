@@ -1,3 +1,4 @@
+using System.Text.Json;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using Moq;
@@ -48,6 +49,19 @@ public class PartyApiServiceTests
     }
 
     [Fact]
+    public async Task GetPartyFromOrgAsync_ThrowsJsonException_WhenJsonIsInvalid()
+    {
+        var validOrgNumber = "123456789";
+        var mockResponse = @"{ invalid json }";
+
+        _mockClient
+        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .ReturnsAsync(mockResponse);
+
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromOrgAsync(validOrgNumber));
+    }
+
+    [Fact]
     public async Task GetPartyFromSsnAsync_ReturnsPartyModel_WhenSsnIsValid()
     {
         var validSsn = "12345678901";
@@ -81,6 +95,18 @@ public class PartyApiServiceTests
     }
 
     [Fact]
+    public async Task GetPartyFromSsnAsync_ThrowsJsonException_WhenJsonIsInvalid(){
+        var validSsn = "12345678901";
+        var mockResponse = @"{ invalid json }";
+
+        _mockClient
+        .Setup(x => x.GetParty(It.IsAny<string>(), false))
+        .ReturnsAsync(mockResponse);
+
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromSsnAsync(validSsn));
+    }
+
+    [Fact]
     public async Task GetPartyFromUuidAsync_ReturnsPartyModel_WhenUuidIsValid()
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
@@ -111,6 +137,19 @@ public class PartyApiServiceTests
         .ReturnsAsync(mockResponse);
 
         await Assert.ThrowsAsync<Exception>(async () => await _service.GetPartyFromUuidAsync(validUuid));
+    }
+
+    [Fact]
+    public async Task GetPartyfromUuidAsync_ThrowsJsonException_WhenJsonIsInvalid()
+    {
+        var validUuid = "11111111-1111-1111-1111-111111111111";
+        var mockResponse = @"{ invalid json }";
+
+        _mockClient
+        .Setup(x => x.GetPartyByUuid(It.IsAny<string>()))
+        .ReturnsAsync(mockResponse);
+
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromUuidAsync(validUuid));
     }
 
     [Fact]
