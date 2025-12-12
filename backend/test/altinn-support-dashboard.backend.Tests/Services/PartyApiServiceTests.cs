@@ -62,6 +62,22 @@ public class PartyApiServiceTests
     }
 
     [Fact]
+    public async Task GetPartyFromOrgAsync_ThrowsJsonException_WhenMissingRequiredProperty()
+    {
+        var validOrgNumber = "123456789";
+        var mockResponse = @"{
+            ""OrgNumber"":""123456789"",
+            ""Name"":""Test Org""
+        }";
+
+        _mockClient
+        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .ReturnsAsync(mockResponse);
+
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromOrgAsync(validOrgNumber));
+    }
+
+    [Fact]
     public async Task GetPartyFromSsnAsync_ReturnsPartyModel_WhenSsnIsValid()
     {
         var validSsn = "12345678901";
