@@ -36,6 +36,7 @@ namespace AltinnSupportDashboard
             services.AddScoped<IPartyApiService, PartyApiService>();
             services.AddScoped<IAltinnApiClient, AltinnApiClient>();
             services.AddScoped<IAltinn3ApiClient, Altinn3ApiClient>();
+            services.AddScoped<IDataBrregClient, DataBrregClient>();
 
             // Add controllers for the API
             services.AddControllers();
