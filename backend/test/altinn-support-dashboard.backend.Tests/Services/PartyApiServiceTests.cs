@@ -472,4 +472,115 @@ public class PartyApiServiceTests
             Assert.Empty(result.Rollegrupper);
         }
     }
+
+    [Fact]
+    public async Task GetRolesFromOrgAsync_HandlesMixOfValidAndInvalidRoles()
+    {
+         var validOrgNumber = "123456789";
+
+        var mockPartyResponse = @"{
+            ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
+            ""orgNumber"":""123456789"",
+            ""name"":""Test Org""
+        }";
+
+        var mockRolesResponse = @"{
+            ""data"": [
+                {
+                    ""role"": {
+                        ""identifier"": """"
+                    },
+                    ""to"" : {
+                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""
+                    }                 
+                },
+                {
+                    ""role"": {
+                        ""identifier"": ""DAGL""
+                    },
+                    ""to"" : {
+                        ""partyUuid"": ""33333333-3333-3333-3333-333333333333""
+                    }                 
+                },
+                {
+                    ""role"": {
+                        ""identifier"": ""LEDE""
+                    },
+                    ""to"" : {
+                        ""partyUuid"": ""44444444-4444-4444-4444-444444444444""
+                    }                 
+                }
+            ]
+        }";
+        var mockSubPartyResponse1 = @"{
+            ""partyUuid"": ""22222222-2222-2222-2222-222222222222"",
+            ""ssn"":""12345678901"",
+            ""name"":""Test Person"",
+            ""person"": {
+                ""firstName"": ""Test"",
+                ""lastName"": ""Test1""
+            }
+        }";
+
+        var mockSubPartyResponse2 = @"{
+            ""partyUuid"": ""33333333-3333-3333-3333-333333333333"",
+            ""ssn"":""98765432109"",
+            ""name"":""Test Person"",
+            ""person"": {
+                ""firstName"": ""Test"",
+                ""lastName"": ""Test2""
+            }
+        }";
+
+        var mockSubPartyResponse3 = @"{
+            ""partyUuid"": ""44444444-4444-4444-4444-444444444444"",
+            ""orgNumber"":""999888777"",
+            ""name"":""Test Org""
+        }";
+
+        _mockClient
+        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .ReturnsAsync(mockPartyResponse);
+        _mockClient
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .ReturnsAsync(mockRolesResponse);
+        _mockClient
+        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222"))
+        .ReturnsAsync(mockSubPartyResponse1);
+        _mockClient
+        .Setup(x => x.GetPartyByUuid("33333333-3333-3333-3333-333333333333"))
+        .ReturnsAsync(mockSubPartyResponse2);
+        _mockClient
+        .Setup(x => x.GetPartyByUuid("44444444-4444-4444-4444-444444444444"))
+        .ReturnsAsync(mockSubPartyResponse3);
+
+        var result = await _service.GetRolesFromOrgAsync(validOrgNumber);
+
+        Assert.NotNull(result);
+        Assert.IsType<ErRollerModel>(result);
+        Assert.NotNull(result.Rollegrupper);
+        Assert.Single(result.Rollegrupper);
+    }
+
+    [Fact]
+    public async Task GetRolesFromOrgAsync_ThrowsException_WhenRolesJsonIsInvalid()
+    {
+        var validOrgNumber = "123456789";
+        var mockPartyResponse = @"{
+            ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
+            ""OrgNumber"":""123456789"",
+            ""Name"":""Test Org""
+        }";
+
+        var mockRolesResponse = @"{ invalid json }";
+
+        _mockClient
+        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .ReturnsAsync(mockPartyResponse);
+        _mockClient
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .ReturnsAsync(mockRolesResponse);
+
+        await Assert.ThrowsAnyAsync<Exception>(async () => await _service.GetRolesFromOrgAsync(validOrgNumber));
+    }
 }
