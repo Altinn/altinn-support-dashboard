@@ -172,7 +172,7 @@ public class PartyApiServiceTests
     }
 
     [Fact]
-    public async Task GetPartyfromUuidAsync_ThrowsJsonException_WhenJsonIsInvalid()
+    public async Task GetPartyFromUuidAsync_ThrowsJsonException_WhenJsonIsInvalid()
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
         var mockResponse = @"{ invalid json }";
@@ -323,7 +323,7 @@ public class PartyApiServiceTests
     }
 
     [Fact]
-    public async Task GetRolesFromOrgAsync_HandlesMutlipleRoles()
+    public async Task GetRolesFromOrgAsync_HandlesMultipleRoles()
     {
         var validOrgNumber = "123456789";
         var mockPartyResponse = @"{
