@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace altinn_support_dashboard.Server.Services
 {
-    public class DataBrregClient
+    public class DataBrregClient : IDataBrregClient
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly Dictionary<string, HttpClient> _clients = new();
