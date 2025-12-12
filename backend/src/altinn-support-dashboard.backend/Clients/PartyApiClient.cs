@@ -3,7 +3,7 @@ using System.Text.Json;
 using altinn_support_dashboard.Server.Models;
 using Microsoft.Extensions.Options;
 
-public class PartyApiClient
+public class PartyApiClient : IPartyApiClient
 {
     private readonly HttpClient _client;
 

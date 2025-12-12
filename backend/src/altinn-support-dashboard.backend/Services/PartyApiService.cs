@@ -8,9 +8,9 @@ namespace altinn_support_dashboard.Server.Services;
 
 public class PartyApiService : IPartyApiService
 {
-    private PartyApiClient _client;
+    private IPartyApiClient _client;
     private JsonSerializerOptions jsonOptions;
-    public PartyApiService(PartyApiClient client)
+    public PartyApiService(IPartyApiClient client)
     {
 
         jsonOptions = new JsonSerializerOptions
