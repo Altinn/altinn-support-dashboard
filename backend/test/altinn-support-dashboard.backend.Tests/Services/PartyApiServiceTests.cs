@@ -107,6 +107,22 @@ public class PartyApiServiceTests
     }
 
     [Fact]
+    public async Task GetPartyFromSsnAsync_ThrowsJsonException_WhenMissingRequiredProperty()
+    {
+        var validSsn = "12345678901";
+        var mockResponse = @"{
+            ""Ssn"":""12345678901"",
+            ""Name"":""Test Person""
+        }";
+
+        _mockClient
+        .Setup(x => x.GetParty(It.IsAny<string>(), false))
+        .ReturnsAsync(mockResponse);
+
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromSsnAsync(validSsn));
+    }
+
+    [Fact]
     public async Task GetPartyFromUuidAsync_ReturnsPartyModel_WhenUuidIsValid()
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
@@ -144,6 +160,22 @@ public class PartyApiServiceTests
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
         var mockResponse = @"{ invalid json }";
+
+        _mockClient
+        .Setup(x => x.GetPartyByUuid(It.IsAny<string>()))
+        .ReturnsAsync(mockResponse);
+
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromUuidAsync(validUuid));
+    }
+
+    [Fact]
+    public async Task GetPartyFromUuidAsync_ThrowsJsonException_WhenMissingRequiredProperty() 
+    {
+        var validUuid = "11111111-1111-1111-1111-111111111111";
+        var mockResponse = @"{
+            ""OrgNumber"":""123456789"",
+            ""Name"":""Test Org""
+        }";
 
         _mockClient
         .Setup(x => x.GetPartyByUuid(It.IsAny<string>()))
