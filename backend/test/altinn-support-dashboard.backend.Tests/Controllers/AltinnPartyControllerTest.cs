@@ -65,7 +65,7 @@ public class AltinnPartyControllerTests
             Name = "Test Organization"
         });
 
-        var result = await _controller.GetPartyOrg(validOrgNumber);
+        await _controller.GetPartyOrg(validOrgNumber);
 
         _mockPartyApiService.Verify(x => x.GetPartyFromOrgAsync(validOrgNumber), Times.Once);
     }
@@ -118,7 +118,7 @@ public class AltinnPartyControllerTests
             Name = "Test Person"
         });
 
-        var result = await _controller.GetPartySsn(validSsn);
+        await _controller.GetPartySsn(validSsn);
 
         _mockPartyApiService.Verify(x => x.GetPartyFromSsnAsync(validSsn), Times.Once);
     }
@@ -130,7 +130,7 @@ public class AltinnPartyControllerTests
         var expectedRolesJson = "{\"roles\": [\"role1\", \"role2\"]}";
 
         _mockPartyApiService
-        .Setup(x=> x.GetRolesFromPartyAsync(validUuid))
+        .Setup(x => x.GetRolesFromPartyAsync(validUuid))
         .ReturnsAsync(expectedRolesJson);
 
         var result = await _controller.GetPartyRoles(validUuid);
@@ -161,7 +161,7 @@ public class AltinnPartyControllerTests
         .Setup(x => x.GetRolesFromPartyAsync(validUuid))
         .ReturnsAsync("{\"roles\": [\"role1\", \"role2\"]}");
 
-        var result = await _controller.GetPartyRoles(validUuid);
+        await _controller.GetPartyRoles(validUuid);
 
         _mockPartyApiService.Verify(x => x.GetRolesFromPartyAsync(validUuid), Times.Once);
     }
@@ -238,13 +238,13 @@ public class AltinnPartyControllerTests
             ApiRoller = new List<ApiRoller>()
         });
 
-        var result = await _controller.GetRolesFromOrg(validOrgNumber);
+        await _controller.GetRolesFromOrg(validOrgNumber);
 
         _mockPartyApiService.Verify(x => x.GetRolesFromOrgAsync(validOrgNumber), Times.Once);
     }
 
     [Fact]
-    public async Task GetPartyUuid_RetursResult_WhenUuidIsValid()
+    public async Task GetPartyUuid_ReturnsResult_WhenUuidIsValid()
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
         var expectedParty = new PartyModel
@@ -289,7 +289,7 @@ public class AltinnPartyControllerTests
             Name = "Test Party"
         });
 
-        var result = await _controller.GetPartyUuid(validUuid);
+        await _controller.GetPartyUuid(validUuid);
 
         _mockPartyApiService.Verify(x => x.GetPartyFromUuidAsync(validUuid), Times.Once);
     }
