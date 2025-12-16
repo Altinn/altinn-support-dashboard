@@ -225,6 +225,25 @@ public class AltinnPartyControllerTests
     }
 
     [Fact]
+    public async Task GetRolesFromOrg_CallsServiceExactlyOnce()
+    {
+        var validOrgNumber = "123456789";
+
+        _mockPartyApiService
+        .Setup(service => service.GetRolesFromOrgAsync(validOrgNumber))
+        .ReturnsAsync(new ErRollerModel
+        {
+            Rollegrupper = new List<Rollegrupper>(),
+            Links = null,
+            ApiRoller = new List<ApiRoller>()
+        });
+
+        var result = await _controller.GetRolesFromOrg(validOrgNumber);
+
+        _mockPartyApiService.Verify(service => service.GetRolesFromOrgAsync(validOrgNumber), Times.Once);
+    }
+
+    [Fact]
     public async Task GetPartyUuid_RetursResult_WhenUuidIsValid()
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
@@ -255,6 +274,24 @@ public class AltinnPartyControllerTests
         Assert.IsType<ObjectResult>(result);
         var objectResult = result as ObjectResult;
         Assert.Equal(500, objectResult?.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetPartyUuid_CallsServiceExactlyOnce()
+    {
+        var validUuid = "11111111-1111-1111-1111-111111111111";
+
+        _mockPartyApiService
+        .Setup(service => service.GetPartyFromUuidAsync(validUuid))
+        .ReturnsAsync(new PartyModel
+        {
+            PartyUuid = validUuid,
+            Name = "Test Party"
+        });
+
+        var result = await _controller.GetPartyUuid(validUuid);
+
+        _mockPartyApiService.Verify(service => service.GetPartyFromUuidAsync(validUuid), Times.Once);
     }
 
 }
