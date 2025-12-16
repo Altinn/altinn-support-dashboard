@@ -52,6 +52,25 @@ public class AltinnPartyControllerTests
     }
 
     [Fact]
+    public async Task GetPartyOrg_CallsServiceExactlyOnce()
+    {
+        var validOrgNumber = "123456789";
+
+        _mockPartyApiService
+        .Setup(service => service.GetPartyFromOrgAsync(validOrgNumber))
+        .ReturnsAsync(new PartyModel
+        {
+            PartyUuid = "uuid-org",
+            OrgNumber = validOrgNumber,
+            Name = "Test Organization"
+        });
+
+        var result = await _controller.GetPartyOrg(validOrgNumber);
+
+        _mockPartyApiService.Verify(service => service.GetPartyFromOrgAsync(validOrgNumber), Times.Once);
+    }
+
+    [Fact]
     public async Task GetPartySsn_ReturnsResult_WhenSsnIsValid()
     {
         var validSsn = "11111111111";
@@ -86,6 +105,25 @@ public class AltinnPartyControllerTests
     }
 
     [Fact]
+    public async Task GetPartySsn_CallsServiceExactlyOnce()
+    {
+        var validSsn = "11111111111";
+
+        _mockPartyApiService
+        .Setup(service => service.GetPartyFromSsnAsync(validSsn))
+        .ReturnsAsync(new PartyModel
+        {
+            PartyUuid = "uuid-ssn",
+            Ssn = validSsn,
+            Name = "Test Person"
+        });
+
+        var result = await _controller.GetPartySsn(validSsn);
+
+        _mockPartyApiService.Verify(service => service.GetPartyFromSsnAsync(validSsn), Times.Once);
+    }
+
+    [Fact]
     public async Task GetPartyRoles_ReturnsResult_WhenUuidIsValid()
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
@@ -115,6 +153,20 @@ public class AltinnPartyControllerTests
     }
 
     [Fact]
+    public async Task GetPartyRoles_CallsServiceExactlyOnce()
+    {
+        var validUuid = "11111111-1111-1111-1111-111111111111";
+
+        _mockPartyApiService
+        .Setup(service => service.GetRolesFromPartyAsync(validUuid))
+        .ReturnsAsync("{\"roles\": [\"role1\", \"role2\"]}");
+
+        var result = await _controller.GetPartyRoles(validUuid);
+
+        _mockPartyApiService.Verify(service => service.GetRolesFromPartyAsync(validUuid), Times.Once);
+    }
+
+    [Fact]
     public async Task GetRolesFromOrg_ReturnsResult_WhenOrgNumberIsValid()
     {
         var validOrgNumber = "123456789";
@@ -135,7 +187,7 @@ public class AltinnPartyControllerTests
     }
 
     [Fact]
-    public async Task GetRolesFromOrge_Returns500_WhenServiceThrowsException()
+    public async Task GetRolesFromOrg_Returns500_WhenServiceThrowsException()
     {
         _mockPartyApiService
         .Setup(service => service.GetRolesFromOrgAsync(It.IsAny<string>()))
@@ -146,6 +198,30 @@ public class AltinnPartyControllerTests
         Assert.IsType<ObjectResult>(result);
         var objectResult = result as ObjectResult;
         Assert.Equal(500, objectResult?.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetRolesFromOrg_ReturnsEmptyLists_WhenNoRoles()
+    {
+        var emptyRoles = new ErRollerModel
+        {
+            Rollegrupper = new List<Rollegrupper>(),
+            ApiRoller = new List<ApiRoller>()
+        };
+        
+        _mockPartyApiService
+        .Setup(service => service.GetRolesFromOrgAsync("123456789"))
+        .ReturnsAsync(emptyRoles);
+
+        var result = await _controller.GetRolesFromOrg("123456789");
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var roles = Assert.IsType<ErRollerModel>(okResult.Value);
+        if (roles.Rollegrupper !=null && roles.ApiRoller !=null)
+        {
+            Assert.Empty(roles.Rollegrupper);
+            Assert.Empty(roles.ApiRoller);
+        }
     }
 
     [Fact]
