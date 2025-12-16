@@ -20,19 +20,19 @@ public class AltinnPartyControllerTests
     [Fact]
     public async Task GetPartyOrg_ReturnsResult_WhenOrgNumberIsValid()
     {
-        var orgNumber = "123456789";
+        var validOrgNumber = "123456789";
         var expectedParty = new PartyModel
         {
             PartyUuid = "uuid-org",
-            OrgNumber = orgNumber,
+            OrgNumber = validOrgNumber,
             Name = "Test Organization"
         };
 
         _mockPartyApiService
-        .Setup(service => service.GetPartyFromOrgAsync(orgNumber))
+        .Setup(service => service.GetPartyFromOrgAsync(validOrgNumber))
         .ReturnsAsync(expectedParty);
 
-        var result = await _controller.GetPartyOrg(orgNumber);
+        var result = await _controller.GetPartyOrg(validOrgNumber);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -108,6 +108,40 @@ public class AltinnPartyControllerTests
         .ThrowsAsync(new Exception("Service error"));
 
         var result = await _controller.GetPartyRoles("invalid-uuid");
+
+        Assert.IsType<ObjectResult>(result);
+        var objectResult = result as ObjectResult;
+        Assert.Equal(500, objectResult?.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetRolesFromOrg_ReturnsResult_WhenOrgNumberIsValid()
+    {
+        var validOrgNumber = "123456789";
+        var expectedErRollerModel = new ErRollerModel
+        {
+            Rollegrupper = new List<Rollegrupper>(),
+            Links = null,
+            ApiRoller = new List<ApiRoller>()
+        };
+
+        _mockPartyApiService
+        .Setup(service => service.GetRolesFromOrgAsync(validOrgNumber))
+        .ReturnsAsync(expectedErRollerModel);
+
+        var result = await _controller.GetRolesFromOrg(validOrgNumber);
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetRolesFromOrge_Returns500_WhenServiceThrowsException()
+    {
+        _mockPartyApiService
+        .Setup(service => service.GetRolesFromOrgAsync(It.IsAny<string>()))
+        .ThrowsAsync(new Exception("Service error"));
+
+        var result = await _controller.GetRolesFromOrg("invalid-org");
 
         Assert.IsType<ObjectResult>(result);
         var objectResult = result as ObjectResult;
