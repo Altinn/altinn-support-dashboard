@@ -29,7 +29,7 @@ public class AltinnPartyControllerTests
         };
 
         _mockPartyApiService
-        .Setup(service => service.GetPartyFromOrgAsync(validOrgNumber))
+        .Setup(x => x.GetPartyFromOrgAsync(validOrgNumber))
         .ReturnsAsync(expectedParty);
 
         var result = await _controller.GetPartyOrg(validOrgNumber);
@@ -41,7 +41,7 @@ public class AltinnPartyControllerTests
     public async Task GetPartyOrg_Returns500_WhenServiceThrowsException()
     {
         _mockPartyApiService
-        .Setup(service => service.GetPartyFromOrgAsync(It.IsAny<string>()))
+        .Setup(x => x.GetPartyFromOrgAsync(It.IsAny<string>()))
         .ThrowsAsync(new Exception("Service error"));
 
         var result = await _controller.GetPartyOrg("invalid-org");
@@ -57,7 +57,7 @@ public class AltinnPartyControllerTests
         var validOrgNumber = "123456789";
 
         _mockPartyApiService
-        .Setup(service => service.GetPartyFromOrgAsync(validOrgNumber))
+        .Setup(x => x.GetPartyFromOrgAsync(validOrgNumber))
         .ReturnsAsync(new PartyModel
         {
             PartyUuid = "uuid-org",
@@ -67,7 +67,7 @@ public class AltinnPartyControllerTests
 
         var result = await _controller.GetPartyOrg(validOrgNumber);
 
-        _mockPartyApiService.Verify(service => service.GetPartyFromOrgAsync(validOrgNumber), Times.Once);
+        _mockPartyApiService.Verify(x => x.GetPartyFromOrgAsync(validOrgNumber), Times.Once);
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class AltinnPartyControllerTests
         };
 
         _mockPartyApiService
-        .Setup(service => service.GetPartyFromSsnAsync(validSsn))
+        .Setup(x => x.GetPartyFromSsnAsync(validSsn))
         .ReturnsAsync(expectedParty);
 
         var result = await _controller.GetPartySsn(validSsn);
@@ -94,7 +94,7 @@ public class AltinnPartyControllerTests
     public async Task GetPartySsn_Returns500_WhenServiceThrowsException()
     {
         _mockPartyApiService
-        .Setup(service => service.GetPartyFromSsnAsync(It.IsAny<string>()))
+        .Setup(x => x.GetPartyFromSsnAsync(It.IsAny<string>()))
         .ThrowsAsync(new Exception("Service error"));
 
         var result = await _controller.GetPartySsn("");
@@ -110,7 +110,7 @@ public class AltinnPartyControllerTests
         var validSsn = "11111111111";
 
         _mockPartyApiService
-        .Setup(service => service.GetPartyFromSsnAsync(validSsn))
+        .Setup(x => x.GetPartyFromSsnAsync(validSsn))
         .ReturnsAsync(new PartyModel
         {
             PartyUuid = "uuid-ssn",
@@ -120,7 +120,7 @@ public class AltinnPartyControllerTests
 
         var result = await _controller.GetPartySsn(validSsn);
 
-        _mockPartyApiService.Verify(service => service.GetPartyFromSsnAsync(validSsn), Times.Once);
+        _mockPartyApiService.Verify(x => x.GetPartyFromSsnAsync(validSsn), Times.Once);
     }
 
     [Fact]
@@ -130,7 +130,7 @@ public class AltinnPartyControllerTests
         var expectedRolesJson = "{\"roles\": [\"role1\", \"role2\"]}";
 
         _mockPartyApiService
-        .Setup(service => service.GetRolesFromPartyAsync(validUuid))
+        .Setup(x=> x.GetRolesFromPartyAsync(validUuid))
         .ReturnsAsync(expectedRolesJson);
 
         var result = await _controller.GetPartyRoles(validUuid);
@@ -142,7 +142,7 @@ public class AltinnPartyControllerTests
     public async Task GetPartyRoles_Returns500_WhenServiceThrowsException()
     {
         _mockPartyApiService
-        .Setup(service => service.GetRolesFromPartyAsync(It.IsAny<string>()))
+        .Setup(x => x.GetRolesFromPartyAsync(It.IsAny<string>()))
         .ThrowsAsync(new Exception("Service error"));
 
         var result = await _controller.GetPartyRoles("invalid-uuid");
@@ -158,12 +158,12 @@ public class AltinnPartyControllerTests
         var validUuid = "11111111-1111-1111-1111-111111111111";
 
         _mockPartyApiService
-        .Setup(service => service.GetRolesFromPartyAsync(validUuid))
+        .Setup(x => x.GetRolesFromPartyAsync(validUuid))
         .ReturnsAsync("{\"roles\": [\"role1\", \"role2\"]}");
 
         var result = await _controller.GetPartyRoles(validUuid);
 
-        _mockPartyApiService.Verify(service => service.GetRolesFromPartyAsync(validUuid), Times.Once);
+        _mockPartyApiService.Verify(x => x.GetRolesFromPartyAsync(validUuid), Times.Once);
     }
 
     [Fact]
@@ -178,7 +178,7 @@ public class AltinnPartyControllerTests
         };
 
         _mockPartyApiService
-        .Setup(service => service.GetRolesFromOrgAsync(validOrgNumber))
+        .Setup(x => x.GetRolesFromOrgAsync(validOrgNumber))
         .ReturnsAsync(expectedErRollerModel);
 
         var result = await _controller.GetRolesFromOrg(validOrgNumber);
@@ -190,7 +190,7 @@ public class AltinnPartyControllerTests
     public async Task GetRolesFromOrg_Returns500_WhenServiceThrowsException()
     {
         _mockPartyApiService
-        .Setup(service => service.GetRolesFromOrgAsync(It.IsAny<string>()))
+        .Setup(x => x.GetRolesFromOrgAsync(It.IsAny<string>()))
         .ThrowsAsync(new Exception("Service error"));
 
         var result = await _controller.GetRolesFromOrg("invalid-org");
@@ -210,7 +210,7 @@ public class AltinnPartyControllerTests
         };
         
         _mockPartyApiService
-        .Setup(service => service.GetRolesFromOrgAsync("123456789"))
+        .Setup(x => x.GetRolesFromOrgAsync("123456789"))
         .ReturnsAsync(emptyRoles);
 
         var result = await _controller.GetRolesFromOrg("123456789");
@@ -230,7 +230,7 @@ public class AltinnPartyControllerTests
         var validOrgNumber = "123456789";
 
         _mockPartyApiService
-        .Setup(service => service.GetRolesFromOrgAsync(validOrgNumber))
+        .Setup(x => x.GetRolesFromOrgAsync(validOrgNumber))
         .ReturnsAsync(new ErRollerModel
         {
             Rollegrupper = new List<Rollegrupper>(),
@@ -240,7 +240,7 @@ public class AltinnPartyControllerTests
 
         var result = await _controller.GetRolesFromOrg(validOrgNumber);
 
-        _mockPartyApiService.Verify(service => service.GetRolesFromOrgAsync(validOrgNumber), Times.Once);
+        _mockPartyApiService.Verify(x => x.GetRolesFromOrgAsync(validOrgNumber), Times.Once);
     }
 
     [Fact]
@@ -254,7 +254,7 @@ public class AltinnPartyControllerTests
         };
 
         _mockPartyApiService
-        .Setup(service => service.GetPartyFromUuidAsync(validUuid))
+        .Setup(x => x.GetPartyFromUuidAsync(validUuid))
         .ReturnsAsync(expectedParty);
 
         var result = await _controller.GetPartyUuid(validUuid);
@@ -266,7 +266,7 @@ public class AltinnPartyControllerTests
     public async Task GetPartyUuid_Returns500_WhenServiceThrowsException()
     {
         _mockPartyApiService
-        .Setup(service => service.GetPartyFromUuidAsync(It.IsAny<string>()))
+        .Setup(x => x.GetPartyFromUuidAsync(It.IsAny<string>()))
         .ThrowsAsync(new Exception("Service error"));
 
         var result = await _controller.GetPartyUuid("invalid-uuid");
@@ -282,7 +282,7 @@ public class AltinnPartyControllerTests
         var validUuid = "11111111-1111-1111-1111-111111111111";
 
         _mockPartyApiService
-        .Setup(service => service.GetPartyFromUuidAsync(validUuid))
+        .Setup(x => x.GetPartyFromUuidAsync(validUuid))
         .ReturnsAsync(new PartyModel
         {
             PartyUuid = validUuid,
@@ -291,7 +291,7 @@ public class AltinnPartyControllerTests
 
         var result = await _controller.GetPartyUuid(validUuid);
 
-        _mockPartyApiService.Verify(service => service.GetPartyFromUuidAsync(validUuid), Times.Once);
+        _mockPartyApiService.Verify(x => x.GetPartyFromUuidAsync(validUuid), Times.Once);
     }
 
 }
