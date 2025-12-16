@@ -148,4 +148,37 @@ public class AltinnPartyControllerTests
         Assert.Equal(500, objectResult?.StatusCode);
     }
 
+    [Fact]
+    public async Task GetPartyUuid_RetursResult_WhenUuidIsValid()
+    {
+        var validUuid = "11111111-1111-1111-1111-111111111111";
+        var expectedParty = new PartyModel
+        {
+            PartyUuid = validUuid,
+            Name = "Test Party"
+        };
+
+        _mockPartyApiService
+        .Setup(service => service.GetPartyFromUuidAsync(validUuid))
+        .ReturnsAsync(expectedParty);
+
+        var result = await _controller.GetPartyUuid(validUuid);
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetPartyUuid_Returns500_WhenServiceThrowsException()
+    {
+        _mockPartyApiService
+        .Setup(service => service.GetPartyFromUuidAsync(It.IsAny<string>()))
+        .ThrowsAsync(new Exception("Service error"));
+
+        var result = await _controller.GetPartyUuid("invalid-uuid");
+
+        Assert.IsType<ObjectResult>(result);
+        var objectResult = result as ObjectResult;
+        Assert.Equal(500, objectResult?.StatusCode);
+    }
+
 }
