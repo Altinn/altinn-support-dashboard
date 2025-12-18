@@ -33,6 +33,7 @@ namespace AltinnSupportDashboard
             services.AddScoped<IGiteaService, GiteaService>();
             services.AddScoped<IDataBrregService, DataBrregService>();
             services.AddScoped<IAltinnApiService, AltinnApiService>();
+            services.AddScoped<IPartyApiClient, PartyApiClient>();
             services.AddScoped<IPartyApiService, PartyApiService>();
             services.AddScoped<IAltinnApiClient, AltinnApiClient>();
             services.AddScoped<IAltinn3ApiClient, Altinn3ApiClient>();
