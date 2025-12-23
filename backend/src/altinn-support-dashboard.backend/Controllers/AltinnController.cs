@@ -29,66 +29,6 @@ namespace AltinnSupportDashboard.Controllers
         {
         }
 
-        [HttpGet("organizations/altinn3/personalcontacts/org/{orgnumber}")]
-        public async Task<IActionResult> GetPersonalContactsAltinn3([FromRoute] string orgnumber)
-        {
-            if (!ValidationService.IsValidOrgNumber(orgnumber))
-            {
-                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
-            }
-            var result = await _altinnApiService.GetPersonalContactsByOrgAltinn3(orgnumber, environmentName);
-
-            return Ok(result);
-
-        }
-
-        [HttpGet("organizations/altinn3/personalcontacts/email/{email}")]
-        public async Task<IActionResult> GetPersonalContactsByEmailAltinn3([FromRoute] string email)
-        {
-            if (!ValidationService.IsValidEmail(email))
-            {
-                return BadRequest("Email is Invalid");
-            }
-            var result = await _altinnApiService.GetPersonalContactsByEmailAltinn3(email, environmentName);
-
-            return Ok(result);
-
-
-        }
-
-        [HttpGet("organizations/altinn3/personalcontacts/phone/{phonenumber}")]
-        public async Task<IActionResult> GetPersonalContactsByPhoneAltinn3([FromRoute] string phonenumber)
-        {
-            if (!ValidationService.IsValidPhoneNumber(phonenumber))
-            {
-                return BadRequest("Phone number is Invalid");
-            }
-            var result = await _altinnApiService.GetPersonalContactsByPhoneAltinn3(phonenumber, environmentName);
-
-            return Ok(result);
-
-
-        }
-
-        [HttpGet("organizations/{orgNumber}/altinn3/notificationaddresses")]
-        public async Task<IActionResult> GetNotificationAddresses([FromRoute] string orgnumber)
-        {
-            if (!ValidationService.IsValidOrgNumber(orgnumber))
-            {
-                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
-            }
-            try
-            {
-                var result = await _altinnApiService.GetNotificationAddressesAltinn3(orgnumber, environmentName);
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex);
-            }
-
-        }
     }
 
     [ApiController]
@@ -257,6 +197,67 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return StatusCode(500, $"Intern serverfeil: {ex.Message}");
             }
+        }
+
+        [HttpGet("organizations/altinn3/personalcontacts/org/{orgnumber}")]
+        public async Task<IActionResult> GetPersonalContactsAltinn3([FromRoute] string orgnumber)
+        {
+            if (!ValidationService.IsValidOrgNumber(orgnumber))
+            {
+                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+            }
+            var result = await _altinnApiService.GetPersonalContactsByOrgAltinn3(orgnumber, environmentName);
+
+            return Ok(result);
+
+        }
+
+        [HttpGet("organizations/altinn3/personalcontacts/email/{email}")]
+        public async Task<IActionResult> GetPersonalContactsByEmailAltinn3([FromRoute] string email)
+        {
+            if (!ValidationService.IsValidEmail(email))
+            {
+                return BadRequest("Email is Invalid");
+            }
+            var result = await _altinnApiService.GetPersonalContactsByEmailAltinn3(email, environmentName);
+
+            return Ok(result);
+
+
+        }
+
+        [HttpGet("organizations/altinn3/personalcontacts/phone/{phonenumber}")]
+        public async Task<IActionResult> GetPersonalContactsByPhoneAltinn3([FromRoute] string phonenumber)
+        {
+            if (!ValidationService.IsValidPhoneNumber(phonenumber))
+            {
+                return BadRequest("Phone number is Invalid");
+            }
+            var result = await _altinnApiService.GetPersonalContactsByPhoneAltinn3(phonenumber, environmentName);
+
+            return Ok(result);
+
+
+        }
+
+        [HttpGet("organizations/{orgNumber}/altinn3/notificationaddresses")]
+        public async Task<IActionResult> GetNotificationAddresses([FromRoute] string orgnumber)
+        {
+            if (!ValidationService.IsValidOrgNumber(orgnumber))
+            {
+                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+            }
+            try
+            {
+                var result = await _altinnApiService.GetNotificationAddressesAltinn3(orgnumber, environmentName);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+
         }
     }
 }
