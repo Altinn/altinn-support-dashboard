@@ -41,7 +41,6 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
             var response = await client.GetAsync(requestUrl);
             var responseBody = await response.Content.ReadAsStringAsync();
-            _logger.LogInformation("Logger Test");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -58,17 +57,32 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
     public async Task<string> GetPersonalContactsByEmail(string email, string environmentName)
     {
-        _logger.LogInformation("What");
         var client = _clients[environmentName];
-        var encodedEmail = Uri.EscapeDataString(email);
-        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/email/{encodedEmail}";
+        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/email/{email}";
 
-        _logger.LogInformation("one");
         var response = await client.GetAsync(requestUrl);
 
-        _logger.LogInformation("two");
         var responseBody = await response.Content.ReadAsStringAsync();
         _logger.LogInformation(responseBody);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+
+        return responseBody;
+
+    }
+
+    public async Task<string> GetPersonalContactsByPhone(string phoneNumber, string environmentName)
+    {
+        _logger.LogInformation("What");
+        var client = _clients[environmentName];
+        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/phonenumber/{phoneNumber}";
+
+        var response = await client.GetAsync(requestUrl);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
         {

@@ -55,6 +55,21 @@ namespace AltinnSupportDashboard.Controllers
 
 
         }
+
+        [HttpGet("organizations/altinn3/personalcontacts/phone/{phonenumber}")]
+        public async Task<IActionResult> GetPersonalContactsByPhoneAltinn3([FromRoute] string phonenumber)
+        {
+            if (!ValidationService.IsValidPhoneNumber(phonenumber))
+            {
+                return BadRequest("Phone number is Invalid");
+            }
+            var result = await _altinnApiService.GetPersonalContactsByPhoneAltinn3(phonenumber, environmentName);
+
+            return Ok(result);
+
+
+        }
+
         [HttpGet("organizations/{orgNumber}/altinn3/notificationaddresses")]
         public async Task<IActionResult> GetNotificationAddresses([FromRoute] string orgnumber)
         {
