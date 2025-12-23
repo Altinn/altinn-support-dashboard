@@ -11,10 +11,13 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 {
     private readonly IHttpClientFactory _clientFactory;
     private readonly Dictionary<string, HttpClient> _clients = new();
+    private readonly ILogger<IAltinn3ApiClient> _logger;
 
-    public Altinn3ApiClient(IOptions<Configuration> configuration, IHttpClientFactory clientFactory)
+    public Altinn3ApiClient(IOptions<Configuration> configuration, IHttpClientFactory clientFactory, ILogger<IAltinn3ApiClient> logger)
     {
         _clientFactory = clientFactory;
+        _logger = logger;
+
         InitClient(nameof(configuration.Value.Production), configuration.Value.Production);
         InitClient(nameof(configuration.Value.TT02), configuration.Value.TT02);
     }
@@ -25,11 +28,10 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         client.BaseAddress = new Uri(configuration.BaseAddressAltinn3);
         client.Timeout = TimeSpan.FromSeconds(configuration.Timeout);
         client.DefaultRequestHeaders.Add("ApiKey", configuration.ApiKey);
-        Console.WriteLine($"API Key {configuration.ApiKey} added to request headers.");
 
         _clients.Add(environmentName, client);
     }
-    public async Task<string> GetPersonalContactsAltinn3(string orgNumber, string environmentName)
+    public async Task<string> GetPersonalContactsByOrg(string orgNumber, string environmentName)
     {
         try
         {
@@ -53,7 +55,45 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
     }
 
-    public async Task<string> GetNotificationAddresses( string orgNumber, string environmentName)
+    public async Task<string> GetPersonalContactsByEmail(string email, string environmentName)
+    {
+        var client = _clients[environmentName];
+        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/email/{email}";
+
+        var response = await client.GetAsync(requestUrl);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        _logger.LogInformation(responseBody);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+
+        return responseBody;
+
+    }
+
+    public async Task<string> GetPersonalContactsByPhone(string phoneNumber, string environmentName)
+    {
+        _logger.LogInformation("What");
+        var client = _clients[environmentName];
+        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/phonenumber/{phoneNumber}";
+
+        var response = await client.GetAsync(requestUrl);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+
+        return responseBody;
+
+    }
+
+    public async Task<string> GetNotificationAddresses(string orgNumber, string environmentName)
     {
         try
         {
@@ -63,7 +103,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             var response = await client.GetAsync(requestUrl);
             var responseBody = await response.Content.ReadAsStringAsync();
 
-            if(!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
             }

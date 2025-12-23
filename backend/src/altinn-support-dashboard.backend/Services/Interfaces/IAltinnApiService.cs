@@ -15,7 +15,9 @@ namespace altinn_support_dashboard.Server.Services.Interfaces
 
         Task<List<Role>> GetPersonRoles(string subject, string reportee, string environment);
 
-        Task<List<PersonalContact>> GetPersonalContactsAltinn3(string orgNumber, string environment);
+        Task<List<PersonalContact>> GetPersonalContactsByOrgAltinn3(string orgNumber, string environment);
+        Task<List<PersonalContact>> GetPersonalContactsByEmailAltinn3(string email, string environment);
+        Task<List<PersonalContact>> GetPersonalContactsByPhoneAltinn3(string phoneNumber, string environment);
 
         Task<List<NotificationAddressDto>> GetNotificationAddressesAltinn3(string orgNumber, string environment);
     }

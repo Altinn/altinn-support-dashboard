@@ -20,36 +20,36 @@ public class AltinnApiServiceTest
         var mockConfig = new Mock<IOptions<Configuration>>();
 
         mockConfig.Setup(x => x.Value).Returns(new Configuration
-    {
-        TT02 = new EnvironmentConfiguration
         {
-            Name = "TT02",
-            ThemeName = "test-theme",
-            BaseAddressAltinn2 = "https://tt02.altinn.no",
-            BaseAddressAltinn3 = "https://platform.tt02.altinn.no",
-            Timeout = 30,
-            ApiKey = "test-api-key",
-            MaskinportenSettings = new MaskinportenSettings
-            {}
-        },
-        Production = new EnvironmentConfiguration
-        {
-            Name = "Production",
-            ThemeName = "test-theme",
-            BaseAddressAltinn2 = "https://altinn.no",
-            BaseAddressAltinn3 = "https://platform.altinn.no",
-            Timeout = 30,
-            ApiKey = "test-api-key",
-            MaskinportenSettings = new MaskinportenSettings
-            {}
-        }
-    });
-    mockHttpClient.Setup(x => x.CreateClient(It.IsAny<string>()))
-        .Returns(new HttpClient());
+            TT02 = new EnvironmentConfiguration
+            {
+                Name = "TT02",
+                ThemeName = "test-theme",
+                BaseAddressAltinn2 = "https://tt02.altinn.no",
+                BaseAddressAltinn3 = "https://platform.tt02.altinn.no",
+                Timeout = 30,
+                ApiKey = "test-api-key",
+                MaskinportenSettings = new MaskinportenSettings
+                { }
+            },
+            Production = new EnvironmentConfiguration
+            {
+                Name = "Production",
+                ThemeName = "test-theme",
+                BaseAddressAltinn2 = "https://altinn.no",
+                BaseAddressAltinn3 = "https://platform.altinn.no",
+                Timeout = 30,
+                ApiKey = "test-api-key",
+                MaskinportenSettings = new MaskinportenSettings
+                { }
+            }
+        });
+        mockHttpClient.Setup(x => x.CreateClient(It.IsAny<string>()))
+            .Returns(new HttpClient());
 
         _mockAltinn2Client = new Mock<IAltinnApiClient>();
         _mockAltinn3Client = new Mock<IAltinn3ApiClient>();
-        _altinnApiService = new AltinnApiService(_mockAltinn2Client.Object, _mockAltinn3Client.Object);        
+        _altinnApiService = new AltinnApiService(_mockAltinn2Client.Object, _mockAltinn3Client.Object);
     }
 
     [Fact]
@@ -120,7 +120,7 @@ public class AltinnApiServiceTest
         .ReturnsAsync(jsonResponse);
 
         var resultList = await _altinnApiService.GetOrganizationsByPhoneNumber(validPhoneNumber, "TT02");
-    
+
         Assert.NotNull(resultList);
         Assert.Equal(2, resultList.Count);
         Assert.IsType<List<Organization>>(resultList);
@@ -222,7 +222,7 @@ public class AltinnApiServiceTest
         Assert.NotNull(resultList);
         Assert.Equal(2, resultList.Count);
         Assert.IsType<List<Organization>>(resultList);
-        
+
     }
     [Theory]
     [InlineData("")]
@@ -296,7 +296,7 @@ public class AltinnApiServiceTest
     {
         await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetPersonalContacts(invalidOrgNumber, "TT02"));
     }
-    
+
     [Fact]
     public async Task GetPersonalContacts_ThrowsException_WhenResponseIsNull()
     {
@@ -452,10 +452,10 @@ public class AltinnApiServiceTest
             }
         ]";
         _mockAltinn3Client
-        .Setup(x => x.GetPersonalContactsAltinn3(It.IsAny<string>(), It.IsAny<string>()))
+        .Setup(x => x.GetPersonalContactsByOrg(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(jsonResponse);
 
-        var resultList = await _altinnApiService.GetPersonalContactsAltinn3(validOrgNumber, "TT02");
+        var resultList = await _altinnApiService.GetPersonalContactsByOrgAltinn3(validOrgNumber, "TT02");
 
         Assert.NotNull(resultList);
         Assert.Equal(2, resultList.Count);
@@ -472,29 +472,29 @@ public class AltinnApiServiceTest
     [InlineData("1d2d3d4d5")]
     public async Task GetPersonalContactsAltinn3_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetPersonalContactsAltinn3(invalidOrgNumber, "TT02"));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetPersonalContactsByOrgAltinn3(invalidOrgNumber, "TT02"));
     }
 
     [Fact]
     public async Task GetPersonalContactsAltinn3_UsesCorrectEnvironment()
     {
         _mockAltinn3Client
-        .Setup(x => x.GetPersonalContactsAltinn3("123456789", "Production"))
+        .Setup(x => x.GetPersonalContactsByOrg("123456789", "Production"))
         .ReturnsAsync("[]");
 
-        await _altinnApiService.GetPersonalContactsAltinn3("123456789", "Production");
+        await _altinnApiService.GetPersonalContactsByOrgAltinn3("123456789", "Production");
 
-        _mockAltinn3Client.Verify(x => x.GetPersonalContactsAltinn3("123456789", "Production"), Times.Once);
+        _mockAltinn3Client.Verify(x => x.GetPersonalContactsByOrg("123456789", "Production"), Times.Once);
     }
 
     [Fact]
     public async Task GetPersonalContactsAltinn3_ThrowsException_WhenResponseIsNull()
     {
         _mockAltinn3Client
-        .Setup(x => x.GetPersonalContactsAltinn3(It.IsAny<string>(), It.IsAny<string>()))
+        .Setup(x => x.GetPersonalContactsByOrg(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync("null");
 
-        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetPersonalContactsAltinn3("123456789", "TT02"));
+        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetPersonalContactsByOrgAltinn3("123456789", "TT02"));
     }
 
     [Fact]
@@ -511,7 +511,7 @@ public class AltinnApiServiceTest
                 ""requestedOrgNumber"": ""987654321"",
                 ""lastChanged"": ""2024-12-02T10:00:00""
             }
-        ]";        
+        ]";
         _mockAltinn3Client
         .Setup(x => x.GetNotificationAddresses(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(jsonResponse);
