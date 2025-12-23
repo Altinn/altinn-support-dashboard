@@ -25,7 +25,6 @@ public class AltinnApiClient : IAltinnApiClient
         client.BaseAddress = new Uri(configuration.BaseAddressAltinn2);
         client.Timeout = TimeSpan.FromSeconds(configuration.Timeout);
         client.DefaultRequestHeaders.Add("ApiKey", configuration.ApiKey);
-        Console.WriteLine($"API Key {configuration.ApiKey} added to request headers.");
 
         _clients.Add(environmentName, client);
     }
