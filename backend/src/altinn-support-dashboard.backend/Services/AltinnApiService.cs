@@ -134,13 +134,13 @@ public class AltinnApiService : IAltinnApiService
     }
 
 
-    public async Task<List<PersonalContact>> GetPersonalContactsAltinn3(string orgNumber, string environment)
+    public async Task<List<PersonalContact>> GetPersonalContactsByOrgAltinn3(string orgNumber, string environment)
     {
         if (!ValidationService.IsValidOrgNumber(orgNumber))
         {
             throw new ArgumentException("Organizationnumber invalid. It must be 9 digits long.");
         }
-        var result = await _altinn3client.GetPersonalContactsAltinn3(orgNumber, environment);
+        var result = await _altinn3client.GetPersonalContactsByOrg(orgNumber, environment);
         var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
         //temporary, will switch over to only altinn3 types when we stop using altinn2
@@ -161,6 +161,37 @@ public class AltinnApiService : IAltinnApiService
             contacts.Add(newContact);
         }
         return contacts;
+    }
+
+    public async Task<List<PersonalContact>> GetPersonalContactsByEmailAltinn3(string email, string environment)
+    {
+        if (!ValidationService.IsValidEmail(email))
+        {
+            throw new ArgumentException("email is invalid");
+        }
+        var result = await _altinn3client.GetPersonalContactsByEmail(email, environment);
+        var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+
+
+        //temporary, will switch over to only altinn3 types when we stop using altinn2
+        List<PersonalContact> contacts = [];
+
+        foreach (PersonalContactDto contact in contactsAltinn3)
+        {
+            var newContact = new PersonalContact
+            {
+                Name = contact.Name,
+                EMailAddress = contact.Email,
+                MobileNumber = contact.Phone,
+                SocialSecurityNumber = contact.NationalIdentityNumber,
+                MobileNumberChanged = contact.LastChanged,
+                EMailAddressChanged = contact.LastChanged
+            };
+
+            contacts.Add(newContact);
+        }
+        return contacts;
+
     }
 
     public async Task<List<NotificationAddressDto>> GetNotificationAddressesAltinn3(string orgNumber, string environment)

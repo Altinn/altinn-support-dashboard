@@ -29,7 +29,7 @@ namespace AltinnSupportDashboard.Controllers
         {
         }
 
-        [HttpGet("organizations/{orgnumber}/altinn3/personalcontacts")]
+        [HttpGet("organizations/altinn3/personalcontacts/org/{orgnumber}")]
         public async Task<IActionResult> GetPersonalContactsAltinn3([FromRoute] string orgnumber)
         {
             if (!ValidationService.IsValidOrgNumber(orgnumber))
@@ -38,7 +38,7 @@ namespace AltinnSupportDashboard.Controllers
             }
             try
             {
-                var result = await _altinnApiService.GetPersonalContactsAltinn3(orgnumber, environmentName);
+                var result = await _altinnApiService.GetPersonalContactsByOrgAltinn3(orgnumber, environmentName);
 
                 return Ok(result);
             }
@@ -49,6 +49,19 @@ namespace AltinnSupportDashboard.Controllers
 
         }
 
+        [HttpGet("organizations/altinn3/personalcontacts/email/{email}")]
+        public async Task<IActionResult> GetPersonalContactsByEmailAltinn3([FromRoute] string email)
+        {
+            if (!ValidationService.IsValidEmail(email))
+            {
+                return BadRequest("Email is Invalid");
+            }
+            var result = await _altinnApiService.GetPersonalContactsByEmailAltinn3(email, environmentName);
+
+            return Ok(result);
+
+
+        }
         [HttpGet("organizations/{orgNumber}/altinn3/notificationaddresses")]
         public async Task<IActionResult> GetNotificationAddresses([FromRoute] string orgnumber)
         {
