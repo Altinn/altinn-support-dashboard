@@ -212,4 +212,27 @@ public class AltinnApiService : IAltinnApiService
 
         return notificationAddresses;
     }
+    public async Task<List<NotificationAddressDto>> GetNotificationAddressesByPhoneAltinn3(string phoneNumber, string environment)
+    {
+        if (!ValidationService.IsValidPhoneNumber(phoneNumber))
+        {
+            throw new ArgumentException("Organization number invalid. It must be 9 digits long.");
+        }
+        var result = await _altinn3client.GetNotificationAddressesByPhone(phoneNumber, environment);
+        var notificationAddresses = JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+
+        return notificationAddresses;
+    }
+
+    public async Task<List<NotificationAddressDto>> GetNotificationAddressesByEmailAltinn3(string email, string environment)
+    {
+        if (!ValidationService.IsValidEmail(email))
+        {
+            throw new ArgumentException("Organization number invalid. It must be 9 digits long.");
+        }
+        var result = await _altinn3client.GetNotificationAddressesByEmail(email, environment);
+        var notificationAddresses = JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+
+        return notificationAddresses;
+    }
 }

@@ -226,7 +226,7 @@ namespace AltinnSupportDashboard.Controllers
 
         }
 
-        [HttpGet("organizations/altinn3/personalcontacts/phone/{phonenumber}")]
+        [HttpGet("organizations/altinn3/personalcontacts/phonenumber/{phonenumber}")]
         public async Task<IActionResult> GetPersonalContactsByPhoneAltinn3([FromRoute] string phonenumber)
         {
             if (!ValidationService.IsValidPhoneNumber(phonenumber))
@@ -241,13 +241,37 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/{orgNumber}/altinn3/notificationaddresses")]
-        public async Task<IActionResult> GetNotificationAddresses([FromRoute] string orgnumber)
+        public async Task<IActionResult> GetNotificationAddressesByOrg([FromRoute] string orgnumber)
         {
             if (!ValidationService.IsValidOrgNumber(orgnumber))
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
             var result = await _altinnApiService.GetNotificationAddressesByOrgAltinn3(orgnumber, environmentName);
+
+            return Ok(result);
+        }
+
+        [HttpGet("organizations/altinn3/notificationaddresses/phonenumber/{phonenumber}")]
+        public async Task<IActionResult> GetNotificationAddressesByPhone([FromRoute] string phonenumber)
+        {
+            if (!ValidationService.IsValidPhoneNumber(phonenumber))
+            {
+                return BadRequest("Phonenumber not valid");
+            }
+            var result = await _altinnApiService.GetNotificationAddressesByPhoneAltinn3(phonenumber, environmentName);
+
+            return Ok(result);
+        }
+
+        [HttpGet("organizations/altinn3/notificationaddresses/email/{email}")]
+        public async Task<IActionResult> GetNotificationAddressesByEmail([FromRoute] string email)
+        {
+            if (!ValidationService.IsValidEmail(email))
+            {
+                return BadRequest("Email not valid");
+            }
+            var result = await _altinnApiService.GetNotificationAddressesByEmailAltinn3(email, environmentName);
 
             return Ok(result);
         }
