@@ -14,7 +14,7 @@
   "dependencies": {
     "@azure/msal-browser": "^3.27.0",
     "@azure/msal-react": "^2.2.0",
-    "@digdir/designsystemet": "^0.0.1",
+    "@digdir/designsystemet": "^0.101.0",
     "@digdir/designsystemet-css": "^1.6.0",
     "@digdir/designsystemet-react": "^1.6.0",
     "@digdir/designsystemet-theme": "^1.6.0",
