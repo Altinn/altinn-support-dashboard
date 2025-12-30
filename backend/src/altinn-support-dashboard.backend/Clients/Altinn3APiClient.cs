@@ -93,7 +93,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
     }
 
-    public async Task<string> GetNotificationAddresses(string orgNumber, string environmentName)
+    public async Task<string> GetNotificationAddressesByOrg(string orgNumber, string environmentName)
     {
         try
         {

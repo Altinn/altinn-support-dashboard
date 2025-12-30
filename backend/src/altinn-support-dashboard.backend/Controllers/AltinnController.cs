@@ -247,17 +247,9 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
-            try
-            {
-                var result = await _altinnApiService.GetNotificationAddressesAltinn3(orgnumber, environmentName);
+            var result = await _altinnApiService.GetNotificationAddressesByOrgAltinn3(orgnumber, environmentName);
 
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex);
-            }
-
+            return Ok(result);
         }
     }
 }
