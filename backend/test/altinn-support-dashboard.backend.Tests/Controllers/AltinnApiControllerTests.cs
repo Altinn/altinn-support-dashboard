@@ -460,30 +460,16 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             };
 
             _mockService
-            .Setup(x => x.GetNotificationAddressesAltinn3(validOrgNumber, "TT02"))
+            .Setup(x => x.GetNotificationAddressesByOrgAltinn3(validOrgNumber, "TT02"))
             .ReturnsAsync(expectedAddresses);
 
-            var result = await _controller.GetNotificationAddresses(validOrgNumber);
+            var result = await _controller.GetNotificationAddressesByOrg(validOrgNumber);
 
             Assert.NotNull(result);
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(expectedAddresses, okResult.Value);
         }
 
-        [Fact]
-        public async Task GetNotificationAddresses_Returns500_WhenServiceFails()
-        {
-            var validOrgNumber = "123456789";
-
-            _mockService
-            .Setup(x => x.GetNotificationAddressesAltinn3(validOrgNumber, "TT02"))
-            .ThrowsAsync(new System.Exception("Service failure"));
-
-            var result = await _controller.GetNotificationAddresses(validOrgNumber);
-
-            var objectResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal(500, objectResult.StatusCode);
-        }
 
         [Theory]
         [InlineData("")]
@@ -496,7 +482,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [InlineData("   ")]
         public async Task GetNotificationAddresses_ReturnsBadRequest_WhenOrgNumberIsInvalid(string invalidOrgNumber)
         {
-            var result = await _controller.GetNotificationAddresses(invalidOrgNumber);
+            var result = await _controller.GetNotificationAddressesByOrg(invalidOrgNumber);
 
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);

@@ -513,10 +513,10 @@ public class AltinnApiServiceTest
             }
         ]";
         _mockAltinn3Client
-        .Setup(x => x.GetNotificationAddresses(It.IsAny<string>(), It.IsAny<string>()))
+        .Setup(x => x.GetNotificationAddressesByOrg(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(jsonResponse);
 
-        var resultList = await _altinnApiService.GetNotificationAddressesAltinn3(validOrgNumber, "TT02");
+        var resultList = await _altinnApiService.GetNotificationAddressesByOrgAltinn3(validOrgNumber, "TT02");
         var result = resultList[0];
 
         Assert.NotNull(result);
@@ -534,29 +534,29 @@ public class AltinnApiServiceTest
     [InlineData("1d2d3d4d5")]
     public async Task GetNotificationAddressesAltinn3_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetNotificationAddressesAltinn3(invalidOrgNumber, "TT02"));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetNotificationAddressesByOrgAltinn3(invalidOrgNumber, "TT02"));
     }
 
     [Fact]
     public async Task GetNotificationAddressesAltinn3_UsesCorrectEnvironment()
     {
         _mockAltinn3Client
-        .Setup(x => x.GetNotificationAddresses("123456789", "Production"))
+        .Setup(x => x.GetNotificationAddressesByOrg("123456789", "Production"))
         .ReturnsAsync("[]");
 
-        await _altinnApiService.GetNotificationAddressesAltinn3("123456789", "Production");
+        await _altinnApiService.GetNotificationAddressesByOrgAltinn3("123456789", "Production");
 
-        _mockAltinn3Client.Verify(x => x.GetNotificationAddresses("123456789", "Production"), Times.Once);
+        _mockAltinn3Client.Verify(x => x.GetNotificationAddressesByOrg("123456789", "Production"), Times.Once);
     }
 
     [Fact]
     public async Task GetNotificationAddressesAltinn3_ThrowsException_WhenResponseIsNull()
     {
         _mockAltinn3Client
-        .Setup(x => x.GetNotificationAddresses(It.IsAny<string>(), It.IsAny<string>()))
+        .Setup(x => x.GetNotificationAddressesByOrg(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync("null");
 
-        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetNotificationAddressesAltinn3("123456789", "TT02"));
+        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetNotificationAddressesByOrgAltinn3("123456789", "TT02"));
     }
 
 

@@ -93,7 +93,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
     }
 
-    public async Task<string> GetNotificationAddresses(string orgNumber, string environmentName)
+    public async Task<string> GetNotificationAddressesByOrg(string orgNumber, string environmentName)
     {
         try
         {
@@ -115,5 +115,47 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
     }
 
+    public async Task<string> GetNotificationAddressesByPhone(string phoneNumber, string environmentName)
+    {
+        try
+        {
+            var client = _clients[environmentName];
+            var requestUrl = $"profile/api/v1/dashboard/organizations/notificationaddresses/phonenumber/{phoneNumber}";
 
+            var response = await client.GetAsync(requestUrl);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+            return responseBody;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+        }
+    }
+
+    public async Task<string> GetNotificationAddressesByEmail(string email, string environmentName)
+    {
+        try
+        {
+            var client = _clients[environmentName];
+            var requestUrl = $"profile/api/v1/dashboard/organizations/notificationaddresses/email/{email}";
+
+            var response = await client.GetAsync(requestUrl);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+            return responseBody;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+        }
+    }
 }
