@@ -55,6 +55,7 @@ namespace AltinnSupportDashboard
 
                     // Add console logging
                     logging.AddConsole();
+                    logging.AddApplicationInsights();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
