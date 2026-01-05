@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using altinn_support_dashboard.Server.Validation;
 using altinn_support_dashboard.Server.Models.ansattporten;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Microsoft.ApplicationInsights;
 
 
 namespace AltinnSupportDashboard.Controllers;
@@ -20,10 +21,12 @@ public class AnsattportenController : ControllerBase
     private string baseUrl;
     private IAnsattportenService _ansattportenService;
     private ILogger<AnsattportenController> _logger;
+    private TelemetryClient _telemetryClient;
 
-    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService, ILogger<AnsattportenController> logger)
+    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService, ILogger<AnsattportenController> logger, TelemetryClient telemetryClient)
     {
         _ansattportenService = ansattportenService;
+        _telemetryClient = telemetryClient;
         _logger = logger;
         ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
         baseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>() ?? "";
@@ -68,13 +71,19 @@ public class AnsattportenController : ControllerBase
         }
 
 
-        _logger.LogInformation("Auth status: {username}", User.Identity?.Name);
         var result = await HttpContext.AuthenticateAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
 
 
         List<string> userPolicies = await _ansattportenService.GetUserPolicies(User);
         string orgName = await _ansattportenService.GetRepresentationOrgName(User);
 
+
+
+        if (User?.Identity?.Name != null)
+        {
+
+            _telemetryClient.TrackEvent("userLogin", new Dictionary<string, string>() { { "id", User.Identity.Name } });
+        }
 
         return Ok(new AuthDetails
         {
