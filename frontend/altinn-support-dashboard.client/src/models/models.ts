@@ -24,6 +24,7 @@ export interface PersonalContact {
   personalContactId: string;
   name: string;
   socialSecurityNumber: string;
+  displayedSocialSecurityNumber: string;
   mobileNumber: string;
   mobileNumberChanged: string;
   eMailAddress: string;

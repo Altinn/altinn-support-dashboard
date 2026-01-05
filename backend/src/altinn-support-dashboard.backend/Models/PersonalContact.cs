@@ -8,6 +8,7 @@ public class PersonalContact
     public string? PersonalContactId { get; set; }
     public string? Name { get; set; }
     public string? SocialSecurityNumber { get; set; }
+    public string? DisplayedSocialSecurityNumber { get; set; }
     public string? MobileNumber { get; set; }
     public DateTime? MobileNumberChanged { get; set; }
     public string? EMailAddress { get; set; }

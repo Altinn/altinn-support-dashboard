@@ -2,9 +2,7 @@
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
 using Microsoft.AspNetCore.Http.Json;
-using Microsoft.Extensions.Compliance.Redaction;
 using Models.altinn3Dtos;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -15,9 +13,8 @@ public class AltinnApiService : IAltinnApiService
     private readonly IAltinnApiClient _client;
     private readonly IAltinn3ApiClient _altinn3client;
     private readonly JsonSerializerOptions jsonOptions;
-    private readonly IRedactorProvider _redactorProvider;
 
-    public AltinnApiService(IAltinnApiClient altinn2Client, IAltinn3ApiClient altinn3Client, IRedactorProvider redactorProvider)
+    public AltinnApiService(IAltinnApiClient altinn2Client, IAltinn3ApiClient altinn3Client)
     {
         _client = altinn2Client;
         _altinn3client = altinn3Client;
@@ -27,8 +24,6 @@ public class AltinnApiService : IAltinnApiService
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             PropertyNameCaseInsensitive = true
         };
-
-        _redactorProvider = redactorProvider;
     }
 
     public async Task<Organization> GetOrganizationInfo(string orgNumber, string environment)
@@ -106,14 +101,6 @@ public class AltinnApiService : IAltinnApiService
         if (personalContacts == null)
         {
             throw new Exception("Ingen data funnet for det angitte organisasjonsnummeret.");
-        }
-
-        foreach (var contact in personalContacts)
-        {
-            if(!string.IsNullOrEmpty(contact.SocialSecurityNumber))
-            {
-                contact.SocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.SocialSecurityNumber);
-            }
         }
         return personalContacts;
     }

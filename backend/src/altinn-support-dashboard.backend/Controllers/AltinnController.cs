@@ -4,6 +4,7 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
 using Security;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.Extensions.Compliance.Redaction;
 
 namespace AltinnSupportDashboard.Controllers
 {
@@ -25,7 +26,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
     {
-        public AltinnTT02Controller(IAltinnApiService altinnApiService) : base(altinnApiService, "TT02")
+        public AltinnTT02Controller(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider) : base(altinnApiService, "TT02", redactorProvider)
         {
         }
 
@@ -35,7 +36,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/Production/serviceowner")]
     public class AltinnProductionController : AltinnBaseController
     {
-        public AltinnProductionController(IAltinnApiService altinnApiService) : base(altinnApiService, "Production")
+        public AltinnProductionController(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider) : base(altinnApiService, "Production", redactorProvider)
         {
         }
     }
@@ -49,11 +50,13 @@ namespace AltinnSupportDashboard.Controllers
     {
         protected readonly IAltinnApiService _altinnApiService;
         protected string environmentName;
+        protected readonly IRedactorProvider _redactorProvider;
 
-        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName)
+        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName, IRedactorProvider redactorProvider)
         {
             this.environmentName = environmentName;
             _altinnApiService = altinnApiService;
+            _redactorProvider = redactorProvider;
         }
 
         [HttpGet("organizations/search")]
@@ -153,6 +156,14 @@ namespace AltinnSupportDashboard.Controllers
             try
             {
                 var personalContacts = await _altinnApiService.GetPersonalContacts(orgNumber, environmentName);
+
+                foreach (var contact in personalContacts)
+                {
+                    if(!string.IsNullOrEmpty(contact.SocialSecurityNumber))
+                    {
+                        contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.SocialSecurityNumber);
+                    }
+                }
                 return Ok(personalContacts);
             }
             catch (System.Exception ex)
