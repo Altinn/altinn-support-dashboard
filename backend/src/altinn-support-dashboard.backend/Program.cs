@@ -60,6 +60,7 @@ namespace AltinnSupportDashboard
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddOpenTelemetry();
 
                     // Bind Configuration section to the Configuration class and add to DI
                     services.Configure<Configuration>(hostContext.Configuration.GetSection("Configuration"));
