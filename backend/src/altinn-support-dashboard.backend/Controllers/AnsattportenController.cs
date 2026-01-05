@@ -45,10 +45,13 @@ public class AnsattportenController : ControllerBase
 
         await Task.CompletedTask;
         var props = new AuthenticationProperties { RedirectUri = safeRedirectPath };
-        if (User != null)
+        if (User?.Identity?.Name != null)
         {
-            _logger.LogInformation("{username}", User.Identity?.Name);
+
+            _telemetryClient.TrackEvent("userLogin", new Dictionary<string, string>() { { "id", User.Identity.Name } });
         }
+
+
 
 
         return Challenge(props, AnsattportenConstants.AnsattportenAuthenticationScheme);
@@ -78,12 +81,6 @@ public class AnsattportenController : ControllerBase
         string orgName = await _ansattportenService.GetRepresentationOrgName(User);
 
 
-
-        if (User?.Identity?.Name != null)
-        {
-
-            _telemetryClient.TrackEvent("userLogin", new Dictionary<string, string>() { { "id", User.Identity.Name } });
-        }
 
         return Ok(new AuthDetails
         {
