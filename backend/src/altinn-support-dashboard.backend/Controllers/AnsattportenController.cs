@@ -19,9 +19,12 @@ public class AnsattportenController : ControllerBase
     private bool ansattportenFeatureFlag;
     private string baseUrl;
     private IAnsattportenService _ansattportenService;
-    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService)
+    private ILogger<AnsattportenController> _logger;
+
+    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService, ILogger<AnsattportenController> logger)
     {
         _ansattportenService = ansattportenService;
+        _logger = logger;
         ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
         baseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>() ?? "";
     }
@@ -39,6 +42,11 @@ public class AnsattportenController : ControllerBase
 
         await Task.CompletedTask;
         var props = new AuthenticationProperties { RedirectUri = safeRedirectPath };
+        if (User != null)
+        {
+            _logger.LogInformation("{username}", User.Identity?.Name);
+        }
+
 
         return Challenge(props, AnsattportenConstants.AnsattportenAuthenticationScheme);
     }
