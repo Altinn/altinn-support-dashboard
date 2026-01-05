@@ -45,14 +45,6 @@ public class AnsattportenController : ControllerBase
 
         await Task.CompletedTask;
         var props = new AuthenticationProperties { RedirectUri = safeRedirectPath };
-        if (User?.Identity?.Name != null)
-        {
-
-            _telemetryClient.TrackEvent("userLogin", new Dictionary<string, string>() { { "id", User.Identity.Name } });
-        }
-
-
-
 
         return Challenge(props, AnsattportenConstants.AnsattportenAuthenticationScheme);
     }
