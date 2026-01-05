@@ -53,12 +53,14 @@ namespace AltinnSupportDashboard
                     // Clear default logging providers
                     logging.ClearProviders();
 
+
                     // Add console logging
                     logging.AddConsole();
                     logging.AddApplicationInsights();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+
                     // Bind Configuration section to the Configuration class and add to DI
                     services.Configure<Configuration>(hostContext.Configuration.GetSection("Configuration"));
                     services.Configure<BrregApiConfiguration>(hostContext.Configuration.GetSection("Brreg"));
