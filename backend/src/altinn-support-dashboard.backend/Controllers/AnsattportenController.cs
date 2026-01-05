@@ -67,6 +67,8 @@ public class AnsattportenController : ControllerBase
             });
         }
 
+
+        _logger.LogInformation("Auth status: {username}", User.Identity?.Name);
         var result = await HttpContext.AuthenticateAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
 
 
