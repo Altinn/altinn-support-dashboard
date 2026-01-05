@@ -51,9 +51,6 @@ namespace AltinnSupportDashboard
                 })
                 .ConfigureLogging(logging =>
                 {
-                    // Clear default logging providers
-                    logging.ClearProviders();
-
 
                     // Add console logging
                     logging.AddConsole();
