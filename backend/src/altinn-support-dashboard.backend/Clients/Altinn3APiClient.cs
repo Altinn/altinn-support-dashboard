@@ -18,6 +18,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         _clientFactory = clientFactory;
         _logger = logger;
 
+
         InitClient(nameof(configuration.Value.Production), configuration.Value.Production);
         InitClient(nameof(configuration.Value.TT02), configuration.Value.TT02);
     }
@@ -25,11 +26,31 @@ public class Altinn3ApiClient : IAltinn3ApiClient
     public void InitClient(string environmentName, EnvironmentConfiguration configuration)
     {
         var client = _clientFactory.CreateClient(environmentName);
+
+        _logger.LogInformation(configuration.Ocp_Apim_Subscription_Key);
+        client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", configuration.Ocp_Apim_Subscription_Key);
+
         client.BaseAddress = new Uri(configuration.BaseAddressAltinn3);
         client.Timeout = TimeSpan.FromSeconds(configuration.Timeout);
         client.DefaultRequestHeaders.Add("ApiKey", configuration.ApiKey);
 
         _clients.Add(environmentName, client);
+    }
+
+    public async Task<string> GetOrganizationInfo(string orgNumber, string environmentName)
+    {
+        var client = _clients[environmentName];
+
+        var requestUrl = $"register/api/v1/organizations/{orgNumber}";
+
+        var response = await client.GetAsync(requestUrl);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        return responseBody;
     }
     public async Task<string> GetPersonalContactsByOrg(string orgNumber, string environmentName)
     {

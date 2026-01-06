@@ -199,6 +199,15 @@ namespace AltinnSupportDashboard.Controllers
             }
         }
 
+        [HttpGet("organizations/altinn3/organizations/{orgnumber}")]
+        public async Task<IActionResult> GetOrganizationInfoAltinn3([FromRoute] string orgnumber)
+        {
+
+            var result = await _altinnApiService.GetOrganizationInfoAltinn3(orgnumber, environmentName);
+            return Ok(result);
+
+        }
+
         [HttpGet("organizations/altinn3/personalcontacts/org/{orgnumber}")]
         public async Task<IActionResult> GetPersonalContactsAltinn3([FromRoute] string orgnumber)
         {

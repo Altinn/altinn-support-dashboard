@@ -6,6 +6,7 @@ namespace altinn_support_dashboard.Server.Services.Interfaces
 {
     public interface IAltinnApiService
     {
+        Task<string> GetOrganizationInfoAltinn3(string orgNumber, string environment);
         Task<Organization> GetOrganizationInfo(string orgNumber, string environment);
         Task<List<Organization>> GetOrganizationsByPhoneNumber(string phoneNumber, string environment);
         Task<List<Organization>> GetOrganizationsByEmail(string email, string environment);

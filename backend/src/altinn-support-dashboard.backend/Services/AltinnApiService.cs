@@ -26,6 +26,23 @@ public class AltinnApiService : IAltinnApiService
         };
     }
 
+
+    public async Task<string> GetOrganizationInfoAltinn3(string orgNumber, string environment)
+    {
+        if (!ValidationService.IsValidOrgNumber(orgNumber))
+        {
+            throw new ArgumentException("Orgnumber invalid. It has to be 9 digits long");
+        }
+
+        var result = await _altinn3client.GetOrganizationInfo(orgNumber, environment);
+
+        if (result == null)
+        {
+            throw new Exception($"No data found for org with orgnumber: {orgNumber}");
+        }
+        return result;
+    }
+
     public async Task<Organization> GetOrganizationInfo(string orgNumber, string environment)
     {
         if (!ValidationService.IsValidOrgNumber(orgNumber))
