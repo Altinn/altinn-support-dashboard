@@ -93,7 +93,7 @@ namespace altinn_support_dashboard.Server.Services
             return underenheter ?? new UnderenhetRootObject();
         }
 
-        public async Task<UnderEnhet> GetUnderenhet(string orgNumber, string environmentName)
+        public async Task<UnderEnhet?> GetUnderenhet(string orgNumber, string environmentName)
         {
             if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
             {
@@ -109,7 +109,8 @@ namespace altinn_support_dashboard.Server.Services
 
             if (result == null)
             {
-                throw new Exception("Underenhet not found");
+                return null;
+
             }
 
             var underenhet = JsonSerializer.Deserialize<UnderEnhet>(result, jsonOptions);

@@ -12,10 +12,12 @@ public class AltinnApiService : IAltinnApiService
 {
     private readonly IAltinnApiClient _client;
     private readonly IAltinn3ApiClient _altinn3client;
+    private readonly IDataBrregService _breggService;
     private readonly JsonSerializerOptions jsonOptions;
 
-    public AltinnApiService(IAltinnApiClient altinn2Client, IAltinn3ApiClient altinn3Client)
+    public AltinnApiService(IAltinnApiClient altinn2Client, IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService)
     {
+        _breggService = dataBrregService;
         _client = altinn2Client;
         _altinn3client = altinn3Client;
 
@@ -38,6 +40,12 @@ public class AltinnApiService : IAltinnApiService
         if (organizationInfo == null)
         {
             throw new Exception("Ingen data funnet for det angitte organisasjonsnummeret.");
+        }
+        var breggResult = await _breggService.GetUnderenhet(orgNumber, environment);
+
+        if (breggResult != null)
+        {
+            organizationInfo.HeadUnit = new Organization { OrganizationNumber = breggResult.overordnetEnhet, Name = breggResult.navn };
         }
 
         return organizationInfo;

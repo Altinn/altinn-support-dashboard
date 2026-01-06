@@ -75,14 +75,13 @@ namespace altinn_support_dashboard.Server.Services
                 throw new Exception($"An error occurred while calling Brreg API: {ex.Message}", ex);
             }
         }
-        public async Task<string> GetUnderenhet(string orgNumber, string environmentName)
+        public async Task<string?> GetUnderenhet(string orgNumber, string environmentName)
         {
             try
             {
                 var client = _clients[environmentName];
 
                 var requestUrl = $"enhetsregisteret/api/underenheter/{orgNumber}";
-                Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
 
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
@@ -103,8 +102,7 @@ namespace altinn_support_dashboard.Server.Services
                 }
                 else
                 {
-                    var responseBody = await response.Content.ReadAsStringAsync();
-                    throw new HttpRequestException($"Failed to retrieve data from Brreg. Status code: {response.StatusCode}, Response: {responseBody}");
+                    return null;
                 }
             }
             catch (Exception ex)
