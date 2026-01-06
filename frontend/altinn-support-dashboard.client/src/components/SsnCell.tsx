@@ -9,6 +9,7 @@ interface SsnCellProps {
 
 const SsnCell: React.FC<SsnCellProps> = ({ contact }) => {
     const [isRedacted, setIsRedacted] = useState(true);
+    
 
     return (
         <Table.Cell

@@ -26,7 +26,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
     {
-        public AltinnTT02Controller(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider) : base(altinnApiService, "TT02", redactorProvider)
+        public AltinnTT02Controller(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, "TT02", redactorProvider, ssnTokenService)
         {
         }
 
@@ -36,7 +36,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/Production/serviceowner")]
     public class AltinnProductionController : AltinnBaseController
     {
-        public AltinnProductionController(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider) : base(altinnApiService, "Production", redactorProvider)
+        public AltinnProductionController(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, "Production", redactorProvider, ssnTokenService)
         {
         }
     }
@@ -51,12 +51,14 @@ namespace AltinnSupportDashboard.Controllers
         protected readonly IAltinnApiService _altinnApiService;
         protected string environmentName;
         protected readonly IRedactorProvider _redactorProvider;
+        protected readonly ISsnTokenService _ssnTokenService;
 
-        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName, IRedactorProvider redactorProvider)
+        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService)
         {
             this.environmentName = environmentName;
             _altinnApiService = altinnApiService;
             _redactorProvider = redactorProvider;
+            _ssnTokenService = ssnTokenService;
         }
 
         [HttpGet("organizations/search")]
@@ -162,6 +164,7 @@ namespace AltinnSupportDashboard.Controllers
                     if(!string.IsNullOrEmpty(contact.SocialSecurityNumber))
                     {
                         contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.SocialSecurityNumber);
+                        contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.SocialSecurityNumber);
                     }
                 }
                 return Ok(personalContacts);
@@ -173,7 +176,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("{subject}/roles/{reportee}")]
-        public async Task<IActionResult> GetPersonRoles([FromRoute] string subject, [FromRoute] string reportee)
+        public async Task<IActionResult> GetPersonRoles( [FromRoute] string subject, [FromRoute] string reportee)
         {
             if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))
             {
@@ -285,6 +288,17 @@ namespace AltinnSupportDashboard.Controllers
             var result = await _altinnApiService.GetNotificationAddressesByEmailAltinn3(email, environmentName);
 
             return Ok(result);
+        }
+
+        [HttpGet("personalcontacts/{ssnToken}/ssn")]
+        public IActionResult GetSsnFromToken([FromRoute] string ssnToken)
+        {
+            var ssn = _ssnTokenService.GetSsnFromToken(ssnToken);
+            if (string.IsNullOrEmpty(ssn))
+            {
+                return BadRequest("Ugyldig eller utløpt SSN-token.");
+            }
+            return Ok(ssn);
         }
     }
 }
