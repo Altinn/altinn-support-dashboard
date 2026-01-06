@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Table } from "@digdir/designsystemet-react";
 import {PersonalContact } from "../models/models";
 
@@ -11,6 +11,7 @@ interface SsnCellProps {
 const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
     const [isRedacted, setIsRedacted] = useState(true);
     const [unredactedSsn, setUnredactedSsn] = useState<string | null>(null);
+    const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
     const handleClick = async () => {
         if (!unredactedSsn) {
@@ -29,6 +30,20 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
             setIsRedacted(!isRedacted);
         }
     };
+
+    useEffect(() => {
+        if(!isRedacted){
+            timeoutRef.current = setTimeout(() => {
+                setIsRedacted(true);
+            }, 10000);
+        }
+
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    })
 
     return (
         <Table.Cell
