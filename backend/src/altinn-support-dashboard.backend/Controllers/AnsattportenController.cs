@@ -21,12 +21,10 @@ public class AnsattportenController : ControllerBase
     private string baseUrl;
     private IAnsattportenService _ansattportenService;
     private ILogger<AnsattportenController> _logger;
-    private TelemetryClient _telemetryClient;
 
-    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService, ILogger<AnsattportenController> logger, TelemetryClient telemetryClient)
+    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService, ILogger<AnsattportenController> logger)
     {
         _ansattportenService = ansattportenService;
-        _telemetryClient = telemetryClient;
         _logger = logger;
         ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
         baseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>() ?? "";
