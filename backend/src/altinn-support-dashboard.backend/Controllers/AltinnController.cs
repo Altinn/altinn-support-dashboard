@@ -166,6 +166,7 @@ namespace AltinnSupportDashboard.Controllers
                         {
                             contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.SocialSecurityNumber);
                             contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.SocialSecurityNumber);
+                            contact.SocialSecurityNumber = null; 
                         }
                     }
                     catch (Exception ex)
@@ -191,7 +192,12 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-                var roles = await _altinnApiService.GetPersonRoles(subject, reportee, environmentName);
+                var ssn = _ssnTokenService.GetSsnFromToken(subject);
+                if (string.IsNullOrEmpty(ssn))
+                {
+                    ssn = subject;
+                }
+                var roles = await _altinnApiService.GetPersonRoles(ssn, reportee, environmentName);
                 return Ok(roles);
             }
             catch (System.Exception ex)

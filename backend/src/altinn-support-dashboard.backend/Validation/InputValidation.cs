@@ -36,6 +36,11 @@ namespace altinn_support_dashboard.Server.Validation
                 return true;
             }
 
+            if (Guid.TryParse(value, out _))
+            {
+                return true;
+            }
+
             return false;
         }
 
