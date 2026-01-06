@@ -306,7 +306,6 @@ namespace AltinnSupportDashboard.Controllers
         public IActionResult GetSsnFromToken([FromRoute] string ssnToken)
         {
             var ssn = _ssnTokenService.GetSsnFromToken(ssnToken);
-            Console.WriteLine($"Retrieved SSN: {ssn}");
             if (string.IsNullOrEmpty(ssn))
             {
                 return BadRequest("Ugyldig eller utløpt SSN-token.");
