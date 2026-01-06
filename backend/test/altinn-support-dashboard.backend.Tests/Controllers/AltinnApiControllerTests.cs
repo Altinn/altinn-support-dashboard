@@ -7,6 +7,7 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using AltinnSupportDashboard.Controllers;
 using Microsoft.VisualBasic;
 using Models.altinn3Dtos;
+using Microsoft.Extensions.Compliance.Redaction;
 
 namespace altinn_support_dashboard.backend.Tests.Controllers
 {
@@ -14,11 +15,15 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
     {
         private readonly AltinnTT02Controller _controller;
         private readonly Mock<IAltinnApiService> _mockService;
+        private readonly Mock<IRedactorProvider> _mockRedactorProvider;
+        private readonly Mock<ISsnTokenService> _mockSsnTokenService;
 
         public AltinnApiControllerTests()
         {
             _mockService = new Mock<IAltinnApiService>();
-            _controller = new AltinnTT02Controller(_mockService.Object);
+            _mockRedactorProvider = new Mock<IRedactorProvider>();
+            _mockSsnTokenService = new Mock<ISsnTokenService>();
+            _controller = new AltinnTT02Controller(_mockService.Object, _mockRedactorProvider.Object, _mockSsnTokenService.Object);
         }
 
         [Fact]
