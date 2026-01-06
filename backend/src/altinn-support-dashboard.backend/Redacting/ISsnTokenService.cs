@@ -1,5 +1,5 @@
 
-using altinn_support_dashboard.Server.Services.Interfaces;
+namespace altinn_support_dashboard.Server.Services.Interfaces;
 public interface ISsnTokenService
 {
     public string GenerateSsnToken(string ssn);

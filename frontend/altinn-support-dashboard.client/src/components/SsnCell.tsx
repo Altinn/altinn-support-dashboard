@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState} from "react";
 import { Table } from "@digdir/designsystemet-react";
-import {PersonalContact } from "../models/models";
+import { PersonalContact } from "../models/models";
 
 
 interface SsnCellProps {
@@ -32,7 +32,7 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
     };
 
     useEffect(() => {
-        if(!isRedacted){
+        if (!isRedacted){
             timeoutRef.current = setTimeout(() => {
                 setIsRedacted(true);
             }, 10000);
@@ -43,15 +43,15 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
                 clearTimeout(timeoutRef.current);
             }
         };
-    })
+    }, [isRedacted])
 
     return (
         <Table.Cell
             onClick={handleClick}
-            style = {{ cursor: "pointer" }}
-            title = {isRedacted ? "Vis fullt fødselsnummer" : "Skjul fullt fødselsnummer"}
+            style={{ cursor: "pointer" }}
+            title={isRedacted ? "Vis fullt fødselsnummer" : "Skjul fullt fødselsnummer"}
         >
-            {!isRedacted && unredactedSsn ? unredactedSsn : contact.displayedSocialSecurityNumber} 
+            {!isRedacted && unredactedSsn ? unredactedSsn : contact.displayedSocialSecurityNumber}
         </Table.Cell>
     )
 }

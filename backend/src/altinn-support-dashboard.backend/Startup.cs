@@ -1,6 +1,7 @@
 
 using altinn_support_dashboard.Server.Clients;
 using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Redacting;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;

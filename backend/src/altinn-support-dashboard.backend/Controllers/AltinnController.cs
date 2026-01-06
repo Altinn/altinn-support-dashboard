@@ -162,7 +162,7 @@ namespace AltinnSupportDashboard.Controllers
                 foreach (var contact in personalContacts)
                 {
                     try {
-                        if(!string.IsNullOrEmpty(contact.SocialSecurityNumber))
+                        if (!string.IsNullOrEmpty(contact.SocialSecurityNumber))
                         {
                             contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.SocialSecurityNumber);
                             contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.SocialSecurityNumber);
@@ -183,7 +183,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("{subject}/roles/{reportee}")]
-        public async Task<IActionResult> GetPersonRoles( [FromRoute] string subject, [FromRoute] string reportee)
+        public async Task<IActionResult> GetPersonRoles([FromRoute] string subject, [FromRoute] string reportee)
         {
             if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))
             {
@@ -308,7 +308,7 @@ namespace AltinnSupportDashboard.Controllers
             var ssn = _ssnTokenService.GetSsnFromToken(ssnToken);
             if (string.IsNullOrEmpty(ssn))
             {
-                return BadRequest("Ugyldig eller utløpt SSN-token.");
+                return BadRequest("Invalid or expired SSN token.");
             }
             return Ok(new { SocialSecurityNumber = ssn });
         }

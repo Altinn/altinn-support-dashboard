@@ -1,6 +1,6 @@
-
-
 using Microsoft.Extensions.Compliance.Redaction;
+
+namespace altinn_support_dashboard.Server.Redacting;
 
 public class SsnRedactor : Redactor
 {
