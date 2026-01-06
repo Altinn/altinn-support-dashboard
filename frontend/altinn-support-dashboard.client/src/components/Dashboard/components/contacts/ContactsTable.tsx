@@ -108,7 +108,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
                 <Table.Cell className={classes.tableCell}>
                   {contact.name}
                 </Table.Cell>
-                <SsnCell contact={contact} />
+                <SsnCell contact={contact} environment= {environment}/>
                 <Table.Cell className={classes.tableCell}>
                   <ContactInfoCell
                     contact={contact.mobileNumber}

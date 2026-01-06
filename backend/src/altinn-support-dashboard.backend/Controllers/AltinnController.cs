@@ -161,10 +161,16 @@ namespace AltinnSupportDashboard.Controllers
 
                 foreach (var contact in personalContacts)
                 {
-                    if(!string.IsNullOrEmpty(contact.SocialSecurityNumber))
+                    try {
+                        if(!string.IsNullOrEmpty(contact.SocialSecurityNumber))
+                        {
+                            contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.SocialSecurityNumber);
+                            contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.SocialSecurityNumber);
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.SocialSecurityNumber);
-                        contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.SocialSecurityNumber);
+                        Console.WriteLine($"Error redacting: {ex.Message}");
                     }
                 }
                 return Ok(personalContacts);
@@ -294,11 +300,12 @@ namespace AltinnSupportDashboard.Controllers
         public IActionResult GetSsnFromToken([FromRoute] string ssnToken)
         {
             var ssn = _ssnTokenService.GetSsnFromToken(ssnToken);
+            Console.WriteLine($"Retrieved SSN: {ssn}");
             if (string.IsNullOrEmpty(ssn))
             {
                 return BadRequest("Ugyldig eller utløpt SSN-token.");
             }
-            return Ok(ssn);
+            return Ok(new { SocialSecurityNumber = ssn });
         }
     }
 }
