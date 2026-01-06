@@ -4,6 +4,7 @@ export interface Organization {
   type: string;
   lastChanged: string;
   lastConfirmed: string;
+  headUnit?: Organization;
   _links: OrganizationLink[];
 }
 

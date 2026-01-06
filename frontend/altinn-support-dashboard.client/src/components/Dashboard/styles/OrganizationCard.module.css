@@ -36,6 +36,11 @@
   margin-top: 10px;
 }
 
+.headUnit {
+  margin-bottom: 10px;
+  margin-right: 20px;
+}
+
 @media (max-width: 1439px) {
   .expandButton {
     max-height: 2rem;
