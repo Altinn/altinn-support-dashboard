@@ -12,19 +12,10 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
     const [isRedacted, setIsRedacted] = useState(true);
     const [unredactedSsn, setUnredactedSsn] = useState<string | null>(null);
 
-    console.log("ssn token:", contact.ssnToken);
-    console.log("environment:", environment);
-
     const handleClick = async () => {
-        console.log('Clicked!', { 
-        hasUnredacted: !!unredactedSsn, 
-        token: contact.ssnToken,
-        env: environment 
-    });
         if (!unredactedSsn) {
             try {
                 const response = await fetch(`/api/${environment}/serviceowner/personalcontacts/${contact.ssnToken}/ssn`);
-                console.log("Fetch response:", response);
 
                 if (response.ok) {
                     const data = await response.json();
