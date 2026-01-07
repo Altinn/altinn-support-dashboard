@@ -62,6 +62,27 @@ public class ER_Roller_APIController : ControllerBase
         }
     }
 
+
+    [HttpGet("underenhet")]
+    public async Task<IActionResult> GetUnderenhet(string environmentName, string orgNumber)
+    {
+        if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
+        {
+            return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+        }
+
+        if (!IsValidEnvironment(environmentName))
+        {
+            return BadRequest("Ugyldig miljønavn.");
+        }
+
+        var result = await _dataBrregService.GetUnderenhet(orgNumber, environmentName);
+
+        return Ok(result);
+
+    }
+
+
     [HttpGet("underenheter")]
     public async Task<IActionResult> GetUnderenheter(string environmentName, string orgNumber)
     {

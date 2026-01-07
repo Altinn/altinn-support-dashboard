@@ -8,6 +8,8 @@ public class Organization
     public DateTime? LastChanged { get; set; }
     public DateTime? LastConfirmed { get; set; }
 
+    public Organization? HeadUnit { get; set; }
+
     [JsonPropertyName("_links")]
     public List<OrganizationLink>? Links { get; set; }
 }
