@@ -35,7 +35,7 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
         if (!isRedacted){
             timeoutRef.current = setTimeout(() => {
                 setIsRedacted(true);
-            }, 10000);
+            }, 5000);
         }
 
         return () => {
