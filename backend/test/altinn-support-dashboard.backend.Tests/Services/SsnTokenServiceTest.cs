@@ -47,4 +47,16 @@ public class SsnTokenServiceTest
         var retrievedSsn = _ssnTokenService.GetSsnFromToken(invalidToken);
         Assert.Equal(string.Empty, retrievedSsn);
     }
+
+    [Fact]
+    public async Task RemoveExpiredTokens_ShouldRemoveExpiredTokens()
+    {
+        var ssn = "12345678901";
+        var token = _ssnTokenService.GenerateSsnToken(ssn);
+
+        await Task.Delay(TimeSpan.FromMinutes(16));
+
+        var retrievedSsn = _ssnTokenService.GetSsnFromToken(token);
+        Assert.Equal(string.Empty, retrievedSsn);
+    }
 }
