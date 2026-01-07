@@ -1,6 +1,7 @@
 using Altinn.ApiClients.Maskinporten.Config;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
+using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Models.altinn3Dtos;
 using Moq;
@@ -13,11 +14,13 @@ public class AltinnApiServiceTest
     private readonly AltinnApiService _altinnApiService;
     private readonly Mock<IAltinnApiClient> _mockAltinn2Client;
     private readonly Mock<IAltinn3ApiClient> _mockAltinn3Client;
+    private readonly Mock<IDataBrregService> _mockBreggService;
 
     public AltinnApiServiceTest()
     {
         var mockHttpClient = new Mock<IHttpClientFactory>();
         var mockConfig = new Mock<IOptions<Configuration>>();
+        _mockBreggService = new Mock<IDataBrregService>();
 
         mockConfig.Setup(x => x.Value).Returns(new Configuration
         {
@@ -49,7 +52,7 @@ public class AltinnApiServiceTest
 
         _mockAltinn2Client = new Mock<IAltinnApiClient>();
         _mockAltinn3Client = new Mock<IAltinn3ApiClient>();
-        _altinnApiService = new AltinnApiService(_mockAltinn2Client.Object, _mockAltinn3Client.Object);
+        _altinnApiService = new AltinnApiService(_mockAltinn2Client.Object, _mockAltinn3Client.Object, _mockBreggService.Object);
     }
 
     [Fact]
