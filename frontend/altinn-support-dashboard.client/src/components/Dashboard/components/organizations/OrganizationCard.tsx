@@ -77,12 +77,24 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
       <Card
         data-color="neutral"
         variant={checkIsSelected(org.organizationNumber) ? "tinted" : "default"}
-        className={classes.card}
+        className={`${classes.card} ${classes.mainCard}`}
         onClick={() => handleSelectedOrg()}
       >
+        <div className={classes.cardInfoContainer}>
+          {" "}
+          <Heading level={6} className={classes.cardHeader}>
+            {org.name}
+          </Heading>
+          <Paragraph variant="short" className={classes.cardParagraph}>
+            Org Nr: {org.organizationNumber}
+          </Paragraph>
+          <Paragraph variant="short" className={classes.cardParagraph}>
+            Type: {org.type}
+          </Paragraph>
+        </div>
         {org.headUnit && (
           <Button
-            className={classes.expandButton}
+            className={classes.expandButtonHead}
             variant="secondary"
             onClick={(e) => {
               handleExpandedHead(e);
@@ -92,19 +104,9 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           </Button>
         )}
 
-        <Heading level={6} className={classes.cardHeader}>
-          {org.name}
-        </Heading>
-        <Paragraph variant="short" className={classes.cardParagraph}>
-          Org Nr: {org.organizationNumber}
-        </Paragraph>
-        <Paragraph variant="short" className={classes.cardParagraph}>
-          Type: {org.type}
-        </Paragraph>
-
         {hasSubUnits && (
           <Button
-            className={classes.expandButton}
+            className={classes.expandButtonSub}
             variant="secondary"
             onClick={(e) => {
               handleExpandedSub(e);

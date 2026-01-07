@@ -2,7 +2,7 @@
   margin-bottom: 1rem;
 }
 
-.expandButton {
+.expandButtonSub {
   margin-top: 1rem;
   position: absolute;
   right: 10px;
@@ -10,8 +10,29 @@
   padding-top: -0.5;
   min-height: 1rem;
   max-height: 3rem;
+  flex: 1;
+
+  min-width: 1rem;
+  max-width: 3.5rem;
 }
 
+.expandButtonHead {
+  left: 10px;
+  min-height: 0.1rem;
+  max-height: 3rem;
+
+  min-width: 1rem;
+  max-width: 3.5rem;
+  flex: 1;
+}
+
+.cardInfoContainer {
+  flex: 8;
+}
+
+.mainCard {
+  display: flex;
+}
 .card {
   position: relative;
   border-radius: 8px;
