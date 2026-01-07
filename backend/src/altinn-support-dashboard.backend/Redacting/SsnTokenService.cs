@@ -1,7 +1,9 @@
+using System.Collections.Concurrent;
+
 namespace altinn_support_dashboard.Server.Services.Interfaces;
 public class SsnTokenService : ISsnTokenService
 {
-    private static Dictionary<string, (string ssn, DateTime Expiry)> _tokens = new ();
+    private static ConcurrentDictionary<string, (string ssn, DateTime Expiry)> _tokens = new ();
 
     public string GenerateSsnToken(string ssn)
     {
