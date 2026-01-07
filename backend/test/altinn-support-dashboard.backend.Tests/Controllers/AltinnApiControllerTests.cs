@@ -492,5 +492,33 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
         }
+
+        [Fact]
+        public async Task GetSsnFromToken_ReturnsSsn_WhenTokenIsValid()
+        {
+            var validToken = "valid-token";
+            var expectedSsn = "12345678901";
+
+            _mockSsnTokenService
+            .Setup(x => x.GetSsnFromToken(validToken))
+            .Returns(expectedSsn);
+
+            var result = _controller.GetSsnFromToken(validToken);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("invalid-token")]
+        public async Task GetSsnFromToken_ReturnsBadRequest_WhenTokenIsInvalid(string invalidToken)
+        {
+            _mockSsnTokenService
+            .Setup(x => x.GetSsnFromToken(invalidToken))
+            .Returns(string.Empty);
+
+            var result = _controller.GetSsnFromToken(invalidToken);
+
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Invalid or expired SSN token.", badRequestResult.Value);
+        }
     }
 }
