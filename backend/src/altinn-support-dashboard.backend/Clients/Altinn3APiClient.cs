@@ -63,11 +63,10 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         var response = await client.GetAsync(requestUrl);
 
         var responseBody = await response.Content.ReadAsStringAsync();
-        _logger.LogInformation(responseBody);
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new HttpRequestException($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            throw new HttpRequestException($"Personal contacts request failed with status code {response.StatusCode}: {responseBody}", null, response.StatusCode);
         }
 
         return responseBody;

@@ -25,7 +25,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
     {
-        public AltinnTT02Controller(IAltinnApiService altinnApiService) : base(altinnApiService, "TT02")
+        public AltinnTT02Controller(IAltinnApiService altinnApiService, ILogger<AltinnTT02Controller> logger) : base(altinnApiService, "TT02", logger)
         {
         }
 
@@ -35,7 +35,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/Production/serviceowner")]
     public class AltinnProductionController : AltinnBaseController
     {
-        public AltinnProductionController(IAltinnApiService altinnApiService) : base(altinnApiService, "Production")
+        public AltinnProductionController(IAltinnApiService altinnApiService, ILogger<AltinnTT02Controller> logger) : base(altinnApiService, "Production", logger)
         {
         }
     }
@@ -49,9 +49,11 @@ namespace AltinnSupportDashboard.Controllers
     {
         protected readonly IAltinnApiService _altinnApiService;
         protected string environmentName;
+        private ILogger<AltinnBaseController> _logger;
 
-        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName)
+        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName, ILogger<AltinnBaseController> logger)
         {
+            _logger = logger;
             this.environmentName = environmentName;
             _altinnApiService = altinnApiService;
         }
@@ -215,15 +217,21 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("organizations/altinn3/personalcontacts/email/{email}")]
         public async Task<IActionResult> GetPersonalContactsByEmailAltinn3([FromRoute] string email)
         {
-            if (!ValidationService.IsValidEmail(email))
+            try
             {
-                return BadRequest("Email is Invalid");
+                if (!ValidationService.IsValidEmail(email))
+                {
+                    return BadRequest("Email is Invalid");
+                }
+                var result = await _altinnApiService.GetPersonalContactsByEmailAltinn3(email, environmentName);
+
+                return Ok(result);
             }
-            var result = await _altinnApiService.GetPersonalContactsByEmailAltinn3(email, environmentName);
-
-            return Ok(result);
-
-
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Personal contacts failed for email {email} with status {statuscode}", email, ex.StatusCode);
+                return StatusCode(502, "upstream service failure");
+            }
         }
 
         [HttpGet("organizations/altinn3/personalcontacts/phonenumber/{phonenumber}")]

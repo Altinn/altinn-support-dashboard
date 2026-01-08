@@ -38,7 +38,6 @@ public class AltinnApiClient : IAltinnApiClient
 
             // Construct the full request URL
             var requestUrl = $"organizations/{orgNumber}";
-            Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
 
             var response = await client.GetAsync(requestUrl);
             if (response.IsSuccessStatusCode)
@@ -64,7 +63,6 @@ public class AltinnApiClient : IAltinnApiClient
             var client = _clients[environmentName];
 
             var requestUrl = $"organizations?phoneNumber={phoneNumber}&ForceEIAuthentication";
-            Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
 
             var response = await client.GetAsync(requestUrl);
             if (response.IsSuccessStatusCode)
@@ -92,7 +90,6 @@ public class AltinnApiClient : IAltinnApiClient
             var client = _clients[environmentName];
 
             var requestUrl = $"organizations?email={email}&ForceEIAuthentication";
-            Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
 
             var response = await client.GetAsync(requestUrl);
             if (response.IsSuccessStatusCode)
@@ -122,7 +119,6 @@ public class AltinnApiClient : IAltinnApiClient
 
             // Construct the full request URL
             var requestUrl = $"organizations/{orgNumber}/personalcontacts";
-            Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
 
             var response = await client.GetAsync(requestUrl);
             if (response.IsSuccessStatusCode)
@@ -148,7 +144,6 @@ public class AltinnApiClient : IAltinnApiClient
             var client = _clients[environmentName];
 
             var requestUrl = $"authorization/roles?subject={subject}&reportee={reportee}&language=1044&";
-            Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
 
             var response = await client.GetAsync(requestUrl);
             if (response.IsSuccessStatusCode)
@@ -170,29 +165,19 @@ public class AltinnApiClient : IAltinnApiClient
 
     public async Task<string> GetOfficialContacts(string orgNumber, string environmentName)
     {
-        try
-        {
-            var client = _clients[environmentName];
+        var client = _clients[environmentName];
 
-            // Construct the full request URL
-            var requestUrl = $"organizations/{orgNumber}/officialcontacts";
-            Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
+        // Construct the full request URL
+        var requestUrl = $"organizations/{orgNumber}/officialcontacts";
 
-            var response = await client.GetAsync(requestUrl);
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
-            }
-        }
-        catch (Exception ex)
+        var response = await client.GetAsync(requestUrl);
+        if (response.IsSuccessStatusCode)
         {
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+            return await response.Content.ReadAsStringAsync();
         }
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        throw new HttpRequestException($"Official Contacts returned {(int)response.StatusCode} : {responseBody}", null, response.StatusCode);
     }
 
 }
