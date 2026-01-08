@@ -4,6 +4,7 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Validation;
 using Security;
 using Microsoft.AspNetCore.Cors;
+using System.Net;
 
 namespace AltinnSupportDashboard.Controllers
 {
@@ -23,7 +24,7 @@ namespace AltinnSupportDashboard.Controllers
 
     [ApiController]
     [Route("api/TT02/serviceowner")]
-    public class AltinnTT02Controller : AltinnBaseController
+    public class AltinnTT02Controller : AltinnBaseController<AltinnTT02Controller>
     {
         public AltinnTT02Controller(IAltinnApiService altinnApiService, ILogger<AltinnTT02Controller> logger) : base(altinnApiService, "TT02", logger)
         {
@@ -33,9 +34,9 @@ namespace AltinnSupportDashboard.Controllers
 
     [ApiController]
     [Route("api/Production/serviceowner")]
-    public class AltinnProductionController : AltinnBaseController
+    public class AltinnProductionController : AltinnBaseController<AltinnProductionController>
     {
-        public AltinnProductionController(IAltinnApiService altinnApiService, ILogger<AltinnTT02Controller> logger) : base(altinnApiService, "Production", logger)
+        public AltinnProductionController(IAltinnApiService altinnApiService, ILogger<AltinnProductionController> logger) : base(altinnApiService, "Production", logger)
         {
         }
     }
@@ -45,13 +46,13 @@ namespace AltinnSupportDashboard.Controllers
     //Made controller abstract to be able to authorize on different environments
     [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
     [ApiController]
-    public abstract class AltinnBaseController : ControllerBase
+    public abstract class AltinnBaseController<T> : ControllerBase
     {
         protected readonly IAltinnApiService _altinnApiService;
         protected string environmentName;
-        private ILogger<AltinnBaseController> _logger;
+        private ILogger<T> _logger;
 
-        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName, ILogger<AltinnBaseController> logger)
+        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName, ILogger<T> logger)
         {
             _logger = logger;
             this.environmentName = environmentName;
@@ -226,6 +227,10 @@ namespace AltinnSupportDashboard.Controllers
                 var result = await _altinnApiService.GetPersonalContactsByEmailAltinn3(email, environmentName);
 
                 return Ok(result);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound();
             }
             catch (HttpRequestException ex)
             {
