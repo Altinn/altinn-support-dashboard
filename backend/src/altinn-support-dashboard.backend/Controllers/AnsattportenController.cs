@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using altinn_support_dashboard.Server.Validation;
 using altinn_support_dashboard.Server.Models.ansattporten;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Microsoft.ApplicationInsights;
 
 
 namespace AltinnSupportDashboard.Controllers;
@@ -19,9 +20,12 @@ public class AnsattportenController : ControllerBase
     private bool ansattportenFeatureFlag;
     private string baseUrl;
     private IAnsattportenService _ansattportenService;
-    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService)
+    private ILogger<AnsattportenController> _logger;
+
+    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService, ILogger<AnsattportenController> logger)
     {
         _ansattportenService = ansattportenService;
+        _logger = logger;
         ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
         baseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>() ?? "";
     }
@@ -59,11 +63,13 @@ public class AnsattportenController : ControllerBase
             });
         }
 
+
         var result = await HttpContext.AuthenticateAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
 
 
         List<string> userPolicies = await _ansattportenService.GetUserPolicies(User);
         string orgName = await _ansattportenService.GetRepresentationOrgName(User);
+
 
 
         return Ok(new AuthDetails
