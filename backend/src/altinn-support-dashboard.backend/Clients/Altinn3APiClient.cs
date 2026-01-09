@@ -41,9 +41,21 @@ public class Altinn3ApiClient : IAltinn3ApiClient
     {
         var client = _clients[environmentName];
 
-        var requestUrl = $"register/api/v1/organizations/{orgNumber}";
+        var requestUrl = $"register/api/v1/parties/nameslookup";
 
-        var response = await client.GetAsync(requestUrl);
+        var payload = new
+        {
+            parties = new[]
+            {
+            new {OrgNo = orgNumber}
+            }
+        };
+
+        string jsonPayload = JsonSerializer.Serialize(payload);
+
+        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+        var response = await client.PostAsync(requestUrl, content);
         var responseBody = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
