@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
@@ -84,6 +85,19 @@ public static class AnsattportenExtensions
                     options.RequireHttpsMetadata = true;
 
                     options.TokenValidationParameters.NameClaimType = JwtRegisteredClaimNames.Name;
+
+                    options.Events.OnTokenValidated = context =>
+                    {
+                        var telemetry = context.HttpContext.RequestServices.GetRequiredService<TelemetryClient>();
+
+                        var name = context?.Principal?.Identity?.Name ?? "unknown";
+
+                        telemetry.TrackEvent("userLogin", new Dictionary<string, string> { { "id", name } });
+
+                        return Task.CompletedTask;
+
+
+                    };
 
                     //handles errors and redirects correctly
                     options.Events.OnRemoteFailure = context =>
