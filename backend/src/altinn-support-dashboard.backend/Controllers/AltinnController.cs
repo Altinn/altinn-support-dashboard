@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using altinn_support_dashboard.Server.Services.Interfaces;
-using altinn_support_dashboard.Server.Validation;
+using altinn_support_dashboard.Server.Utils;
 using Security;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Compliance.Redaction;
