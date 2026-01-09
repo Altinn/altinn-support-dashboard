@@ -158,22 +158,6 @@ namespace AltinnSupportDashboard.Controllers
             try
             {
                 var personalContacts = await _altinnApiService.GetPersonalContacts(orgNumber, environmentName);
-
-                foreach (var contact in personalContacts)
-                {
-                    try {
-                        if (!string.IsNullOrEmpty(contact.SocialSecurityNumber))
-                        {
-                            contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.SocialSecurityNumber);
-                            contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.SocialSecurityNumber);
-                            contact.SocialSecurityNumber = null; 
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error redacting: {ex.Message}");
-                    }
-                }
                 return Ok(personalContacts);
             }
             catch (System.Exception ex)
@@ -192,12 +176,7 @@ namespace AltinnSupportDashboard.Controllers
 
             try
             {
-                var ssn = _ssnTokenService.GetSsnFromToken(subject);
-                if (string.IsNullOrEmpty(ssn))
-                {
-                    ssn = subject;
-                }
-                var roles = await _altinnApiService.GetPersonRoles(ssn, reportee, environmentName);
+                var roles = await _altinnApiService.GetPersonRoles(subject, reportee, environmentName);
                 return Ok(roles);
             }
             catch (System.Exception ex)
@@ -302,15 +281,15 @@ namespace AltinnSupportDashboard.Controllers
             return Ok(result);
         }
 
-        [HttpGet("personalcontacts/{ssnToken}/ssn")]
-        public IActionResult GetSsnFromToken([FromRoute] string ssnToken)
+        [HttpGet("personalcontacts/{ssnToken}/ssn")]        
+        public string GetSsnFromToken(string ssnToken)
         {
             var ssn = _ssnTokenService.GetSsnFromToken(ssnToken);
             if (string.IsNullOrEmpty(ssn))
             {
-                return BadRequest("Invalid or expired SSN token.");
+                throw new Exception("Invalid or expired SSN token.");
             }
-            return Ok(new { SocialSecurityNumber = ssn });
+            return ssn;
         }
     }
 }
