@@ -1,6 +1,6 @@
 ﻿using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
-using altinn_support_dashboard.Server.Validation;
+using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Compliance.Redaction;
 using Models.altinn3Dtos;
