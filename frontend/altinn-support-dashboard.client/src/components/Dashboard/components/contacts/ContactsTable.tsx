@@ -7,6 +7,7 @@ import { PersonalContact, SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import ContactInfoCell from "./ContactInfoCell";
 import { Button, Table, Paragraph, Card } from "@digdir/designsystemet-react";
+import SsnCell from "../../../SsnCell";
 
 interface ContactsTableProps {
   searchQuery: string;
@@ -107,9 +108,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
                 <Table.Cell className={classes.tableCell}>
                   {contact.name}
                 </Table.Cell>
-                <Table.Cell className={classes.tableCell}>
-                  {contact.socialSecurityNumber}
-                </Table.Cell>
+                <SsnCell contact={contact} environment={environment}/>
                 <Table.Cell className={classes.tableCell}>
                   <ContactInfoCell
                     contact={contact.mobileNumber}

@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 
 
-namespace altinn_support_dashboard.Server.Validation
+namespace altinn_support_dashboard.Server.Utils
 {
     public static class ValidationService
     {
@@ -36,7 +36,17 @@ namespace altinn_support_dashboard.Server.Validation
                 return true;
             }
 
+            if (Guid.TryParse(value, out _))
+            {
+                return true;
+            }
+
             return false;
+        }
+
+        public static bool IsValidSsnToken (string token)
+        {
+            return !string.IsNullOrWhiteSpace(token) && Guid.TryParse(token, out _);
         }
 
 

@@ -1,9 +1,11 @@
 
 using altinn_support_dashboard.Server.Clients;
 using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Utils;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.OpenApi.Models;
 
 
@@ -64,6 +66,11 @@ namespace AltinnSupportDashboard
                            .AllowAnyHeader();   // Allow all headers (Authorization, Content-Type, etc.)
 
                 });
+            });
+
+            services.AddRedaction(redaction =>
+            {
+                redaction.SetRedactor<SsnRedactor>(CustomDataClassifications.SSN);
             });
 
 

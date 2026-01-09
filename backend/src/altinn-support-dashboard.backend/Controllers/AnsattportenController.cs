@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Security;
 using System.IdentityModel.Tokens.Jwt;
-using altinn_support_dashboard.Server.Validation;
+using altinn_support_dashboard.Server.Utils;
 using altinn_support_dashboard.Server.Models.ansattporten;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.ApplicationInsights;

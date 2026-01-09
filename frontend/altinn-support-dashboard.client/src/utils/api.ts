@@ -100,11 +100,11 @@ export const fetchOfficialContacts = async (
 
 export const fetchRolesForOrg = async (
   environment: string,
-  rollehaver: string,
+  ssnToken: string,
   rollegiver: string,
 ): Promise<Role[]> => {
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/${rollehaver}/roles/${rollegiver}`,
+    `${getBaseUrl(environment)}/serviceowner/${ssnToken}/roles/${rollegiver}`,
   );
   if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
 
