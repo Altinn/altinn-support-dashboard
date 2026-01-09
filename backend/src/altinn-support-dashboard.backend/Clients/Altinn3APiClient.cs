@@ -37,6 +37,8 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         _clients.Add(environmentName, client);
     }
 
+
+    //endpoint which gives the name of a spesific organization
     public async Task<string> GetOrganizationInfo(string orgNumber, string environmentName)
     {
         var client = _clients[environmentName];
