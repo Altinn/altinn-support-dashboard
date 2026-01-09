@@ -17,7 +17,6 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
         if (!unredactedSsn) {
             try {
                 const response = await fetch(`/api/${environment}/serviceowner/personalcontacts/${contact.ssnToken}/ssn`);
-
                 if (response.ok) {
                     const data = await response.json();
                     setUnredactedSsn(data.socialSecurityNumber);
@@ -37,7 +36,6 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
                 setIsRedacted(true);
             }, 5000);
         }
-
         return () => {
             if (timeoutRef.current) {
                 clearTimeout(timeoutRef.current);
