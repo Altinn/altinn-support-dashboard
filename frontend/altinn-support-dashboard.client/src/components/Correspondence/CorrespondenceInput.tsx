@@ -1,5 +1,5 @@
 import { Textfield } from "@digdir/designsystemet-react";
-
+import style from "./styles/InputComponent.module.css";
 
 
 type InputComponentProps = {
@@ -12,7 +12,7 @@ const InputComponent: React.FC<InputComponentProps> = ({
 }) => {
 
     return (
-        <div>
+        <div className={style["input-container"]}>
             <Textfield label={title}  rows={10} />
         </div>
     )
