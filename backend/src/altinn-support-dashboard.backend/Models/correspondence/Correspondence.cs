@@ -10,11 +10,10 @@ public class Correspondence
     public DateTime? RequestedPublicTime { get; set; }
     public DateTime? AllowSystemDeleteAfter { get; set; }
     public DateTime? DueDateTime { get; set; }
-    public string[]? ExternalRefences { get; set; }
-    public string[]? ReplyOptions { get; set; }
+    public List<CorrespondenceExternalReference>? ExternalRefences { get; set; }
+    public List<CorrespondenceReplyOptions>? ReplyOptions { get; set; }
 
-    //Should be object
-    public string? PropertyList { get; set; }
+    public Dictionary<string, string>? PropertyList { get; set; }
 
     public bool? IgnoreReservation { get; set; }
     public DateTime? Published { get; set; }

@@ -16,8 +16,9 @@ public class CorrespondenceNotification
     public string? ReminderNotificationChannel { get; set; }
     public string? SendersRefernce { get; set; }
     public DateTime? RequestedSendTime { get; set; }
-    public CorrespondenceRecipient[]? CustomRecipients { get; set; }
+    public List<CorrespondenceRecipient>? CustomRecipients { get; set; }
     public bool? OverrideRegisteredContactInformation { get; set; }
-    public bool? IgnoreReservation { get; set; }
 
 }
+
+

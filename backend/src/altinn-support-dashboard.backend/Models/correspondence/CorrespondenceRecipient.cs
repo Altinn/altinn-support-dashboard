@@ -6,5 +6,4 @@ public class CorrespondenceRecipient
     public string? OrganizationNumber { get; set; }
     public string? NationalIdentityNumber { get; set; }
     public string? IsReserved { get; set; }
-    public string? IsReserved { get; set; }
 }
