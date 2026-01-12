@@ -5,11 +5,20 @@ public class SsnTokenService : ISsnTokenService
 {
     private static ConcurrentDictionary<string, (string ssn, DateTime Expiry)> _tokens = new ();
     private readonly Timer _removeTokenTimer;
+    private readonly int _tokenExpiryMinutes;
     
-    public SsnTokenService()
+    public SsnTokenService(IConfiguration configuration)
     {
-        _removeTokenTimer = new Timer(RemoveExpiredTokens, null, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
-        //Timer that runs every 5 minutes (calls RemoveExpiredTokens) to clean up expired tokens
+        _tokenExpiryMinutes = configuration.GetValue<int>("SsnTokenSettings:TokenExpiryMinutes", 15); // Gets the value from appsettings.json. Default to 15 minutes if not set
+        var removalIntervalMinutes = configuration.GetValue<int>("SsnTokenSettings:RemovalIntervalMinutes", 5); //Gets the value from appsettings.json. Default to 5 minutes if not set
+
+        _removeTokenTimer = new Timer(
+            RemoveExpiredTokens, 
+            null, 
+            TimeSpan.FromMinutes(removalIntervalMinutes), 
+            TimeSpan.FromMinutes(removalIntervalMinutes)
+        );
+        // Sets up a timer to remove expired tokens at regular intervals (5min as defauilt if not set)
     }
 
     public string GenerateSsnToken(string ssn)
@@ -19,8 +28,8 @@ public class SsnTokenService : ISsnTokenService
             throw new ArgumentException("Invalid SSN");
         }
         var token = Guid.NewGuid().ToString();
-        _tokens[token] = (ssn, DateTime.UtcNow.AddMinutes(15)); 
-        // Token valid for 15 minutes
+        _tokens[token] = (ssn, DateTime.UtcNow.AddMinutes(_tokenExpiryMinutes)); 
+        // Token valid for set time, or 15min by if not set
         return token;
     }
 
