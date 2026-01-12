@@ -1,6 +1,6 @@
 import { Heading } from "@digdir/designsystemet-react"
 import InputComponent from "../components/Correspondence/CorrespondenceInput"
-import CorrespondenceCheckbox from "../components/Correspondence/styles/CorrespondenceCheckbox"
+import CorrespondenceCheckbox from "../components/Correspondence/CorrespondenceCheckbox"
 
 
 
