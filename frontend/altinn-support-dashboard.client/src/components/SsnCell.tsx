@@ -1,6 +1,7 @@
 import React, { useEffect, useState} from "react";
 import { Table } from "@digdir/designsystemet-react";
 import { PersonalContact } from "../models/models";
+import { useSsnFromToken } from "../hooks/hooks";
 
 
 interface SsnCellProps {
@@ -10,18 +11,18 @@ interface SsnCellProps {
 
 const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
     const [isRedacted, setIsRedacted] = useState(true);
-    const [unredactedSsn, setUnredactedSsn] = useState<string | null>(null);
     const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+    const { data: unredactedSsn, refetch } = useSsnFromToken(
+        environment || "",
+        contact.ssnToken,
+    );
 
     const handleClick = async () => {
         if (!unredactedSsn) {
-            try {
-                const response = await fetch(`/api/${environment}/serviceowner/personalcontacts/${contact.ssnToken}/ssn`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setUnredactedSsn(data.socialSecurityNumber);
-                    setIsRedacted(false);
-                }
+            try{
+                await refetch();
+                setIsRedacted(false);
             } catch (error) {
                 console.error("Error fetching unredacted SSN:", error);
             }
@@ -31,7 +32,7 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
     };
 
     useEffect(() => {
-        if (!isRedacted){
+        if (!isRedacted && unredactedSsn) {
             timeoutRef.current = setTimeout(() => {
                 setIsRedacted(true);
             }, 5000);
@@ -41,7 +42,7 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
                 clearTimeout(timeoutRef.current);
             }
         };
-    }, [isRedacted])
+    }, [isRedacted, unredactedSsn])
 
     return (
         <Table.Cell

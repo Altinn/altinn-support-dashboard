@@ -111,3 +111,17 @@ export const fetchRolesForOrg = async (
   const data = await res.json();
   return Array.isArray(data) ? data : [];
 };
+
+export const fetchSsnFromToken = async (
+  environment: string,
+  ssnToken: string,
+): Promise<string> => {
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/personalcontacts/${ssnToken}/ssn`,
+  );
+
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching SSN from token");
+
+  const data = await res.json();
+  return data.socialSecurityNumber;
+}
