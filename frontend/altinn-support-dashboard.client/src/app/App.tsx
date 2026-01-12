@@ -15,6 +15,7 @@ import SignOutPage from "../pages/SignOutPage";
 import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
 import NewOrganizationPage from "../pages/NewOrganizationPage";
 import SettingsPage from "../pages/SettingsPage";
+import { CorrespondencePage } from "../pages/CorrespondencePage";
 import { useAppStore } from "../stores/Appstore";
 import SignInPage from "../pages/SignInPage";
 import PrivateRoutes from "./PrivateRoutes";
@@ -71,6 +72,7 @@ const App: React.FC = () => {
                 />
                 <Route path="/new-org" element={<NewOrganizationPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/correspondence" element={<CorrespondencePage />} />
                 <Route path="/signout" element={<SignOutPage />} />
               </Route>
             </Routes>

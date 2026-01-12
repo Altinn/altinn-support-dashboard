@@ -13,6 +13,7 @@ import {
   MagnifyingGlassIcon,
   PlusIcon,
   CogIcon,
+  EnvelopeOpenIcon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -101,6 +102,12 @@ const Sidebar: React.FC = () => {
               to="/settings"
               title="Innstillinger"
               icon={<CogIcon className={classes.icons} />}
+              isCollapsed={isCollapsed}
+            />
+            <NavItem
+              to="/correspondence"
+              title="Korrespondanse"
+              icon={<EnvelopeOpenIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
           </nav>
