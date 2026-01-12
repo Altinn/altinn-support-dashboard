@@ -509,16 +509,15 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [Theory]
         [InlineData("")]
         [InlineData("invalid-token")]
-        public async Task GetSsnFromToken_ReturnsBadRequest_WhenTokenIsInvalid(string invalidToken)
+        public void GetSsnFromToken_ReturnsBadRequest_WhenTokenIsInvalid(string invalidToken)
         {
             _mockSsnTokenService
             .Setup(x => x.GetSsnFromToken(invalidToken))
             .Returns(string.Empty);
 
-            var result = _controller.GetSsnFromToken(invalidToken);
+            var exception = Assert.Throws<Exception>(() => _controller.GetSsnFromToken(invalidToken));
 
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Invalid or expired SSN token.", badRequestResult.Value);
+            Assert.Equal("Invalid or expired SSN token.", exception.Message);
         }
     }
 }
