@@ -114,6 +114,7 @@ public class AltinnApiService : IAltinnApiService
         {
             throw new Exception("Ingen data funnet for det angitte organisasjonsnummeret.");
         }
+
         foreach (var contact in personalContacts)
             {
                 try {
@@ -136,7 +137,10 @@ public class AltinnApiService : IAltinnApiService
     {
         if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))
         {
-            throw new ArgumentException("Subject eller Reportee er ugyldig.");
+            if (!ValidationService.IsValidSsnToken(subject))
+            {
+                throw new ArgumentException("Subject eller Reportee er ugyldig.");
+            }
         }
 
         var ssn = _ssnTokenService.GetSsnFromToken(subject);

@@ -17,7 +17,7 @@ public class SsnRedactor : Redactor
             return source.Length;
         }
 
-        source[..6].CopyTo(destination[..6]); //Copies the first 6 characters to the destuination (a variable somewhere else)
+        source[..6].CopyTo(destination[..6]); //Copies the first 6 characters to the destination (a variable somewhere else)
         destination[6..].Fill('*'); //Fills the rest of the characters with asterisks
 
         return source.Length;

@@ -9,6 +9,7 @@ public class SsnTokenService : ISsnTokenService
     public SsnTokenService()
     {
         _removeTokenTimer = new Timer(RemoveExpiredTokens, null, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
+        //Timer that runs every 5 minutes (calls RemoveExpiredTokens) to clean up expired tokens
     }
 
     public string GenerateSsnToken(string ssn)
@@ -18,7 +19,8 @@ public class SsnTokenService : ISsnTokenService
             throw new ArgumentException("Invalid SSN");
         }
         var token = Guid.NewGuid().ToString();
-        _tokens[token] = (ssn, DateTime.UtcNow.AddMinutes(15));
+        _tokens[token] = (ssn, DateTime.UtcNow.AddMinutes(15)); 
+        // Token valid for 15 minutes
         return token;
     }
 
@@ -34,9 +36,11 @@ public class SsnTokenService : ISsnTokenService
     private void RemoveExpiredTokens(object? state)
     {
         var now = DateTime.UtcNow;
-        var expiredTokens = _tokens.Where(kvp => kvp.Value.Expiry <= now).Select(kvp => kvp.Key).ToList();
+        var expiredTokens = _tokens.Where(kvp => kvp.Value.Expiry <= now).Select(kvp => kvp.Key).ToList(); 
+        // Create a list of expired tokens
 
         foreach (var token in expiredTokens)
+        // Remove expired tokens from the dictionary
         {
             _tokens.TryRemove(token, out _);
         }
