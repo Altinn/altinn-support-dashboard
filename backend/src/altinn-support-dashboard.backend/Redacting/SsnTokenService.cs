@@ -40,10 +40,6 @@ public class SsnTokenService : ISsnTokenService
         {
             return data.ssn;
         }
-        if (data.Expiry < DateTime.UtcNow)
-        {
-            throw new ArgumentException("Token has expired.");
-        }
         return ""; // Return empty string if token is invalid or expired bc this gets called also when manual role search is used, that does not use a token
     }
 
