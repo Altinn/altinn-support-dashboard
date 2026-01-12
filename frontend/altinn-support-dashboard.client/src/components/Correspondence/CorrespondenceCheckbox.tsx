@@ -1,17 +1,15 @@
-import { Checkbox, Heading } from "@digdir/designsystemet-react";
-
+import { Checkbox, Fieldset } from "@digdir/designsystemet-react";
+import style from "./styles/CheckBox.module.css";
 
 
 
 const CorrespondenceCheckbox = () => {
 
     return (
-        <div>
-            <Heading level={1} data-size="sm">
-                Trengs det bekreftelse?
-            </Heading>
+        <Fieldset>
+            <Fieldset.Legend>Trengs det bekreftelse?</Fieldset.Legend>
             <Checkbox label="Ja" />
-        </div>
+        </Fieldset>
     )
 }
 
