@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using altinn_support_dashboard.Server.Utils;
 
 namespace altinn_support_dashboard.Server.Services.Interfaces;
 public class SsnTokenService : ISsnTokenService
@@ -23,7 +24,7 @@ public class SsnTokenService : ISsnTokenService
 
     public string GenerateSsnToken(string ssn)
     {
-        if (string.IsNullOrWhiteSpace(ssn) || ssn.Length != 11 || !long.TryParse(ssn, out _))
+        if (!ValidationService.IsValidSubjectOrReportee(ssn))
         {
             throw new ArgumentException("Invalid SSN");
         }
