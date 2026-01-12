@@ -36,12 +36,26 @@ namespace altinn_support_dashboard.Server.Utils
                 return true;
             }
 
+            if (IsValidSsnToken(value))
+            {
+                return true;
+            }
+
             return false;
         }
 
         public static bool IsValidSsnToken (string token)
         {
-            return !string.IsNullOrWhiteSpace(token) && Guid.TryParse(token, out _);
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return false;
+            }
+            if (Guid.TryParse(token, out _))
+            {
+                return true;
+            }
+            
+            return false;
         }
 
 

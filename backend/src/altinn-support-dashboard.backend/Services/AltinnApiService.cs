@@ -137,18 +137,16 @@ public class AltinnApiService : IAltinnApiService
     {
         if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))
         {
-            if (!ValidationService.IsValidSsnToken(subject))
-            {
-                throw new ArgumentException("Subject eller Reportee er ugyldig.");
-            }
+            throw new ArgumentException("Reportee or subject is invalid.");
         }
 
         var ssn = _ssnTokenService.GetSsnFromToken(subject);
+
         if (string.IsNullOrWhiteSpace(ssn))
         {
             ssn=subject; //If the subject isn't a token, like with manual role search, use it as is
         }
-
+        Console.WriteLine($"Retrieved SSN: {ssn}");
         var result = await _client.GetPersonRoles(ssn, reportee, environment);
 
         var roles = JsonSerializer.Deserialize<List<Role>>(result, jsonOptions);
