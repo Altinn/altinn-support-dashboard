@@ -1,7 +1,6 @@
 
 
-
 public interface ICorrespondenceService
 {
-    Task<string> UploadCorrespondence;
+    Task<string> UploadCorrespondence(CorrespondenceUploadRequest request);
 }
