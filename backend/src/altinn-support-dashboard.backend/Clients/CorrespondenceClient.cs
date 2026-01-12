@@ -31,7 +31,6 @@ public class CorrespondenceClient : ICorrespondenceClient
             Content = content
         };
 
-
         var response = await _client.SendAsync(request);
         if (response.IsSuccessStatusCode)
         {
