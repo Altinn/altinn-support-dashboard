@@ -1,5 +1,5 @@
 import { Checkbox, Fieldset } from "@digdir/designsystemet-react";
-import style from "./styles/CheckBox.module.css";
+
 
 
 
