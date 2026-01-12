@@ -284,9 +284,7 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("personalcontacts/{ssnToken}/ssn")]        
         public IActionResult GetSsnFromToken(string ssnToken)
         {
-            Console.WriteLine("Received SSN token: " + ssnToken);
             var ssn = _ssnTokenService.GetSsnFromToken(ssnToken);
-            Console.WriteLine("Retrieved SSN from token: " + ssn);
             if (string.IsNullOrEmpty(ssn))
             {
                 throw new Exception("Invalid or expired SSN token.");

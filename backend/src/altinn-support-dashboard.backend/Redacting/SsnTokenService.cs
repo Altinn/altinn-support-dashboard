@@ -40,7 +40,7 @@ public class SsnTokenService : ISsnTokenService
         {
             return data.ssn;
         }
-        return "";
+        return ""; // Return empty string if token is invalid or expired bc this gets called also when manual role serach is used, that does not use a token
     }
 
     private void RemoveExpiredTokens(object? state)
