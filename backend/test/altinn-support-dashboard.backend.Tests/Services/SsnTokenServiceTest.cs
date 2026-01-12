@@ -1,16 +1,24 @@
-
-
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace altinn_support_dashboard.backend.Tests.Services;
 
 public class SsnTokenServiceTest
 {
     private readonly SsnTokenService _ssnTokenService;
+    private readonly IConfiguration _configuration;
 
     public SsnTokenServiceTest()
     {
-        _ssnTokenService = new SsnTokenService();
+        var inMemorySettings = new Dictionary<string, string?> {
+            {"SsnTokenSettings:TokenExpiryMinutes", "15"},
+            {"SsnTokenSettings:RemovalIntervalMinutes", "5"}
+        };
+        _configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+        
+        _ssnTokenService = new SsnTokenService(_configuration);
     }
 
     [Fact]
