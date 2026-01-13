@@ -146,7 +146,7 @@ public class AltinnApiService : IAltinnApiService
         {
             ssn=subject; //If the subject isn't a token, like with manual role search, use it as is
         }
-        Console.WriteLine($"Retrieved SSN: {ssn}");
+        
         var result = await _client.GetPersonRoles(ssn, reportee, environment);
 
         var roles = JsonSerializer.Deserialize<List<Role>>(result, jsonOptions);

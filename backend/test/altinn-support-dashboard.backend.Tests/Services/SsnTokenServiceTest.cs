@@ -15,7 +15,7 @@ public class SsnTokenServiceTest
             {"SsnTokenSettings:RemovalIntervalMinutes", "5"}
         };
         _configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
+            .AddJsonFile("appsettings.Development.json")
             .Build();
         
         _ssnTokenService = new SsnTokenService(_configuration);
