@@ -2,6 +2,7 @@ using Altinn.ApiClients.Maskinporten.Config;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.Extensions.Options;
 using Models.altinn3Dtos;
 using Moq;
@@ -15,6 +16,8 @@ public class AltinnApiServiceTest
     private readonly Mock<IAltinnApiClient> _mockAltinn2Client;
     private readonly Mock<IAltinn3ApiClient> _mockAltinn3Client;
     private readonly Mock<IDataBrregService> _mockBreggService;
+    private readonly Mock<ISsnTokenService> _mockSsnTokenService;
+    private readonly Mock<IRedactorProvider> _mockRedactorProvider;
 
     public AltinnApiServiceTest()
     {
@@ -52,7 +55,9 @@ public class AltinnApiServiceTest
 
         _mockAltinn2Client = new Mock<IAltinnApiClient>();
         _mockAltinn3Client = new Mock<IAltinn3ApiClient>();
-        _altinnApiService = new AltinnApiService(_mockAltinn2Client.Object, _mockAltinn3Client.Object, _mockBreggService.Object);
+        _mockSsnTokenService = new Mock<ISsnTokenService>();
+        _mockRedactorProvider = new Mock<IRedactorProvider>();
+        _altinnApiService = new AltinnApiService(_mockAltinn2Client.Object, _mockAltinn3Client.Object, _mockBreggService.Object, _mockSsnTokenService.Object, _mockRedactorProvider.Object);
     }
 
     [Fact]

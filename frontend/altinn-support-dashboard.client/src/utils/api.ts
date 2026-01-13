@@ -100,14 +100,28 @@ export const fetchOfficialContacts = async (
 
 export const fetchRolesForOrg = async (
   environment: string,
-  rollehaver: string,
+  ssnToken: string,
   rollegiver: string,
 ): Promise<Role[]> => {
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/${rollehaver}/roles/${rollegiver}`,
+    `${getBaseUrl(environment)}/serviceowner/${ssnToken}/roles/${rollegiver}`,
   );
   if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
 
   const data = await res.json();
   return Array.isArray(data) ? data : [];
 };
+
+export const fetchSsnFromToken = async (
+  environment: string,
+  ssnToken: string,
+): Promise<string> => {
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/personalcontacts/${ssnToken}/ssn`,
+  );
+
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching SSN from token");
+
+  const data = await res.json();
+  return data.socialSecurityNumber;
+}

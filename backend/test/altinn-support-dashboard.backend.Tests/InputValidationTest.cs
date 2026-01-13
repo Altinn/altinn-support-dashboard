@@ -20,7 +20,7 @@ public class InputValidationTest
     [InlineData("   ", false)]
     public void IsValidPhoneNumber_ShouldReturnExpectedResult(string phoneNumber, bool expectedResult)
     {
-        bool result = altinn_support_dashboard.Server.Validation.ValidationService.IsValidPhoneNumber(phoneNumber);
+        bool result = altinn_support_dashboard.Server.Utils.ValidationService.IsValidPhoneNumber(phoneNumber);
         Assert.Equal(expectedResult, result);
     }
 
@@ -34,7 +34,7 @@ public class InputValidationTest
     [InlineData("   ", false)]
     public void IsValidOrgNumber_ShouldReturnExpectedResult(string orgNumber, bool expectedResult)
     {
-        bool result = altinn_support_dashboard.Server.Validation.ValidationService.IsValidOrgNumber(orgNumber);
+        bool result = altinn_support_dashboard.Server.Utils.ValidationService.IsValidOrgNumber(orgNumber);
         Assert.Equal(expectedResult, result);
     }
 
@@ -49,7 +49,7 @@ public class InputValidationTest
     [InlineData("   ", false)]
     public void IsValidEmail_ShouldReturnExpectedResult(string email, bool expectedResult)
     {
-        bool result = altinn_support_dashboard.Server.Validation.ValidationService.IsValidEmail(email);
+        bool result = altinn_support_dashboard.Server.Utils.ValidationService.IsValidEmail(email);
         Assert.Equal(expectedResult, result);
     }
 
@@ -67,7 +67,7 @@ public class InputValidationTest
     [InlineData("   ", false)]
     public void IsValidSubjectOrReportee_ShouldReturnExpectedResult(string value, bool expectedResult)
     {
-        bool result = altinn_support_dashboard.Server.Validation.ValidationService.IsValidSubjectOrReportee(value);
+        bool result = altinn_support_dashboard.Server.Utils.ValidationService.IsValidSubjectOrReportee(value);
         Assert.Equal(expectedResult, result);
     }
 
@@ -81,7 +81,7 @@ public class InputValidationTest
     [InlineData("   ", "/")]
     public void SanitizeRedirectUrl_ShouldReturnExpectedResult(string url, string expectedResult)
     {
-        string result = altinn_support_dashboard.Server.Validation.ValidationService.SanitizeRedirectUrl(url);
+        string result = altinn_support_dashboard.Server.Utils.ValidationService.SanitizeRedirectUrl(url);
         Assert.Equal(expectedResult, result);
     }
 }

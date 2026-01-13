@@ -28,7 +28,7 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
 
   const roleQuery = useRoles(
     environment,
-    selectedContact.socialSecurityNumber,
+    selectedContact.ssnToken,
     organizationNumber,
   );
   const roleInfo = roleQuery.data;

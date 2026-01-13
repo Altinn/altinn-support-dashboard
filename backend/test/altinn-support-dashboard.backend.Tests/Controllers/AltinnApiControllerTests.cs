@@ -7,6 +7,7 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using AltinnSupportDashboard.Controllers;
 using Microsoft.VisualBasic;
 using Models.altinn3Dtos;
+using Microsoft.Extensions.Compliance.Redaction;
 
 namespace altinn_support_dashboard.backend.Tests.Controllers
 {
@@ -14,11 +15,15 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
     {
         private readonly AltinnTT02Controller _controller;
         private readonly Mock<IAltinnApiService> _mockService;
+        private readonly Mock<IRedactorProvider> _mockRedactorProvider;
+        private readonly Mock<ISsnTokenService> _mockSsnTokenService;
 
         public AltinnApiControllerTests()
         {
             _mockService = new Mock<IAltinnApiService>();
-            _controller = new AltinnTT02Controller(_mockService.Object);
+            _mockRedactorProvider = new Mock<IRedactorProvider>();
+            _mockSsnTokenService = new Mock<ISsnTokenService>();
+            _controller = new AltinnTT02Controller(_mockService.Object, _mockRedactorProvider.Object, _mockSsnTokenService.Object);
         }
 
         [Fact]
@@ -486,6 +491,33 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task GetSsnFromToken_ReturnsSsn_WhenTokenIsValid()
+        {
+            var validToken = "valid-token";
+            var expectedSsn = "12345678901";
+
+            _mockSsnTokenService
+            .Setup(x => x.GetSsnFromToken(validToken))
+            .Returns(expectedSsn);
+
+            var result = _controller.GetSsnFromToken(validToken);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("invalid-token")]
+        public void GetSsnFromToken_ReturnsBadRequest_WhenTokenIsInvalid(string invalidToken)
+        {
+            _mockSsnTokenService
+            .Setup(x => x.GetSsnFromToken(invalidToken))
+            .Returns(string.Empty);
+
+            var exception = Assert.Throws<Exception>(() => _controller.GetSsnFromToken(invalidToken));
+
+            Assert.Equal("Invalid or expired SSN token.", exception.Message);
         }
     }
 }
