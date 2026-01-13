@@ -62,7 +62,7 @@ public class SsnTokenServiceTest
         var ssn = "12345678901";
         var token = _ssnTokenService.GenerateSsnToken(ssn);
 
-        await Task.Delay(TimeSpan.FromMinutes(16));
+        await Task.Delay(TimeSpan.FromMinutes(2));
 
         var retrievedSsn = _ssnTokenService.GetSsnFromToken(token);
         Assert.Equal(string.Empty, retrievedSsn);
