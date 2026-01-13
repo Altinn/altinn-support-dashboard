@@ -26,7 +26,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
     {
-        public AltinnTT02Controller(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, "TT02", redactorProvider, ssnTokenService)
+        public AltinnTT02Controller(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, "TT02", ssnTokenService)
         {
         }
 
@@ -36,7 +36,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/Production/serviceowner")]
     public class AltinnProductionController : AltinnBaseController
     {
-        public AltinnProductionController(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, "Production", redactorProvider, ssnTokenService)
+        public AltinnProductionController(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, "Production",  ssnTokenService)
         {
         }
     }
@@ -50,14 +50,12 @@ namespace AltinnSupportDashboard.Controllers
     {
         protected readonly IAltinnApiService _altinnApiService;
         protected string environmentName;
-        protected readonly IRedactorProvider _redactorProvider;
         protected readonly ISsnTokenService _ssnTokenService;
 
-        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService)
+        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName, ISsnTokenService ssnTokenService)
         {
             this.environmentName = environmentName;
             _altinnApiService = altinnApiService;
-            _redactorProvider = redactorProvider;
             _ssnTokenService = ssnTokenService;
         }
 
