@@ -2,20 +2,14 @@ import { Textfield } from "@digdir/designsystemet-react";
 import style from "./styles/InputComponent.module.css";
 
 
-type InputComponentProps = {
-    title: string;
-};
 
-
-const InputComponent: React.FC<InputComponentProps> = ({ 
-    title 
-}) => {
+const MessageRecipient = () => {
 
     return (
         <div className={style["input-container"]}>
-            <Textfield label={title}  rows={10} />
+            <Textfield label="Mottaker" rows={10} />
         </div>
     )
 }
 
-export default InputComponent;
+export default MessageRecipient;

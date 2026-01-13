@@ -1,8 +1,10 @@
 import { Heading } from "@digdir/designsystemet-react"
-import InputComponent from "../components/Correspondence/CorrespondenceInput"
 import CorrespondenceCheckbox from "../components/Correspondence/CorrespondenceCheckbox"
 import style from "./styles/CorrespondencePage.module.css"
 import MessageBody from "../components/Correspondence/MessageBody"
+import MessageSummary from "../components/Correspondence/MessageSummary"
+import MessageTitle from "../components/Correspondence/MessageTitle"
+import MessageRecipient from "../components/Correspondence/CorrespondenceInput"
 
 
 
@@ -16,9 +18,9 @@ export const CorrespondencePage = () => {
                 Opprett melding for test
             </Heading>
 
-            <InputComponent title="Mottaker"/>
-            <InputComponent title="Meldingstittel"/>
-            <InputComponent title="Meldingsoppsummering"/>
+            <MessageRecipient />
+            <MessageTitle />
+            <MessageSummary />
             <MessageBody/>
 
             <CorrespondenceCheckbox />
