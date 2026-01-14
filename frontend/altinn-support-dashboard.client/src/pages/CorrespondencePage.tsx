@@ -1,4 +1,4 @@
-import { Heading } from "@digdir/designsystemet-react"
+import { Button, Heading } from "@digdir/designsystemet-react"
 import CorrespondenceCheckbox from "../components/Correspondence/CorrespondenceCheckbox"
 import style from "./styles/CorrespondencePage.module.css"
 import MessageBody from "../components/Correspondence/MessageBody"
@@ -24,6 +24,10 @@ export const CorrespondencePage = () => {
             <MessageBody/>
 
             <CorrespondenceCheckbox />
+
+            <Button className={style["send-button"]} variant="primary">
+                Send melding
+            </Button>
         </div>
     )
 }
