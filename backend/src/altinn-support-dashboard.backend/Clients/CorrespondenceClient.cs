@@ -29,12 +29,15 @@ public class CorrespondenceClient : ICorrespondenceClient
 
         var form = new MultipartFormDataContent();
 
-        // Correspondence fields
+        // Correspondence required fields
         form.Add(new StringContent(request.Correspondence.ResourceId), "correspondence.resourceid");
         form.Add(new StringContent(request.Correspondence.SendersReference), "correspondence.sendersreference");
         form.Add(new StringContent(request.Correspondence.Content.Language), "correspondence.content.language");
         form.Add(new StringContent(request.Correspondence.Content.MessageTitle), "correspondence.content.messagetitle");
         form.Add(new StringContent(request.Correspondence.Content.MessageBody), "correspondence.content.messagebody");
+
+        // Correspondence optional fields
+        AddIfNotNull(form, request.Correspondence.IsConfirmedNeeded.ToString(), "correspondence.isconfirmation needed");
 
 
         AddIfNotNull(form, request.Correspondence.Content.MessageSummary, "correspondence.content.messageSummary");
