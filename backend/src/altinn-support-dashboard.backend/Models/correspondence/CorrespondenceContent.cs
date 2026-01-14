@@ -8,5 +8,5 @@ public class CorrespondenceContent
     public string? MessageSummary { get; set; }
     public required string MessageBody { get; set; } = "Test body";
 
-    public List<CorrespondenceAttachment>? Attatchments { get; set; }
+    public List<CorrespondenceAttachment>? Attachments { get; set; }
 }
