@@ -15,7 +15,10 @@ public class CorrespondenceService : ICorrespondenceService
 
     public async Task<string> UploadCorrespondence(CorrespondenceUploadRequest uploadRequest)
     {
+        if (uploadRequest.Recipients.Count <= 0)
+        {
+            throw new Exception("Need at least one Recipient, this can be either a org or person");
+        }
         return await _client.UploadCorrespondence(uploadRequest);
     }
-
 }
