@@ -1,14 +1,23 @@
 import { Label, Textarea } from "@digdir/designsystemet-react";
 
 
+type MessageBodyProps = {
+    value?: string;
+    onChange: (value: string) => void;
+}
 
-
-const MessageBody = () => {
+const MessageBody: React.FC<MessageBodyProps> = ({
+    value,
+    onChange
+}) => {
 
     return (
         <div>
             <Label>Meldingstekst</Label>
-            <Textarea rows={5} />
+            <Textarea
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+            />
         </div>
     )
 }

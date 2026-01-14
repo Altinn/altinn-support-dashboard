@@ -5,12 +5,16 @@ import MessageBody from "../components/Correspondence/MessageBody"
 import MessageSummary from "../components/Correspondence/MessageSummary"
 import MessageTitle from "../components/Correspondence/MessageTitle"
 import MessageRecipient from "../components/Correspondence/MessageRecipient"
-
-
+import { useState } from "react"
+import { getLocalStorageValue, setLocalStorageValue } from "../components/ManualRoleSearch/utils/storageUtils"
 
 
 
 export const CorrespondencePage = () => {
+    const [recipient, setRecipient] = useState<string>(getLocalStorageValue("recipient"))
+    const [title, setTitle] = useState<string>(getLocalStorageValue("title"))
+    const [summary, setSummary] = useState<string>(getLocalStorageValue("summary"))
+    const [body, setBody] = useState<string>(getLocalStorageValue("body"))
 
     return (
         <div>
@@ -18,10 +22,34 @@ export const CorrespondencePage = () => {
                 Opprett melding for test
             </Heading>
 
-            <MessageRecipient />
-            <MessageTitle />
-            <MessageSummary />
-            <MessageBody/>
+            <MessageRecipient
+                value={recipient}
+                onChange={(value) => {
+                    setRecipient(value);
+                    setLocalStorageValue("recipient", value);
+                }}
+            />
+            <MessageTitle  
+                value={title}
+                onChange={(value) => {
+                    setTitle(value);
+                    setLocalStorageValue("title", value);
+                }}
+            />
+            <MessageSummary 
+                value={summary}
+                onChange={(value) => {
+                    setSummary(value);
+                    setLocalStorageValue("summary", value);
+                }}
+            />
+            <MessageBody
+                value={body}
+                onChange={(value) => {
+                    setBody(value);
+                    setLocalStorageValue("body", value);
+                }}
+            />
 
             <CorrespondenceCheckbox />
 
