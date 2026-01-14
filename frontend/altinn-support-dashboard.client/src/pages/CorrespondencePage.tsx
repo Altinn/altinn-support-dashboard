@@ -4,7 +4,7 @@ import style from "./styles/CorrespondencePage.module.css"
 import MessageBody from "../components/Correspondence/MessageBody"
 import MessageSummary from "../components/Correspondence/MessageSummary"
 import MessageTitle from "../components/Correspondence/MessageTitle"
-import MessageRecipient from "../components/Correspondence/CorrespondenceInput"
+import MessageRecipient from "../components/Correspondence/MessageRecipient"
 
 
 

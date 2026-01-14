@@ -15,7 +15,7 @@ import SignOutPage from "../pages/SignOutPage";
 import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
 import NewOrganizationPage from "../pages/NewOrganizationPage";
 import SettingsPage from "../pages/SettingsPage";
-import { CorrespondencePage } from "../pages/MessageRecipient";
+import { CorrespondencePage } from "../pages/CorrespondencePage";
 import { useAppStore } from "../stores/Appstore";
 import SignInPage from "../pages/SignInPage";
 import PrivateRoutes from "./PrivateRoutes";
