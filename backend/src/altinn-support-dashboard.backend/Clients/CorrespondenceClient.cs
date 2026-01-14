@@ -1,5 +1,6 @@
 
 
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using altinn_support_dashboard.Server.Models;
@@ -19,6 +20,8 @@ public class CorrespondenceClient : ICorrespondenceClient
         _logger = logger;
 
     }
+
+    //Creates a correspondence with an attachment
     public async Task<string> UploadCorrespondence(CorrespondenceUploadRequest request)
     {
         string requestUrl = "correspondence/api/v1/correspondence/upload";
@@ -33,11 +36,35 @@ public class CorrespondenceClient : ICorrespondenceClient
         form.Add(new StringContent(request.Correspondence.Content.MessageTitle), "correspondence.content.messagetitle");
         form.Add(new StringContent(request.Correspondence.Content.MessageBody), "correspondence.content.messagebody");
 
+
+        AddIfNotNull(form, request.Correspondence.Content.MessageSummary, "correspondence.content.messageSummary");
+
+
         // Recipients
         for (int i = 0; i < request.Recipients.Count; i++)
         {
             form.Add(new StringContent(request.Recipients[i]), $"recipients[{i}]");
         }
+
+
+
+
+        //Attachments
+        //In the future we might add the ability to upload custom attachments
+        var filestream = File.OpenRead("test.txt");
+        var fileContent = new StreamContent(filestream);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+        form.Add(fileContent, "Attachments", "testfile.txt");
+        form.Add(
+            new StringContent("testfile-1"),
+            "correspondence.content.attachments[0].sendersReference"
+        );
+
+        form.Add(
+            new StringContent("testfile.txt"),
+            "correspondence.content.attachments[0].filename"
+        );
+
 
         var response = await _client.PostAsync(requestUrl, form);
         if (response.IsSuccessStatusCode)
@@ -51,5 +78,15 @@ public class CorrespondenceClient : ICorrespondenceClient
 
         }
 
+    }
+
+    //helper function for all optional fields
+    private static void AddIfNotNull(MultipartFormDataContent form, string? value, string name)
+    {
+
+        if (!string.IsNullOrEmpty(value))
+        {
+            form.Add(new StringContent(value), name);
+        }
     }
 }
