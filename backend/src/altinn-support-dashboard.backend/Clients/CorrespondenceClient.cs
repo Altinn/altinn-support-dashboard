@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using altinn_support_dashboard.Server.Models;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 public class CorrespondenceClient : ICorrespondenceClient
 {
@@ -18,20 +19,27 @@ public class CorrespondenceClient : ICorrespondenceClient
         _logger = logger;
 
     }
-    public async Task<string> UploadCorrespondence(CorrespondenceUploadRequest correspondenceRequest)
+    public async Task<string> UploadCorrespondence(CorrespondenceUploadRequest request)
     {
-        string requestUrl = "/correspondence/api/v1/correspondence/upload";
-        var requestBody = correspondenceRequest;
-        var jsonBody = JsonSerializer.Serialize(correspondenceRequest);
+        string requestUrl = "correspondence/api/v1/correspondence/upload";
 
-        var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
-        var request = new HttpRequestMessage(HttpMethod.Post, requestUrl)
+        var form = new MultipartFormDataContent();
+
+        // Correspondence fields
+        form.Add(new StringContent(request.Correspondence.ResourceId), "correspondence.resourceid");
+        form.Add(new StringContent(request.Correspondence.SendersReference), "correspondence.sendersreference");
+        form.Add(new StringContent(request.Correspondence.Content.Language), "correspondence.content.language");
+        form.Add(new StringContent(request.Correspondence.Content.MessageTitle), "correspondence.content.messagetitle");
+        form.Add(new StringContent(request.Correspondence.Content.MessageBody), "correspondence.content.messagebody");
+
+        // Recipients
+        for (int i = 0; i < request.Recipients.Count; i++)
         {
-            Content = content
-        };
+            form.Add(new StringContent(request.Recipients[i]), $"recipients[{i}]");
+        }
 
-        var response = await _client.SendAsync(request);
+        var response = await _client.PostAsync(requestUrl, form);
         if (response.IsSuccessStatusCode)
         {
             return await response.Content.ReadAsStringAsync();

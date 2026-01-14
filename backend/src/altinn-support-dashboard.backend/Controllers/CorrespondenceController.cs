@@ -17,20 +17,15 @@ public class CorrespondenceController : ControllerBase
         _service = service;
     }
 
+    [HttpPost]
+    [Route("upload")]
     public async Task<IActionResult> PostCorrespondenceUpload([FromBody] CorrespondenceUploadRequest request)
     {
 
-        try
-        {
-            var response = await _service.UploadCorrespondence(request);
+        var response = await _service.UploadCorrespondence(request);
 
-            return Ok(response);
+        return Ok(response);
 
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex);
-        }
 
     }
 
