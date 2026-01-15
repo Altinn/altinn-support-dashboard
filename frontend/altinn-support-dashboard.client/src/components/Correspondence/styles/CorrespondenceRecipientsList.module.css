@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  max-width: 20rem;
+  margin-bottom: 10px;
+}
+
+.inputFieldContainer {
+  display: flex;
+  flex-direction: row;
+}
+.removeButton {
+  height: -1;
+}
