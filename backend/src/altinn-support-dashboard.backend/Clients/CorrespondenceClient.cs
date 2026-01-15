@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Models.correspondence;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 

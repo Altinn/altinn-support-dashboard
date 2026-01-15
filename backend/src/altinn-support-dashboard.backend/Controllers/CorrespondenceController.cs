@@ -1,4 +1,5 @@
 
+using altinn_support_dashboard.Server.Models.correspondence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Security;

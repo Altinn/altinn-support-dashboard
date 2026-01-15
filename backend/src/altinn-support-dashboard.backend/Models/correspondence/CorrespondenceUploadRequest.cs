@@ -1,9 +1,8 @@
-
-using altinn_support_dashboard.Server.Models;
+namespace altinn_support_dashboard.Server.Models.correspondence;
 
 public class CorrespondenceUploadRequest
 {
-    public required Correspondence Correspondence { get; set; }
+    public Correspondence Correspondence { get; set; } = new Correspondence();
     public required List<string> Recipients { get; set; }
     public List<Guid>? ExistingAttachments { get; set; }
     public List<string>? Attachments { get; set; }

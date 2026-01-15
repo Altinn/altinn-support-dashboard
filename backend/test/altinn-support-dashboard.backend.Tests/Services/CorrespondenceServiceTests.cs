@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Models.correspondence;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
