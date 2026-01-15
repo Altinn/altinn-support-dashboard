@@ -1,4 +1,4 @@
-import { Button, Heading } from "@digdir/designsystemet-react"
+import { Heading } from "@digdir/designsystemet-react"
 import CorrespondenceCheckbox from "../components/Correspondence/CorrespondenceCheckbox"
 import style from "./styles/CorrespondencePage.module.css"
 import MessageBody from "../components/Correspondence/MessageBody"
@@ -7,6 +7,7 @@ import MessageTitle from "../components/Correspondence/MessageTitle"
 import MessageRecipient from "../components/Correspondence/MessageRecipient"
 import { useState } from "react"
 import { getLocalStorageValue, setLocalStorageValue } from "../components/ManualRoleSearch/utils/storageUtils"
+import CorrespondenceButton from "../components/Correspondence/CorrespondenceButton"
 
 
 
@@ -53,9 +54,13 @@ export const CorrespondencePage = () => {
 
             <CorrespondenceCheckbox />
 
-            <Button className={style["send-button"]} variant="primary">
-                Send melding
-            </Button>
+            <CorrespondenceButton 
+                recipient={recipient}
+                title={title}
+                summary={summary}
+                body={body}
+                checked={true}
+            />
         </div>
     )
 }
