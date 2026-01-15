@@ -1,6 +1,7 @@
 import { useState } from "react";
 import MessageInputField from "./MessageInputField";
 import { Button } from "@digdir/designsystemet-react";
+import { toast } from "react-toastify";
 
 const CorrespondenceRecipientsList: React.FC = () => {
   const [recipients, setRecipients] = useState<string[]>([""]);
@@ -9,7 +10,13 @@ const CorrespondenceRecipientsList: React.FC = () => {
     setRecipients((prev) => [...prev, ""]);
   };
   const removeRecipient = (index: number) => {
-    setRecipients((prev) => prev.filter((_, i) => i !== index));
+    if (recipients.length <= 1) {
+      toast.warning(
+        "You need at least one recipient to create a correspondence",
+      );
+    } else {
+      setRecipients((prev) => prev.filter((_, i) => i !== index));
+    }
   };
 
   const updateRecipient = (index: number, value: string) => {
