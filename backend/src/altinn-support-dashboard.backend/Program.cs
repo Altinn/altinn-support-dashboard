@@ -92,6 +92,7 @@ namespace AltinnSupportDashboard
                     services.AddScoped<IPartyApiService, PartyApiService>();
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
                     services.AddScoped<ICorrespondenceService, CorrespondenceService>();
+                    services.AddScoped<ISsnTokenService, SsnTokenService>();
                 });
     }
 }

@@ -1,7 +1,8 @@
 ﻿using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
-using altinn_support_dashboard.Server.Validation;
+using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Compliance.Redaction;
 using Models.altinn3Dtos;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -14,13 +15,16 @@ public class AltinnApiService : IAltinnApiService
     private readonly IAltinn3ApiClient _altinn3client;
     private readonly IDataBrregService _breggService;
     private readonly JsonSerializerOptions jsonOptions;
+    private readonly ISsnTokenService _ssnTokenService;
+    private readonly IRedactorProvider _redactorProvider;
 
-    public AltinnApiService(IAltinnApiClient altinn2Client, IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService)
+    public AltinnApiService(IAltinnApiClient altinn2Client, IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider)
     {
         _breggService = dataBrregService;
         _client = altinn2Client;
         _altinn3client = altinn3Client;
-
+        _ssnTokenService = ssnTokenService;
+        _redactorProvider = redactorProvider;
         jsonOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -110,6 +114,22 @@ public class AltinnApiService : IAltinnApiService
         {
             throw new Exception("Ingen data funnet for det angitte organisasjonsnummeret.");
         }
+
+        foreach (var contact in personalContacts)
+            {
+                try {
+                    if (!string.IsNullOrEmpty(contact.SocialSecurityNumber))
+                    {
+                        contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.SocialSecurityNumber);
+                        contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.SocialSecurityNumber);
+                        contact.SocialSecurityNumber = null; 
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error redacting: {ex.Message}");
+                }
+            }
         return personalContacts;
     }
 
@@ -117,10 +137,17 @@ public class AltinnApiService : IAltinnApiService
     {
         if (!ValidationService.IsValidSubjectOrReportee(subject) || !ValidationService.IsValidSubjectOrReportee(reportee))
         {
-            throw new ArgumentException("Subject eller Reportee er ugyldig.");
+            throw new ArgumentException("Reportee or subject is invalid.");
         }
 
-        var result = await _client.GetPersonRoles(subject, reportee, environment);
+        var ssn = _ssnTokenService.GetSsnFromToken(subject);
+
+        if (string.IsNullOrWhiteSpace(ssn))
+        {
+            ssn=subject; //If the subject isn't a token, like with manual role search, use it as is
+        }
+        
+        var result = await _client.GetPersonRoles(ssn, reportee, environment);
 
         var roles = JsonSerializer.Deserialize<List<Role>>(result, jsonOptions);
 
