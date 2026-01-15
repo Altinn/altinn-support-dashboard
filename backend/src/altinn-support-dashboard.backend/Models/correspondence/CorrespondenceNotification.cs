@@ -1,9 +1,8 @@
-
-
+namespace altinn_support_dashboard.Server.Models.correspondence;
 
 public class CorrespondenceNotification
 {
-    public required string NotificationTemplate { get; set; }
+    public string NotificationTemplate { get; set; } = "customTemplate";
     public string? EmailSubject { get; set; }
     public string? EmailBody { get; set; }
     public string? EmailContentType { get; set; }

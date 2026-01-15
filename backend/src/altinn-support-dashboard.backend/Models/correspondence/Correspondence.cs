@@ -1,11 +1,11 @@
-
+namespace altinn_support_dashboard.Server.Models.correspondence;
 
 public class Correspondence
 {
-    public required string ResourceId { get; set; }
-    public required string SendersReference { get; set; }
-    public required CorrespondenceNotification Notification { get; set; }
-    public required CorrespondenceContent Content { get; set; }
+    public string ResourceId { get; set; } = "ttd-asd-correspondence";
+    public string SendersReference { get; set; } = "testReference";
+    public CorrespondenceNotification Notification { get; set; } = new CorrespondenceNotification();
+    public CorrespondenceContent Content { get; set; } = new CorrespondenceContent();
     public string? MessageSender { get; set; }
     public DateTime? RequestedPublicTime { get; set; }
     public DateTime? AllowSystemDeleteAfter { get; set; }

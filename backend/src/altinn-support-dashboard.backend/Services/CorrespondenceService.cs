@@ -1,5 +1,5 @@
-
-
+using altinn_support_dashboard.Server.Models.correspondence;
+using altinn_support_dashboard.Server.Utils;
 
 public class CorrespondenceService : ICorrespondenceService
 {
@@ -15,7 +15,30 @@ public class CorrespondenceService : ICorrespondenceService
 
     public async Task<string> UploadCorrespondence(CorrespondenceUploadRequest uploadRequest)
     {
+        if (uploadRequest.Recipients.Count <= 0)
+        {
+            throw new Exception("Need at least one Recipient, this can be either a org or person");
+        }
+        List<string> newRecipients = new List<string>();
+
+        foreach (string r in uploadRequest.Recipients)
+        {
+            if (ValidationService.IsValidOrgNumber(r))
+            {
+                // Adds in correct format
+                string newRecipient = $"urn:altinn:organization:identifier-no:{r}";
+                newRecipients.Add(newRecipient);
+                continue;
+            }
+            if (ValidationService.isValidSsn(r))
+            {
+                string newRecipient = $"urn:altinn:person:identifier-no:{r}";
+                newRecipients.Add(newRecipient);
+                continue;
+            }
+            throw new Exception($"Recipient:{r} is not a valid org or ssn");
+        }
+        uploadRequest.Recipients = newRecipients;
         return await _client.UploadCorrespondence(uploadRequest);
     }
-
 }

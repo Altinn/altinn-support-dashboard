@@ -1,4 +1,5 @@
 
+namespace altinn_support_dashboard.Server.Models.correspondence;
 
 public class CorrespondenceExternalReference
 {

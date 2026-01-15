@@ -10,14 +10,10 @@ public class SsnTokenServiceTest
 
     public SsnTokenServiceTest()
     {
-        var inMemorySettings = new Dictionary<string, string?> {
-            {"SsnTokenSettings:TokenExpiryMinutes", "15"},
-            {"SsnTokenSettings:RemovalIntervalMinutes", "5"}
-        };
         _configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.Development.json")
-            .Build();
-        
+             .AddJsonFile("appsettings.Development.json")
+             .Build();
+
         _ssnTokenService = new SsnTokenService(_configuration);
     }
 
@@ -25,8 +21,8 @@ public class SsnTokenServiceTest
     public void GenerateSsnToken_ShouldReturnToken_WhenSsnIsValid()
     {
         var ssn = "12345678901";
-        var token =  _ssnTokenService.GenerateSsnToken(ssn);
-        Assert.False(string.IsNullOrEmpty(token));  
+        var token = _ssnTokenService.GenerateSsnToken(ssn);
+        Assert.False(string.IsNullOrEmpty(token));
     }
 
     [Theory]
@@ -59,12 +55,19 @@ public class SsnTokenServiceTest
     [Fact]
     public async Task RemoveExpiredTokens_ShouldRemoveExpiredTokens()
     {
+        // shortens down time 
+        var inMemorySettings = new Dictionary<string, string?> {
+            {"SsnTokenSettings:TokenExpiryMinutes", "0.02"},
+            {"SsnTokenSettings:RemovalIntervalMinutes", "0.01"}
+        };
+        var config = new ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build();
+        var ssnTokenService = new SsnTokenService(config);
         var ssn = "12345678901";
-        var token = _ssnTokenService.GenerateSsnToken(ssn);
+        var token = ssnTokenService.GenerateSsnToken(ssn);
 
-        await Task.Delay(TimeSpan.FromMinutes(2));
+        await Task.Delay(TimeSpan.FromSeconds(2));
 
-        var retrievedSsn = _ssnTokenService.GetSsnFromToken(token);
+        var retrievedSsn = ssnTokenService.GetSsnFromToken(token);
         Assert.Equal(string.Empty, retrievedSsn);
     }
 }
