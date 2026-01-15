@@ -10,6 +10,7 @@ import {
 } from "../components/ManualRoleSearch/utils/storageUtils";
 import CorrespondenceButton from "../components/Correspondence/CorrespondenceButton";
 import MessageInputField from "../components/Correspondence/MessageInputField";
+import CorrespondenceRecipientsList from "../components/Correspondence/CorrespondenceRecipientsList";
 
 export const CorrespondencePage = () => {
   const [recipient, setRecipient] = useState<string>(
@@ -27,13 +28,8 @@ export const CorrespondencePage = () => {
         Opprett melding for test
       </Heading>
 
-      <Input
-        value={recipient}
-        onChange={(value) => {
-          setRecipient(value);
-          setLocalStorageValue("recipient", value);
-        }}
-      />
+      <CorrespondenceRecipientsList />
+
       <MessageInputField
         labelText="Message title"
         value={title}
@@ -47,6 +43,7 @@ export const CorrespondencePage = () => {
         value={summary}
         onChange={(value) => {
           setLocalStorageValue("summary", value);
+          setSummary(summary);
         }}
       />
       <MessageInputField
