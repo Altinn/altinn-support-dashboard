@@ -1,9 +1,10 @@
 
+namespace altinn_support_dashboard.Server.Models;
 
 public class Correspondence
 {
     public required string ResourceId { get; set; }
-    public required string SendersReference { get; set; }
+    public string SendersReference { get; set; } = "testReference";
     public required CorrespondenceNotification Notification { get; set; }
     public required CorrespondenceContent Content { get; set; }
     public string? MessageSender { get; set; }
