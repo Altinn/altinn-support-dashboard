@@ -27,6 +27,7 @@ public class CorrespondenceClient : ICorrespondenceClient
         string requestUrl = "correspondence/api/v1/correspondence/upload";
 
 
+        // expects a flattened format
         var form = new MultipartFormDataContent();
 
         // Correspondence required fields
