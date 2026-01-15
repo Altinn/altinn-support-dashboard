@@ -106,7 +106,7 @@ const Sidebar: React.FC = () => {
             />
             <NavItem
               to="/correspondence"
-              title="Korrespondanse"
+              title="Melding"
               icon={<EnvelopeOpenIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
