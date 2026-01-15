@@ -38,6 +38,7 @@ const CorrespondenceRecipientsList: React.FC = () => {
               onChange={(value) => updateRecipient(index, value)}
             ></MessageInputField>
             <Button
+              variant="secondary"
               className={classes.removeButton}
               onClick={() => removeRecipient(index)}
             >
@@ -46,7 +47,9 @@ const CorrespondenceRecipientsList: React.FC = () => {
           </div>
         );
       })}
-      <Button onClick={() => addRecipient()}>Add Recipient</Button>
+      <Button className={classes.addButton} onClick={() => addRecipient()}>
+        Add Recipient
+      </Button>
     </div>
   );
 };

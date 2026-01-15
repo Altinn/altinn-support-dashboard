@@ -1,14 +1,28 @@
 .container {
   display: flex;
   flex-direction: column;
-  max-width: 20rem;
-  margin-bottom: 10px;
+  gap: 1rem;
 }
-
 .inputFieldContainer {
   display: flex;
-  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.5rem;
 }
+
+.inputField {
+  flex: 1;
+  max-width: 320px;
+}
+
 .removeButton {
-  height: -1;
+  margin-top: auto;
+  min-width: 2.5rem;
+  align-self: flex-start;
+}
+
+.addButton {
+  margin-top: 1rem;
+  align-self: flex-start;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
 }
