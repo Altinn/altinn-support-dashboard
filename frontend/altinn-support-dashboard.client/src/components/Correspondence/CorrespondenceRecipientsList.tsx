@@ -1,6 +1,6 @@
 import { useState } from "react";
 import MessageInputField from "./MessageInputField";
-import { Button } from "@digdir/designsystemet-react";
+import { Button, Input } from "@digdir/designsystemet-react";
 import { toast } from "react-toastify";
 import classes from "./styles/CorrespondenceRecipientsList.module.css";
 
@@ -31,12 +31,14 @@ const CorrespondenceRecipientsList: React.FC = () => {
       {recipients.map((recipient, index) => {
         return (
           <div key={index} className={classes.inputFieldContainer}>
-            <MessageInputField
+            <label>{`Reciepient ${index + 1}`}</label>
+            <Input
               className={classes.inputField}
-              labelText={`Reciepient ${index + 1}`}
               value={recipient}
-              onChange={(value) => updateRecipient(index, value)}
-            ></MessageInputField>
+              onChange={(recipient) =>
+                updateRecipient(index, recipient.target.value)
+              }
+            ></Input>
             <Button
               variant="secondary"
               className={classes.removeButton}
