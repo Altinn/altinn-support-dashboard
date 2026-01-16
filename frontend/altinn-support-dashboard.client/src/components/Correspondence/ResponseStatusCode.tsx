@@ -21,7 +21,7 @@ const ResponseStatusCode: React.FC<ResponseStatusCodeProps> = ({
           }
           `}
         >
-          <Heading level={1}>Status Code:{statuscode}</Heading>
+          <Heading level={1}>Status Code: {statuscode}</Heading>
         </Card>
       )}
     </div>
