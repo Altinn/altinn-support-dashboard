@@ -16,6 +16,7 @@ export interface CorrespondenceContent {
 export interface CorrespondenceResponse {
   responseBody: string;
   responseHeader: string;
+  requestHeader: string;
   requestBody: string;
   statusCode: string;
 }

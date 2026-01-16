@@ -85,10 +85,10 @@ public class CorrespondenceClient : ICorrespondenceClient
         CorrespondenceResponse correspondenceResponse = new CorrespondenceResponse
         {
             StatusCode = response.StatusCode,
-            ResponseBody = JsonSerializer.Serialize(response.Content.ReadAsStringAsync()) ?? "",
+            ResponseBody = await response.Content.ReadAsStringAsync() ?? "",
             ResponseHeader = response.Headers.ToString(),
             RequestHeader = requestHeaders ?? "",
-            RequestBody = JsonSerializer.Serialize(request.Content.ReadAsStringAsync()) ?? ""
+            RequestBody = await request.Content.ReadAsStringAsync() ?? ""
         };
 
         return correspondenceResponse;

@@ -5,13 +5,16 @@
 .container {
   display: flex;
   flex-direction: row;
+  gap: 1.5rem;
 }
 
 .formContainer {
-  flex: 2;
+  flex: 0 0 30%;
+  min-width: 0;
 }
 
 .responseContainer {
-  flex: 1;
+  flex: 0 0 70%;
+  min-width: 0;
 }
 

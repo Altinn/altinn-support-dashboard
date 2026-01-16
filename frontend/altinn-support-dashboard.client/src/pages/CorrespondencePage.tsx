@@ -35,58 +35,60 @@ export const CorrespondencePage = () => {
   };
 
   return (
-    <div className={classes.container}>
+    <div>
       <Heading className={classes.heading} level={1} data-size="sm">
         Opprett melding for test
       </Heading>
 
-      <div className={classes.formContainer}>
-        <CorrespondenceRecipientsList
-          recipients={recipients}
-          setRecipients={setRecipients}
-        />
-        <MessageInputField
-          labelText="Message title"
-          value={title}
-          onChange={(value) => {
-            setTitle(value);
-            setLocalStorageValue("title", value);
-          }}
-        />
-        <MessageInputField
-          labelText="Message summary"
-          value={summary}
-          onChange={(value) => {
-            setSummary(value);
-            setLocalStorageValue("summary", value);
-          }}
-        />
-        <MessageInputField
-          labelText="Message body"
-          value={body}
-          onChange={(value) => {
-            setBody(value);
-            setLocalStorageValue("body", value);
-          }}
-        />
-        <Label>Trengs det bekreftelse?</Label>
-        <Checkbox
-          checked={confirmationNeeded}
-          onChange={(e) => handleConfirmationChange(e.target.checked)}
-          label="Ja"
-        />
-        <CorrespondenceButton
-          recipients={recipients}
-          title={title}
-          summary={summary}
-          body={body}
-          checked={confirmationNeeded}
-          setResponseMessage={setResponseMessage}
-        />
-      </div>
-
-      <div className={classes.responseContainer}>
-        <CorrespondenceResponseField responseData={responseMessage} />
+      <div className={classes.container}>
+        {" "}
+        <div className={classes.formContainer}>
+          <CorrespondenceRecipientsList
+            recipients={recipients}
+            setRecipients={setRecipients}
+          />
+          <MessageInputField
+            labelText="Message title"
+            value={title}
+            onChange={(value) => {
+              setTitle(value);
+              setLocalStorageValue("title", value);
+            }}
+          />
+          <MessageInputField
+            labelText="Message summary"
+            value={summary}
+            onChange={(value) => {
+              setSummary(value);
+              setLocalStorageValue("summary", value);
+            }}
+          />
+          <MessageInputField
+            labelText="Message body"
+            value={body}
+            onChange={(value) => {
+              setBody(value);
+              setLocalStorageValue("body", value);
+            }}
+          />
+          <Label>Trengs det bekreftelse?</Label>
+          <Checkbox
+            checked={confirmationNeeded}
+            onChange={(e) => handleConfirmationChange(e.target.checked)}
+            label="Ja"
+          />
+          <CorrespondenceButton
+            recipients={recipients}
+            title={title}
+            summary={summary}
+            body={body}
+            checked={confirmationNeeded}
+            setResponseMessage={setResponseMessage}
+          />
+        </div>
+        <div className={classes.responseContainer}>
+          <CorrespondenceResponseField responseData={responseMessage} />
+        </div>
       </div>
     </div>
   );
