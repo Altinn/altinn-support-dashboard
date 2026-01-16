@@ -1,5 +1,5 @@
 import { Card } from "@mui/material";
-import { Heading } from "@digdir/designsystemet-react";
+import { Heading, Paragraph } from "@digdir/designsystemet-react";
 import classes from "./styles/ResponseTabContent.module.css";
 
 interface ResponseTabContentProps {
@@ -13,13 +13,13 @@ const ResponseTabContent: React.FC<ResponseTabContentProps> = ({
 }) => {
   return (
     <div>
-      <Heading className={classes.card} level={1}>
-        Headers
-      </Heading>
+      <Heading level={1}>Headers</Heading>
       <Card>{headers}</Card>
 
       <Heading level={1}>Body</Heading>
-      <Card classes={classes.card}>{body}</Card>
+      <Card>
+        <Paragraph className={classes.bodyText}>{body}</Paragraph>
+      </Card>
     </div>
   );
 };
