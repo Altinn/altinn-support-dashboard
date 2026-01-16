@@ -41,7 +41,7 @@ const CorrespondenceRecipientsList: React.FC<CorrespondenceRecipientsProps> = ({
       {recipients.map((recipient, index) => {
         return (
           <div key={index} className={classes.inputFieldContainer}>
-            <label>{`Reciepient ${index + 1}`}</label>
+            <label>{`Recipient ${index + 1}`}</label>
             <Input
               className={classes.inputField}
               value={recipient}

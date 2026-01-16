@@ -88,8 +88,14 @@ export const CorrespondencePage = () => {
           />
         </div>
         <div className={classes.responseContainer}>
-          <ResponseStatusCode statuscode={responseMessage?.statusCode} />
-          <CorrespondenceResponseField responseData={responseMessage} />
+          {responseMessage && (
+            <div>
+              <ResponseStatusCode
+                statuscode={Number.parseInt(responseMessage?.statusCode)}
+              />
+              <CorrespondenceResponseField responseData={responseMessage} />
+            </div>
+          )}
         </div>
       </div>
     </div>
