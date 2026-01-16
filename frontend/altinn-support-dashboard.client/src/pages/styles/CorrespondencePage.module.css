@@ -1,5 +1,17 @@
-
-
 .heading {
   margin-bottom: 1rem;
 }
+
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+.formContainer {
+  flex: 2;
+}
+
+.responseContainer {
+  flex: 1;
+}
+

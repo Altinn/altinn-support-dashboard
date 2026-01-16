@@ -14,5 +14,8 @@ export interface CorrespondenceContent {
 }
 
 export interface CorrespondenceResponse {
-  body: string;
+  responseBody: string;
+  responseHeader: string;
+  requestBody: string;
+  statusCode: string;
 }

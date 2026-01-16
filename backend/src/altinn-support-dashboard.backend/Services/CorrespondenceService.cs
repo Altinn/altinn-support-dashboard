@@ -14,7 +14,7 @@ public class CorrespondenceService : ICorrespondenceService
         _client = client;
     }
 
-    public async Task<string> UploadCorrespondence(CorrespondenceUploadRequest uploadRequest)
+    public async Task<CorrespondenceResponse> UploadCorrespondence(CorrespondenceUploadRequest uploadRequest)
     {
         if (uploadRequest.Recipients.Count <= 0)
         {

@@ -1,5 +1,3 @@
-
-
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -23,7 +21,7 @@ public class CorrespondenceClient : ICorrespondenceClient
     }
 
     //Creates a correspondence with an attachment
-    public async Task<string> UploadCorrespondence(CorrespondenceUploadRequest request)
+    public async Task<CorrespondenceResponse> UploadCorrespondence(CorrespondenceUploadRequest correspondenceData)
     {
         string requestUrl = "correspondence/api/v1/correspondence/upload";
 
@@ -32,23 +30,23 @@ public class CorrespondenceClient : ICorrespondenceClient
         var form = new MultipartFormDataContent();
 
         // Correspondence required fields
-        form.Add(new StringContent(request.Correspondence.ResourceId), "correspondence.resourceid");
-        form.Add(new StringContent(request.Correspondence.SendersReference), "correspondence.sendersreference");
-        form.Add(new StringContent(request.Correspondence.Content.Language), "correspondence.content.language");
-        form.Add(new StringContent(request.Correspondence.Content.MessageTitle), "correspondence.content.messagetitle");
-        form.Add(new StringContent(request.Correspondence.Content.MessageBody), "correspondence.content.messagebody");
+        form.Add(new StringContent(correspondenceData.Correspondence.ResourceId), "correspondence.resourceid");
+        form.Add(new StringContent(correspondenceData.Correspondence.SendersReference), "correspondence.sendersreference");
+        form.Add(new StringContent(correspondenceData.Correspondence.Content.Language), "correspondence.content.language");
+        AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageTitle, "correspondence.content.messagetitle");
+        AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageBody, "correspondence.content.messageBody");
 
         // Correspondence optional fields
-        AddIfNotNull(form, request.Correspondence.IsConfirmedNeeded.ToString(), "correspondence.isconfirmation needed");
+        AddIfNotNull(form, correspondenceData.Correspondence.IsConfirmedNeeded.ToString(), "correspondence.isconfirmation needed");
 
 
-        AddIfNotNull(form, request.Correspondence.Content.MessageSummary, "correspondence.content.messageSummary");
+        AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageSummary, "correspondence.content.messageSummary");
 
 
         // Recipients
-        for (int i = 0; i < request.Recipients.Count; i++)
+        for (int i = 0; i < correspondenceData.Recipients.Count; i++)
         {
-            form.Add(new StringContent(request.Recipients[i]), $"recipients[{i}]");
+            form.Add(new StringContent(correspondenceData.Recipients[i]), $"recipients[{i}]");
         }
 
 
@@ -70,18 +68,30 @@ public class CorrespondenceClient : ICorrespondenceClient
             "correspondence.content.attachments[0].filename"
         );
 
+        var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
+        request.Content = form;
 
-        var response = await _client.PostAsync(requestUrl, form);
-        if (response.IsSuccessStatusCode)
-        {
-            return await response.Content.ReadAsStringAsync();
-        }
-        else
-        {
-            var responseBody = await response.Content.ReadAsStringAsync();
-            throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+        var response = await _client.SendAsync(request);
 
-        }
+
+        // Excludes certain sensitive headers
+        var excludeHeaders = new[] { "ApiKey", "authorization" };
+        var filteredHeaders = response.Headers
+            .Where(h => !excludeHeaders.Contains(h.Key, StringComparer.OrdinalIgnoreCase))
+            .Select(h => $"{h.Key}: {string.Join(", ", h.Value)}");
+
+        var requestHeaders = string.Join("\r\n", filteredHeaders);
+
+        CorrespondenceResponse correspondenceResponse = new CorrespondenceResponse
+        {
+            StatusCode = response.StatusCode,
+            ResponseBody = JsonSerializer.Serialize(response.Content.ReadAsStringAsync()) ?? "",
+            ResponseHeader = response.Headers.ToString(),
+            RequestHeader = requestHeaders ?? "",
+            RequestBody = JsonSerializer.Serialize(request.Content.ReadAsStringAsync()) ?? ""
+        };
+
+        return correspondenceResponse;
 
     }
 
@@ -93,5 +103,32 @@ public class CorrespondenceClient : ICorrespondenceClient
         {
             form.Add(new StringContent(value), name);
         }
+    }
+
+    // Converts response to string
+    public static async Task<string> GetRawResponseString(HttpResponseMessage response)
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLine($"HTTP/{response.Version} {(int)response.StatusCode} {response.ReasonPhrase}");
+
+        foreach (var header in response.Headers)
+        {
+            sb.AppendLine($"{header.Key}: {string.Join(", ", header.Value)}");
+        }
+
+        if (response.Content != null)
+        {
+            foreach (var header in response.Content.Headers)
+            {
+                sb.AppendLine($"{header.Key}: {string.Join(", ", header.Value)}");
+            }
+
+            var body = await response.Content.ReadAsStringAsync();
+            sb.AppendLine();
+            sb.AppendLine(body);
+        }
+
+        return sb.ToString();
     }
 }

@@ -1,6 +1,9 @@
 import { Button } from "@digdir/designsystemet-react";
 import { useCorrespondencePost } from "../../hooks/hooks";
-import { CorrespondenceUploadRequest } from "../../models/correspondenceModels";
+import {
+  CorrespondenceResponse,
+  CorrespondenceUploadRequest,
+} from "../../models/correspondenceModels";
 
 type CorrespondenceButtonProps = {
   recipients: string[];
@@ -8,6 +11,7 @@ type CorrespondenceButtonProps = {
   summary: string;
   body: string;
   checked: boolean;
+  setResponseMessage: (responseData: CorrespondenceResponse) => void;
 };
 
 const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
@@ -16,6 +20,7 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
   summary,
   body,
   checked,
+  setResponseMessage,
 }) => {
   const post = useCorrespondencePost();
   const handleSendMessage = async () => {
@@ -30,7 +35,8 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
         isConfirmationNeeded: checked,
       },
     };
-    post.mutate(correspondence);
+    const response = await post.mutateAsync(correspondence);
+    setResponseMessage(response);
   };
 
   return (
