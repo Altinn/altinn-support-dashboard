@@ -1,8 +1,5 @@
-import { Heading, Input } from "@digdir/designsystemet-react";
-import CorrespondenceCheckbox from "../components/Correspondence/CorrespondenceCheckbox";
+import { Checkbox, Heading, Label } from "@digdir/designsystemet-react";
 import style from "./styles/CorrespondencePage.module.css";
-import MessageBody from "../components/Correspondence/MessageBody";
-import MessageSummary from "../components/Correspondence/MessageSummary";
 import { useState } from "react";
 import {
   getLocalStorageValue,
@@ -13,14 +10,24 @@ import MessageInputField from "../components/Correspondence/MessageInputField";
 import CorrespondenceRecipientsList from "../components/Correspondence/CorrespondenceRecipientsList";
 
 export const CorrespondencePage = () => {
-  const [recipient, setRecipient] = useState<string>(
-    getLocalStorageValue("recipient"),
-  );
+  const [recipients, setRecipients] = useState<string[]>(() => {
+    const item = getLocalStorageValue("recipients");
+    return item ? JSON.parse(item) : [""];
+  });
   const [title, setTitle] = useState<string>(getLocalStorageValue("title"));
   const [summary, setSummary] = useState<string>(
     getLocalStorageValue("summary"),
   );
   const [body, setBody] = useState<string>(getLocalStorageValue("body"));
+  const [confirmationNeeded, setConfirmationNeeded] = useState<boolean>(() => {
+    const item = getLocalStorageValue("confirmationNeeded");
+    return item ? JSON.parse(item) : false;
+  });
+
+  const handleConfirmationChange = (bool: boolean) => {
+    setConfirmationNeeded(bool);
+    setLocalStorageValue("confirmationNeeded", JSON.stringify(bool));
+  };
 
   return (
     <div>
@@ -28,7 +35,10 @@ export const CorrespondencePage = () => {
         Opprett melding for test
       </Heading>
 
-      <CorrespondenceRecipientsList />
+      <CorrespondenceRecipientsList
+        recipients={recipients}
+        setRecipients={setRecipients}
+      />
 
       <MessageInputField
         labelText="Message title"
@@ -42,8 +52,8 @@ export const CorrespondencePage = () => {
         labelText="Message summary"
         value={summary}
         onChange={(value) => {
+          setSummary(value);
           setLocalStorageValue("summary", value);
-          setSummary(summary);
         }}
       />
       <MessageInputField
@@ -55,14 +65,19 @@ export const CorrespondencePage = () => {
         }}
       />
 
-      <CorrespondenceCheckbox />
+      <Label>Trengs det bekreftelse?</Label>
+      <Checkbox
+        checked={confirmationNeeded}
+        onChange={(e) => handleConfirmationChange(e.target.checked)}
+        label="Ja"
+      />
 
       <CorrespondenceButton
-        recipient={recipient}
+        recipients={recipients}
         title={title}
         summary={summary}
         body={body}
-        checked={true}
+        checked={confirmationNeeded}
       />
     </div>
   );

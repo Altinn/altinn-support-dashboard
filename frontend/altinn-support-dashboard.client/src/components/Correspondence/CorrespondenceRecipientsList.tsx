@@ -1,12 +1,18 @@
-import { useState } from "react";
-import MessageInputField from "./MessageInputField";
 import { Button, Input } from "@digdir/designsystemet-react";
 import { toast } from "react-toastify";
 import classes from "./styles/CorrespondenceRecipientsList.module.css";
+import { setLocalStorageValue } from "../ManualRoleSearch/utils/storageUtils";
+import { useEffect } from "react";
 
-const CorrespondenceRecipientsList: React.FC = () => {
-  const [recipients, setRecipients] = useState<string[]>([""]);
+interface CorrespondenceRecipientsProps {
+  setRecipients: React.Dispatch<React.SetStateAction<string[]>>;
+  recipients: string[];
+}
 
+const CorrespondenceRecipientsList: React.FC<CorrespondenceRecipientsProps> = ({
+  setRecipients,
+  recipients,
+}) => {
   const addRecipient = () => {
     setRecipients((prev) => [...prev, ""]);
   };
@@ -25,6 +31,10 @@ const CorrespondenceRecipientsList: React.FC = () => {
       prev.map((recipient, i) => (i === index ? value : recipient)),
     );
   };
+
+  useEffect(() => {
+    setLocalStorageValue("recipients", JSON.stringify(recipients));
+  }, [recipients]);
 
   return (
     <div className={classes.container}>
