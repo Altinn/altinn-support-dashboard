@@ -567,5 +567,42 @@ public class AltinnApiServiceTest
         await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetNotificationAddressesByOrgAltinn3("123456789", "TT02"));
     }
 
+    [Fact]
+    public async Task GetPeronRoles_UsesTokenToRetrieveSsn_WhenSubjectIsToken()
+    {
+        var token = "11111111-2222-3333-4444-555555555555";
+        var ssn = "12345678901";
+        var reportee = "123456789";
 
+        _mockSsnTokenService
+        .Setup(x => x.GetSsnFromToken(token))
+        .Returns(ssn);
+
+        _mockAltinn2Client
+        .Setup(x => x.GetPersonRoles(ssn, reportee, It.IsAny<string>()))
+        .ReturnsAsync("[]");
+
+        await _altinnApiService.GetPersonRoles(token, reportee, "TT02");
+
+        _mockAltinn2Client.Verify(x => x.GetPersonRoles(ssn,reportee, "TT02"), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetPersonRoleds_UsesSubjectDirectly_WhenNoTokenIsFound()
+    {
+        var subject = "12345678901";
+        var reportee = "123456789";
+
+        _mockSsnTokenService
+        .Setup(x => x.GetSsnFromToken(subject))
+        .Returns("");
+
+        _mockAltinn2Client
+        .Setup(x => x.GetPersonRoles(subject, reportee, It.IsAny<string>()))
+        .ReturnsAsync("[]");
+
+        await _altinnApiService.GetPersonRoles(subject, reportee, "TT02");
+
+        _mockAltinn2Client.Verify(x => x.GetPersonRoles(subject,reportee, "TT02"), Times.Once);
+    }
 }

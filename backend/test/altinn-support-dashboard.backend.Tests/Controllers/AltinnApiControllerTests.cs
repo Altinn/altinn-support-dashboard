@@ -504,6 +504,12 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             .Returns(expectedSsn);
 
             var result = _controller.GetSsnFromToken(validToken);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var response = okResult.Value;
+            var snn = response.GetType().GetProperty("socialSecurityNumber");
+            Assert.Equal(expectedSsn, snn?.GetValue(response));
+
         }
 
         [Theory]
