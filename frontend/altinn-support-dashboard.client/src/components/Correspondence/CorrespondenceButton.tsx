@@ -1,4 +1,6 @@
 import { Button } from "@digdir/designsystemet-react";
+import { useCorrespondencePost } from "../../hooks/hooks";
+import { CorrespondenceUploadRequest } from "../../models/correspondenceModels";
 
 type CorrespondenceButtonProps = {
   recipients: string[];
@@ -15,16 +17,25 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
   body,
   checked,
 }) => {
+  const post = useCorrespondencePost();
   const handleSendMessage = async () => {
-    // Logic to send message goes here
+    const correspondence: CorrespondenceUploadRequest = {
+      recipients: recipients,
+      correspondence: {
+        content: {
+          messageBody: body,
+          messageSummary: summary,
+          messageTitle: title,
+        },
+        isConfirmationNeeded: checked,
+      },
+    };
+    post.mutate(correspondence);
   };
 
   return (
     <div>
-      <Button
-        onClick={handleSendMessage}
-        disabled={!recipients || !title || !summary || !body || !checked}
-      >
+      <Button onClick={handleSendMessage} disabled={!recipients}>
         Send melding
       </Button>
     </div>

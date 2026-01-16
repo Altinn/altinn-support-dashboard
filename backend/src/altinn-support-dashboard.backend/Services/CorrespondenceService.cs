@@ -1,5 +1,6 @@
 using altinn_support_dashboard.Server.Models.correspondence;
 using altinn_support_dashboard.Server.Utils;
+using Microsoft.IdentityModel.Tokens;
 
 public class CorrespondenceService : ICorrespondenceService
 {
@@ -38,7 +39,20 @@ public class CorrespondenceService : ICorrespondenceService
             }
             throw new Exception($"Recipient:{r} is not a valid org or ssn");
         }
+
         uploadRequest.Recipients = newRecipients;
+
+        //Sets defualt values if none are given
+        if (uploadRequest.Correspondence.Content.MessageTitle.IsNullOrEmpty())
+        {
+            uploadRequest.Correspondence.Content.MessageTitle = "Test Title";
+        }
+
+        if (uploadRequest.Correspondence.Content.MessageBody.IsNullOrEmpty())
+        {
+            uploadRequest.Correspondence.Content.MessageBody = "Test Body";
+        }
+
         return await _client.UploadCorrespondence(uploadRequest);
     }
 }
