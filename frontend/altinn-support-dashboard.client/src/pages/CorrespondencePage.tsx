@@ -10,6 +10,7 @@ import MessageInputField from "../components/Correspondence/MessageInputField";
 import CorrespondenceRecipientsList from "../components/Correspondence/CorrespondenceRecipientsList";
 import CorrespondenceResponseField from "../components/Correspondence/CorrespondenceResponseField";
 import { CorrespondenceResponse } from "../models/correspondenceModels";
+import ResponseStatusCode from "../components/Correspondence/ResponseStatusCode";
 
 export const CorrespondencePage = () => {
   const [recipients, setRecipients] = useState<string[]>(() => {
@@ -87,6 +88,7 @@ export const CorrespondencePage = () => {
           />
         </div>
         <div className={classes.responseContainer}>
+          <ResponseStatusCode statuscode={responseMessage?.statusCode} />
           <CorrespondenceResponseField responseData={responseMessage} />
         </div>
       </div>
