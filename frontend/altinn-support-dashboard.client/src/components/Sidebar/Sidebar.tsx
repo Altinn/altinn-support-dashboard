@@ -92,22 +92,17 @@ const Sidebar: React.FC = () => {
               icon={<MagnifyingGlassIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
+
             <NavItem
-              to="/new-org"
-              title="Ny Organisasjon"
-              icon={<PlusIcon className={classes.icons} />}
+              to="/correspondence"
+              title="Melding"
+              icon={<EnvelopeOpenIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
             <NavItem
               to="/settings"
               title="Innstillinger"
               icon={<CogIcon className={classes.icons} />}
-              isCollapsed={isCollapsed}
-            />
-            <NavItem
-              to="/correspondence"
-              title="Melding"
-              icon={<EnvelopeOpenIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
           </nav>
