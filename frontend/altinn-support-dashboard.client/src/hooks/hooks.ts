@@ -142,9 +142,7 @@ export const useCorrespondencePost = () => {
     CorrespondenceUploadRequest
   >({
     mutationFn: sendCorrespondence,
-    onSuccess: () => {
-      toast.success("Melding sent!");
-    },
+    onSuccess: () => {},
     onError: (err) => {
       toast.error(`Feil under sending av melding ${err}`);
     },
