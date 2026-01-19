@@ -26,8 +26,6 @@ public class CorrespondenceClient : ICorrespondenceClient
     public async Task<CorrespondenceResponse> UploadCorrespondence(CorrespondenceUploadRequest correspondenceData)
     {
         string requestUrl = "correspondence/api/v1/correspondence/upload";
-        var info = JsonSerializer.Serialize(correspondenceData);
-        _logger.LogInformation(info);
 
 
         // expects a flattened format
@@ -56,9 +54,6 @@ public class CorrespondenceClient : ICorrespondenceClient
             var encodedRecipient = WebUtility.HtmlEncode(correspondenceData.Recipients[i]);
             form.Add(new StringContent(encodedRecipient), $"recipients[{i}]");
         }
-
-
-
 
         //Attachments
         //In the future we might add the ability to upload custom attachments
