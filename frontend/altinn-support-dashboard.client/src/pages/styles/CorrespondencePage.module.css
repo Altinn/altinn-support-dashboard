@@ -18,3 +18,15 @@
   min-width: 0;
 }
 
+.checkbox {
+  margin-bottom: 1rem;
+}
+
+.checkboxLabel {
+  display: block;
+  margin-top: 1rem;
+}
+
+.messageField {
+  margin-bottom: 1rem;
+}

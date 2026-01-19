@@ -42,14 +42,14 @@ export const CorrespondencePage = () => {
       </Heading>
 
       <div className={classes.container}>
-        {" "}
         <div className={classes.formContainer}>
           <CorrespondenceRecipientsList
             recipients={recipients}
             setRecipients={setRecipients}
           />
           <MessageInputField
-            labelText="Message title"
+            className={classes.messageField}
+            labelText="Melding title"
             value={title}
             onChange={(value) => {
               setTitle(value);
@@ -57,7 +57,8 @@ export const CorrespondencePage = () => {
             }}
           />
           <MessageInputField
-            labelText="Message summary"
+            className={classes.messageField}
+            labelText="Melding summary"
             value={summary}
             onChange={(value) => {
               setSummary(value);
@@ -65,15 +66,19 @@ export const CorrespondencePage = () => {
             }}
           />
           <MessageInputField
-            labelText="Message body"
+            className={classes.messageField}
+            labelText="Melding body"
             value={body}
             onChange={(value) => {
               setBody(value);
               setLocalStorageValue("body", value);
             }}
           />
-          <Label>Trengs det bekreftelse?</Label>
+          <Label className={classes.checkboxLabel}>
+            Trengs det bekreftelse?
+          </Label>
           <Checkbox
+            className={classes.checkbox}
             checked={confirmationNeeded}
             onChange={(e) => handleConfirmationChange(e.target.checked)}
             label="Ja"
@@ -101,4 +106,3 @@ export const CorrespondencePage = () => {
     </div>
   );
 };
-
