@@ -1,5 +1,7 @@
+using System.Text.Json;
 using altinn_support_dashboard.Server.Models.correspondence;
 using altinn_support_dashboard.Server.Utils;
+using Microsoft.IdentityModel.Tokens;
 
 public class CorrespondenceService : ICorrespondenceService
 {
@@ -13,11 +15,11 @@ public class CorrespondenceService : ICorrespondenceService
         _client = client;
     }
 
-    public async Task<string> UploadCorrespondence(CorrespondenceUploadRequest uploadRequest)
+    public async Task<CorrespondenceResponse> UploadCorrespondence(CorrespondenceUploadRequest uploadRequest)
     {
         if (uploadRequest.Recipients.Count <= 0)
         {
-            throw new Exception("Need at least one Recipient, this can be either a org or person");
+            throw new BadRequestException("Need at least one Recipient, this can be either a org or person");
         }
         List<string> newRecipients = new List<string>();
 
@@ -36,9 +38,22 @@ public class CorrespondenceService : ICorrespondenceService
                 newRecipients.Add(newRecipient);
                 continue;
             }
-            throw new Exception($"Recipient:{r} is not a valid org or ssn");
+            throw new BadRequestException($"Recipient:{r} is not a valid org or ssn");
         }
+
         uploadRequest.Recipients = newRecipients;
+
+        //Sets defualt values if none are given
+        if (uploadRequest.Correspondence.Content.MessageTitle.IsNullOrEmpty())
+        {
+            uploadRequest.Correspondence.Content.MessageTitle = "Test Title";
+        }
+
+        if (uploadRequest.Correspondence.Content.MessageBody.IsNullOrEmpty())
+        {
+            uploadRequest.Correspondence.Content.MessageBody = "Test Body";
+        }
+
         return await _client.UploadCorrespondence(uploadRequest);
     }
 }

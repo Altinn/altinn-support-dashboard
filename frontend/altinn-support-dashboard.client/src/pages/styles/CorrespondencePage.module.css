@@ -1,0 +1,32 @@
+.heading {
+  margin-bottom: 1rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+}
+
+.formContainer {
+  flex: 0 0 30%;
+  min-width: 0;
+}
+
+.responseContainer {
+  flex: 0 0 70%;
+  min-width: 0;
+}
+
+.checkbox {
+  margin-bottom: 1rem;
+}
+
+.checkboxLabel {
+  display: block;
+  margin-top: 1rem;
+}
+
+.messageField {
+  margin-bottom: 1rem;
+}
