@@ -51,7 +51,6 @@ namespace AltinnSupportDashboard
                 })
                 .ConfigureLogging(logging =>
                 {
-
                     // Add console logging
                     logging.AddConsole();
                     logging.AddApplicationInsights();
@@ -91,6 +90,8 @@ namespace AltinnSupportDashboard
                     services.AddScoped<IAltinnApiService, AltinnApiService>();
                     services.AddScoped<PartyApiClient>();
                     services.AddScoped<IPartyApiService, PartyApiService>();
+                    services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
+                    services.AddScoped<ICorrespondenceService, CorrespondenceService>();
                     services.AddScoped<ISsnTokenService, SsnTokenService>();
                 });
     }

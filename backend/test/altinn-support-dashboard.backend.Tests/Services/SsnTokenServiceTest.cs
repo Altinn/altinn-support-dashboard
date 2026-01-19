@@ -10,14 +10,10 @@ public class SsnTokenServiceTest
 
     public SsnTokenServiceTest()
     {
-        var inMemorySettings = new Dictionary<string, string?> {
-            {"SsnTokenSettings:TokenExpiryMinutes", "15"},
-            {"SsnTokenSettings:RemovalIntervalMinutes", "5"}
-        };
         _configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.Development.json")
-            .Build();
-        
+             .AddJsonFile("appsettings.Development.json")
+             .Build();
+
         _ssnTokenService = new SsnTokenService(_configuration);
     }
 
@@ -25,8 +21,8 @@ public class SsnTokenServiceTest
     public void GenerateSsnToken_ShouldReturnToken_WhenSsnIsValid()
     {
         var ssn = "12345678901";
-        var token =  _ssnTokenService.GenerateSsnToken(ssn);
-        Assert.False(string.IsNullOrEmpty(token));  
+        var token = _ssnTokenService.GenerateSsnToken(ssn);
+        Assert.False(string.IsNullOrEmpty(token));
     }
 
     [Theory]

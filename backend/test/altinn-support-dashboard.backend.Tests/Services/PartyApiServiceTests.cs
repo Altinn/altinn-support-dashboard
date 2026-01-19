@@ -111,7 +111,8 @@ public class PartyApiServiceTests
     }
 
     [Fact]
-    public async Task GetPartyFromSsnAsync_ThrowsJsonException_WhenJsonIsInvalid(){
+    public async Task GetPartyFromSsnAsync_ThrowsJsonException_WhenJsonIsInvalid()
+    {
         var validSsn = "12345678901";
         var mockResponse = @"{ invalid json }";
 
@@ -185,7 +186,7 @@ public class PartyApiServiceTests
     }
 
     [Fact]
-    public async Task GetPartyFromUuidAsync_ThrowsJsonException_WhenMissingRequiredProperty() 
+    public async Task GetPartyFromUuidAsync_ThrowsJsonException_WhenMissingRequiredProperty()
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
         var mockResponse = @"{
@@ -258,7 +259,7 @@ public class PartyApiServiceTests
         var result = await _service.GetRolesFromOrgAsync(validOrgNumber);
 
         Assert.NotNull(result);
-        Assert.IsType<ErRollerModel>(result);   
+        Assert.IsType<ErRollerModel>(result);
     }
 
     [Fact]
@@ -524,7 +525,7 @@ public class PartyApiServiceTests
     [Fact]
     public async Task GetRolesFromOrgAsync_HandlesMixOfValidAndInvalidRoles()
     {
-         var validOrgNumber = "123456789";
+        var validOrgNumber = "123456789";
 
         var mockPartyResponse = @"{
             ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
