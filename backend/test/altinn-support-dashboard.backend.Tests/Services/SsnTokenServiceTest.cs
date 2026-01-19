@@ -126,4 +126,18 @@ public class SsnTokenServiceTest
 
         Assert.True(Guid.TryParse(token, out _));
     }
+
+    [Fact]
+    public void Constructor_ShouldUseDefaultValues_WhenConfigurationIsMissing()
+    {
+        var emptyConfig = new ConfigurationBuilder().Build();
+        var service = new SsnTokenService(emptyConfig);
+
+        var ssn = "12345678901";
+        var token = service.GenerateSsnToken(ssn);
+
+        Assert.False(string.IsNullOrEmpty(token));
+        Assert.Equal(ssn, service.GetSsnFromToken(token));
+        Assert.True(Guid.TryParse(token, out _));
+    }
 }
