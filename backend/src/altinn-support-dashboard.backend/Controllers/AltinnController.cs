@@ -23,6 +23,7 @@ namespace AltinnSupportDashboard.Controllers
 
 
     [ApiController]
+    [Authorize(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy)]
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
     {
@@ -33,10 +34,12 @@ namespace AltinnSupportDashboard.Controllers
     }
 
     [ApiController]
+
+    [Authorize(AnsattportenConstants.AnsattportenProductionAuthorizationPolicy)]
     [Route("api/Production/serviceowner")]
     public class AltinnProductionController : AltinnBaseController
     {
-        public AltinnProductionController(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, "Production",  ssnTokenService)
+        public AltinnProductionController(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, "Production", ssnTokenService)
         {
         }
     }
@@ -279,7 +282,7 @@ namespace AltinnSupportDashboard.Controllers
             return Ok(result);
         }
 
-        [HttpGet("personalcontacts/{ssnToken}/ssn")]        
+        [HttpGet("personalcontacts/{ssnToken}/ssn")]
         public IActionResult GetSsnFromToken(string ssnToken)
         {
             var ssn = _ssnTokenService.GetSsnFromToken(ssnToken);
