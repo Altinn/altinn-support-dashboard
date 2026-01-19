@@ -57,8 +57,13 @@ public class CorrespondenceClient : ICorrespondenceClient
 
         //Attachments
         //In the future we might add the ability to upload custom attachments
-        var filestream = File.OpenRead("test.txt");
-        var fileContent = new StreamContent(filestream);
+        var content = "This is a test attachment";
+        var bytes = Encoding.UTF8.GetBytes(content);
+
+        var fileContent = new ByteArrayContent(bytes);
+        fileContent.Headers.ContentType =
+            new MediaTypeHeaderValue("text/plain");
+
         fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
         form.Add(fileContent, "Attachments", "testfile.txt");
         form.Add(
