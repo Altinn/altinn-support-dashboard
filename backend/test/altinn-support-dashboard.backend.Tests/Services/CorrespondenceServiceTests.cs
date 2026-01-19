@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using altinn_support_dashboard.Server.Models.correspondence;
 using altinn_support_dashboard.Server.Services;
@@ -32,7 +33,7 @@ public class CorrespondenceServiceTests
 
         _clientMock
             .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
-            .ReturnsAsync("ok");
+            .ReturnsAsync(new CorrespondenceResponse());
 
         // Act
         var result = await _service.UploadCorrespondence(request);
@@ -46,7 +47,7 @@ public class CorrespondenceServiceTests
             Times.Once
         );
 
-        Assert.Equal("ok", result);
+        Assert.IsType<CorrespondenceResponse>(result);
     }
 
     [Fact]
@@ -60,7 +61,7 @@ public class CorrespondenceServiceTests
 
         _clientMock
             .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
-            .ReturnsAsync("ok");
+            .ReturnsAsync(new CorrespondenceResponse());
 
         // Act
         var result = await _service.UploadCorrespondence(request);
@@ -73,7 +74,7 @@ public class CorrespondenceServiceTests
             Times.Once
         );
 
-        Assert.Equal("ok", result);
+        Assert.IsType<CorrespondenceResponse>(result);
     }
 
     [Fact]
@@ -91,7 +92,7 @@ public class CorrespondenceServiceTests
 
         _clientMock
             .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
-            .ReturnsAsync("ok");
+            .ReturnsAsync(new CorrespondenceResponse());
 
         // Act
         await _service.UploadCorrespondence(request);
@@ -116,7 +117,7 @@ public class CorrespondenceServiceTests
         };
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<Exception>(() =>
+        var ex = await Assert.ThrowsAsync<BadRequestException>(() =>
             _service.UploadCorrespondence(request)
         );
 
@@ -134,7 +135,7 @@ public class CorrespondenceServiceTests
         };
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<Exception>(() =>
+        var ex = await Assert.ThrowsAsync<BadRequestException>(() =>
             _service.UploadCorrespondence(request)
         );
 

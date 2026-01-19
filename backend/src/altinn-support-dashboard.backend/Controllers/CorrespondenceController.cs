@@ -12,6 +12,7 @@ namespace AltinnSupportDashboard.Controllers;
 [ApiController]
 [Route("api/correspondence")]
 [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
+[Authorize(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy)]
 public class CorrespondenceController : ControllerBase
 {
     private readonly ICorrespondenceService _service;
