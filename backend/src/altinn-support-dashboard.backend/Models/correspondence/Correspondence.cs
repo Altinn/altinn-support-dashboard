@@ -9,7 +9,7 @@ public class Correspondence
     public string? MessageSender { get; set; }
     public DateTime? RequestedPublicTime { get; set; }
     public DateTime? AllowSystemDeleteAfter { get; set; }
-    public DateTime? DueDateTime { get; set; } = DateTime.Now.AddDays(7);
+    public DateTime? DueDateTime { get; set; } = DateTime.UtcNow.AddDays(7);
     public List<CorrespondenceExternalReference>? ExternalRefences { get; set; }
     public List<CorrespondenceReplyOptions>? ReplyOptions { get; set; }
 

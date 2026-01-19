@@ -25,6 +25,8 @@ public class CorrespondenceClient : ICorrespondenceClient
     public async Task<CorrespondenceResponse> UploadCorrespondence(CorrespondenceUploadRequest correspondenceData)
     {
         string requestUrl = "correspondence/api/v1/correspondence/upload";
+        var info = JsonSerializer.Serialize(correspondenceData);
+        _logger.LogInformation(info);
 
 
         // expects a flattened format
