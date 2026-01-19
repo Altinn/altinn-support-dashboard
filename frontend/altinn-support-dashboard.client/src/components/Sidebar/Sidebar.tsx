@@ -11,7 +11,6 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   MagnifyingGlassIcon,
-  PlusIcon,
   CogIcon,
   EnvelopeOpenIcon,
 } from "@navikt/aksel-icons";
