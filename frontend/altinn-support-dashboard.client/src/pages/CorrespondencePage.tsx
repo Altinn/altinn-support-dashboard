@@ -11,6 +11,7 @@ import CorrespondenceRecipientsList from "../components/Correspondence/Correspon
 import CorrespondenceResponseField from "../components/Correspondence/CorrespondenceResponseField";
 import { CorrespondenceResponse } from "../models/correspondenceModels";
 import ResponseStatusCode from "../components/Correspondence/ResponseStatusCode";
+import { TestFlaskIcon } from "@navikt/aksel-icons";
 
 export const CorrespondencePage = () => {
   const [recipients, setRecipients] = useState<string[]>(() => {
@@ -39,6 +40,7 @@ export const CorrespondencePage = () => {
     <div>
       <Heading className={classes.heading} level={1} data-size="sm">
         Opprett melding for test
+        <TestFlaskIcon title="Beta" />
       </Heading>
 
       <div className={classes.container}>
