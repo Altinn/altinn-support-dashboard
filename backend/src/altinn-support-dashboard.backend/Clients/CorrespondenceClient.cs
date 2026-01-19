@@ -34,10 +34,11 @@ public class CorrespondenceClient : ICorrespondenceClient
         form.Add(new StringContent(correspondenceData.Correspondence.SendersReference), "correspondence.sendersreference");
         form.Add(new StringContent(correspondenceData.Correspondence.Content.Language), "correspondence.content.language");
         AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageTitle, "correspondence.content.messagetitle");
-        AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageBody, "correspondence.content.messageBody");
+        AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageBody, "correspondence.content.messagebody");
 
         // Correspondence optional fields
-        AddIfNotNull(form, correspondenceData.Correspondence.IsConfirmedNeeded.ToString(), "correspondence.isconfirmation needed");
+        AddIfNotNull(form, correspondenceData.Correspondence.IsConfirmationNeeded.ToString(), "correspondence.isconfirmationneeded");
+        AddIfNotNull(form, correspondenceData.Correspondence.DueDateTime.ToString(), "correspondence.duedatetime");
 
 
         AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageSummary, "correspondence.content.messageSummary");

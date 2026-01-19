@@ -1,3 +1,4 @@
+using System.Text.Json;
 using altinn_support_dashboard.Server.Models.correspondence;
 using altinn_support_dashboard.Server.Utils;
 using Microsoft.IdentityModel.Tokens;
@@ -16,6 +17,8 @@ public class CorrespondenceService : ICorrespondenceService
 
     public async Task<CorrespondenceResponse> UploadCorrespondence(CorrespondenceUploadRequest uploadRequest)
     {
+        var info = JsonSerializer.Serialize(uploadRequest);
+        _logger.LogInformation(info);
         if (uploadRequest.Recipients.Count <= 0)
         {
             throw new BadRequestException("Need at least one Recipient, this can be either a org or person");
