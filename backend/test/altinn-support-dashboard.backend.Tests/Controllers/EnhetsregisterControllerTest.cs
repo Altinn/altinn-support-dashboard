@@ -80,4 +80,77 @@ public class EnhetsregisterControllerTest
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(expectedResult, okResult.Value);
     }
+
+    [Fact]
+    public async Task GetEnhetsDetaljer_ReturnsNotFound_WhenResultIsNull()
+    {
+        var orgnumber = "123456789";
+
+        _dataBrregServiceMock
+            .Setup(s => s.GetEnhetsdetaljer(orgnumber, "TT02"))
+            .ReturnsAsync(null!);
+
+        var result = await _controller.GetEnhetsdetaljer("TT02", orgnumber);
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetEnhetsDetaljer_ReturnsBadRequest_WhenArgumentExceptionIsThrown()
+    {
+        var orgnumber = "123456789";
+
+        _dataBrregServiceMock
+            .Setup(s => s.GetEnhetsdetaljer(orgnumber, "Production"))
+            .ThrowsAsync(new ArgumentException("Test exception"));
+        
+        var result = await _controller.GetEnhetsdetaljer("Production", orgnumber);
+
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal("Test exception", badRequestResult.Value);
+    }
+
+    [Fact]
+    public async Task GetEnhetsDetaljer_RetursnNotFound_WhenHttpRequestExceptionWithNotFoundIsThrown()
+    {
+        var orgnumber = "123456789";
+
+        _dataBrregServiceMock
+            .Setup(s => s.GetEnhetsdetaljer(orgnumber, "TT02"))
+            .ThrowsAsync(new HttpRequestException("NotFound"));
+        
+        var result = await _controller.GetEnhetsdetaljer("TT02", orgnumber);
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetEnhetsDetaljer_ReturnsStatusCode503_WhenHttpRequestExceptionIsThrown()
+    {
+        var orgnumber = "123456789";
+
+        _dataBrregServiceMock
+            .Setup(s => s.GetEnhetsdetaljer(orgnumber, "Production"))
+            .ThrowsAsync(new HttpRequestException("Service unavailable"));
+        
+        var result = await _controller.GetEnhetsdetaljer("Production", orgnumber);
+
+        var statusCodeResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(503, statusCodeResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetEnhetsDetaljer_ReturnsStatusCode500_WhenExceptionIsThrown()
+    {
+        var orgnumber = "123456789";
+
+        _dataBrregServiceMock
+            .Setup(s => s.GetEnhetsdetaljer(orgnumber, "TT02"))
+            .ThrowsAsync(new Exception("General error"));
+
+        var result = await _controller.GetEnhetsdetaljer("TT02", orgnumber);
+
+        var statusCodeResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, statusCodeResult.StatusCode);
+    }
 }
