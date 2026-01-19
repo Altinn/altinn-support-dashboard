@@ -42,7 +42,7 @@ public class CorrespondenceClient : ICorrespondenceClient
 
         // Correspondence optional fields
         AddIfNotNull(form, correspondenceData.Correspondence.IsConfirmationNeeded.ToString(), "correspondence.isconfirmationneeded");
-        AddIfNotNull(form, correspondenceData.Correspondence.DueDateTime.ToString("0", CultureInfo.InvariantCulture), "correspondence.duedatetime");
+        AddIfNotNull(form, correspondenceData.Correspondence.DueDateTime.ToString("o", CultureInfo.InvariantCulture), "correspondence.duedatetime");
 
 
         AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageSummary, "correspondence.content.messageSummary");
