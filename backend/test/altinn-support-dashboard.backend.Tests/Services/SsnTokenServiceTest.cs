@@ -107,7 +107,7 @@ public class SsnTokenServiceTest
     {
         var inMemorySettings = new Dictionary<string, string?> {
             {"SsnTokenSettings:TokenExpiryMinutes", "0"}, //Immediate expiry
-            {"SsnTokenSettings:RemovalIntervalMinutes", "5"}
+            {"SsnTokenSettings:RemovalIntervalMinutes", "1"}
         };
 
         var configuration = new ConfigurationBuilder()
