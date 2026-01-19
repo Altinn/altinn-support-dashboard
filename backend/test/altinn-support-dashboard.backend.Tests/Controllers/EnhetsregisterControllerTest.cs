@@ -111,7 +111,7 @@ public class EnhetsregisterControllerTest
     }
 
     [Fact]
-    public async Task GetEnhetsDetaljer_RetursnNotFound_WhenHttpRequestExceptionWithNotFoundIsThrown()
+    public async Task GetEnhetsDetaljer_ReturnsNotFound_WhenHttpRequestExceptionWithNotFoundIsThrown()
     {
         var orgnumber = "123456789";
 

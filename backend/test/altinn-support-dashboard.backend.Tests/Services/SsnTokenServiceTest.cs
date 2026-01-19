@@ -119,7 +119,7 @@ public class SsnTokenServiceTest
     }
 
     [Fact]
-    public void GenerateTokenFromSsn_ShoulReturnValidGuidFormat()
+    public void GenerateTokenFromSsn_ShouldReturnValidGuidFormat()
     {
         var ssn = "12345678901";
         var token = _ssnTokenService.GenerateSsnToken(ssn);
