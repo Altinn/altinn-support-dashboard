@@ -57,7 +57,7 @@ public class SsnTokenServiceTest
     {
         var inMemorySettings = new Dictionary<string, string?> {
             {"SsnTokenSettings:TokenExpiryMinutes", "0"}, //Immediate expiry
-            {"SsnTokenSettings:RemovalIntervalMinutes", "1"}
+            {"SsnTokenSettings:RemovalIntervalMinutes", "0.1"}
         };
 
         var configuration = new ConfigurationBuilder()
@@ -68,7 +68,7 @@ public class SsnTokenServiceTest
         var ssn = "12345678901";
         var token = service.GenerateSsnToken(ssn);
 
-        await Task.Delay(TimeSpan.FromMinutes(1.1));
+        await Task.Delay(TimeSpan.FromMinutes(0.2));
 
         var retrievedSsn = service.GetSsnFromToken(token);
         Assert.Equal(string.Empty, retrievedSsn);
@@ -103,7 +103,7 @@ public class SsnTokenServiceTest
     {
         var inMemorySettings = new Dictionary<string, string?> {
             {"SsnTokenSettings:TokenExpiryMinutes", "0"}, //Immediate expiry
-            {"SsnTokenSettings:RemovalIntervalMinutes", "1"}
+            {"SsnTokenSettings:RemovalIntervalMinutes", "0.1"}
         };
 
         var configuration = new ConfigurationBuilder()
