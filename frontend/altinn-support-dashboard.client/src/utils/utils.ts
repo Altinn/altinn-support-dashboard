@@ -67,10 +67,6 @@ export async function authorizedPost<T>(
     ...options,
   });
 
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
-  }
-
   return response;
 }
 

@@ -18,7 +18,7 @@ public class CorrespondenceService : ICorrespondenceService
     {
         if (uploadRequest.Recipients.Count <= 0)
         {
-            throw new Exception("Need at least one Recipient, this can be either a org or person");
+            throw new BadRequestException("Need at least one Recipient, this can be either a org or person");
         }
         List<string> newRecipients = new List<string>();
 
@@ -37,7 +37,7 @@ public class CorrespondenceService : ICorrespondenceService
                 newRecipients.Add(newRecipient);
                 continue;
             }
-            throw new Exception($"Recipient:{r} is not a valid org or ssn");
+            throw new BadRequestException($"Recipient:{r} is not a valid org or ssn");
         }
 
         uploadRequest.Recipients = newRecipients;

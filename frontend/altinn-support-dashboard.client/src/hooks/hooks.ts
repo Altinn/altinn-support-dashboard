@@ -144,7 +144,7 @@ export const useCorrespondencePost = () => {
     mutationFn: sendCorrespondence,
     onSuccess: () => {},
     onError: (err) => {
-      toast.error(`Feil under sending av melding ${err}`);
+      toast.error(`Feil under sending av melding ${err.message}`);
     },
   });
 };

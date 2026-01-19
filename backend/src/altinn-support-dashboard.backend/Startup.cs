@@ -7,6 +7,7 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Diagnostics;
 
 
 namespace AltinnSupportDashboard
@@ -97,13 +98,35 @@ namespace AltinnSupportDashboard
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+
+
+            // Set up error handling
+            app.UseExceptionHandler(errorApp =>
             {
-                app.UseDeveloperExceptionPage();
-            }
-            else
+                errorApp.Run(async context =>
+                {
+                    var exception = context.Features
+                        .Get<IExceptionHandlerFeature>()?.Error;
+
+                    context.Response.ContentType = "application/json";
+
+                    context.Response.StatusCode = exception switch
+                    {
+                        BadRequestException => StatusCodes.Status400BadRequest,
+                        _ => StatusCodes.Status500InternalServerError
+                    };
+
+                    await context.Response.WriteAsJsonAsync(new
+                    {
+                        message = exception?.Message
+                    });
+                });
+            });
+
+            if (!env.IsDevelopment())
             {
-                app.UseExceptionHandler("/Error");
+
+
                 app.UseHsts();
             }
 
