@@ -507,7 +507,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 
             var okResult = Assert.IsType<OkObjectResult>(result);
             var response = okResult.Value;
-            var snn = response.GetType().GetProperty("socialSecurityNumber");
+            var snn = response?.GetType().GetProperty("socialSecurityNumber");
             Assert.Equal(expectedSsn, snn?.GetValue(response));
 
         }
