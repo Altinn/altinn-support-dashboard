@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -47,7 +48,10 @@ public class CorrespondenceClient : ICorrespondenceClient
         // Recipients
         for (int i = 0; i < correspondenceData.Recipients.Count; i++)
         {
-            form.Add(new StringContent(correspondenceData.Recipients[i]), $"recipients[{i}]");
+
+            // security reasons
+            var encodedRecipient = WebUtility.HtmlEncode(correspondenceData.Recipients[i]);
+            form.Add(new StringContent(encodedRecipient), $"recipients[{i}]");
         }
 
 
