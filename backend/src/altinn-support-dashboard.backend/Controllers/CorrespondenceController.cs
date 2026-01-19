@@ -12,6 +12,7 @@ namespace AltinnSupportDashboard.Controllers;
 [ApiController]
 [Route("api/correspondence")]
 [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
+[Authorize(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy)]
 public class CorrespondenceController : ControllerBase
 {
     private readonly ICorrespondenceService _service;
@@ -35,7 +36,6 @@ public class CorrespondenceController : ControllerBase
     public async Task<IActionResult> PostCorrespondenceUpload(
         [FromBody] CorrespondenceUploadRequest request)
     {
-
         var response = await _service.UploadCorrespondence(request);
 
         return Ok(response);
