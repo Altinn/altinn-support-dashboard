@@ -82,4 +82,17 @@ describe('ManualRoleSearchResult', () => {
         );
         expect(screen.queryByText('Ingen roller funnet.')).not.toBeInTheDocument();
     })
+
+    it('roles get passed to RoleTable', () => {
+        render(
+            <ManualRoleSearchResult
+                error = {null}
+                isLoading = {false}
+                hasSearched = {true}
+                roles = {mockRoles}
+            />
+        );
+        expect(screen.getByText('Test 1')).toBeInTheDocument();
+        expect(screen.getByText('Test 2')).toBeInTheDocument();
+    })
 })
