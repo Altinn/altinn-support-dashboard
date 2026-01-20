@@ -1,6 +1,3 @@
-.container {
-  background-color: var(--ds-color-accent-background-default);
-}
 .bodyText {
   max-height: 30rem;
   overflow-y: scroll;
