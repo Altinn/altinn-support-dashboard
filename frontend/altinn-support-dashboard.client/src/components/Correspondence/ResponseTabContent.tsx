@@ -1,5 +1,4 @@
-import { Card } from "@mui/material";
-import { Heading, Paragraph } from "@digdir/designsystemet-react";
+import { Heading, Paragraph, Card } from "@digdir/designsystemet-react";
 import classes from "./styles/ResponseTabContent.module.css";
 
 interface ResponseTabContentProps {
