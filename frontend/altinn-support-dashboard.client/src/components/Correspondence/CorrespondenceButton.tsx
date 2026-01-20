@@ -23,9 +23,10 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
   setResponseMessage,
 }) => {
   const post = useCorrespondencePost();
+  const filteredRecipients = recipients.filter(Boolean);
   const handleSendMessage = async () => {
     const correspondence: CorrespondenceUploadRequest = {
-      recipients: recipients,
+      recipients: filteredRecipients,
       correspondence: {
         content: {
           messageBody: body,
@@ -49,4 +50,3 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
 };
 
 export default CorrespondenceButton;
-
