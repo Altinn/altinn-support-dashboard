@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
@@ -85,6 +86,19 @@ public static class AnsattportenExtensions
 
                     options.TokenValidationParameters.NameClaimType = JwtRegisteredClaimNames.Name;
 
+                    options.Events.OnTokenValidated = context =>
+                    {
+                        var telemetry = context.HttpContext.RequestServices.GetRequiredService<TelemetryClient>();
+
+                        var name = context?.Principal?.Identity?.Name ?? "unknown";
+
+                        telemetry.TrackEvent("userLogin", new Dictionary<string, string> { { "id", name } });
+
+                        return Task.CompletedTask;
+
+
+                    };
+
                     //handles errors and redirects correctly
                     options.Events.OnRemoteFailure = context =>
                     {
@@ -161,15 +175,23 @@ public static class AnsattportenExtensions
         }
         else
         {
-            services.AddAuthorization(options =>
-                   {
-                       options.AddPolicy(AnsattportenConstants.AnsattportenAuthorizationPolicy, policy =>
-                       {
-                           policy.RequireAssertion(_ => true);
-                       });
-                   });
-        }
+            // sets all to true if if ansattporten is disabled
+            services.AddAuthorizationBuilder()
+                         .AddPolicy(AnsattportenConstants.AnsattportenAuthorizationPolicy, policy =>
+                             {
+                                 policy.RequireAssertion(_ => true);
+                             }
+                         ).AddPolicy(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy, policy =>
+                         {
 
+                             policy.RequireAssertion(_ => true);
+
+                         }).AddPolicy(AnsattportenConstants.AnsattportenProductionAuthorizationPolicy, policy =>
+                         {
+                             policy.RequireAssertion(_ => true);
+                         });
+
+        }
         return services;
     }
 

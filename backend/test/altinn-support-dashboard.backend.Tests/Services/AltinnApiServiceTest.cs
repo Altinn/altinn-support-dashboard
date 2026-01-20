@@ -1,6 +1,8 @@
 using Altinn.ApiClients.Maskinporten.Config;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
+using altinn_support_dashboard.Server.Services.Interfaces;
+using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.Extensions.Options;
 using Models.altinn3Dtos;
 using Moq;
@@ -13,11 +15,15 @@ public class AltinnApiServiceTest
     private readonly AltinnApiService _altinnApiService;
     private readonly Mock<IAltinnApiClient> _mockAltinn2Client;
     private readonly Mock<IAltinn3ApiClient> _mockAltinn3Client;
+    private readonly Mock<IDataBrregService> _mockBreggService;
+    private readonly Mock<ISsnTokenService> _mockSsnTokenService;
+    private readonly Mock<IRedactorProvider> _mockRedactorProvider;
 
     public AltinnApiServiceTest()
     {
         var mockHttpClient = new Mock<IHttpClientFactory>();
         var mockConfig = new Mock<IOptions<Configuration>>();
+        _mockBreggService = new Mock<IDataBrregService>();
 
         mockConfig.Setup(x => x.Value).Returns(new Configuration
         {
@@ -49,7 +55,9 @@ public class AltinnApiServiceTest
 
         _mockAltinn2Client = new Mock<IAltinnApiClient>();
         _mockAltinn3Client = new Mock<IAltinn3ApiClient>();
-        _altinnApiService = new AltinnApiService(_mockAltinn2Client.Object, _mockAltinn3Client.Object);
+        _mockSsnTokenService = new Mock<ISsnTokenService>();
+        _mockRedactorProvider = new Mock<IRedactorProvider>();
+        _altinnApiService = new AltinnApiService(_mockAltinn2Client.Object, _mockAltinn3Client.Object, _mockBreggService.Object, _mockSsnTokenService.Object, _mockRedactorProvider.Object);
     }
 
     [Fact]
@@ -559,5 +567,42 @@ public class AltinnApiServiceTest
         await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetNotificationAddressesByOrgAltinn3("123456789", "TT02"));
     }
 
+    [Fact]
+    public async Task GetPersonRoles_UsesTokenToRetrieveSsn_WhenSubjectIsToken()
+    {
+        var token = "11111111-2222-3333-4444-555555555555";
+        var ssn = "12345678901";
+        var reportee = "123456789";
 
+        _mockSsnTokenService
+        .Setup(x => x.GetSsnFromToken(token))
+        .Returns(ssn);
+
+        _mockAltinn2Client
+        .Setup(x => x.GetPersonRoles(ssn, reportee, It.IsAny<string>()))
+        .ReturnsAsync("[]");
+
+        await _altinnApiService.GetPersonRoles(token, reportee, "TT02");
+
+        _mockAltinn2Client.Verify(x => x.GetPersonRoles(ssn, reportee, "TT02"), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetPersonRoles_UsesSubjectDirectly_WhenNoTokenIsFound()
+    {
+        var subject = "12345678901";
+        var reportee = "123456789";
+
+        _mockSsnTokenService
+        .Setup(x => x.GetSsnFromToken(subject))
+        .Returns("");
+
+        _mockAltinn2Client
+        .Setup(x => x.GetPersonRoles(subject, reportee, It.IsAny<string>()))
+        .ReturnsAsync("[]");
+
+        await _altinnApiService.GetPersonRoles(subject, reportee, "TT02");
+
+        _mockAltinn2Client.Verify(x => x.GetPersonRoles(subject, reportee, "TT02"), Times.Once);
+    }
 }

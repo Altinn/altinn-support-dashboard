@@ -4,6 +4,7 @@ export interface Organization {
   type: string;
   lastChanged: string;
   lastConfirmed: string;
+  headUnit?: Organization;
   _links: OrganizationLink[];
 }
 
@@ -24,6 +25,8 @@ export interface PersonalContact {
   personalContactId: string;
   name: string;
   socialSecurityNumber: string;
+  displayedSocialSecurityNumber: string;
+  ssnToken: string;
   mobileNumber: string;
   mobileNumberChanged: string;
   eMailAddress: string;

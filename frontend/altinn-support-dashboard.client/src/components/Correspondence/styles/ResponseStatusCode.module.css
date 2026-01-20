@@ -1,0 +1,13 @@
+.container {
+  min-width: 50px;
+  max-width: 300px;
+  color: whitesmoke;
+}
+
+.containerSuccess {
+  background-color: green;
+}
+
+.containerNotSuccess {
+  background-color: red;
+}

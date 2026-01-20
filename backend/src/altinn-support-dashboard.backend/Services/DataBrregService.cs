@@ -1,6 +1,6 @@
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
-using altinn_support_dashboard.Server.Validation;
+using altinn_support_dashboard.Server.Utils;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -13,12 +13,21 @@ namespace altinn_support_dashboard.Server.Services
     {
         private readonly IDataBrregClient _client;
         private readonly IPartyApiService _partyService;
+        private readonly JsonSerializerOptions jsonOptions;
         private readonly List<string> _validEnvironmentNames = new List<string> { "Production", "TT02" };
 
         public DataBrregService(IDataBrregClient client, IPartyApiService partyApiService)
         {
             _client = client;
             _partyService = partyApiService;
+
+            jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true
+
+            };
+
         }
 
         public async Task<ErRollerModel> GetRolesAsync(string orgNumber, string environmentName)
@@ -45,7 +54,6 @@ namespace altinn_support_dashboard.Server.Services
                 }
 
             }
-
             if (String.IsNullOrEmpty(result))
             {
                 return new ErRollerModel
@@ -83,6 +91,35 @@ namespace altinn_support_dashboard.Server.Services
             });
 
             return underenheter ?? new UnderenhetRootObject();
+        }
+
+        public async Task<UnderEnhet?> GetUnderenhet(string orgNumber, string environmentName)
+        {
+            if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
+            {
+                throw new ArgumentException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+            }
+
+            if (!_validEnvironmentNames.Contains(environmentName))
+            {
+                throw new ArgumentException("Ugyldig miljønavn.");
+            }
+
+            var result = await _client.GetUnderenhet(orgNumber, environmentName);
+
+            if (result == null)
+            {
+                return null;
+
+            }
+
+            var underenhet = JsonSerializer.Deserialize<UnderEnhet>(result, jsonOptions);
+
+            if (underenhet == null)
+            {
+                throw new Exception("Underenhet not found");
+            }
+            return underenhet;
         }
 
         /// <summary>

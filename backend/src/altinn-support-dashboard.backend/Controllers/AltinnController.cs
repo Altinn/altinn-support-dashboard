@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using altinn_support_dashboard.Server.Services.Interfaces;
-using altinn_support_dashboard.Server.Validation;
+using altinn_support_dashboard.Server.Utils;
 using Security;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.Extensions.Compliance.Redaction;
 
 namespace AltinnSupportDashboard.Controllers
 {
@@ -22,20 +23,23 @@ namespace AltinnSupportDashboard.Controllers
 
 
     [ApiController]
+    [Authorize(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy)]
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
     {
-        public AltinnTT02Controller(IAltinnApiService altinnApiService) : base(altinnApiService, "TT02")
+        public AltinnTT02Controller(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, "TT02", ssnTokenService)
         {
         }
 
     }
 
     [ApiController]
+
+    [Authorize(AnsattportenConstants.AnsattportenProductionAuthorizationPolicy)]
     [Route("api/Production/serviceowner")]
     public class AltinnProductionController : AltinnBaseController
     {
-        public AltinnProductionController(IAltinnApiService altinnApiService) : base(altinnApiService, "Production")
+        public AltinnProductionController(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, "Production", ssnTokenService)
         {
         }
     }
@@ -49,11 +53,13 @@ namespace AltinnSupportDashboard.Controllers
     {
         protected readonly IAltinnApiService _altinnApiService;
         protected string environmentName;
+        protected readonly ISsnTokenService _ssnTokenService;
 
-        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName)
+        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName, ISsnTokenService ssnTokenService)
         {
             this.environmentName = environmentName;
             _altinnApiService = altinnApiService;
+            _ssnTokenService = ssnTokenService;
         }
 
         [HttpGet("organizations/search")]
@@ -283,6 +289,17 @@ namespace AltinnSupportDashboard.Controllers
             var result = await _altinnApiService.GetNotificationAddressesByEmailAltinn3(email, environmentName);
 
             return Ok(result);
+        }
+
+        [HttpGet("personalcontacts/{ssnToken}/ssn")]
+        public IActionResult GetSsnFromToken(string ssnToken)
+        {
+            var ssn = _ssnTokenService.GetSsnFromToken(ssnToken);
+            if (string.IsNullOrEmpty(ssn))
+            {
+                throw new Exception("Invalid or expired SSN token.");
+            }
+            return Ok(new { socialSecurityNumber = ssn });
         }
     }
 }

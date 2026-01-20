@@ -1,10 +1,12 @@
 ﻿using System.Text.RegularExpressions;
 
 
-namespace altinn_support_dashboard.Server.Validation
+namespace altinn_support_dashboard.Server.Utils
 {
     public static class ValidationService
     {
+        private static readonly Regex SsnPattern = new(@"^\d{11}$");
+
         public static bool IsValidPhoneNumber(string phoneNumber)
         {
             return !string.IsNullOrWhiteSpace(phoneNumber) && ((phoneNumber[0] == '+' && phoneNumber.Skip(1).All(char.IsDigit)) || (phoneNumber.All(char.IsDigit)));
@@ -36,7 +38,31 @@ namespace altinn_support_dashboard.Server.Validation
                 return true;
             }
 
+            if (IsValidSsnToken(value))
+            {
+                return true;
+            }
+
             return false;
+        }
+
+        public static bool IsValidSsnToken(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return false;
+            }
+            if (Guid.TryParse(token, out _))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        public static bool isValidSsn(string ssn)
+        {
+
+            return !string.IsNullOrEmpty(ssn) && SsnPattern.IsMatch(ssn);
         }
 
 

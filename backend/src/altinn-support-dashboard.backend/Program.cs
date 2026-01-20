@@ -4,6 +4,7 @@ using Altinn.Studio.Designer.Infrastructure.AnsattPorten;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,14 +51,14 @@ namespace AltinnSupportDashboard
                 })
                 .ConfigureLogging(logging =>
                 {
-                    // Clear default logging providers
-                    logging.ClearProviders();
-
                     // Add console logging
                     logging.AddConsole();
+                    logging.AddApplicationInsights();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddApplicationInsightsTelemetry();
+
                     // Bind Configuration section to the Configuration class and add to DI
                     services.Configure<Configuration>(hostContext.Configuration.GetSection("Configuration"));
                     services.Configure<BrregApiConfiguration>(hostContext.Configuration.GetSection("Brreg"));
@@ -89,6 +90,14 @@ namespace AltinnSupportDashboard
                     services.AddScoped<IAltinnApiService, AltinnApiService>();
                     services.AddScoped<PartyApiClient>();
                     services.AddScoped<IPartyApiService, PartyApiService>();
+                    services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
+                    services.AddScoped<ICorrespondenceService, CorrespondenceService>();
+                    services.AddScoped<ISsnTokenService, SsnTokenService>();
+                    services.AddScoped<ISsnTokenService, SsnTokenService>();
+
+                    services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
+                    services.AddScoped<ICorrespondenceService, CorrespondenceService>();
+                    services.AddScoped<ISsnTokenService, SsnTokenService>();
                 });
     }
 }

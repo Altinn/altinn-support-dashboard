@@ -1,0 +1,6 @@
+.card {
+}
+.bodyText {
+  max-height: 30rem;
+  overflow-y: scroll;
+}

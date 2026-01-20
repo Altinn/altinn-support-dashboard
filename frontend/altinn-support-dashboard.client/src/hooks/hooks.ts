@@ -6,15 +6,22 @@ import {
   ERRoles,
 } from "../models/models";
 import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   fetchERoles,
   fetchOfficialContacts,
   fetchOrganizations,
   fetchPersonalContacts,
   fetchRolesForOrg,
+  fetchSsnFromToken,
   fetchSubunits,
 } from "../utils/api";
+import {
+  CorrespondenceResponse,
+  CorrespondenceUploadRequest,
+} from "../models/correspondenceModels";
+import { sendCorrespondence } from "../utils/correspondenceApi";
+import { toast } from "react-toastify";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -118,3 +125,28 @@ export function UseManualRoleSearch(
     enabled: !!rollehaver && !!rollegiver,
   });
 }
+
+export const useSsnFromToken = (environment: string, ssnToken?: string) => {
+  return useQuery({
+    queryKey: ["ssn", environment, ssnToken],
+    queryFn: () => fetchSsnFromToken(environment, ssnToken!),
+    enabled: false && !!ssnToken, // only run if ssnToken exists and manuallyenabled
+    staleTime: 0, // always refetch to ensure ssn is fresh
+  });
+};
+
+export const useCorrespondencePost = () => {
+  return useMutation<
+    CorrespondenceResponse,
+    Error,
+    CorrespondenceUploadRequest
+  >({
+    mutationFn: sendCorrespondence,
+    onSuccess: () => {
+      toast.info("Melding sendt");
+    },
+    onError: (err) => {
+      toast.error(`Feil under sending av melding ${err.message}`);
+    },
+  });
+};
