@@ -66,6 +66,35 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         return responseBody;
     }
+
+    //Gets the org information for multiple orgs
+    public async Task<string> GetOrganizationsInfo(List<string> orgNumbers, string environmentName)
+
+    {
+        var client = _clients[environmentName];
+
+        var requestUrl = $"register/api/v1/parties/nameslookup";
+
+
+        var payload = new
+        {
+            parties = orgNumbers.Select(orgNumber => new { OrgNo = orgNumber })
+
+        };
+
+        string jsonPayload = JsonSerializer.Serialize(payload);
+
+        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+        var response = await client.PostAsync(requestUrl, content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        return responseBody;
+    }
     public async Task<string> GetPersonalContactsByOrg(string orgNumber, string environmentName)
     {
         try
