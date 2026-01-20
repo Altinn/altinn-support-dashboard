@@ -17,9 +17,11 @@ public class AltinnApiService : IAltinnApiService
     private readonly JsonSerializerOptions jsonOptions;
     private readonly ISsnTokenService _ssnTokenService;
     private readonly IRedactorProvider _redactorProvider;
+    private readonly ILogger<IAltinnApiService> _logger;
 
-    public AltinnApiService(IAltinnApiClient altinn2Client, IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider)
+    public AltinnApiService(IAltinnApiClient altinn2Client, IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinnApiService> logger)
     {
+        _logger = logger;
         _breggService = dataBrregService;
         _client = altinn2Client;
         _altinn3client = altinn3Client;
@@ -52,6 +54,7 @@ public class AltinnApiService : IAltinnApiService
 
     public async Task<string> GetOrganizationsInfoAltinn3(List<string> orgNumbers, string environment)
     {
+        _logger.LogInformation(orgNumbers.ToString());
         foreach (string orgNumber in orgNumbers)
         {
             if (!ValidationService.IsValidOrgNumber(orgNumber))
@@ -148,20 +151,21 @@ public class AltinnApiService : IAltinnApiService
         }
 
         foreach (var contact in personalContacts)
+        {
+            try
             {
-                try {
-                    if (!string.IsNullOrEmpty(contact.SocialSecurityNumber))
-                    {
-                        contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.SocialSecurityNumber);
-                        contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.SocialSecurityNumber);
-                        contact.SocialSecurityNumber = null; 
-                    }
-                }
-                catch (Exception ex)
+                if (!string.IsNullOrEmpty(contact.SocialSecurityNumber))
                 {
-                    Console.WriteLine($"Error redacting: {ex.Message}");
+                    contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.SocialSecurityNumber);
+                    contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.SocialSecurityNumber);
+                    contact.SocialSecurityNumber = null;
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error redacting: {ex.Message}");
+            }
+        }
         return personalContacts;
     }
 
@@ -176,9 +180,9 @@ public class AltinnApiService : IAltinnApiService
 
         if (string.IsNullOrWhiteSpace(ssn))
         {
-            ssn=subject; //If the subject isn't a token, like with manual role search, use it as is
+            ssn = subject; //If the subject isn't a token, like with manual role search, use it as is
         }
-        
+
         var result = await _client.GetPersonRoles(ssn, reportee, environment);
 
         var roles = JsonSerializer.Deserialize<List<Role>>(result, jsonOptions);
