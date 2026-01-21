@@ -28,7 +28,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
     {
-        public AltinnTT02Controller(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, altinn3Service, "TT02", ssnTokenService)
+        public AltinnTT02Controller(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService) : base(altinnApiService, altinn3Service, "TT02", ssnTokenService)
         {
         }
 
