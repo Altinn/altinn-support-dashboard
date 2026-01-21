@@ -4,7 +4,9 @@ namespace altinn_support_dashboard.Server.Services.Interfaces;
 
 public interface IAltinn3Service
 {
-    Task<string> GetOrganizationInfoAltinn3(string orgNumber, string environment);
+
+    Task<PartyNameDto> GetOrganizationPartyNameAltinn3(string orgNumber, string environment);
+    Task<Organization> GetOrganizationByOrgNoAltinn3(string orgNumber, string environment);
     Task<List<PartyNameDto>> GetPartyNamesByOrgAltinn3(List<string> orgNumbers, string environment);
     Task<List<Organization>> GetOrganizationsByEmailAltinn3(string email, string environment);
     Task<List<Organization>> GetOrganizationsByPhoneAltinn3(string phonenumber, string environment);

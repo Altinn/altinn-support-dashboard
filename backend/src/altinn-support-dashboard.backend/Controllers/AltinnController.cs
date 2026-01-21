@@ -209,10 +209,10 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/altinn3/organizations/{orgnumber}")]
-        public async Task<IActionResult> GetOrganizationInfoAltinn3([FromRoute] string orgnumber)
+        public async Task<IActionResult> GetOrganizationAltinn3([FromRoute] string orgnumber)
         {
 
-            var result = await _altinn3Service.GetOrganizationInfoAltinn3(orgnumber, environmentName);
+            var result = await _altinn3Service.GetOrganizationByOrgNoAltinn3(orgnumber, environmentName);
             return Ok(result);
 
         }
@@ -225,7 +225,9 @@ namespace AltinnSupportDashboard.Controllers
             var result = await _altinn3Service.GetPartyNamesByOrgAltinn3(data, environmentName);
             return Ok(result);
         }
-        [HttpGet("organizations/altinn3/organizations/phonenumber/{phonenumber}")]
+
+
+
         public async Task<IActionResult> GetOrganizationsFromPhoneAltinn3([FromRoute] string phonenumber)
         {
             if (!ValidationService.IsValidPhoneNumber(phonenumber))

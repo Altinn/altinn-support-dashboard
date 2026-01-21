@@ -16,9 +16,9 @@ public class Altinn3Service : IAltinn3Service
     private readonly JsonSerializerOptions jsonOptions;
     private readonly ISsnTokenService _ssnTokenService;
     private readonly IRedactorProvider _redactorProvider;
-    private readonly ILogger<IAltinnApiService> _logger;
+    private readonly ILogger<IAltinn3Service> _logger;
 
-    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinnApiService> logger)
+    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger)
     {
         _logger = logger;
         _breggService = dataBrregService;
@@ -33,22 +33,43 @@ public class Altinn3Service : IAltinn3Service
     }
 
 
-    public async Task<string> GetOrganizationInfoAltinn3(string orgNumber, string environment)
+    public async Task<PartyNameDto> GetOrganizationPartyNameAltinn3(string orgNumber, string environment)
     {
         if (!ValidationService.IsValidOrgNumber(orgNumber))
         {
             throw new ArgumentException("Orgnumber invalid. It has to be 9 digits long");
         }
 
-        var result = await _client.GetOrganizationInfo(orgNumber, environment);
+        var json = await _client.GetOrganizationInfo(orgNumber, environment);
+        _logger.LogInformation(json);
+        var result = JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions);
+
 
         if (result == null)
         {
             throw new Exception($"No data found for org with orgnumber: {orgNumber}");
         }
-        return result;
+        return result.PartyNames[0];
     }
 
+
+    public async Task<Organization> GetOrganizationByOrgNoAltinn3(string orgNumber, string environment)
+    {
+        PartyNameDto partyName = await GetOrganizationPartyNameAltinn3(orgNumber, environment);
+
+        var organization = new Organization
+        {
+            OrganizationNumber = partyName.OrgNo,
+            Name = partyName.Name
+        };
+
+        var breggResult = await _breggService.GetUnderenhet(orgNumber, environment);
+        if (breggResult != null)
+        {
+            organization.HeadUnit = new Organization { OrganizationNumber = breggResult.overordnetEnhet, Name = breggResult.navn };
+        }
+        return organization;
+    }
     public async Task<List<Organization>> GetOrganizationsByEmailAltinn3(string email, string environment)
     {
         var personalContacts = await GetPersonalContactsByEmailAltinn3(email, environment);
