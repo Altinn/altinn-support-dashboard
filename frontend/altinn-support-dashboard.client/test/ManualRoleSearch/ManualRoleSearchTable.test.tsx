@@ -5,7 +5,6 @@ import { Role } from "../../src/models/models";
 
 
 describe('ManualRoleSearchTable', () => {
-    // Tests to be implemented
     const mockRoles: Role[] = [
         {
             roleType: "ALTINN",

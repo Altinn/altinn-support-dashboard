@@ -5,7 +5,6 @@ import { userEvent } from "@testing-library/user-event/dist/cjs/setup/index.js";
 
 
 describe('ManualRoleSearchInput', () => {
-    // Tests to be implemented
 
     it('renders both input fields with correct labels', () => {
         render(<InputComponent />);
