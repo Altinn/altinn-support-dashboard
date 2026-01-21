@@ -5,6 +5,7 @@ using altinn_support_dashboard.Server.Utils;
 using Security;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Compliance.Redaction;
+using Models.altinn3Dtos;
 
 namespace AltinnSupportDashboard.Controllers
 {
@@ -27,7 +28,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
     {
-        public AltinnTT02Controller(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, "TT02", ssnTokenService)
+        public AltinnTT02Controller(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, altinn3Service, "TT02", ssnTokenService)
         {
         }
 
@@ -39,7 +40,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/Production/serviceowner")]
     public class AltinnProductionController : AltinnBaseController
     {
-        public AltinnProductionController(IAltinnApiService altinnApiService, IRedactorProvider redactorProvider, ISsnTokenService ssnTokenService) : base(altinnApiService, "Production", ssnTokenService)
+        public AltinnProductionController(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService) : base(altinnApiService, altinn3Service, "Production", ssnTokenService)
         {
         }
     }
@@ -52,11 +53,13 @@ namespace AltinnSupportDashboard.Controllers
     public abstract class AltinnBaseController : ControllerBase
     {
         protected readonly IAltinnApiService _altinnApiService;
+        protected readonly IAltinn3Service _altinn3Service;
         protected string environmentName;
         protected readonly ISsnTokenService _ssnTokenService;
 
-        public AltinnBaseController(IAltinnApiService altinnApiService, string environmentName, ISsnTokenService ssnTokenService)
+        public AltinnBaseController(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, string environmentName, ISsnTokenService ssnTokenService)
         {
+            _altinn3Service = altinn3Service;
             this.environmentName = environmentName;
             _altinnApiService = altinnApiService;
             _ssnTokenService = ssnTokenService;
@@ -209,7 +212,7 @@ namespace AltinnSupportDashboard.Controllers
         public async Task<IActionResult> GetOrganizationInfoAltinn3([FromRoute] string orgnumber)
         {
 
-            var result = await _altinnApiService.GetOrganizationInfoAltinn3(orgnumber, environmentName);
+            var result = await _altinn3Service.GetOrganizationInfoAltinn3(orgnumber, environmentName);
             return Ok(result);
 
         }
@@ -219,10 +222,10 @@ namespace AltinnSupportDashboard.Controllers
         {
             var data = orgnumbers.OrgNumbers;
 
-            var result = await _altinnApiService.GetOrganizationsInfoAltinn3(data, environmentName);
+            var result = await _altinn3Service.GetPartyNamesByOrgAltinn3(data, environmentName);
             return Ok(result);
-
         }
+
 
         [HttpGet("organizations/altinn3/personalcontacts/org/{orgnumber}")]
         public async Task<IActionResult> GetPersonalContactsAltinn3([FromRoute] string orgnumber)
@@ -231,7 +234,7 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
-            var result = await _altinnApiService.GetPersonalContactsByOrgAltinn3(orgnumber, environmentName);
+            var result = await _altinn3Service.GetPersonalContactsByOrgAltinn3(orgnumber, environmentName);
 
             return Ok(result);
 
@@ -244,7 +247,7 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("Email is Invalid");
             }
-            var result = await _altinnApiService.GetPersonalContactsByEmailAltinn3(email, environmentName);
+            var result = await _altinn3Service.GetPersonalContactsByEmailAltinn3(email, environmentName);
 
             return Ok(result);
 
@@ -258,7 +261,7 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("Phone number is Invalid");
             }
-            var result = await _altinnApiService.GetPersonalContactsByPhoneAltinn3(phonenumber, environmentName);
+            var result = await _altinn3Service.GetPersonalContactsByPhoneAltinn3(phonenumber, environmentName);
 
             return Ok(result);
 
@@ -272,7 +275,7 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
-            var result = await _altinnApiService.GetNotificationAddressesByOrgAltinn3(orgnumber, environmentName);
+            var result = await _altinn3Service.GetNotificationAddressesByOrgAltinn3(orgnumber, environmentName);
 
             return Ok(result);
         }
@@ -284,7 +287,7 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("Phonenumber not valid");
             }
-            var result = await _altinnApiService.GetNotificationAddressesByPhoneAltinn3(phonenumber, environmentName);
+            var result = await _altinn3Service.GetNotificationAddressesByPhoneAltinn3(phonenumber, environmentName);
 
             return Ok(result);
         }
@@ -296,7 +299,7 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("Email not valid");
             }
-            var result = await _altinnApiService.GetNotificationAddressesByEmailAltinn3(email, environmentName);
+            var result = await _altinn3Service.GetNotificationAddressesByEmailAltinn3(email, environmentName);
 
             return Ok(result);
         }
