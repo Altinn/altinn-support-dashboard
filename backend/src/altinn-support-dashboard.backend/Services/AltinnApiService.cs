@@ -93,6 +93,8 @@ public class AltinnApiService : IAltinnApiService
             throw new Exception("Ingen data funnet for den angitte e-postadressen.");
         }
         organizations = RemoveOrganizationDuplicates(organizations);
+
+        _logger.LogDebug($"OrgCount: {organizations.Count}");
         return organizations;
     }
 

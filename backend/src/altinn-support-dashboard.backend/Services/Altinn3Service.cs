@@ -41,7 +41,6 @@ public class Altinn3Service : IAltinn3Service
         }
 
         var json = await _client.GetOrganizationInfo(orgNumber, environment);
-        _logger.LogInformation(json);
         var result = JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions);
 
 
@@ -75,6 +74,8 @@ public class Altinn3Service : IAltinn3Service
         var personalContacts = await GetPersonalContactsByEmailAltinn3(email, environment);
         var notificationAddesses = await GetNotificationAddressesByEmailAltinn3(email, environment);
         var organizations = await GetOrganizationsFromProfileAltinn3(personalContacts, notificationAddesses, environment);
+
+        _logger.LogDebug($"OrgCount Altinn3 : {organizations.Count}");
 
         return organizations;
 
@@ -138,7 +139,6 @@ public class Altinn3Service : IAltinn3Service
             }
         }
         var json = await _client.GetOrganizationsInfo(orgNumbers, environment);
-        _logger.LogInformation(json);
         var result = JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions) ?? throw new Exception("Error serializing result");
 
         return result.PartyNames;
