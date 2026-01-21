@@ -49,24 +49,47 @@ public class Altinn3Service : IAltinn3Service
         return result;
     }
 
-    public async Task<string> GetOrganizationsByEmailAltinn3(string email, string environment)
+    public async Task<List<Organization>> GetOrganizationsByEmailAltinn3(string email, string environment)
     {
         var personalContacts = await GetPersonalContactsByEmailAltinn3(email, environment);
         var notificationAddesses = await GetNotificationAddressesByEmailAltinn3(email, environment);
         List<string> orgNumbers = [];
 
-        foreach (PersonalContact p in personalContacts)
+        // adds orgnumbers to list
+        foreach (PersonalContactDto p in personalContacts)
         {
-            orgNumbers.Add();
+            if (p.OrgNr != null)
+            {
+                orgNumbers.Add(p.OrgNr);
+            }
         }
 
+        foreach (NotificationAddressDto n in notificationAddesses)
+        {
+            if (n.SourceOrgNumber != null && !orgNumbers.Contains(n.SourceOrgNumber))
+            {
+                orgNumbers.Add(n.SourceOrgNumber);
+            }
+        }
+        List<PartyNameDto> partyNames = await GetPartyNamesByOrgAltinn3(orgNumbers, environment);
+        List<Organization> organizations = [];
+
+        foreach (PartyNameDto partyName in partyNames)
+        {
+            Organization newOrg = new Organization
+            {
+                OrganizationNumber = partyName.OrgNo,
+                Name = partyName.Name
+            };
+            organizations.Add(newOrg);
+        }
+        return organizations;
     }
 
 
     public async Task<List<PartyNameDto>> GetPartyNamesByOrgAltinn3(List<string> orgNumbers, string environment)
 
     {
-        _logger.LogInformation(orgNumbers.ToString());
         foreach (string orgNumber in orgNumbers)
         {
             if (!ValidationService.IsValidOrgNumber(orgNumber))
@@ -75,9 +98,10 @@ public class Altinn3Service : IAltinn3Service
             }
         }
         var json = await _client.GetOrganizationsInfo(orgNumbers, environment);
-        var result = JsonSerializer.Deserialize<List<PartyNameDto>>(json) ?? throw new Exception("Error serializing result");
+        _logger.LogInformation(json);
+        var result = JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions) ?? throw new Exception("Error serializing result");
 
-        return result;
+        return result.PartyNames;
     }
 
     public async Task<List<PersonalContactDto>> GetPersonalContactsByOrgAltinn3(string orgNumber, string environment)

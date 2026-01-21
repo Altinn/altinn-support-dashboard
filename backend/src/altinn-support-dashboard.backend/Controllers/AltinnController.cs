@@ -226,6 +226,18 @@ namespace AltinnSupportDashboard.Controllers
             return Ok(result);
         }
 
+        [HttpGet("organizations/altinn3/organizations/email/{email}")]
+        public async Task<IActionResult> GetOrganizationsFromEmailAltinn3([FromRoute] string email)
+        {
+            if (!ValidationService.IsValidEmail(email))
+            {
+                return BadRequest("Email is invalid");
+            }
+            var result = await _altinn3Service.GetOrganizationsByEmailAltinn3(email, environmentName);
+
+            return Ok(result);
+        }
+
 
         [HttpGet("organizations/altinn3/personalcontacts/org/{orgnumber}")]
         public async Task<IActionResult> GetPersonalContactsAltinn3([FromRoute] string orgnumber)

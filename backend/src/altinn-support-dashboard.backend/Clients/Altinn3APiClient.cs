@@ -27,7 +27,6 @@ public class Altinn3ApiClient : IAltinn3ApiClient
     {
         var client = _clientFactory.CreateClient(environmentName);
 
-        _logger.LogInformation(configuration.Ocp_Apim_Subscription_Key);
         client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", configuration.Ocp_Apim_Subscription_Key);
 
         client.BaseAddress = new Uri(configuration.BaseAddressAltinn3);
@@ -127,7 +126,6 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         var response = await client.GetAsync(requestUrl);
 
         var responseBody = await response.Content.ReadAsStringAsync();
-        _logger.LogInformation(responseBody);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -140,7 +138,6 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
     public async Task<string> GetPersonalContactsByPhone(string phoneNumber, string environmentName)
     {
-        _logger.LogInformation("What");
         var client = _clients[environmentName];
         var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/phonenumber/{phoneNumber}";
 
