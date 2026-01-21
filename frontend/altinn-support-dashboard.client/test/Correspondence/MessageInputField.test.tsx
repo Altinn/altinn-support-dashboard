@@ -88,5 +88,4 @@ describe('MessageInputField', () => {
 
         expect(container.firstChild).toHaveClass('custom-class');
     });
-
 });
