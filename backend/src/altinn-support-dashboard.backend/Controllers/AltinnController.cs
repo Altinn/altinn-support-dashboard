@@ -225,6 +225,18 @@ namespace AltinnSupportDashboard.Controllers
             var result = await _altinn3Service.GetPartyNamesByOrgAltinn3(data, environmentName);
             return Ok(result);
         }
+        [HttpGet("organizations/altinn3/organizations/phonenumber/{phonenumber}")]
+        public async Task<IActionResult> GetOrganizationsFromPhoneAltinn3([FromRoute] string phonenumber)
+        {
+            if (!ValidationService.IsValidPhoneNumber(phonenumber))
+            {
+                return BadRequest("phonenumber is invalid");
+            }
+            var result = await _altinn3Service.GetOrganizationsByPhoneAltinn3(phonenumber, environmentName);
+
+            return Ok(result);
+        }
+
 
         [HttpGet("organizations/altinn3/organizations/email/{email}")]
         public async Task<IActionResult> GetOrganizationsFromEmailAltinn3([FromRoute] string email)

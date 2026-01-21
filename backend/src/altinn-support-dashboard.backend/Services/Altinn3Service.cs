@@ -53,6 +53,24 @@ public class Altinn3Service : IAltinn3Service
     {
         var personalContacts = await GetPersonalContactsByEmailAltinn3(email, environment);
         var notificationAddesses = await GetNotificationAddressesByEmailAltinn3(email, environment);
+        var organizations = await GetOrganizationsFromProfileAltinn3(personalContacts, notificationAddesses, environment);
+
+        return organizations;
+
+    }
+
+    public async Task<List<Organization>> GetOrganizationsByPhoneAltinn3(string phonenumber, string environment)
+    {
+        var personalContacts = await GetPersonalContactsByPhoneAltinn3(phonenumber, environment);
+        var notificationAddesses = await GetNotificationAddressesByPhoneAltinn3(phonenumber, environment);
+        var organizations = await GetOrganizationsFromProfileAltinn3(personalContacts, notificationAddesses, environment);
+
+        return organizations;
+    }
+
+    //Helper function to get organizations from personalcontacts and notificationaddresses
+    private async Task<List<Organization>> GetOrganizationsFromProfileAltinn3(List<PersonalContactDto> personalContacts, List<NotificationAddressDto> notificationAddresses, string environment)
+    {
         List<string> orgNumbers = [];
 
         // adds orgnumbers to list
@@ -64,7 +82,7 @@ public class Altinn3Service : IAltinn3Service
             }
         }
 
-        foreach (NotificationAddressDto n in notificationAddesses)
+        foreach (NotificationAddressDto n in notificationAddresses)
         {
             if (n.SourceOrgNumber != null && !orgNumbers.Contains(n.SourceOrgNumber))
             {
@@ -84,6 +102,7 @@ public class Altinn3Service : IAltinn3Service
             organizations.Add(newOrg);
         }
         return organizations;
+
     }
 
 
