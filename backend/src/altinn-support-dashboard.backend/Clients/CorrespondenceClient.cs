@@ -30,19 +30,21 @@ public class CorrespondenceClient : ICorrespondenceClient
     {
         string requestUrl = "correspondence/api/v1/correspondence/upload";
 
-
-
         // expects a flattened format
         var form = new MultipartFormDataContent();
 
         //Resourceid based on which is chosen
         switch (correspondenceData.Correspondence.ResourceId)
         {
-            case CorrespondenceTypes.Defualt:
-                form.Add(new StringContent(resourceTypes.CorrespondenceDefualtResourceId), "correspondence.resourceid");
+            case CorrespondenceTypes.Default:
+
+                _logger.LogDebug("defualt");
+                form.Add(new StringContent(resourceTypes.DefualtResourceId), "correspondence.resourceid");
                 break;
             case CorrespondenceTypes.Confidentiality:
-                form.Add(new StringContent(resourceTypes.CorrespondenceConfidentialityResourceId), "correspondence.resourceid");
+
+                _logger.LogDebug("confident");
+                form.Add(new StringContent(resourceTypes.ConfidentialityResourceId), "correspondence.resourceid");
                 break;
             default:
                 throw new BadRequestException($"ResourceId {correspondenceData.Correspondence.ResourceId} not valid");

@@ -1,7 +1,12 @@
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+
 namespace altinn_support_dashboard.Server.Models.correspondence;
 
 public class Correspondence
 {
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public CorrespondenceTypes ResourceId { get; set; }
     public string SendersReference { get; set; } = "testReference";
     public CorrespondenceNotification Notification { get; set; } = new CorrespondenceNotification();
@@ -20,10 +25,12 @@ public class Correspondence
     public bool? IsConfirmationNeeded { get; set; }
     public bool? IsConfidential { get; set; }
 }
-
 public enum CorrespondenceTypes
 {
-    Defualt,
+    [EnumMember(Value = "default")]
+    Default,
+
+    [EnumMember(Value = "confidentiality")]
     Confidentiality
 
 }

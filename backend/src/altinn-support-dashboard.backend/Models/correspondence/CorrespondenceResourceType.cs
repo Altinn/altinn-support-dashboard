@@ -2,6 +2,6 @@
 
 public class CorrespondenceResourceType
 {
-    public string CorrespondenceDefualtResourceId { get; set; }
-    public string CorrespondenceConfidentialityResourceId { get; set; }
+    public required string DefualtResourceId { get; set; }
+    public required string ConfidentialityResourceId { get; set; }
 }
