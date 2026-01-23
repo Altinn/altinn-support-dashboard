@@ -3,6 +3,7 @@ using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.Extensions.Compliance.Redaction;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Models.altinn3Dtos;
 using Moq;
@@ -13,8 +14,8 @@ namespace altinn_support_dashboard.backend.Tests.Services;
 public class AltinnApiServiceTest
 {
     private readonly AltinnApiService _altinnApiService;
+    private readonly Mock<ILogger<IAltinnApiService>> _mockLogger;
     private readonly Mock<IAltinnApiClient> _mockAltinn2Client;
-    private readonly Mock<IAltinn3ApiClient> _mockAltinn3Client;
     private readonly Mock<IDataBrregService> _mockBreggService;
     private readonly Mock<ISsnTokenService> _mockSsnTokenService;
     private readonly Mock<IRedactorProvider> _mockRedactorProvider;
@@ -35,6 +36,7 @@ public class AltinnApiServiceTest
                 BaseAddressAltinn3 = "https://platform.tt02.altinn.no",
                 Timeout = 30,
                 ApiKey = "test-api-key",
+                Ocp_Apim_Subscription_Key = "test",
                 MaskinportenSettings = new MaskinportenSettings
                 { }
             },
@@ -46,6 +48,8 @@ public class AltinnApiServiceTest
                 BaseAddressAltinn3 = "https://platform.altinn.no",
                 Timeout = 30,
                 ApiKey = "test-api-key",
+
+                Ocp_Apim_Subscription_Key = "test",
                 MaskinportenSettings = new MaskinportenSettings
                 { }
             }
@@ -54,10 +58,10 @@ public class AltinnApiServiceTest
             .Returns(new HttpClient());
 
         _mockAltinn2Client = new Mock<IAltinnApiClient>();
-        _mockAltinn3Client = new Mock<IAltinn3ApiClient>();
         _mockSsnTokenService = new Mock<ISsnTokenService>();
         _mockRedactorProvider = new Mock<IRedactorProvider>();
-        _altinnApiService = new AltinnApiService(_mockAltinn2Client.Object, _mockAltinn3Client.Object, _mockBreggService.Object, _mockSsnTokenService.Object, _mockRedactorProvider.Object);
+        _mockLogger = new Mock<ILogger<IAltinnApiService>>();
+        _altinnApiService = new AltinnApiService(_mockAltinn2Client.Object, _mockBreggService.Object, _mockSsnTokenService.Object, _mockRedactorProvider.Object, _mockLogger.Object);
     }
 
     [Fact]
@@ -426,147 +430,6 @@ public class AltinnApiServiceTest
 
         _mockAltinn2Client.Verify(x => x.GetOfficialContacts("123456789", "Production"), Times.Once);
     }
-
-    [Fact]
-    public async Task GetOfficialContacts_ThrowsException_WhenResponseIsNull()
-    {
-        _mockAltinn2Client
-        .Setup(x => x.GetOfficialContacts(It.IsAny<string>(), It.IsAny<string>()))
-        .ReturnsAsync("null");
-
-        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetOfficialContacts("123456789", "TT02"));
-    }
-
-    [Fact]
-    public async Task GetPersonalContactsAltinn3_ReturnsContacts_WhenOrgNumberIsValid()
-    {
-        var validOrgNumber = "123456789";
-        var jsonResponse = @"[
-            {
-                ""OrgNumber"": ""123456789"",
-                ""NationalIdentityNumber"": ""01010112345"",
-                ""Name"": ""Ola Nordmann"",
-                ""Email"": ""test@test.no"",
-                ""Phone"": ""12345678"",
-                ""LastChanged"": ""2024-12-01T10:00:00""    
-            },
-            {
-                ""OrgNumber"": ""123456789"",
-                ""NationalIdentityNumber"": ""02020254321"",
-                ""Name"": ""Kari Nordmann"",
-                ""Email"": ""test1@test.no"",
-                ""Phone"": ""87654321"",
-                ""LastChanged"": ""2024-12-02T11:00:00""
-            }
-        ]";
-        _mockAltinn3Client
-        .Setup(x => x.GetPersonalContactsByOrg(It.IsAny<string>(), It.IsAny<string>()))
-        .ReturnsAsync(jsonResponse);
-
-        var resultList = await _altinnApiService.GetPersonalContactsByOrgAltinn3(validOrgNumber, "TT02");
-
-        Assert.NotNull(resultList);
-        Assert.Equal(2, resultList.Count);
-        Assert.IsType<List<PersonalContact>>(resultList);
-    }
-
-    [Theory]
-    [InlineData("")]
-    [InlineData("999")]
-    [InlineData("12345678")]
-    [InlineData("1234567890")]
-    [InlineData("abcdefghi")]
-    [InlineData("abcdefghij")]
-    [InlineData("1d2d3d4d5")]
-    public async Task GetPersonalContactsAltinn3_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
-    {
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetPersonalContactsByOrgAltinn3(invalidOrgNumber, "TT02"));
-    }
-
-    [Fact]
-    public async Task GetPersonalContactsAltinn3_UsesCorrectEnvironment()
-    {
-        _mockAltinn3Client
-        .Setup(x => x.GetPersonalContactsByOrg("123456789", "Production"))
-        .ReturnsAsync("[]");
-
-        await _altinnApiService.GetPersonalContactsByOrgAltinn3("123456789", "Production");
-
-        _mockAltinn3Client.Verify(x => x.GetPersonalContactsByOrg("123456789", "Production"), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetPersonalContactsAltinn3_ThrowsException_WhenResponseIsNull()
-    {
-        _mockAltinn3Client
-        .Setup(x => x.GetPersonalContactsByOrg(It.IsAny<string>(), It.IsAny<string>()))
-        .ReturnsAsync("null");
-
-        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetPersonalContactsByOrgAltinn3("123456789", "TT02"));
-    }
-
-    [Fact]
-    public async Task GetNotificationAddressesAltinn3_ReturnsData_WhenOrgNumberIsValid()
-    {
-        var validOrgNumber = "123456789";
-        var jsonResponse = @"[
-            {
-                ""notificationAddressId"": 1,
-                ""countryCode"": ""NO"",
-                ""email"": ""test@test.no"",
-                ""phone"": ""12345678"",
-                ""sourceOrgNumber"": ""123456789"",
-                ""requestedOrgNumber"": ""987654321"",
-                ""lastChanged"": ""2024-12-02T10:00:00""
-            }
-        ]";
-        _mockAltinn3Client
-        .Setup(x => x.GetNotificationAddressesByOrg(It.IsAny<string>(), It.IsAny<string>()))
-        .ReturnsAsync(jsonResponse);
-
-        var resultList = await _altinnApiService.GetNotificationAddressesByOrgAltinn3(validOrgNumber, "TT02");
-        var result = resultList[0];
-
-        Assert.NotNull(result);
-        Assert.IsType<List<NotificationAddressDto>>(resultList);
-
-    }
-
-    [Theory]
-    [InlineData("")]
-    [InlineData("999")]
-    [InlineData("12345678")]
-    [InlineData("1234567890")]
-    [InlineData("abcdefghi")]
-    [InlineData("abcdefghij")]
-    [InlineData("1d2d3d4d5")]
-    public async Task GetNotificationAddressesAltinn3_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
-    {
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetNotificationAddressesByOrgAltinn3(invalidOrgNumber, "TT02"));
-    }
-
-    [Fact]
-    public async Task GetNotificationAddressesAltinn3_UsesCorrectEnvironment()
-    {
-        _mockAltinn3Client
-        .Setup(x => x.GetNotificationAddressesByOrg("123456789", "Production"))
-        .ReturnsAsync("[]");
-
-        await _altinnApiService.GetNotificationAddressesByOrgAltinn3("123456789", "Production");
-
-        _mockAltinn3Client.Verify(x => x.GetNotificationAddressesByOrg("123456789", "Production"), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetNotificationAddressesAltinn3_ThrowsException_WhenResponseIsNull()
-    {
-        _mockAltinn3Client
-        .Setup(x => x.GetNotificationAddressesByOrg(It.IsAny<string>(), It.IsAny<string>()))
-        .ReturnsAsync("null");
-
-        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetNotificationAddressesByOrgAltinn3("123456789", "TT02"));
-    }
-
     [Fact]
     public async Task GetPersonRoles_UsesTokenToRetrieveSsn_WhenSubjectIsToken()
     {
