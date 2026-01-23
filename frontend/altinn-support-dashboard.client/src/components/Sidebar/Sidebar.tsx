@@ -11,8 +11,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   MagnifyingGlassIcon,
-  PlusIcon,
   CogIcon,
+  EnvelopeOpenIcon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -91,10 +91,11 @@ const Sidebar: React.FC = () => {
               icon={<MagnifyingGlassIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
+
             <NavItem
-              to="/new-org"
-              title="Ny Organisasjon"
-              icon={<PlusIcon className={classes.icons} />}
+              to="/correspondence"
+              title="Melding"
+              icon={<EnvelopeOpenIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
             <NavItem

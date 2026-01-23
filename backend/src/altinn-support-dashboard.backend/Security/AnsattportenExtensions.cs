@@ -175,15 +175,23 @@ public static class AnsattportenExtensions
         }
         else
         {
-            services.AddAuthorization(options =>
-                   {
-                       options.AddPolicy(AnsattportenConstants.AnsattportenAuthorizationPolicy, policy =>
-                       {
-                           policy.RequireAssertion(_ => true);
-                       });
-                   });
-        }
+            // sets all to true if if ansattporten is disabled
+            services.AddAuthorizationBuilder()
+                         .AddPolicy(AnsattportenConstants.AnsattportenAuthorizationPolicy, policy =>
+                             {
+                                 policy.RequireAssertion(_ => true);
+                             }
+                         ).AddPolicy(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy, policy =>
+                         {
 
+                             policy.RequireAssertion(_ => true);
+
+                         }).AddPolicy(AnsattportenConstants.AnsattportenProductionAuthorizationPolicy, policy =>
+                         {
+                             policy.RequireAssertion(_ => true);
+                         });
+
+        }
         return services;
     }
 

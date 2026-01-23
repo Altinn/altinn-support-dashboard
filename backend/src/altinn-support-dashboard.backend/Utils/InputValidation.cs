@@ -5,6 +5,8 @@ namespace altinn_support_dashboard.Server.Utils
 {
     public static class ValidationService
     {
+        private static readonly Regex SsnPattern = new(@"^\d{11}$");
+
         public static bool IsValidPhoneNumber(string phoneNumber)
         {
             return !string.IsNullOrWhiteSpace(phoneNumber) && ((phoneNumber[0] == '+' && phoneNumber.Skip(1).All(char.IsDigit)) || (phoneNumber.All(char.IsDigit)));
@@ -44,7 +46,7 @@ namespace altinn_support_dashboard.Server.Utils
             return false;
         }
 
-        public static bool IsValidSsnToken (string token)
+        public static bool IsValidSsnToken(string token)
         {
             if (string.IsNullOrWhiteSpace(token))
             {
@@ -54,8 +56,13 @@ namespace altinn_support_dashboard.Server.Utils
             {
                 return true;
             }
-            
+
             return false;
+        }
+        public static bool isValidSsn(string ssn)
+        {
+
+            return !string.IsNullOrEmpty(ssn) && SsnPattern.IsMatch(ssn);
         }
 
 

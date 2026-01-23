@@ -10,14 +10,10 @@ public class SsnTokenServiceTest
 
     public SsnTokenServiceTest()
     {
-        var inMemorySettings = new Dictionary<string, string?> {
-            {"SsnTokenSettings:TokenExpiryMinutes", "15"},
-            {"SsnTokenSettings:RemovalIntervalMinutes", "5"}
-        };
         _configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.Development.json")
-            .Build();
-        
+             .AddJsonFile("appsettings.Development.json")
+             .Build();
+
         _ssnTokenService = new SsnTokenService(_configuration);
     }
 
@@ -25,8 +21,8 @@ public class SsnTokenServiceTest
     public void GenerateSsnToken_ShouldReturnToken_WhenSsnIsValid()
     {
         var ssn = "12345678901";
-        var token =  _ssnTokenService.GenerateSsnToken(ssn);
-        Assert.False(string.IsNullOrEmpty(token));  
+        var token = _ssnTokenService.GenerateSsnToken(ssn);
+        Assert.False(string.IsNullOrEmpty(token));
     }
 
     [Theory]
@@ -59,12 +55,89 @@ public class SsnTokenServiceTest
     [Fact]
     public async Task RemoveExpiredTokens_ShouldRemoveExpiredTokens()
     {
+        var inMemorySettings = new Dictionary<string, string?> {
+            {"SsnTokenSettings:TokenExpiryMinutes", "0"}, //Immediate expiry
+            {"SsnTokenSettings:RemovalIntervalMinutes", "0.1"}
+        };
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+        var service = new SsnTokenService(configuration);
+
+        var ssn = "12345678901";
+        var token = service.GenerateSsnToken(ssn);
+
+        await Task.Delay(TimeSpan.FromMinutes(0.2));
+
+        var retrievedSsn = service.GetSsnFromToken(token);
+        Assert.Equal(string.Empty, retrievedSsn);
+    }
+
+    [Fact]
+    public void GenerateSsnToken_ShouldGenerateUniqueTokens_WhenCalledMultipleTimes()
+    {
+        var ssn = "12345678901";
+        var token1 = _ssnTokenService.GenerateSsnToken(ssn);
+        var token2 = _ssnTokenService.GenerateSsnToken(ssn);
+
+        Assert.NotEqual(token1, token2);
+    }
+
+    [Fact]
+    public void GenerateSsnToken_ShouldHandleMultipleSsn()
+    {
+        var ssn1 = "12345678901";
+        var ssn2 = "98765432109";
+
+        var token1 = _ssnTokenService.GenerateSsnToken(ssn1);
+        var token2 = _ssnTokenService.GenerateSsnToken(ssn2);
+
+        Assert.NotEqual(token1, token2);
+        Assert.Equal(ssn1, _ssnTokenService.GetSsnFromToken(token1));
+        Assert.Equal(ssn2, _ssnTokenService.GetSsnFromToken(token2));
+    }
+
+    [Fact]
+    public void GetSsnFromToken_ShouldReturnEmptyString_WhenTokenHasExpired()
+    {
+        var inMemorySettings = new Dictionary<string, string?> {
+            {"SsnTokenSettings:TokenExpiryMinutes", "0"}, //Immediate expiry
+            {"SsnTokenSettings:RemovalIntervalMinutes", "0.1"}
+        };
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+        var service = new SsnTokenService(configuration);
+
+        var ssn = "12345678901";
+        var token = service.GenerateSsnToken(ssn);
+
+        var retrievedSsn = service.GetSsnFromToken(token);
+        Assert.Equal(string.Empty, retrievedSsn);
+    }
+
+    [Fact]
+    public void GenerateTokenFromSsn_ShouldReturnValidGuidFormat()
+    {
         var ssn = "12345678901";
         var token = _ssnTokenService.GenerateSsnToken(ssn);
 
-        await Task.Delay(TimeSpan.FromMinutes(2));
+        Assert.True(Guid.TryParse(token, out _));
+    }
 
-        var retrievedSsn = _ssnTokenService.GetSsnFromToken(token);
-        Assert.Equal(string.Empty, retrievedSsn);
+    [Fact]
+    public void Constructor_ShouldUseDefaultValues_WhenConfigurationIsMissing()
+    {
+        var emptyConfig = new ConfigurationBuilder().Build();
+        var service = new SsnTokenService(emptyConfig);
+
+        var ssn = "12345678901";
+        var token = service.GenerateSsnToken(ssn);
+
+        Assert.False(string.IsNullOrEmpty(token));
+        Assert.Equal(ssn, service.GetSsnFromToken(token));
+        Assert.True(Guid.TryParse(token, out _));
     }
 }
