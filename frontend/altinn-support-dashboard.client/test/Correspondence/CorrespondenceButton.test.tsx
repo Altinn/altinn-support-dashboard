@@ -1,6 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
+//Had to add the above line to make sure the test runs in our pipline
 import { describe, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event/dist/cjs/setup/index.js";
