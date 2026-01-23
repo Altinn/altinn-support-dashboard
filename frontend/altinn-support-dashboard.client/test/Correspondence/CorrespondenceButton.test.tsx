@@ -35,7 +35,7 @@ describe('CorrespondenceButton', () => {
         const mockMutateAsync = vi.fn().mockResolvedValue({ success: true});
         vi.mocked(useCorrespondencePost).mockReturnValue({
             mutateAsync: mockMutateAsync,
-        } as any);
+        } as unknown as ReturnType<typeof useCorrespondencePost>);
 
         render(
             <CorrespondenceButton 
@@ -68,7 +68,7 @@ describe('CorrespondenceButton', () => {
         const mockMutateAsync = vi.fn().mockResolvedValue(mockResponse);
         vi.mocked(useCorrespondencePost).mockReturnValue({
             mutateAsync: mockMutateAsync,
-        } as any);
+        } as unknown as ReturnType<typeof useCorrespondencePost>);
 
         render(
             <CorrespondenceButton 
@@ -90,7 +90,7 @@ describe('CorrespondenceButton', () => {
         const mockMutateAsync = vi.fn().mockResolvedValue({});
         vi.mocked(useCorrespondencePost).mockReturnValue({
             mutateAsync: mockMutateAsync,
-        } as any);
+        } as unknown as ReturnType<typeof useCorrespondencePost>);
 
         render(
             <CorrespondenceButton 
@@ -118,7 +118,7 @@ describe('CorrespondenceButton', () => {
         );
         vi.mocked(useCorrespondencePost).mockReturnValue({
             mutateAsync: mockMutateAsync,
-        } as any);
+        } as unknown as ReturnType<typeof useCorrespondencePost>);
 
         render(
             <CorrespondenceButton 
@@ -142,7 +142,7 @@ describe('CorrespondenceButton', () => {
         const mockMutateAsync = vi.fn().mockResolvedValue({});
         vi.mocked(useCorrespondencePost).mockReturnValue({
             mutateAsync: mockMutateAsync,
-        } as any);
+        } as unknown as ReturnType<typeof useCorrespondencePost>);
 
         render(
             <CorrespondenceButton 
@@ -156,7 +156,7 @@ describe('CorrespondenceButton', () => {
         );
 
         await userEvent.click(screen.getByRole('button', { name: /Send melding/i }));
-        
+
         expect(mockMutateAsync).toHaveBeenCalledWith(
             expect.objectContaining({
                 recipients: [],
