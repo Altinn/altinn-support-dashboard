@@ -2,6 +2,8 @@
 
 public interface IAltinn3ApiClient
 {
+    Task<string> GetOrganizationInfo(string orgNumber, string environmentName);
+    Task<string> GetOrganizationsInfo(List<string> orgNumbers, string environmentName);
     Task<string> GetPersonalContactsByOrg(string orgNumber, string environmentName);
     Task<string> GetPersonalContactsByEmail(string email, string environmentName);
     Task<string> GetPersonalContactsByPhone(string phoneNumber, string environmentName);

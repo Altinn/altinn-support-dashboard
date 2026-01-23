@@ -88,6 +88,7 @@ namespace AltinnSupportDashboard
                     services.AddScoped<AltinnApiClient>();
                     services.AddScoped<Altinn3ApiClient>();
                     services.AddScoped<IAltinnApiService, AltinnApiService>();
+                    services.AddScoped<IAltinn3Service, Altinn3Service>();
                     services.AddScoped<PartyApiClient>();
                     services.AddScoped<IPartyApiService, PartyApiService>();
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
