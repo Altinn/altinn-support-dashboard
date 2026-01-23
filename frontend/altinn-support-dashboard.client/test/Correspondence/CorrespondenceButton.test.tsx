@@ -21,6 +21,10 @@ describe('CorrespondenceButton', () => {
     const mockSetResponseMessage = vi.fn();
 
     it('should render button with correct label', () => {
+        const mockMutateAsync = vi.fn();
+        vi.mocked(useCorrespondencePost).mockReturnValue({
+            mutateAsync: mockMutateAsync,
+        } as unknown as ReturnType<typeof useCorrespondencePost>);
         render(
             <CorrespondenceButton 
                 recipients={recipients}
