@@ -2,7 +2,7 @@ namespace altinn_support_dashboard.Server.Models.correspondence;
 
 public class Correspondence
 {
-    public string ResourceId { get; set; } = "ttd-asd-correspondence";
+    public CorrespondenceTypes ResourceId { get; set; }
     public string SendersReference { get; set; } = "testReference";
     public CorrespondenceNotification Notification { get; set; } = new CorrespondenceNotification();
     public CorrespondenceContent Content { get; set; } = new CorrespondenceContent();
@@ -19,4 +19,11 @@ public class Correspondence
     public DateTime? Published { get; set; }
     public bool? IsConfirmationNeeded { get; set; }
     public bool? IsConfidential { get; set; }
+}
+
+public enum CorrespondenceTypes
+{
+    Defualt,
+    Confidentiality
+
 }

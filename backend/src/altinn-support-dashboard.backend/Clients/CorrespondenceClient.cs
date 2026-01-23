@@ -12,6 +12,7 @@ public class CorrespondenceClient : ICorrespondenceClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<ICorrespondenceClient> _logger;
+    private readonly CorrespondenceResourceType resourceTypes;
     public CorrespondenceClient(IHttpClientFactory _clientFactory, IOptions<Configuration> configuration, ILogger<ICorrespondenceClient> logger)
     {
         _client = _clientFactory.CreateClient("TT02");
@@ -19,6 +20,8 @@ public class CorrespondenceClient : ICorrespondenceClient
         _client.Timeout = TimeSpan.FromSeconds(configuration.Value.TT02.Timeout);
         _client.DefaultRequestHeaders.Add("ApiKey", configuration.Value.TT02.ApiKey);
         _logger = logger;
+
+        resourceTypes = configuration.Value.Correspondence;
 
     }
 
@@ -28,11 +31,24 @@ public class CorrespondenceClient : ICorrespondenceClient
         string requestUrl = "correspondence/api/v1/correspondence/upload";
 
 
+
         // expects a flattened format
         var form = new MultipartFormDataContent();
 
+        //Resourceid based on which is chosen
+        switch (correspondenceData.Correspondence.ResourceId)
+        {
+            case CorrespondenceTypes.Defualt:
+                form.Add(new StringContent(resourceTypes.CorrespondenceDefualtResourceId), "correspondence.resourceid");
+                break;
+            case CorrespondenceTypes.Confidentiality:
+                form.Add(new StringContent(resourceTypes.CorrespondenceConfidentialityResourceId), "correspondence.resourceid");
+                break;
+            default:
+                throw new BadRequestException($"ResourceId {correspondenceData.Correspondence.ResourceId} not valid");
+        }
+
         // Correspondence required fields
-        form.Add(new StringContent(correspondenceData.Correspondence.ResourceId), "correspondence.resourceid");
         form.Add(new StringContent(correspondenceData.Correspondence.SendersReference), "correspondence.sendersreference");
         form.Add(new StringContent(correspondenceData.Correspondence.Content.Language), "correspondence.content.language");
         AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageTitle, "correspondence.content.messagetitle");

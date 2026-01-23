@@ -4,4 +4,5 @@ public class Configuration
 {
     public required EnvironmentConfiguration Production { get; set; }
     public required EnvironmentConfiguration TT02 { get; set; }
+    public required CorrespondenceResourceType Correspondence { get; set; }
 }
