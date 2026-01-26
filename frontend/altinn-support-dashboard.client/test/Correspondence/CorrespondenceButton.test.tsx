@@ -32,6 +32,8 @@ describe('CorrespondenceButton', () => {
                 summary="test"
                 body="test"
                 checked={false}
+                resourceType=""
+                dueDate=""
                 setResponseMessage={mockSetResponseMessage}
             />
         );
@@ -52,6 +54,8 @@ describe('CorrespondenceButton', () => {
                 summary="test"
                 body="test"
                 checked={true}
+                resourceType=""
+                dueDate=""
                 setResponseMessage={mockSetResponseMessage}
             />
         );
@@ -66,7 +70,9 @@ describe('CorrespondenceButton', () => {
                     messageSummary: "test",
                     messageBody: "test"
                 },
-                isConfirmationNeeded: true
+                isConfirmationNeeded: true,
+                resourceType: "",
+                dueDateTime: undefined
             }
         });
     });
@@ -85,6 +91,8 @@ describe('CorrespondenceButton', () => {
                 summary="test"
                 body="test"
                 checked={false}
+                resourceType=""
+                dueDate=""
                 setResponseMessage={mockSetResponseMessage}
             />
         );
@@ -107,6 +115,8 @@ describe('CorrespondenceButton', () => {
                 summary="test"
                 body="test"
                 checked={false}
+                resourceType=""
+                dueDate=""
                 setResponseMessage={mockSetResponseMessage}
             />
         );
@@ -135,6 +145,8 @@ describe('CorrespondenceButton', () => {
                 summary="test"
                 body="test"
                 checked={false}
+                resourceType=""
+                dueDate=""
                 setResponseMessage={mockSetResponseMessage}
             />
         );
@@ -159,6 +171,8 @@ describe('CorrespondenceButton', () => {
                 summary="test"
                 body="test"
                 checked={false}
+                resourceType=""
+                dueDate=""
                 setResponseMessage={mockSetResponseMessage}
             />
         );
@@ -170,5 +184,92 @@ describe('CorrespondenceButton', () => {
                 recipients: [],
             })
         );
+    });
+
+    it('should include resourceType in the request', async () => {
+        const mockMutateAsync = vi.fn().mockResolvedValue({});
+        vi.mocked(useCorrespondencePost).mockReturnValue({
+            mutateAsync: mockMutateAsync,
+        } as unknown as ReturnType<typeof useCorrespondencePost>);
+
+        render(
+            <CorrespondenceButton 
+                recipients={recipients}
+                title="Test"
+                summary="test"
+                body="test"
+                checked={false}
+                resourceType="confidentiality"
+                dueDate="2026-01-26"
+                setResponseMessage={mockSetResponseMessage}
+            />
+        );
+
+        await userEvent.click(screen.getByRole('button', { name: /Send melding/i }));
+
+        expect(mockMutateAsync).toHaveBeenCalledWith(
+            expect.objectContaining({
+                correspondence: expect.objectContaining({
+                    resourceType: "confidentiality"
+                })
+            })
+        );
+    });
+
+    it('should include dueDate in the request', async () => {
+        const mockMutateAsync = vi.fn().mockResolvedValue({});
+        vi.mocked(useCorrespondencePost).mockReturnValue({
+            mutateAsync: mockMutateAsync,
+        } as unknown as ReturnType<typeof useCorrespondencePost>);
+
+        render(
+            <CorrespondenceButton 
+                recipients={recipients}
+                title="Test"
+                summary="test"
+                body="test"
+                checked={false}
+                resourceType="default"
+                dueDate="2026-01-26"
+                setResponseMessage={mockSetResponseMessage}
+            />
+        );
+
+        await userEvent.click(screen.getByRole('button', { name: /Send melding/i }));
+
+        expect(mockMutateAsync).toHaveBeenCalledWith(
+            expect.objectContaining({
+                correspondence: expect.objectContaining({
+                    dueDateTime: "2026-01-26"
+                })
+            })
+        );
+    });
+
+    it('should save response to sessionStorage', async () => {
+        const mockResponse = { success: true };
+        const mockMutateAsync = vi.fn().mockResolvedValue(mockResponse);
+        vi.mocked(useCorrespondencePost).mockReturnValue({
+            mutateAsync: mockMutateAsync,
+        } as unknown as ReturnType<typeof useCorrespondencePost>);
+
+        const setItemSpy = vi.spyOn(window.sessionStorage.__proto__, 'setItem'); // Spy on sessionStorage.setItem to check if it's called
+
+        render(
+            <CorrespondenceButton 
+                recipients={recipients}
+                title="Test"
+                summary="test"
+                body="test"
+                checked={false}
+                resourceType=""
+                dueDate=""
+                setResponseMessage={mockSetResponseMessage}
+            />
+        );
+
+        await userEvent.click(screen.getByRole('button', { name: /Send melding/i }));
+
+        expect(setItemSpy).toHaveBeenCalledWith('responseMessage', JSON.stringify(mockResponse));
     });
 });
