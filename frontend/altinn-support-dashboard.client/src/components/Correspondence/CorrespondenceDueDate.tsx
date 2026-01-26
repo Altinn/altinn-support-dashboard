@@ -13,10 +13,13 @@ const CorrespondenceDueDate: React.FC<CorrespondenceDuaDateProps> = ({
     SetSelectedDateTime(newDate);
   };
 
+  const validDate = new Date();
+  validDate.setDate(validDate.getDate() + 1);
+
   return (
     <Input
       value={SelectedDateTime}
-      min={new Date().toISOString().split("T")[0]}
+      min={validDate.toISOString().split("T")[0]}
       onChange={(e) => {
         handleChange(e.target.value);
       }}
