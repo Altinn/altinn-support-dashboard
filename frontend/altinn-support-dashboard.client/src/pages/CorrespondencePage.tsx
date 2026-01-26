@@ -33,8 +33,12 @@ export const CorrespondencePage = () => {
   const [responseMessage, setResponseMessage] =
     useState<CorrespondenceResponse>();
 
-  const [selectedDateTime, setSelectedDateTime] = useState<string>("");
-  const [resourceType, setResourceType] = useState<string>("");
+  const [selectedDateTime, setSelectedDateTime] = useState<string>(
+    getLocalStorageValue("dueDate"),
+  );
+  const [resourceType, setResourceType] = useState<string>(
+    getLocalStorageValue("resourceType"),
+  );
 
   const handleConfirmationChange = (bool: boolean) => {
     setConfirmationNeeded(bool);
