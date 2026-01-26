@@ -1,4 +1,4 @@
-import { Checkbox, Heading, Label, Select } from "@digdir/designsystemet-react";
+import { Checkbox, Heading, Label } from "@digdir/designsystemet-react";
 import classes from "./styles/CorrespondencePage.module.css";
 import { useState } from "react";
 import {
