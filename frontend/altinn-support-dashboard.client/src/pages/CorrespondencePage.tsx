@@ -31,7 +31,10 @@ export const CorrespondencePage = () => {
   });
 
   const [responseMessage, setResponseMessage] =
-    useState<CorrespondenceResponse>();
+    useState<CorrespondenceResponse>(() => {
+      const item = sessionStorage.getItem("responseMessage");
+      return item ? JSON.parse(item) : undefined;
+    });
 
   const [selectedDateTime, setSelectedDateTime] = useState<string>(
     getLocalStorageValue("dueDate"),

@@ -45,6 +45,7 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
     };
     const response = await post.mutateAsync(correspondence);
     setResponseMessage(response);
+    sessionStorage.setItem("responseMessage", JSON.stringify(response));
   };
 
   return (
