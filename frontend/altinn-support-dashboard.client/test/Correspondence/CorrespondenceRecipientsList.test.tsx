@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CorrespondenceRecipientsList from "../../src/components/Correspondence/CorrespondenceRecipientsList";
+import { toast } from "react-toastify";
 
 
 
@@ -108,6 +109,49 @@ describe('CorrespondenceRecipientsList', () => {
         const removeButton = screen.getByRole('button', { name: /X/i });
         await user.click(removeButton);
         expect(mockRecipients).toHaveBeenCalledTimes(0);
+    });
+
+    it('should save recipients to localStorage when changed', async () => {
+        const { rerender } = render(
+            <CorrespondenceRecipientsList
+                recipients={recipients}
+                setRecipients={mockRecipients}
+            />
+        );
+
+        expect(localStorage.getItem("recipients")).toBe(JSON.stringify(recipients));
+
+        const newRecipients = [
+            "111111111",
+            "222222222"
+        ];
+
+        rerender(
+            <CorrespondenceRecipientsList
+                recipients={newRecipients}
+                setRecipients={mockRecipients}
+            />
+        );
+
+        expect(localStorage.getItem("recipients")).toBe(JSON.stringify(newRecipients));
+    });
+
+    it('should show warning toast when trying to remove the only recipient', async () => {
+        const user = userEvent.setup();
+        const toastWarningSpy = vi.spyOn(toast, 'warning');
+
+        render(
+            <CorrespondenceRecipientsList
+                recipients={["123456789012"]}
+                setRecipients={mockRecipients}
+            />
+        );
+        const removeButton = screen.getByRole('button', { name: /X/i });
+        await user.click(removeButton);
+
+        expect(toastWarningSpy).toHaveBeenCalledWith("You need at least one recipient to create a correspondence" );
+
+        toastWarningSpy.mockRestore();
     });
 
 });
