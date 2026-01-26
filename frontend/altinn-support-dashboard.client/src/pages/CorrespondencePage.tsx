@@ -37,7 +37,7 @@ export const CorrespondencePage = () => {
     getLocalStorageValue("dueDate"),
   );
   const [resourceType, setResourceType] = useState<string>(
-    getLocalStorageValue("resourceType"),
+    getLocalStorageValue("resourceType") || "default",
   );
 
   const handleConfirmationChange = (bool: boolean) => {
