@@ -279,4 +279,26 @@ describe('CorrespondenceButton', () => {
 
         setItemSpy.mockRestore();//clean up
     });
+
+    it('should disable button when recipients array is empty', () => {
+        const mockMutateAsync = vi.fn();
+        vi.mocked(useCorrespondencePost).mockReturnValue({
+            mutateAsync: mockMutateAsync,
+        } as unknown as ReturnType<typeof useCorrespondencePost>);
+
+        render(
+            <CorrespondenceButton 
+                recipients={[]}
+                title="Test"
+                summary="test"
+                body="test"
+                checked={false}
+                resourceType=""
+                dueDate=""
+                setResponseMessage={mockSetResponseMessage}
+            />
+        );
+
+        expect(screen.getByRole('button', { name: /Send melding/i })).toBeDisabled();
+    });
 });
