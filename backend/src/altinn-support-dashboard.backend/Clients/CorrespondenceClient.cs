@@ -38,7 +38,7 @@ public class CorrespondenceClient : ICorrespondenceClient
         {
             case "default":
 
-                form.Add(new StringContent(resourceTypes.DefualtResourceId.ToString()), "correspondence.resourceid");
+                form.Add(new StringContent(resourceTypes.DefaultResourceId.ToString()), "correspondence.resourceid");
                 break;
             case "confidentiality":
 
