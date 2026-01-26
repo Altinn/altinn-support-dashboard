@@ -21,7 +21,7 @@ const CorrespondenceResourceType: React.FC<CorrespondenceResourceTypeProps> = ({
         value={resourceType}
         onChange={(e) => handleResourceTypeChange(e.target.value)}
       >
-        <Select.Option value="default">Ordinær</Select.Option>
+        <Select.Option value="default">Ordinær post</Select.Option>
         <Select.Option value="confidentiality">
           Taushetsbelagt post
         </Select.Option>
