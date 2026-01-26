@@ -1,8 +1,12 @@
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+
 namespace altinn_support_dashboard.Server.Models.correspondence;
 
 public class Correspondence
 {
-    public string ResourceId { get; set; } = "ttd-asd-correspondence";
+
+    public string ResourceType { get; set; } = "default";
     public string SendersReference { get; set; } = "testReference";
     public CorrespondenceNotification Notification { get; set; } = new CorrespondenceNotification();
     public CorrespondenceContent Content { get; set; } = new CorrespondenceContent();
@@ -20,3 +24,4 @@ public class Correspondence
     public bool? IsConfirmationNeeded { get; set; }
     public bool? IsConfidential { get; set; }
 }
+

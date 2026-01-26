@@ -16,6 +16,10 @@
   min-width: 0;
 }
 
+.formContainer > * {
+  margin-top: 0.5rem;
+}
+
 .responseContainer {
   flex: 0 0 70%;
   min-width: 0;
