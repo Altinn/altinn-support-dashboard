@@ -51,7 +51,8 @@ public class Altinn3ServiceTests
                 ApiKey = "test-api-key",
                 MaskinportenSettings = new MaskinportenSettings
                 { }
-            }
+            },
+            Correspondence = new CorrespondenceResourceType { DefualtResourceId = "default", ConfidentialityResourceId = "confident" }
         });
         mockHttpClient.Setup(x => x.CreateClient(It.IsAny<string>()))
             .Returns(new HttpClient());
