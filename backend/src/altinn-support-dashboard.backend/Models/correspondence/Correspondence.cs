@@ -6,8 +6,7 @@ namespace altinn_support_dashboard.Server.Models.correspondence;
 public class Correspondence
 {
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public CorrespondenceTypes ResourceType { get; set; }
+    public string ResourceType { get; set; } = "default";
     public string SendersReference { get; set; } = "testReference";
     public CorrespondenceNotification Notification { get; set; } = new CorrespondenceNotification();
     public CorrespondenceContent Content { get; set; } = new CorrespondenceContent();
@@ -25,12 +24,4 @@ public class Correspondence
     public bool? IsConfirmationNeeded { get; set; }
     public bool? IsConfidential { get; set; }
 }
-public enum CorrespondenceTypes
-{
-    [EnumMember(Value = "default")]
-    Default,
 
-    [EnumMember(Value = "confidentiality")]
-    Confidentiality
-
-}

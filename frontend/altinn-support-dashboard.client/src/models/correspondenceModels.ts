@@ -3,7 +3,7 @@ export interface CorrespondenceUploadRequest {
   recipients: string[];
 }
 export interface Correspondence {
-  resourceType?: string;
+  resourceType: string;
   content?: CorrespondenceContent;
   isConfirmationNeeded?: boolean;
   dueDateTime?: string;

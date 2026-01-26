@@ -6,6 +6,7 @@ import {
 } from "../../models/correspondenceModels";
 
 type CorrespondenceButtonProps = {
+  resourceType: string;
   recipients: string[];
   title: string;
   summary: string;
@@ -16,6 +17,7 @@ type CorrespondenceButtonProps = {
 };
 
 const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
+  resourceType,
   recipients,
   title,
   summary,
@@ -35,6 +37,8 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
           messageSummary: summary,
           messageTitle: title,
         },
+
+        resourceType: resourceType,
         isConfirmationNeeded: checked,
         dueDateTime: dueDate || undefined,
       },

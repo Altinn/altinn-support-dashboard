@@ -1,4 +1,4 @@
-import { Checkbox, Heading, Label } from "@digdir/designsystemet-react";
+import { Checkbox, Heading, Label, Select } from "@digdir/designsystemet-react";
 import classes from "./styles/CorrespondencePage.module.css";
 import { useState } from "react";
 import {
@@ -13,6 +13,7 @@ import { CorrespondenceResponse } from "../models/correspondenceModels";
 import ResponseStatusCode from "../components/Correspondence/ResponseStatusCode";
 import { TestFlaskIcon } from "@navikt/aksel-icons";
 import CorrespondenceDueDate from "../components/Correspondence/CorrespondenceDueDate";
+import CorrespondenceResourceType from "../components/Correspondence/CorrespondenceResourceType";
 
 export const CorrespondencePage = () => {
   const [recipients, setRecipients] = useState<string[]>(() => {
@@ -33,6 +34,7 @@ export const CorrespondencePage = () => {
     useState<CorrespondenceResponse>();
 
   const [selectedDateTime, setSelectedDateTime] = useState<string>("");
+  const [resourceType, setResourceType] = useState<string>("");
 
   const handleConfirmationChange = (bool: boolean) => {
     setConfirmationNeeded(bool);
@@ -88,11 +90,17 @@ export const CorrespondencePage = () => {
             onChange={(e) => handleConfirmationChange(e.target.checked)}
             label="Ja"
           />
+
+          <CorrespondenceResourceType
+            resourceType={resourceType}
+            setResourceType={setResourceType}
+          />
           <CorrespondenceDueDate
             SelectedDateTime={selectedDateTime}
             SetSelectedDateTime={setSelectedDateTime}
           />
           <CorrespondenceButton
+            resourceType={resourceType}
             dueDate={selectedDateTime}
             recipients={recipients}
             title={title}

@@ -36,18 +36,16 @@ public class CorrespondenceClient : ICorrespondenceClient
         //Resourceid based on which is chosen
         switch (correspondenceData.Correspondence.ResourceType)
         {
-            case CorrespondenceTypes.Default:
+            case "default":
 
-                _logger.LogDebug("defualt");
-                form.Add(new StringContent(resourceTypes.DefualtResourceId), "correspondence.resourceid");
+                form.Add(new StringContent(resourceTypes.DefualtResourceId.ToString()), "correspondence.resourceid");
                 break;
-            case CorrespondenceTypes.Confidentiality:
+            case "confidentiality":
 
-                _logger.LogDebug("confident");
-                form.Add(new StringContent(resourceTypes.ConfidentialityResourceId), "correspondence.resourceid");
+                form.Add(new StringContent(resourceTypes.ConfidentialityResourceId.ToString()), "correspondence.resourceid");
                 break;
             default:
-                throw new BadRequestException($"ResourceId {correspondenceData.Correspondence.ResourceType} not valid");
+                throw new BadRequestException($"ResourceType {correspondenceData.Correspondence.ResourceType} not valid");
         }
 
         // Correspondence required fields
