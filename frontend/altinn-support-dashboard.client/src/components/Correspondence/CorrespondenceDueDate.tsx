@@ -1,4 +1,4 @@
-import { Input } from "@digdir/designsystemet-react";
+import { Input, Label } from "@digdir/designsystemet-react";
 
 interface CorrespondenceDuaDateProps {
   SelectedDateTime: string;
@@ -17,14 +17,17 @@ const CorrespondenceDueDate: React.FC<CorrespondenceDuaDateProps> = ({
   validDate.setDate(validDate.getDate() + 1);
 
   return (
-    <Input
-      value={SelectedDateTime}
-      min={validDate.toISOString().split("T")[0]}
-      onChange={(e) => {
-        handleChange(e.target.value);
-      }}
-      type="date"
-    />
+    <div>
+      <Label>Frist</Label>
+      <Input
+        value={SelectedDateTime}
+        min={validDate.toISOString().split("T")[0]}
+        onChange={(e) => {
+          handleChange(e.target.value);
+        }}
+        type="date"
+      />
+    </div>
   );
 };
 
