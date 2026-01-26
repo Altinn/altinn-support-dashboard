@@ -33,7 +33,7 @@ describe('CorrespondenceResponseField', () => {
         expect(screen.getByText("Response header content")).toBeInTheDocument();
     });
 
-    it('should witch to request tab when clicked', async () => {
+    it('should switch to request tab when clicked', async () => {
         const user = userEvent.setup();
         render(<CorrespondenceResponseField responseData={responseData} />);
 

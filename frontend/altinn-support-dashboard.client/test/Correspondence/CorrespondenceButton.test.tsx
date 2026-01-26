@@ -13,6 +13,11 @@ vi.mock("../../src/hooks/hooks", () => ({
     useCorrespondencePost: vi.fn()
 }));
 
+beforeEach(() => {
+    vi.clearAllMocks();
+    sessionStorage.clear();
+});
+
 describe('CorrespondenceButton', () => {
     const recipients = [
         "123456789012",
@@ -271,5 +276,7 @@ describe('CorrespondenceButton', () => {
         await userEvent.click(screen.getByRole('button', { name: /Send melding/i }));
 
         expect(setItemSpy).toHaveBeenCalledWith('responseMessage', JSON.stringify(mockResponse));
+
+        setItemSpy.mockRestore();//clean up
     });
 });
