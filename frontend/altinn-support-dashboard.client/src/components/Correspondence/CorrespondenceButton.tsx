@@ -6,21 +6,25 @@ import {
 } from "../../models/correspondenceModels";
 
 type CorrespondenceButtonProps = {
+  resourceType: string;
   recipients: string[];
   title: string;
   summary: string;
   body: string;
   checked: boolean;
   setResponseMessage: (responseData: CorrespondenceResponse) => void;
+  dueDate: string;
 };
 
 const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
+  resourceType,
   recipients,
   title,
   summary,
   body,
   checked,
   setResponseMessage,
+  dueDate,
 }) => {
   const post = useCorrespondencePost();
   const filteredRecipients = recipients.filter(Boolean);
@@ -33,11 +37,15 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
           messageSummary: summary,
           messageTitle: title,
         },
+
+        resourceType: resourceType,
         isConfirmationNeeded: checked,
+        dueDateTime: dueDate || undefined,
       },
     };
     const response = await post.mutateAsync(correspondence);
     setResponseMessage(response);
+    sessionStorage.setItem("responseMessage", JSON.stringify(response));
   };
 
   return (

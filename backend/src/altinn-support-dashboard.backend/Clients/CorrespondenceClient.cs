@@ -12,6 +12,7 @@ public class CorrespondenceClient : ICorrespondenceClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<ICorrespondenceClient> _logger;
+    private readonly CorrespondenceResourceType resourceTypes;
     public CorrespondenceClient(IHttpClientFactory _clientFactory, IOptions<Configuration> configuration, ILogger<ICorrespondenceClient> logger)
     {
         _client = _clientFactory.CreateClient("TT02");
@@ -20,6 +21,8 @@ public class CorrespondenceClient : ICorrespondenceClient
         _client.DefaultRequestHeaders.Add("ApiKey", configuration.Value.TT02.ApiKey);
         _logger = logger;
 
+        resourceTypes = configuration.Value.Correspondence;
+
     }
 
     //Creates a correspondence with an attachment
@@ -27,12 +30,25 @@ public class CorrespondenceClient : ICorrespondenceClient
     {
         string requestUrl = "correspondence/api/v1/correspondence/upload";
 
-
         // expects a flattened format
         var form = new MultipartFormDataContent();
 
+        //Resourceid based on which is chosen
+        switch (correspondenceData.Correspondence.ResourceType)
+        {
+            case "default":
+
+                form.Add(new StringContent(resourceTypes.DefaultResourceId.ToString()), "correspondence.resourceid");
+                break;
+            case "confidentiality":
+
+                form.Add(new StringContent(resourceTypes.ConfidentialityResourceId.ToString()), "correspondence.resourceid");
+                break;
+            default:
+                throw new BadRequestException($"ResourceType {correspondenceData.Correspondence.ResourceType} not valid");
+        }
+
         // Correspondence required fields
-        form.Add(new StringContent(correspondenceData.Correspondence.ResourceId), "correspondence.resourceid");
         form.Add(new StringContent(correspondenceData.Correspondence.SendersReference), "correspondence.sendersreference");
         form.Add(new StringContent(correspondenceData.Correspondence.Content.Language), "correspondence.content.language");
         AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageTitle, "correspondence.content.messagetitle");
@@ -40,7 +56,13 @@ public class CorrespondenceClient : ICorrespondenceClient
 
         // Correspondence optional fields
         AddIfNotNull(form, correspondenceData.Correspondence.IsConfirmationNeeded.ToString(), "correspondence.isconfirmationneeded");
-        AddIfNotNull(form, correspondenceData.Correspondence.DueDateTime.ToString("o", CultureInfo.InvariantCulture), "correspondence.duedatetime");
+
+        //Sets dueDate 7 days in future if null
+        if (AddIfNotNull(form, correspondenceData.Correspondence.DueDateTime.ToString("o", CultureInfo.InvariantCulture), "correspondence.duedatetime"))
+        {
+            form.Add(new StringContent(DateTime.UtcNow.AddDays(7).ToString("o", CultureInfo.InvariantCulture)), "correspondence.duedatetime");
+        }
+        ;
 
 
         AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageSummary, "correspondence.content.messageSummary");
@@ -104,13 +126,15 @@ public class CorrespondenceClient : ICorrespondenceClient
     }
 
     //helper function for all optional fields
-    private static void AddIfNotNull(MultipartFormDataContent form, string? value, string name)
+    private static bool AddIfNotNull(MultipartFormDataContent form, string? value, string name)
     {
 
         if (!string.IsNullOrEmpty(value))
         {
             form.Add(new StringContent(value), name);
+            return true;
         }
+        return false;
     }
 
     // Converts response to string

@@ -12,6 +12,8 @@ import CorrespondenceResponseField from "../components/Correspondence/Correspond
 import { CorrespondenceResponse } from "../models/correspondenceModels";
 import ResponseStatusCode from "../components/Correspondence/ResponseStatusCode";
 import { TestFlaskIcon } from "@navikt/aksel-icons";
+import CorrespondenceDueDate from "../components/Correspondence/CorrespondenceDueDate";
+import CorrespondenceResourceType from "../components/Correspondence/CorrespondenceResourceType";
 
 export const CorrespondencePage = () => {
   const [recipients, setRecipients] = useState<string[]>(() => {
@@ -29,7 +31,17 @@ export const CorrespondencePage = () => {
   });
 
   const [responseMessage, setResponseMessage] =
-    useState<CorrespondenceResponse>();
+    useState<CorrespondenceResponse>(() => {
+      const item = sessionStorage.getItem("responseMessage");
+      return item ? JSON.parse(item) : undefined;
+    });
+
+  const [selectedDateTime, setSelectedDateTime] = useState<string>(
+    getLocalStorageValue("dueDate"),
+  );
+  const [resourceType, setResourceType] = useState<string>(
+    getLocalStorageValue("resourceType") || "default",
+  );
 
   const handleConfirmationChange = (bool: boolean) => {
     setConfirmationNeeded(bool);
@@ -85,7 +97,18 @@ export const CorrespondencePage = () => {
             onChange={(e) => handleConfirmationChange(e.target.checked)}
             label="Ja"
           />
+
+          <CorrespondenceResourceType
+            resourceType={resourceType}
+            setResourceType={setResourceType}
+          />
+          <CorrespondenceDueDate
+            SelectedDateTime={selectedDateTime}
+            SetSelectedDateTime={setSelectedDateTime}
+          />
           <CorrespondenceButton
+            resourceType={resourceType}
+            dueDate={selectedDateTime}
             recipients={recipients}
             title={title}
             summary={summary}
@@ -94,6 +117,7 @@ export const CorrespondencePage = () => {
             setResponseMessage={setResponseMessage}
           />
         </div>
+
         <div className={classes.responseContainer}>
           {responseMessage && (
             <div>
