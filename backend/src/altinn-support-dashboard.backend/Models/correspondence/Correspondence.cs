@@ -7,7 +7,7 @@ public class Correspondence
 {
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public CorrespondenceTypes ResourceId { get; set; }
+    public CorrespondenceTypes ResourceType { get; set; }
     public string SendersReference { get; set; } = "testReference";
     public CorrespondenceNotification Notification { get; set; } = new CorrespondenceNotification();
     public CorrespondenceContent Content { get; set; } = new CorrespondenceContent();

@@ -34,7 +34,7 @@ public class CorrespondenceClient : ICorrespondenceClient
         var form = new MultipartFormDataContent();
 
         //Resourceid based on which is chosen
-        switch (correspondenceData.Correspondence.ResourceId)
+        switch (correspondenceData.Correspondence.ResourceType)
         {
             case CorrespondenceTypes.Default:
 
@@ -47,7 +47,7 @@ public class CorrespondenceClient : ICorrespondenceClient
                 form.Add(new StringContent(resourceTypes.ConfidentialityResourceId), "correspondence.resourceid");
                 break;
             default:
-                throw new BadRequestException($"ResourceId {correspondenceData.Correspondence.ResourceId} not valid");
+                throw new BadRequestException($"ResourceId {correspondenceData.Correspondence.ResourceType} not valid");
         }
 
         // Correspondence required fields
@@ -58,7 +58,13 @@ public class CorrespondenceClient : ICorrespondenceClient
 
         // Correspondence optional fields
         AddIfNotNull(form, correspondenceData.Correspondence.IsConfirmationNeeded.ToString(), "correspondence.isconfirmationneeded");
-        AddIfNotNull(form, correspondenceData.Correspondence.DueDateTime.ToString("o", CultureInfo.InvariantCulture), "correspondence.duedatetime");
+
+        //Sets dueDate 7 days in future if null
+        if (AddIfNotNull(form, correspondenceData.Correspondence.DueDateTime.ToString("o", CultureInfo.InvariantCulture), "correspondence.duedatetime"))
+        {
+            form.Add(new StringContent(DateTime.UtcNow.AddDays(7).ToString("o", CultureInfo.InvariantCulture)), "correspondence.duedatetime");
+        }
+        ;
 
 
         AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageSummary, "correspondence.content.messageSummary");
@@ -122,13 +128,15 @@ public class CorrespondenceClient : ICorrespondenceClient
     }
 
     //helper function for all optional fields
-    private static void AddIfNotNull(MultipartFormDataContent form, string? value, string name)
+    private static bool AddIfNotNull(MultipartFormDataContent form, string? value, string name)
     {
 
         if (!string.IsNullOrEmpty(value))
         {
             form.Add(new StringContent(value), name);
+            return true;
         }
+        return false;
     }
 
     // Converts response to string

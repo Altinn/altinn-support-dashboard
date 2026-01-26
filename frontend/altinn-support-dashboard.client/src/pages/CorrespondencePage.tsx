@@ -12,6 +12,7 @@ import CorrespondenceResponseField from "../components/Correspondence/Correspond
 import { CorrespondenceResponse } from "../models/correspondenceModels";
 import ResponseStatusCode from "../components/Correspondence/ResponseStatusCode";
 import { TestFlaskIcon } from "@navikt/aksel-icons";
+import CorrespondenceDueDate from "../components/Correspondence/CorrespondenceDueDate";
 
 export const CorrespondencePage = () => {
   const [recipients, setRecipients] = useState<string[]>(() => {
@@ -30,6 +31,8 @@ export const CorrespondencePage = () => {
 
   const [responseMessage, setResponseMessage] =
     useState<CorrespondenceResponse>();
+
+  const [selectedDateTime, setSelectedDateTime] = useState<string>("");
 
   const handleConfirmationChange = (bool: boolean) => {
     setConfirmationNeeded(bool);
@@ -85,7 +88,12 @@ export const CorrespondencePage = () => {
             onChange={(e) => handleConfirmationChange(e.target.checked)}
             label="Ja"
           />
+          <CorrespondenceDueDate
+            SelectedDateTime={selectedDateTime}
+            SetSelectedDateTime={setSelectedDateTime}
+          />
           <CorrespondenceButton
+            dueDate={selectedDateTime}
             recipients={recipients}
             title={title}
             summary={summary}
@@ -94,6 +102,7 @@ export const CorrespondencePage = () => {
             setResponseMessage={setResponseMessage}
           />
         </div>
+
         <div className={classes.responseContainer}>
           {responseMessage && (
             <div>

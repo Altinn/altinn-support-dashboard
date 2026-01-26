@@ -12,6 +12,7 @@ type CorrespondenceButtonProps = {
   body: string;
   checked: boolean;
   setResponseMessage: (responseData: CorrespondenceResponse) => void;
+  dueDate: string;
 };
 
 const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
@@ -21,6 +22,7 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
   body,
   checked,
   setResponseMessage,
+  dueDate,
 }) => {
   const post = useCorrespondencePost();
   const filteredRecipients = recipients.filter(Boolean);
@@ -34,6 +36,7 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
           messageTitle: title,
         },
         isConfirmationNeeded: checked,
+        dueDateTime: dueDate || undefined,
       },
     };
     const response = await post.mutateAsync(correspondence);
