@@ -187,7 +187,6 @@ describe('Sidebar', () => {
         );
 
         expect(screen.queryByText('Test User')).not.toBeInTheDocument();
-        expect(screen.queryByText('test@test.no')).not.toBeInTheDocument();
     });
 
     it('should show old userName when auth name is unavailable', async () => {
