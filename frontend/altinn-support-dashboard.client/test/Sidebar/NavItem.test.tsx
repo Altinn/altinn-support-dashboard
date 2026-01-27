@@ -2,7 +2,7 @@ import { vi } from "vitest"
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import NavItem from '../../src/components/Sidebar/NavItem';
-import { BrowserRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 
 
 
@@ -20,14 +20,14 @@ describe('NavItem', () => {
 
     it('should render title when not collapsed', () => {
         render(
-            <BrowserRouter>
+            <MemoryRouter>
                 <NavItem
                     to="/test"
                     title="Test Title"
                     icon={<MockIcon />}
                     isCollapsed={false}
                 />
-            </BrowserRouter>
+            </MemoryRouter>
         );
 
         expect(screen.getByText('Test Title')).toBeInTheDocument();
@@ -36,14 +36,14 @@ describe('NavItem', () => {
 
     it('should render icon with tooltip when collapsed', () => {
         render(
-            <BrowserRouter>
+            <MemoryRouter>
                 <NavItem
                     to="/test"
                     title="Test Title"
                     icon={<MockIcon />}
                     isCollapsed={true}
                 />
-            </BrowserRouter>
+            </MemoryRouter>
         );
 
         expect(screen.getByTestId('mock-icon')).toBeInTheDocument();
@@ -52,14 +52,14 @@ describe('NavItem', () => {
 
     it('should render NavLink with correct href', () => {
         render(
-            <BrowserRouter>
+            <MemoryRouter>
                 <NavItem
                     to="/test-link"
                     title="Link Title"
                     icon={<MockIcon />}
                     isCollapsed={false}
                 />
-            </BrowserRouter>
+            </MemoryRouter>
         );
 
         const navLink = screen.getByRole('link');
@@ -68,14 +68,14 @@ describe('NavItem', () => {
 
     it('should apply collapsed class when isCollapsed is true', () => {
         render(
-            <BrowserRouter>
+            <MemoryRouter>
                 <NavItem
                     to="/collapsed"
                     title="Collapsed Title"
                     icon={<MockIcon />}
                     isCollapsed={true}
                 />
-            </BrowserRouter>
+            </MemoryRouter>
         );
 
         const navLink = screen.getByRole('link');
@@ -84,17 +84,33 @@ describe('NavItem', () => {
 
     it('should not apply collapsed class when isCollapsed is false', () => {
         render(
-            <BrowserRouter>
+            <MemoryRouter>
                 <NavItem
                     to="/not-collapsed"
                     title="Not Collapsed Title"
                     icon={<MockIcon />}
                     isCollapsed={false}
                 />
-            </BrowserRouter>
+            </MemoryRouter>
         );
 
         const navLink = screen.getByRole('link');
         expect(navLink.className).not.toMatch(/navButtonCollapsed/);
+    });
+
+    it('should apply selected class when NavLink is active', () => {
+        render(
+            //Have to 
+            <MemoryRouter initialEntries={['/active']}>
+                <NavItem
+                    to="/active"
+                    title="Active Title"
+                    icon={<MockIcon />}
+                    isCollapsed={false}
+                />
+            </MemoryRouter>
+        );
+        const navLink = screen.getByRole('link');
+        expect(navLink.className).toMatch(/navButtonSelected/);
     });
 });
