@@ -51,8 +51,7 @@ public static class AnsattportenExtensions
 
                 options.Events.OnRedirectToAccessDenied = context =>
                 {
-                    var redirectBaseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
-                    context.Response.Redirect(redirectBaseUrl + "/signin?error=loginFailed");
+                    context.Response.Redirect(context.RedirectUri + "/signin?error=loginFailed");
                     return Task.CompletedTask;
 
 
@@ -102,10 +101,9 @@ public static class AnsattportenExtensions
                     //handles errors and redirects correctly
                     options.Events.OnRemoteFailure = context =>
                     {
-                        var redirectBaseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>();
                         var error = context?.Failure?.Message ?? "uknown message";
 
-                        context?.Response.Redirect(redirectBaseUrl + "/signin?error=loginFailed");
+                        context?.Response.Redirect(context?.Properties?.RedirectUri + "/signin?error=loginFailed");
 
                         context?.HandleResponse();
 

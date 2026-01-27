@@ -66,7 +66,7 @@ namespace altinn_support_dashboard.Server.Utils
         }
 
 
-        public static string SanitizeRedirectUrl(string? url)
+        public static string SanitizeRedirect(string? url)
         {
             //only relative redirect url's allowed
 
@@ -75,6 +75,18 @@ namespace altinn_support_dashboard.Server.Utils
                 return url;
             }
             return "/";
+        }
+
+        public static bool validBaseUrl(string url)
+        {
+            var uri = new Uri(url);
+
+            if (uri.Scheme != "https")
+            {
+                return false;
+            }
+            return true;
+
         }
     }
 }
