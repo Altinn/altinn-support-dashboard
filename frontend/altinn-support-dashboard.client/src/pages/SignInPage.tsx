@@ -46,7 +46,7 @@ export const SignInPage: React.FC = () => {
         className={style.ansattPortenButton}
         onClick={handleSignInAnsattporten}
       >
-        Logg inn med AnsattPorten
+        Logg inn med Ansattporten
       </Button>
 
       <div className={style.gifContainer}>

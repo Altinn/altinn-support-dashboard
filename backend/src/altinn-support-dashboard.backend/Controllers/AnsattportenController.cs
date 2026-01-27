@@ -123,7 +123,7 @@ public class AnsattportenController : ControllerBase
 
     }
 
-    //Helper function to santize and set url to correct port if local development
+    //Helper function to santize and set url to correct port if in local development
     private string SanitizeUrl(string url)
     {
         return isDev
