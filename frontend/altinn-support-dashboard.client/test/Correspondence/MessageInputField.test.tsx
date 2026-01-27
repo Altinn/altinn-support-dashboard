@@ -88,4 +88,17 @@ describe('MessageInputField', () => {
 
         expect(container.firstChild).toHaveClass('custom-class');
     });
+
+    it('should render without custom className when no name is provided', () => {
+        const { container } = render(
+            <MessageInputField
+                labelText="Test Label"
+                value=""
+                onChange={() => {}}
+            />
+        );
+        const firstChild = container.firstChild as HTMLElement;
+        expect(firstChild.className.trim()).toBe('');
+        //checks that an empty string is the only class applied
+    });
 });
