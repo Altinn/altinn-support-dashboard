@@ -13,7 +13,7 @@ const CorrespondenceResponseField: React.FC<
   return (
     <div>
       {responseData && (
-        <Tabs>
+        <Tabs defaultValue="response">
           <Tabs.List>
             <Tabs.Tab value="response"> Response</Tabs.Tab>
             <Tabs.Tab value="request">Request</Tabs.Tab>
