@@ -72,6 +72,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      "/api/auth/signin-oidc": {
+        target: target,
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });

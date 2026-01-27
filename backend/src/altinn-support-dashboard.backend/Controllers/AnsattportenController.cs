@@ -20,20 +20,20 @@ public class AnsattportenController : ControllerBase
     private bool ansattportenFeatureFlag;
     private IAnsattportenService _ansattportenService;
     private ILogger<AnsattportenController> _logger;
+    private bool isDev;
 
-    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService, ILogger<AnsattportenController> logger)
+    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService, ILogger<AnsattportenController> logger, IWebHostEnvironment environment)
     {
+        isDev = environment.IsDevelopment();
         _ansattportenService = ansattportenService;
         _logger = logger;
         ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
     }
 
     [HttpGet("login")]
-    public async Task<IActionResult> Login([FromQuery] string? redirectTo = "/")
+    public async Task<IActionResult> Login([FromQuery] string redirectTo = "/")
     {
-
-        string safeRedirectPath = ValidationService.SanitizeRedirect(redirectTo ?? "");
-
+        var safeRedirectPath = SanitizeUrl(redirectTo);
         if (ansattportenFeatureFlag != true)
         {
             return Redirect(safeRedirectPath);
@@ -96,10 +96,10 @@ public class AnsattportenController : ControllerBase
     }
 
     [HttpGet("logout")]
-    public async Task<IActionResult> Logout([FromQuery] string? redirectTo = "/")
+    public async Task<IActionResult> Logout([FromQuery] string redirectTo = "/")
     {
 
-        string safeRedirectPath = ValidationService.SanitizeRedirect(redirectTo);
+        string safeRedirectPath = SanitizeUrl(redirectTo);
 
 
         if (ansattportenFeatureFlag != true)
@@ -121,6 +121,14 @@ public class AnsattportenController : ControllerBase
 
         return Redirect(safeRedirectPath);
 
+    }
+
+    //Helper function to santize and set url to correct port if local development
+    private string SanitizeUrl(string url)
+    {
+        return isDev
+           ? "https://localhost:5173" + ValidationService.SanitizeRedirect(url ?? "/")
+           : ValidationService.SanitizeRedirect(url ?? "/");
     }
 
 }
