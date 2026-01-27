@@ -18,7 +18,6 @@ namespace AltinnSupportDashboard.Controllers;
 public class AnsattportenController : ControllerBase
 {
     private bool ansattportenFeatureFlag;
-    private string baseUrl;
     private IAnsattportenService _ansattportenService;
     private ILogger<AnsattportenController> _logger;
 
@@ -27,7 +26,6 @@ public class AnsattportenController : ControllerBase
         _ansattportenService = ansattportenService;
         _logger = logger;
         ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
-        baseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>() ?? "";
     }
 
     [HttpGet("login")]
