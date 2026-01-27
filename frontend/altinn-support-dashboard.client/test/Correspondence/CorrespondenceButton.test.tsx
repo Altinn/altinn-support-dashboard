@@ -273,4 +273,34 @@ describe('CorrespondenceButton', () => {
 
         expect(screen.getByRole('button', { name: /Send melding/i })).toBeDisabled();
     });
+
+    it('should send undefined dueDateTime when dueDate is empty', async () => {
+        const mockMutateAsync = vi.fn().mockResolvedValue({});
+        vi.mocked(useCorrespondencePost).mockReturnValue({
+            mutateAsync: mockMutateAsync,
+        } as unknown as ReturnType<typeof useCorrespondencePost>);
+
+        render(
+            <CorrespondenceButton 
+                recipients={recipients}
+                title="Test"
+                summary="test"
+                body="test"
+                checked={false}
+                resourceType=""
+                dueDate=""
+                setResponseMessage={mockSetResponseMessage}
+            />
+        );
+
+        await userEvent.click(screen.getByRole('button', { name: /Send melding/i }));
+
+        expect(mockMutateAsync).toHaveBeenCalledWith(
+            expect.objectContaining({
+                correspondence: expect.objectContaining({
+                    dueDateTime: undefined
+                })
+            })
+        );
+    });
 });
