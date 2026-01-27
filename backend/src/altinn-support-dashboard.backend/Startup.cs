@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace AltinnSupportDashboard
@@ -76,8 +77,8 @@ namespace AltinnSupportDashboard
 
 
             //enables only from frontend
-            string baseUrl = Configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>() ?? throw new Exception("Redirecrt url not set");
-            if (!String.IsNullOrEmpty(baseUrl))
+            string[] baseUrl = Configuration.GetSection("RedirectConfiguration:AllowedUrls").Get<string[]>() ?? throw new Exception("Redirecrt url not set");
+            if (!baseUrl.IsNullOrEmpty())
             {
                 services.AddCors(options =>
                 {

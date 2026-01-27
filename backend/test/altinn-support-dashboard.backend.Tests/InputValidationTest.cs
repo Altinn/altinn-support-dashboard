@@ -4,7 +4,7 @@ namespace altinn_support_dashboard.backend.Tests.Validation;
 
 public class InputValidationTest
 {
-    
+
     [Theory]
     [InlineData("+4712345678", true)]
     [InlineData("12345678", true)]
@@ -81,7 +81,7 @@ public class InputValidationTest
     [InlineData("   ", "/")]
     public void SanitizeRedirectUrl_ShouldReturnExpectedResult(string url, string expectedResult)
     {
-        string result = altinn_support_dashboard.Server.Utils.ValidationService.SanitizeRedirectUrl(url);
+        string result = altinn_support_dashboard.Server.Utils.ValidationService.SanitizeRedirect(url);
         Assert.Equal(expectedResult, result);
     }
 }
