@@ -50,7 +50,7 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
 
   return (
     <div>
-      <Button onClick={handleSendMessage} disabled={recipients.length === 0}>
+      <Button onClick={handleSendMessage} disabled={filteredRecipients.length === 0}>
         Send melding
       </Button>
     </div>

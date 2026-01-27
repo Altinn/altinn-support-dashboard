@@ -163,34 +163,6 @@ describe('CorrespondenceButton', () => {
         expect(button).not.toBeDisabled();
     });
 
-    it('should send empty array when all recipients are empty strings', async () => {
-        const mockMutateAsync = vi.fn().mockResolvedValue({});
-        vi.mocked(useCorrespondencePost).mockReturnValue({
-            mutateAsync: mockMutateAsync,
-        } as unknown as ReturnType<typeof useCorrespondencePost>);
-
-        render(
-            <CorrespondenceButton 
-                recipients={["", "", ""]}
-                title="Test"
-                summary="test"
-                body="test"
-                checked={false}
-                resourceType=""
-                dueDate=""
-                setResponseMessage={mockSetResponseMessage}
-            />
-        );
-
-        await userEvent.click(screen.getByRole('button', { name: /Send melding/i }));
-
-        expect(mockMutateAsync).toHaveBeenCalledWith(
-            expect.objectContaining({
-                recipients: [],
-            })
-        );
-    });
-
     it('should include resourceType in the request', async () => {
         const mockMutateAsync = vi.fn().mockResolvedValue({});
         vi.mocked(useCorrespondencePost).mockReturnValue({
