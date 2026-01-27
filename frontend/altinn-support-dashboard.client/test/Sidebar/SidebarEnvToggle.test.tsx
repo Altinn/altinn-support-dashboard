@@ -42,7 +42,6 @@ describe('SidebarEnvToggle', () => {
         render(<SidebarEnvToggle />);
 
         const select = screen.getByRole('combobox');
-        expect(select).toBeInTheDocument();
         expect(select).toHaveValue('PROD');
     });
 
@@ -267,5 +266,30 @@ describe('SidebarEnvToggle', () => {
         render(<SidebarEnvToggle />);
 
         expect(mockSetEnvironment).toHaveBeenCalledWith('TT02');
+    });
+
+    it('should not switch environment when userPolicies is null', async () => {
+        const { useAppStore } = await import('../../src/stores/Appstore');
+        const { useAuthDetails } = await import('../../src/hooks/ansattportenHooks');
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        vi.mocked(useAppStore).mockImplementation((selector: any) => selector({
+            environment: 'TT02',
+            setEnvironment: mockSetEnvironment
+        }));
+        vi.mocked(useAuthDetails).mockReturnValue({
+            data: {
+                ansattportenActive: true,
+                userPolicies: null,
+                isLoggedIn: true,
+                name: 'Test User',
+                orgName: 'Test Org'
+            },
+            isLoading: false
+        }as unknown as ReturnType<typeof useAuthDetails>);
+
+        render(<SidebarEnvToggle />);
+
+        expect(mockSetEnvironment).not.toHaveBeenCalled();
     });
 });
