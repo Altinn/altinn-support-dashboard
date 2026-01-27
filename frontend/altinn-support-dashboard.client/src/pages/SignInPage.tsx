@@ -6,7 +6,7 @@ import coloredLogo from "../assets/log-in-blue.png";
 import { useAppStore } from "../stores/Appstore";
 import cat from "../assets/fun/sleeping cat.gif";
 import dog from "../assets/fun/sleeping dog.gif";
-import { initiateAiDevSignIn, initiateSignIn } from "../utils/ansattportenApi";
+import { initiateSignIn } from "../utils/ansattportenApi";
 import { useLocation } from "react-router-dom";
 import { showPopup } from "../components/Popup";
 
@@ -32,9 +32,6 @@ export const SignInPage: React.FC = () => {
   const handleSignInAnsattporten = () => {
     initiateSignIn("/dashboard");
   };
-  const handleSignInAiDev = () => {
-    initiateAiDevSignIn("/dashboard");
-  };
 
   return (
     <div className={style.container}>
@@ -51,13 +48,7 @@ export const SignInPage: React.FC = () => {
       >
         Logg inn med AnsattPorten
       </Button>
-      <Button
-        variant="primary"
-        className={style.aidevButton}
-        onClick={handleSignInAiDev}
-      >
-        Logg inn med AI-dev
-      </Button>
+
       <div className={style.gifContainer}>
         <img src={selectedImage} alt="gif" className={style.catGif} />
       </div>
