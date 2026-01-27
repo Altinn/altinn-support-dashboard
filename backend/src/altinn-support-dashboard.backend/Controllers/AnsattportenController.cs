@@ -34,7 +34,7 @@ public class AnsattportenController : ControllerBase
     public async Task<IActionResult> Login([FromQuery] string? redirectTo = "/")
     {
 
-        string safeRedirectPath = baseUrl + ValidationService.SanitizeRedirectUrl(redirectTo ?? "");
+        string safeRedirectPath = ValidationService.SanitizeRedirect(redirectTo ?? "");
 
         if (ansattportenFeatureFlag != true)
         {
@@ -101,7 +101,7 @@ public class AnsattportenController : ControllerBase
     public async Task<IActionResult> Logout([FromQuery] string? redirectTo = "/")
     {
 
-        string safeRedirectPath = baseUrl + ValidationService.SanitizeRedirectUrl(redirectTo);
+        string safeRedirectPath = ValidationService.SanitizeRedirect(redirectTo);
 
 
         if (ansattportenFeatureFlag != true)
