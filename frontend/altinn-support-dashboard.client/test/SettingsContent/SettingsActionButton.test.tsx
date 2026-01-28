@@ -39,4 +39,16 @@ describe('SettingsActionButtons', () => {
 
         expect(reloadSpy).toHaveBeenCalled();
     });
+
+    it('should call initiateSignOut when the logout button is clicked', async () => {
+        const user = userEvent.setup();
+        const { initiateSignOut } = await import('../../src/utils/ansattportenApi');
+
+        render(<SettingsActionButtons />);
+
+        const logoutButton = screen.getByRole('button', { name: /Logg ut/i });
+        await user.click(logoutButton);
+
+        expect(initiateSignOut).toHaveBeenCalledWith('/signin');
+    });
 })
