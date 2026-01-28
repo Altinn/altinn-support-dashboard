@@ -221,7 +221,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
     }
 
-    public async Task<string> GetRolesAndRightsAltinn3(RolesAndRightsDto dto, string environmentName)
+    public async Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, string environmentName)
     {
 
         var client = _clients[environmentName];

@@ -242,4 +242,29 @@ public class Altinn3Service : IAltinn3Service
 
         return notificationAddresses;
     }
+
+    public async Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment)
+    {
+        rolesAndRights.Type = getTypeFromValue(rolesAndRights.Value);
+        foreach (PartyFilter party in rolesAndRights.PartyFilter)
+        {
+            party.Type = getTypeFromValue(party.Value);
+        }
+        var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
+        return result;
+
+    }
+    private string getTypeFromValue(string value)
+    {
+        if (ValidationService.isValidSsn(value))
+        {
+            return "urn:altinn:person:identifier-no";
+        }
+        else if (ValidationService.IsValidOrgNumber(value))
+        {
+            return "urn:altinn:organization:identifier-no";
+        }
+        return "";
+    }
+
 }
