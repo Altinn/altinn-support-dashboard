@@ -251,7 +251,6 @@ public class Altinn3Service : IAltinn3Service
             party.Type = getTypeFromValue(party.Value);
         }
         var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
-        _logger.LogInformation(result);
         var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
         return roles;
