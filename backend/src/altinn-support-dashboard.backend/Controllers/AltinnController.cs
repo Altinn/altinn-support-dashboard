@@ -340,5 +340,13 @@ namespace AltinnSupportDashboard.Controllers
             }
             return Ok(new { socialSecurityNumber = ssn });
         }
+
+        [HttpPost("organizations/altinn3/roles")]
+        public async Task<IActionResult> PostRolesAndRightsAltinn3([FromBody] RolesAndRightsRequest request)
+        {
+            var result = await _altinn3Service.GetRolesAndRightsAltinn3(request, environmentName);
+
+            return Ok(result);
+        }
     }
 }
