@@ -22,7 +22,7 @@ const NotificationContactCell: React.FC<NotificationContactCellProps> = ({
     : value;
 
   //outlines if searchquery is part of the cell
-  const boldened = value === userInput ? { fontWeight: "bold" } : undefined;
+  const boldened = displayValue?.replace(/\s/g, "").toLowerCase() === userInput ? { fontWeight: "bold" } : undefined;
 
   return (
     <Table.Cell className={style["cellText"]} style={boldened}>
