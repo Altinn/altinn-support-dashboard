@@ -1,7 +1,6 @@
 export interface Organization {
   name: string;
   organizationNumber: string;
-  type: string;
   headUnit?: Organization;
 }
 
