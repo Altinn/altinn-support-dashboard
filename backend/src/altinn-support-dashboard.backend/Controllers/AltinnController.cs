@@ -91,7 +91,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/altinn3/search")]
-        public async Task<IActionResult> Altinn3Search([FromQuery] string query)
+        public async Task<IActionResult> SearchAltinn3 ([FromQuery] string query)
         {
             if (string.IsNullOrEmpty(query))
             {
