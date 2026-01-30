@@ -63,6 +63,11 @@ describe('SettingsVersionComponent', () => {
         vi.mocked(fetchVersionData).mockResolvedValue({
             version: '2.0.0',
             releaseDate: '2024-06-01',
+            changes: [{
+                title: 'Major Update',
+                description: 'Second version of the app',
+                details: [],
+            }],
         });
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -71,8 +76,6 @@ describe('SettingsVersionComponent', () => {
         }));
 
         render(<SettingsVersionComponent />);
-
-
     });
 
 
