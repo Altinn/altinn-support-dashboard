@@ -148,7 +148,7 @@ public class Altinn3Service : IAltinn3Service
         return result.PartyNames;
     }
 
-    public async Task<List<PersonalContactDto>> GetPersonalContactsByOrgAltinn3(string orgNumber, string environment)
+    public async Task<List<PersonalContactAltinn3>> GetPersonalContactsByOrgAltinn3(string orgNumber, string environment)
     {
         if (!ValidationService.IsValidOrgNumber(orgNumber))
         {
@@ -157,7 +157,35 @@ public class Altinn3Service : IAltinn3Service
         var result = await _client.GetPersonalContactsByOrg(orgNumber, environment);
         var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
-        return contactsAltinn3;
+        var contacts = contactsAltinn3.Select(contact => new PersonalContactAltinn3 
+        {
+            OrgNr = contact.OrgNr,
+            NationalIdentityNumber = contact.NationalIdentityNumber,
+            Name = contact.Name,
+            Phone = contact.Phone,
+            Email = contact.Email,
+            LastChanged = contact.LastChanged,
+        }).ToList();
+
+        foreach (var contact in contacts)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(contact.NationalIdentityNumber))
+                {
+                    contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.NationalIdentityNumber);
+                    _logger.LogDebug($"Displayed ssn created {contact.DisplayedSocialSecurityNumber}");
+                    contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.NationalIdentityNumber);
+                    contact.NationalIdentityNumber = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error redacting: {ex.Message}");
+            }
+        }
+
+        return contacts;
     }
 
     public async Task<List<PersonalContactDto>> GetPersonalContactsByEmailAltinn3(string email, string environment)

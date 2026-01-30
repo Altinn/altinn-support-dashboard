@@ -90,6 +90,31 @@ namespace AltinnSupportDashboard.Controllers
             return BadRequest("Ugyldig søketerm. Angi et gyldig organisasjonsnummer, telefonnummer eller e-postadresse.");
         }
 
+        [HttpGet("organizations/altinn3/search")]
+        public async Task<IActionResult> Altinn3Search([FromQuery] string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return BadRequest("Søketerm kan ikke være tom.");
+            }
+
+            if (ValidationService.IsValidEmail(query))
+            {
+                return await GetOrganizationsFromEmailAltinn3(query);
+            }
+            if (ValidationService.IsValidOrgNumber(query))
+            {
+                return await GetOrganizationAltinn3(query);
+            }
+
+            if (ValidationService.IsValidPhoneNumber(query))
+            {
+                return await GetOrganizationsFromPhoneAltinn3(query);
+            }
+
+            return BadRequest("Ugyldig søketerm. Angi et gyldig organisasjonsnummer, telefonnummer eller e-postadresse.");
+        }
+
         [HttpGet("organizations/{orgNumber}")]
         public async Task<IActionResult> GetOrganizationInfo([FromRoute] string orgNumber)
         {
@@ -207,32 +232,6 @@ namespace AltinnSupportDashboard.Controllers
                 return StatusCode(500, $"Intern serverfeil: {ex.Message}");
             }
         }
-        [HttpGet("organizations/altinn3/search")]
-        public async Task<IActionResult> SearchAltinn3([FromQuery] string query)
-        {
-            if (string.IsNullOrEmpty(query))
-            {
-                return BadRequest("Søketerm kan ikke være tom.");
-            }
-
-            if (ValidationService.IsValidEmail(query))
-            {
-                return await GetOrganizationsFromEmailAltinn3(query);
-            }
-            if (ValidationService.IsValidOrgNumber(query))
-            {
-                return await GetOrganizationAltinn3(query);
-            }
-
-            if (ValidationService.IsValidPhoneNumber(query))
-            {
-                return await GetOrganizationsFromPhoneAltinn3(query);
-            }
-
-            return BadRequest("Ugyldig søketerm. Angi et gyldig organisasjonsnummer, telefonnummer eller e-postadresse.");
-        }
-
-
 
         [HttpGet("organizations/altinn3/organizations/{orgnumber}")]
         public async Task<IActionResult> GetOrganizationAltinn3([FromRoute] string orgnumber)
@@ -253,7 +252,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
 
-
+        [HttpGet("organizations/altinn3/organizations/phonenumber/{phonenumber}")]
         public async Task<IActionResult> GetOrganizationsFromPhoneAltinn3([FromRoute] string phonenumber)
         {
             if (!ValidationService.IsValidPhoneNumber(phonenumber))
@@ -316,7 +315,6 @@ namespace AltinnSupportDashboard.Controllers
             var result = await _altinn3Service.GetPersonalContactsByPhoneAltinn3(phonenumber, environmentName);
 
             return Ok(result);
-
 
         }
 
