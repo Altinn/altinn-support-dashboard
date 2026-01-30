@@ -10,7 +10,7 @@ export const fetchOrganizations = async (
   const trimmedQuery = query.replace(/\s/g, "");
 
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`,
+    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search?query=${encodeURIComponent(trimmedQuery)}`,
   );
 
   if (res.status === 404) {
