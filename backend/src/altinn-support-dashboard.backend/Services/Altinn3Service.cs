@@ -19,8 +19,12 @@ public class Altinn3Service : IAltinn3Service
     private readonly IRedactorProvider _redactorProvider;
     private readonly ILogger<IAltinn3Service> _logger;
 
-    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger)
+    //temporary for altinn2 roles
+    private readonly IAltinnApiService _altinn2Service;
+
+    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IAltinnApiService altinnApiService)
     {
+        _altinn2Service = altinnApiService;
         _logger = logger;
         _breggService = dataBrregService;
         _client = altinn3Client;
@@ -267,9 +271,24 @@ public class Altinn3Service : IAltinn3Service
             party.Type = getTypeFromValue(party.Value);
         }
 
-
         var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
         var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+
+        //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
+        var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value, rolesAndRights.PartyFilter[0].Value, environment);
+        if (altinn2Roles != null)
+        {
+            List<string> altinn2RolesList = [];
+            foreach (Role role in altinn2Roles)
+            {
+                if (!string.IsNullOrEmpty(role.RoleName))
+                {
+                    altinn2RolesList.Add(role.RoleName);
+                }
+            }
+            roles[0].AuthorizedRoles = altinn2RolesList;
+        }
+
         return roles;
     }
     private string getTypeFromValue(string value)
