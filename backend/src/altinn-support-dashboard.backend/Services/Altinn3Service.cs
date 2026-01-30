@@ -3,6 +3,7 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Compliance.Redaction;
+using Microsoft.IdentityModel.Tokens;
 using Models.altinn3Dtos;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -43,11 +44,13 @@ public class Altinn3Service : IAltinn3Service
         var json = await _client.GetOrganizationInfo(orgNumber, environment);
         var result = JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions);
 
-
-        if (result == null)
+        if (result == null || result.PartyNames[0].Name.IsNullOrEmpty())
         {
             throw new Exception($"No data found for org with orgnumber: {orgNumber}");
         }
+
+
+
         return result.PartyNames[0];
     }
 
@@ -55,6 +58,7 @@ public class Altinn3Service : IAltinn3Service
     public async Task<Organization> GetOrganizationByOrgNoAltinn3(string orgNumber, string environment)
     {
         PartyNameDto partyName = await GetOrganizationPartyNameAltinn3(orgNumber, environment);
+
 
         var organization = new Organization
         {
