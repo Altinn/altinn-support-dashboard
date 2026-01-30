@@ -93,7 +93,7 @@ public class Altinn3ServiceTests
 
         Assert.NotNull(resultList);
         Assert.Equal(2, resultList.Count);
-        Assert.IsType<List<PersonalContactDto>>(resultList);
+        Assert.IsType<List<PersonalContactAltinn3>>(resultList);
     }
 
     [Theory]
