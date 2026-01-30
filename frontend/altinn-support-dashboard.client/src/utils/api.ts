@@ -1,5 +1,6 @@
-import { authorizedFetch, getBaseUrl } from "./utils";
+import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
 import { OfficialContact, Role, Subunit } from "../models/models";
+import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 
 //this file defines which which api endpoints we want to fetch data from
 
@@ -22,6 +23,20 @@ export const fetchOrganizations = async (
 
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
+};
+
+export const fetchRolesForOrg = async (
+  environment: string,
+  request: RolesAndRightsRequest,
+): Promise<RolesAndRights> => {
+  const res = await authorizedPost(
+    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/roles`,
+    request,
+  );
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
+
+  const data = await res.json();
+  return data;
 };
 
 export const fetchSubunits = async (environment: string, orgNumber: string) => {
@@ -98,20 +113,6 @@ export const fetchOfficialContacts = async (
   return Array.isArray(data) ? data : [data];
 };
 
-export const fetchRolesForOrg = async (
-  environment: string,
-  ssnToken: string,
-  rollegiver: string,
-): Promise<Role[]> => {
-  const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/${ssnToken}/roles/${rollegiver}`,
-  );
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
-
-  const data = await res.json();
-  return Array.isArray(data) ? data : [];
-};
-
 export const fetchSsnFromToken = async (
   environment: string,
   ssnToken: string,
@@ -120,8 +121,9 @@ export const fetchSsnFromToken = async (
     `${getBaseUrl(environment)}/serviceowner/personalcontacts/${ssnToken}/ssn`,
   );
 
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching SSN from token");
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching SSN from token");
 
   const data = await res.json();
   return data.socialSecurityNumber;
-}
+};

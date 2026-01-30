@@ -250,15 +250,21 @@ public class Altinn3Service : IAltinn3Service
     public async Task<List<RolesAndRightsDto>> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment)
     {
         rolesAndRights.Type = getTypeFromValue(rolesAndRights.Value);
+
         foreach (PartyFilter party in rolesAndRights.PartyFilter)
         {
-            party.Type = getTypeFromValue(party.Value);
+            var ssn = _ssnTokenService.GetSsnFromToken(party.Value);
+
+            if (string.IsNullOrWhiteSpace(ssn))
+            {
+                ssn = party.Value; //If the subject isn't a token, use it as is
+            }
+            party.Type = getTypeFromValue(ssn);
         }
+
         var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
         var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
-
         return roles;
-
     }
     private string getTypeFromValue(string value)
     {

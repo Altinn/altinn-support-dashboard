@@ -22,6 +22,7 @@ import {
 } from "../models/correspondenceModels";
 import { sendCorrespondence } from "../utils/correspondenceApi";
 import { toast } from "react-toastify";
+import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -102,13 +103,12 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
 
 export const useRoles = (
   environment: string,
-  subject?: string,
-  reportee?: string,
+  request: RolesAndRightsRequest,
 ) => {
-  const rolesQuery: UseQueryResult<Role[], Error> = useQuery({
-    queryKey: ["roles", environment, subject, reportee],
-    queryFn: () => fetchRolesForOrg(environment, subject!, reportee!),
-    enabled: !!subject && !!reportee, // only run if both exist
+  const rolesQuery: UseQueryResult<RolesAndRights, Error> = useQuery({
+    queryKey: ["roles", environment, request],
+    queryFn: () => fetchRolesForOrg(environment, request),
+    enabled: !!request.value && !!(request.partyFilters.length >= 1), // only run if both exist
   });
 
   return rolesQuery;
