@@ -1,6 +1,5 @@
 import { useRoles } from "../../../hooks/hooks";
 import { useAppStore } from "../../../stores/Appstore";
-import RoleTypeCell from "../../RoleTypeCell";
 import {
   Button,
   Heading,
@@ -12,6 +11,7 @@ import {
 } from "@digdir/designsystemet-react";
 import styles from "../styles/RoleDetails.module.css";
 import { PersonalContact } from "../../../models/models";
+import RoleList from "./RoleList";
 
 interface RoleDetailsProps {
   selectedContact: PersonalContact;
@@ -26,11 +26,10 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
 }) => {
   const environment = useAppStore((state) => state.environment);
 
-  const roleQuery = useRoles(
-    environment,
-    selectedContact.ssnToken,
-    organizationNumber,
-  );
+  const roleQuery = useRoles(environment, {
+    value: organizationNumber,
+    partyFilter: [{ value: selectedContact.ssnToken }],
+  });
   const roleInfo = roleQuery.data;
 
   if (roleQuery.isLoading) {
@@ -65,13 +64,22 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {roleInfo && roleInfo.length > 0 ? (
-            roleInfo.map((role, index) => (
-              <Table.Row key={index}>
-                <RoleTypeCell roleType={role.roleType} />
-                <Table.Cell>{role.roleName}</Table.Cell>
-              </Table.Row>
-            ))
+          {roleInfo ? (
+            <div>
+              <RoleList
+                roles={roleInfo.authorizedAccessPackages}
+                type="Tilgangspakke"
+              />
+              <RoleList roles={roleInfo.authorizedRoles} type="Altinn2 rolle" />
+              <RoleList
+                roles={roleInfo.authorizedResources}
+                type="Altinn3 Ressurs"
+              />
+              <RoleList
+                roles={roleInfo.authorizedInstances}
+                type="Altinn3 instanse"
+              />
+            </div>
           ) : (
             <Table.Row>
               <Table.Cell colSpan={2}>

@@ -1,5 +1,4 @@
 import React from "react";
-import RoleTypeCell from "../RoleTypeCell";
 import { Table } from "@digdir/designsystemet-react";
 import styles from "./styles/RoleTable.module.css";
 import { Role } from "../../models/models";
@@ -23,7 +22,6 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles }) => {
         <Table.Body>
           {roles.map((role, index) => (
             <Table.Row key={index}>
-              <RoleTypeCell roleType={role.roleType} />
               <Table.Cell>{role.roleName}</Table.Cell>
               <Table.Cell>{role.roleDescription}</Table.Cell>
               <Table.Cell>{role.roleDefinitionCode}</Table.Cell>
@@ -36,4 +34,3 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles }) => {
 };
 
 export default RoleTable;
-

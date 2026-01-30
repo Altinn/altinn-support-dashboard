@@ -108,7 +108,10 @@ export const useRoles = (
   const rolesQuery: UseQueryResult<RolesAndRights, Error> = useQuery({
     queryKey: ["roles", environment, request],
     queryFn: () => fetchRolesForOrg(environment, request),
-    enabled: !!request.value && !!(request.partyFilters.length >= 1), // only run if both exist
+    enabled:
+      !!request.partyFilter &&
+      !!request.value &&
+      !!(request.partyFilter.length >= 1), // only run if both exist
   });
 
   return rolesQuery;

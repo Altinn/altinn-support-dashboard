@@ -8,7 +8,7 @@ export interface RolesAndRights {
 
 export interface RolesAndRightsRequest {
   value: string;
-  partyFilters: PartyFilter[];
+  partyFilter: PartyFilter[];
 }
 
 export interface PartyFilter {
