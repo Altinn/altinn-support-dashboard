@@ -105,7 +105,7 @@ export const useRoles = (
   environment: string,
   request: RolesAndRightsRequest,
 ) => {
-  const rolesQuery: UseQueryResult<RolesAndRights, Error> = useQuery({
+  const rolesQuery: UseQueryResult<RolesAndRights[], Error> = useQuery({
     queryKey: ["roles", environment, request],
     queryFn: () => fetchRolesForOrg(environment, request),
     enabled:

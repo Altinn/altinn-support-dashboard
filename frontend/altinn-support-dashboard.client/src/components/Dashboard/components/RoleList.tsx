@@ -6,7 +6,7 @@ interface RoleListProps {
 }
 const RoleList: React.FC<RoleListProps> = ({ roles, type }) => {
   return (
-    <div>
+    <>
       {roles &&
         roles.length > 0 &&
         roles.map((role, index) => (
@@ -15,7 +15,7 @@ const RoleList: React.FC<RoleListProps> = ({ roles, type }) => {
             <Table.Cell>{role}</Table.Cell>
           </Table.Row>
         ))}
-    </div>
+    </>
   );
 };
 

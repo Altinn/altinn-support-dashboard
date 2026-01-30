@@ -249,18 +249,24 @@ public class Altinn3Service : IAltinn3Service
 
     public async Task<List<RolesAndRightsDto>> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment)
     {
-        rolesAndRights.Type = getTypeFromValue(rolesAndRights.Value);
+
+        var ssn = _ssnTokenService.GetSsnFromToken(rolesAndRights.Value);
+
+
+        if (string.IsNullOrWhiteSpace(ssn))
+        {
+            ssn = rolesAndRights.Value; //If the subject isn't a token, use it as is
+        }
+
+        rolesAndRights.Value = ssn;
+        rolesAndRights.Type = getTypeFromValue(ssn);
+        _logger.LogInformation(rolesAndRights.Value);
 
         foreach (PartyFilter party in rolesAndRights.PartyFilter)
         {
-            var ssn = _ssnTokenService.GetSsnFromToken(party.Value);
-
-            if (string.IsNullOrWhiteSpace(ssn))
-            {
-                ssn = party.Value; //If the subject isn't a token, use it as is
-            }
-            party.Type = getTypeFromValue(ssn);
+            party.Type = getTypeFromValue(party.Value);
         }
+
 
         var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
         var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");

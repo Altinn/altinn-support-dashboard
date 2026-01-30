@@ -27,8 +27,8 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
   const environment = useAppStore((state) => state.environment);
 
   const roleQuery = useRoles(environment, {
-    value: organizationNumber,
-    partyFilter: [{ value: selectedContact.ssnToken }],
+    value: selectedContact.ssnToken,
+    partyFilter: [{ value: organizationNumber }],
   });
   const roleInfo = roleQuery.data;
 
@@ -64,22 +64,25 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {roleInfo ? (
-            <div>
+          {roleInfo && roleInfo.length >= 1 ? (
+            <>
               <RoleList
-                roles={roleInfo.authorizedAccessPackages}
+                roles={roleInfo[0].authorizedAccessPackages}
                 type="Tilgangspakke"
               />
-              <RoleList roles={roleInfo.authorizedRoles} type="Altinn2 rolle" />
               <RoleList
-                roles={roleInfo.authorizedResources}
+                roles={roleInfo[0].authorizedRoles}
+                type="Altinn2 rolle"
+              />
+              <RoleList
+                roles={roleInfo[0].authorizedResources}
                 type="Altinn3 Ressurs"
               />
               <RoleList
-                roles={roleInfo.authorizedInstances}
+                roles={roleInfo[0].authorizedInstances}
                 type="Altinn3 instanse"
               />
-            </div>
+            </>
           ) : (
             <Table.Row>
               <Table.Cell colSpan={2}>
