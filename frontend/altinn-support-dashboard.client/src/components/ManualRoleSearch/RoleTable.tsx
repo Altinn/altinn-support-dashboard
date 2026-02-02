@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import {
   Alert,
+  Card,
   Paragraph,
   Skeleton,
   Table,
@@ -12,24 +13,15 @@ import { useRoles } from "../../hooks/hooks";
 interface RoleTableProps {
   subject: string;
   reportee: string;
-  searchTrigger: number;
 }
 
-const RoleTable: React.FC<RoleTableProps> = ({
-  searchTrigger,
-  subject,
-  reportee,
-}) => {
+const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
   const environment = useAppStore((state) => state.environment);
 
-  const roleQuery = useRoles(
-    environment,
-    {
-      value: subject,
-      partyFilter: [{ value: reportee }],
-    },
-    searchTrigger,
-  );
+  const roleQuery = useRoles(environment, {
+    value: subject,
+    partyFilter: [{ value: reportee }],
+  });
 
   const roleInfo = roleQuery.data;
 
@@ -41,44 +33,46 @@ const RoleTable: React.FC<RoleTableProps> = ({
   }
 
   return (
-    <Table border>
-      <Table.Head>
-        <Table.Row>
-          <Table.HeaderCell>Rolletype</Table.HeaderCell>
-          <Table.HeaderCell>Rollenavn</Table.HeaderCell>
-        </Table.Row>
-      </Table.Head>
-      <Table.Body>
-        {roleInfo && roleInfo.length >= 1 ? (
-          <>
-            <RoleList
-              roles={roleInfo[0].authorizedAccessPackages}
-              type="Tilgangspakke"
-            />
-            <RoleList
-              roles={roleInfo[0].authorizedRoles}
-              type="Altinn2 rolle"
-            />
-            <RoleList
-              roles={roleInfo[0].authorizedResources}
-              type="Altinn3 Ressurs"
-            />
-            <RoleList
-              roles={roleInfo[0].authorizedInstances}
-              type="Altinn3 instanse"
-            />
-          </>
-        ) : (
+    <Card>
+      <Table border>
+        <Table.Head>
           <Table.Row>
-            <Table.Cell colSpan={2}>
-              <Paragraph style={{ textAlign: "center" }}>
-                Ingen roller funnet
-              </Paragraph>
-            </Table.Cell>
+            <Table.HeaderCell>Rolletype</Table.HeaderCell>
+            <Table.HeaderCell>Rollenavn</Table.HeaderCell>
           </Table.Row>
-        )}
-      </Table.Body>
-    </Table>
+        </Table.Head>
+        <Table.Body>
+          {roleInfo && roleInfo.length >= 1 ? (
+            <>
+              <RoleList
+                roles={roleInfo[0].authorizedAccessPackages}
+                type="Tilgangspakke"
+              />
+              <RoleList
+                roles={roleInfo[0].authorizedRoles}
+                type="Altinn2 rolle"
+              />
+              <RoleList
+                roles={roleInfo[0].authorizedResources}
+                type="Altinn3 Ressurs"
+              />
+              <RoleList
+                roles={roleInfo[0].authorizedInstances}
+                type="Altinn3 instanse"
+              />
+            </>
+          ) : (
+            <Table.Row>
+              <Table.Cell colSpan={2}>
+                <Paragraph style={{ textAlign: "center" }}>
+                  Ingen roller funnet
+                </Paragraph>
+              </Table.Cell>
+            </Table.Row>
+          )}
+        </Table.Body>
+      </Table>
+    </Card>
   );
 };
 
