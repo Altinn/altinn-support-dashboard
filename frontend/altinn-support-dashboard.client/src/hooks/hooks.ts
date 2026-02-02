@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  Role,
   OfficialContact,
   ERRoles,
   NotificationAdresses,
@@ -82,11 +81,12 @@ export function useOrgSearch(environment: string, query: string) {
 }
 
 export function useOrgDetails(environment: string, orgNumber?: string) {
-  const contactsQuery: UseQueryResult<PersonalContactAltinn3[], Error> = useQuery({
-    queryKey: ["contacts", environment, orgNumber],
-    queryFn: () => fetchPersonalContacts(environment, orgNumber!),
-    enabled: !!orgNumber,
-  });
+  const contactsQuery: UseQueryResult<PersonalContactAltinn3[], Error> =
+    useQuery({
+      queryKey: ["contacts", environment, orgNumber],
+      queryFn: () => fetchPersonalContacts(environment, orgNumber!),
+      enabled: !!orgNumber,
+    });
 
   const ERolesQuery: UseQueryResult<ERRoles[], Error> = useQuery({
     queryKey: ["erroles", environment, orgNumber],
@@ -100,14 +100,21 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
       enabled: !!orgNumber,
     });
 
-    const notificationAdressesQuery: UseQueryResult<NotificationAdresses[], Error> =
-    useQuery({
-      queryKey: ["notificationAdresses", environment, orgNumber],
-      queryFn: () => fetchNotificationAddresses(environment, orgNumber!),
-      enabled: !!orgNumber,
-    });
+  const notificationAdressesQuery: UseQueryResult<
+    NotificationAdresses[],
+    Error
+  > = useQuery({
+    queryKey: ["notificationAdresses", environment, orgNumber],
+    queryFn: () => fetchNotificationAddresses(environment, orgNumber!),
+    enabled: !!orgNumber,
+  });
 
-  return { contactsQuery, ERolesQuery, officialContactsQuery, notificationAdressesQuery };
+  return {
+    contactsQuery,
+    ERolesQuery,
+    officialContactsQuery,
+    notificationAdressesQuery,
+  };
 }
 
 export const useRoles = (
