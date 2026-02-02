@@ -1,5 +1,10 @@
 import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
-import { OfficialContact, Subunit } from "../models/models";
+import {
+  NotificationAdresses,
+  OfficialContact,
+  PersonalContactAltinn3,
+  Subunit,
+} from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 
 //this file defines which which api endpoints we want to fetch data from
