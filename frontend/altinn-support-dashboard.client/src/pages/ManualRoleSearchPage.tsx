@@ -56,11 +56,7 @@ export const ManualRoleSearchPage: React.FC = () => {
             setRollegiver={setRollegiver}
           />
         )}
-        <RoleTable
-          searchTrigger={searchTrigger}
-          subject={rollehaver}
-          reportee={rollegiver}
-        />
+        <RoleTable subject={rollehaver} reportee={rollegiver} />
       </div>
     </div>
   );
