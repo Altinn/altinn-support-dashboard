@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import classes from "../../styles/ContactInfoCell.module.css";
 
 interface ContactInfoCellProps {
-  contact: string | null;
-  contactLastChanged: string | null;
+  contact?: string;
+  contactLastChanged?: string;
 }
 
 const ContactInfoCell: React.FC<ContactInfoCellProps> = ({
@@ -22,7 +22,7 @@ const ContactInfoCell: React.FC<ContactInfoCellProps> = ({
   //outlines if searchquery is part of the cell
 
   useEffect(() => {
-    if (contact === userInput) {
+    if (contact?.replace(/\s/g, "").toLowerCase() === userInput.toLowerCase()) {
       setIsBold(true);
     }
   }, [userInput]);
@@ -30,7 +30,7 @@ const ContactInfoCell: React.FC<ContactInfoCellProps> = ({
     <div>
       {contactLastChanged && (
         <Tooltip content={`Dato endret: ${formatDate(contactLastChanged)}`}>
-          <Label className={isBold ? classes.bold : ""}>{contact || "-"}</Label>
+          <Label className={isBold ? classes.bold : ""}>{contact || ""}</Label>
         </Tooltip>
       )}
     </div>

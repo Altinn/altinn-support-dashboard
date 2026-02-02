@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import {
   Alert,
   Card,
@@ -11,16 +10,16 @@ import { useAppStore } from "../../stores/Appstore";
 import { useRoles } from "../../hooks/hooks";
 
 interface RoleTableProps {
-  subject: string;
-  reportee: string;
+  subject?: string;
+  reportee?: string;
 }
 
 const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
   const environment = useAppStore((state) => state.environment);
 
   const roleQuery = useRoles(environment, {
-    value: subject,
-    partyFilter: [{ value: reportee }],
+    value: subject ?? "",
+    partyFilter: [{ value: reportee ?? "" }],
   });
 
   const roleInfo = roleQuery.data;

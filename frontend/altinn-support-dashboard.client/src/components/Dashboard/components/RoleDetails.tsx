@@ -1,10 +1,10 @@
 import { Button, Heading, Card } from "@digdir/designsystemet-react";
 import styles from "../styles/RoleDetails.module.css";
-import { PersonalContact } from "../../../models/models";
 import RoleTable from "../../ManualRoleSearch/RoleTable";
+import { PersonalContactAltinn3 } from "../../../models/models";
 
 interface RoleDetailsProps {
-  selectedContact: PersonalContact;
+  selectedContact: PersonalContactAltinn3;
   organizationNumber: string;
   onBack: () => void;
 }

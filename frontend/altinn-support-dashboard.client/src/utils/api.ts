@@ -36,7 +36,6 @@ export const fetchRolesForOrg = async (
   if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
 
   const data = await res.json();
-  console.log(data);
   return Array.isArray(data) ? data : [data];
 };
 
@@ -64,9 +63,9 @@ export const fetchSubunits = async (environment: string, orgNumber: string) => {
 export const fetchPersonalContacts = async (
   environment: string,
   orgNumber: string,
-) => {
+): Promise<PersonalContactAltinn3[]> => {
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/organizations/${orgNumber}/personalcontacts`,
+    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/personalcontacts/org/${orgNumber}`,
   );
 
   if (res.status === 404) {
@@ -127,7 +126,7 @@ export const fetchSsnFromToken = async (
 
   const data = await res.json();
   return data.socialSecurityNumber;
-}
+};
 
 export const fetchNotificationAddresses = async (
   environment: string,
@@ -142,7 +141,9 @@ export const fetchNotificationAddresses = async (
   }
 
   if (!res.ok)
-    throw new Error((await res.text()) || "Error fetching Notification addresses");
+    throw new Error(
+      (await res.text()) || "Error fetching Notification addresses",
+    );
 
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
