@@ -3,13 +3,13 @@ import { formatDate } from "../../utils/dateUtils";
 import NotificationContactCell from "./NotificationContactCell";
 import { Table, Paragraph } from "@digdir/designsystemet-react";
 import styles from "../../styles/NotificationContactTable.module.css";
-import { OfficialContact } from "../../../../models/models";
+import { NotificationAdresses } from "../../../../models/models";
 
 interface ContactFieldTableProps {
   title: string;
-  field: keyof OfficialContact;
-  changedField: keyof OfficialContact;
-  contacts: OfficialContact[];
+  field: keyof NotificationAdresses;
+  changedField: keyof NotificationAdresses;
+  contacts: NotificationAdresses[];
 }
 
 const NotificationContactTable: React.FC<ContactFieldTableProps> = ({
@@ -38,7 +38,8 @@ const NotificationContactTable: React.FC<ContactFieldTableProps> = ({
             filteredContacts.map((contact, index) => (
               <Table.Row key={index}>
                 <NotificationContactCell
-                  contact={contact[field] as string | null}
+                  contact={contact}
+                  field={field}
                 />
                 <Table.Cell className={styles["cellText"]}>
                   {formatDate(contact[changedField] as string)}
