@@ -274,20 +274,25 @@ public class Altinn3Service : IAltinn3Service
         var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
         //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
-        var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value, rolesAndRights.PartyFilter[0].Value, environment);
-        if (altinn2Roles != null)
+        if (rolesAndRights.PartyFilter.Count >= 1)
         {
-            List<string> altinn2RolesList = [];
-            foreach (Role role in altinn2Roles)
+            var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value, rolesAndRights.PartyFilter[0].Value, environment);
+            if (altinn2Roles != null)
             {
-                if (!string.IsNullOrEmpty(role.RoleName))
+                List<string> altinn2RolesList = [];
+                foreach (Role role in altinn2Roles)
                 {
-                    altinn2RolesList.Add(role.RoleName);
+                    if (!string.IsNullOrEmpty(role.RoleName))
+                    {
+                        altinn2RolesList.Add(role.RoleName);
+                    }
                 }
+                roles[0].AuthorizedRoles = altinn2RolesList;
             }
-            roles[0].AuthorizedRoles = altinn2RolesList;
-        }
 
+
+
+        }
         return roles;
     }
     private string getTypeFromValue(string value)
