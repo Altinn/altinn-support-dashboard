@@ -117,18 +117,6 @@ export const useRoles = (
   return rolesQuery;
 };
 
-export function UseManualRoleSearch(
-  rollehaver: string,
-  rollegiver: string,
-  environment: string,
-) {
-  return useQuery({
-    queryKey: ["manualroles", environment, rollehaver, rollegiver],
-    queryFn: async () => fetchRolesForOrg(environment, rollehaver, rollegiver),
-    enabled: !!rollehaver && !!rollegiver,
-  });
-}
-
 export const useSsnFromToken = (environment: string, ssnToken?: string) => {
   return useQuery({
     queryKey: ["ssn", environment, ssnToken],
