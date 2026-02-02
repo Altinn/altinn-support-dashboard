@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "@digdir/designsystemet-react";
-import { PersonalContact } from "../models/models";
+import { PersonalContactAltinn3 } from "../models/models";
 import { useSsnFromToken } from "../hooks/hooks";
 
 interface SsnCellProps {
-  contact: PersonalContact;
+  contact: PersonalContactAltinn3;
   environment?: string;
 }
 
@@ -14,7 +14,7 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
 
   const { data: unredactedSsn, refetch } = useSsnFromToken(
     environment || "",
-    contact.ssnToken,
+    contact.ssnToken || "",
   );
 
   const handleClick = async () => {

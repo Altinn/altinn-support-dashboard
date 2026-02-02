@@ -122,3 +122,14 @@ export interface NotificationAdresses {
   requestedOrgNumber: string;
   lastChanged?: string;
 }
+
+export interface PersonalContactAltinn3 {
+  orgNr: string | null;
+  nationalIdentityNumber: string | null;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  lastChanged: string | null;
+  displayedSocialSecurityNumber: string | null;
+  ssnToken: string | null;
+}
