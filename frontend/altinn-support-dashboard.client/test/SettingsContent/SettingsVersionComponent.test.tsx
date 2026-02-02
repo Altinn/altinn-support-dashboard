@@ -78,5 +78,28 @@ describe('SettingsVersionComponent', () => {
         render(<SettingsVersionComponent />);
     });
 
+    it('should display environment from store', async () => {
+        const { getVersionInfo, fetchVersionData } = await import('../../src/components/SettingsContent/utils/versionUtils');
+        const { useAppStore } = await import('../../src/stores/Appstore');
 
+        vi.mocked(getVersionInfo).mockReturnValue({
+            versionNumber: '1.0.0',
+            versionName: 'Test App',
+            releaseDate: '2024-01-01',
+            changes: [{
+                title: 'Initial Release',
+                description: 'First version of the app',
+                details: [],
+            }],
+        });
+        vi.mocked(fetchVersionData).mockResolvedValue(null);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        vi.mocked(useAppStore).mockImplementation((selector: any) => selector({
+            environment: 'Test Environment',
+        }));
+
+        render(<SettingsVersionComponent />);
+
+        expect(screen.getByText('Valgt miljø: Test Environment')).toBeInTheDocument();
+    });
 })
