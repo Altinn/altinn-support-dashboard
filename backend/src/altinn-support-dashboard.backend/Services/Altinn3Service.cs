@@ -264,7 +264,6 @@ public class Altinn3Service : IAltinn3Service
 
         rolesAndRights.Value = ssn;
         rolesAndRights.Type = getTypeFromValue(ssn);
-        _logger.LogInformation(rolesAndRights.Value);
 
         foreach (PartyFilter party in rolesAndRights.PartyFilter)
         {
