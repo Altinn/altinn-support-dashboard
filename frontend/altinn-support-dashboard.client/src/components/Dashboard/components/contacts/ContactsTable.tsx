@@ -20,9 +20,9 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
   selectedOrg,
   setSelectedContact,
 }) => {
-  const [sortField, setSortField] = useState<keyof PersonalContactAltinn3 | null>(
-    null,
-  );
+  const [sortField, setSortField] = useState<
+    keyof PersonalContactAltinn3 | null
+  >(null);
 
   const environment = useAppStore((state) => state.environment);
   const { contactsQuery } = useOrgDetails(
@@ -108,7 +108,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
                 <Table.Cell className={classes.tableCell}>
                   {contact.name}
                 </Table.Cell>
-                <SsnCell contact={contact} environment={environment}/>
+                <SsnCell contact={contact} environment={environment} />
                 <Table.Cell className={classes.tableCell}>
                   <ContactInfoCell
                     contact={contact.phone}

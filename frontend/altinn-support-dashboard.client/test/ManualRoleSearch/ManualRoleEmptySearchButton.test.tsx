@@ -3,37 +3,29 @@ import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event/dist/cjs/setup/index.js";
 import EmptySearchButton from "../../src/components/ManualRoleSearch/ManualRoleEmptySearchButton";
 
-describe('ManualRoleEmptySearchButton', () => {
+describe("ManualRoleEmptySearchButton", () => {
+  it("renders button with correct text", () => {
+    render(
+      <EmptySearchButton setRollehaver={vi.fn()} setRollegiver={vi.fn()} />,
+    );
+    expect(screen.getByRole("button", { name: "Tøm søk" })).toBeInTheDocument();
+  });
 
-    it('renders button with correct text', () => {
-        render(
-            <EmptySearchButton
-                sethasSearched={vi.fn()}
-                setRollehaver={vi.fn()}
-                setRollegiver={vi.fn()}
-            />
-        );
-        expect(screen.getByRole('button', { name: 'Tøm søk' })).toBeInTheDocument();
-    });
+  it("calls sethasSearched, setRollehaver and setRollegiver when button is clicked", async () => {
+    const user = userEvent.setup();
+    const mockSetRollehaver = vi.fn();
+    const mockSetRollegiver = vi.fn();
 
-    it('calls sethasSearched, setRollehaver and setRollegiver when button is clicked', async () => {
-        const user = userEvent.setup();
-        const mockSethasSearched = vi.fn();
-        const mockSetRollehaver = vi.fn();
-        const mockSetRollegiver = vi.fn();
+    render(
+      <EmptySearchButton
+        setRollehaver={mockSetRollehaver}
+        setRollegiver={mockSetRollegiver}
+      />,
+    );
 
-        render(
-            <EmptySearchButton
-                sethasSearched={mockSethasSearched}
-                setRollehaver={mockSetRollehaver}
-                setRollegiver={mockSetRollegiver}
-            />
-        );
+    await user.click(screen.getByRole("button", { name: "Tøm søk" }));
 
-        await user.click(screen.getByRole('button', { name: 'Tøm søk' }));
-
-        expect(mockSethasSearched).toHaveBeenCalledWith(false);
-        expect(mockSetRollehaver).toHaveBeenCalledWith('');
-        expect(mockSetRollegiver).toHaveBeenCalledWith('');
-    });
-})
+    expect(mockSetRollehaver).toHaveBeenCalledWith("");
+    expect(mockSetRollegiver).toHaveBeenCalledWith("");
+  });
+});

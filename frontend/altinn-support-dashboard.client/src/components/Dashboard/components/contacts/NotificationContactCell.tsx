@@ -12,22 +12,26 @@ const NotificationContactCell: React.FC<NotificationContactCellProps> = ({
   contact,
   field,
 }) => {
-  const userInput = useDashboardStore((s) => s.query.replace(/\s/g, "").toLowerCase());
-
-  console.log("user input:", userInput);
-
+  const userInput = useDashboardStore((s) =>
+    s.query.replace(/\s/g, "").toLowerCase(),
+  );
 
   const value = contact[field] as string | null;
 
   //Add countrycode if phonenumber
-  const displayValue = field === "phone" && value
-    ? `${contact.countryCode || ""} ${value}`.trim()
-    : value;
+  const displayValue =
+    field === "phone" && value
+      ? `${contact.countryCode || ""} ${value}`.trim()
+      : value;
 
   //outlines if searchquery is part of the cell
-  const boldened =  displayValue?.replace(/\s/g, "").toLowerCase().includes(userInput) ? { fontWeight: "bold" } : undefined;
+  const boldened = displayValue
+    ?.replace(/\s/g, "")
+    .toLowerCase()
+    .includes(userInput)
+    ? { fontWeight: "bold" }
+    : undefined;
 
-  console.log("display value:", displayValue?.replace(/\s/g, "").toLowerCase());
   return (
     <Table.Cell className={style["cellText"]} style={boldened}>
       {displayValue || ""}
