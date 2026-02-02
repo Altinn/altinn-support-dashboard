@@ -59,4 +59,3 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
 };
 
 export default SsnCell;
-

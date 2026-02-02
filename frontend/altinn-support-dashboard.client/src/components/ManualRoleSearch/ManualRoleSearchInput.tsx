@@ -1,52 +1,70 @@
-import React from "react";
-import { setLocalStorageValue, } from "./utils/storageUtils";
+import React, { useEffect, useState } from "react";
+import {
+  getLocalStorageValue,
+  setLocalStorageValue,
+} from "./utils/storageUtils";
 import ManualRoleSearchTextField from "./ManualRoleSearchTextfield";
 import { Tooltip } from "@digdir/designsystemet-react";
 import style from "./styles/InputComponent.module.css";
 
-
 type InputComponentProps = {
-  rollehaver?: string;
-  rollegiver?: string;
-  setRollehaver?: (value: string) => void;
-  setRollegiver?: (value: string) => void;
+  setRollehaver: (value: string) => void;
+  setRollegiver: (value: string) => void;
+  searchTrigger: number;
 };
 
 const InputComponent: React.FC<InputComponentProps> = ({
-    rollehaver,
-    rollegiver,
-    setRollehaver,
-    setRollegiver,
-  }) => {
+  setRollehaver,
+  setRollegiver,
+  searchTrigger,
+}) => {
+  const [localRollehaver, setLocalRollehaver] = useState<string>(
+    getLocalStorageValue("rollehaver") || "",
+  );
+  const [localRollegiver, setLocalRollegiver] = useState<string>(
+    getLocalStorageValue("rollegiver") || "",
+  );
+
+  useEffect(() => {
+    setRollegiver(localRollegiver);
+    setRollehaver(localRollehaver);
+  }, [searchTrigger]);
 
   return (
     <div className={style["input-fields"]}>
-      <Tooltip content = "Organisasjonsnummeret til virksomheten som gir rollen" placement="bottom">
+      <Tooltip
+        content="Organisasjonsnummeret til virksomheten som gir rollen"
+        placement="bottom"
+      >
         <span>
           <ManualRoleSearchTextField
             label="Tilganger fra"
-            value={rollegiver || ""}
+            value={localRollegiver || ""}
             onChange={(value) => {
-              setRollegiver?.(value);
+              setLocalRollegiver?.(value);
               setLocalStorageValue("rollegiver", value);
             }}
           />
         </span>
       </Tooltip>
-      <Tooltip content = "Organisasjonsnummeret til virksomheten som har rollen" placement="bottom">
-      <span>
-        <ManualRoleSearchTextField
-          label="Tilganger til"
-          value={rollehaver || ""}
-          onChange={(value) => {
-            setRollehaver?.(value);
-            setLocalStorageValue("rollehaver", value);
-          }}
-        />
+      <Tooltip
+        content="Organisasjonsnummeret til virksomheten som har rollen"
+        placement="bottom"
+      >
+        <span>
+          <ManualRoleSearchTextField
+            label="Tilganger til"
+            value={localRollehaver || ""}
+            onChange={(value) => {
+              setLocalRollehaver?.(value);
+              setLocalStorageValue("rollehaver", value);
+            }}
+          />
         </span>
       </Tooltip>
     </div>
-   );
+  );
 };
 
 export default InputComponent;
+
