@@ -63,9 +63,21 @@ public class CorrespondenceClient : ICorrespondenceClient
             form.Add(new StringContent(DateTime.UtcNow.AddDays(7).ToString("o", CultureInfo.InvariantCulture)), "correspondence.duedatetime");
         }
         ;
-
-
         AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageSummary, "correspondence.content.messageSummary");
+
+        //notification fields
+        AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailBody, "correspondence.notification.emailbody");
+        AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailSubject, "correspondence.notification.emailsubject");
+        AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationChannel, "correspondence.notification.emailsubject");
+
+        //custom recipients for notification
+        for (int i = 0; i < correspondenceData?.Correspondence?.Notification?.CustomRecipients?.Count; i++)
+        {
+            AddIfNotNull(form, JsonSerializer.Serialize(correspondenceData?.Correspondence?.Notification?.CustomRecipients[i]?.EmailAddress), $"correspondence.notification.customrecipients[{i}].emailaddress");
+        }
+
+
+
 
 
         // Recipients
