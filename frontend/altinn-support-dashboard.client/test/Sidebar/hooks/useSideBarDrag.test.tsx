@@ -146,4 +146,16 @@ describe('useSideBarDrag', () => {
         expect(removeEventListenerSpy).toHaveBeenCalledWith("mouseup", expect.any(Function));
     });
 
+    it('should not change state when mousemove fires without dragging', () => {
+        const { result } = renderHook(() => useSidebarDrag());
+
+        const mockMoveEvent = new MouseEvent('mousemove', { clientX: 50 });
+
+        act(() => {
+            window.dispatchEvent(mockMoveEvent);
+        });
+
+        expect(result.current.isCollapsed).toBe(false);
+    });
+
 });
