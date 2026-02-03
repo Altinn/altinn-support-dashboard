@@ -5,7 +5,7 @@ import SearchComponent from "../../src/components/TopSearchBar/TopSearchBarCompo
 
 vi.mock("../../src/components/TopSearchBar/TopSearchBarTextField", () => ({
     
-    TopSearchBarTextField: ({ query, setQuery, setSelectedOrg }: any) => (
+    TopSearchBarTextField: ({ query }: {query: string}) => (
         <div data-testid="mock-top-search-bar-text-field">
             <span>Query: {query}</span>
         </div>
