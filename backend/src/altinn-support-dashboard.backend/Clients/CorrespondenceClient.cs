@@ -68,8 +68,10 @@ public class CorrespondenceClient : ICorrespondenceClient
         //notification fields
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailBody, "correspondence.notification.emailbody");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailSubject, "correspondence.notification.emailsubject");
+        AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailContentType, "correspondence.notification.emailcontenttype");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationChannel, "correspondence.notification.emailsubject");
         AddIfNotNull(form, correspondenceData.Correspondence.IgnoreReservation.ToString(), "correspondence.ignorereservation");
+        AddIfNotNull(form, correspondenceData.Correspondence.Notification.SendReminder.ToString(), "correspondence.notification.sendreminder");
         form.Add(new StringContent(DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture)), "correspondence.notification.requestedSendTime");
 
 
@@ -78,11 +80,6 @@ public class CorrespondenceClient : ICorrespondenceClient
         {
             AddIfNotNull(form, JsonSerializer.Serialize(correspondenceData?.Correspondence?.Notification?.CustomRecipients[i]?.EmailAddress), $"correspondence.notification.customrecipients[{i}].emailaddress");
         }
-
-
-
-
-
         // Recipients
         for (int i = 0; i < correspondenceData?.Recipients.Count; i++)
         {
