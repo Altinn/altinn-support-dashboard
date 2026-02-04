@@ -56,4 +56,12 @@ public class CorrespondenceService : ICorrespondenceService
 
         return await _client.UploadCorrespondence(uploadRequest);
     }
+
+    public async Task<string> GetCorrespondenceStatus(string correspondenceId)
+    {
+        var result = await _client.GetCorrespondenseStatus(correspondenceId);
+
+        return result;
+
+    }
 }

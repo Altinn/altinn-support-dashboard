@@ -69,6 +69,7 @@ public class CorrespondenceClient : ICorrespondenceClient
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailBody, "correspondence.notification.emailbody");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailSubject, "correspondence.notification.emailsubject");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationChannel, "correspondence.notification.emailsubject");
+        AddIfNotNull(form, correspondenceData.Correspondence.IgnoreReservation.ToString(), "correspondence.ignorereservation");
         form.Add(new StringContent(DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture)), "correspondence.notification.requestedSendTime");
 
 
@@ -140,8 +141,9 @@ public class CorrespondenceClient : ICorrespondenceClient
     }
 
     public async Task<string> GetCorrespondenseStatus(string correspondenceId)
+
     {
-        string requestUrl = $"/correspondence/api/v1/correspondence/{{correspondenceId}}/details";
+        string requestUrl = $"/correspondence/api/v1/correspondence/{correspondenceId}/details";
 
         var response = await _client.GetAsync(requestUrl);
         var result = await response.Content.ReadAsStringAsync();
