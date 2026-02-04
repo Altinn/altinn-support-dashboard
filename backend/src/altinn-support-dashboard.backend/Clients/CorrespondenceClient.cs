@@ -69,6 +69,8 @@ public class CorrespondenceClient : ICorrespondenceClient
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailBody, "correspondence.notification.emailbody");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailSubject, "correspondence.notification.emailsubject");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationChannel, "correspondence.notification.emailsubject");
+        form.Add(new StringContent(DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture)), "correspondence.notification.requestedSendTime");
+
 
         //custom recipients for notification
         for (int i = 0; i < correspondenceData?.Correspondence?.Notification?.CustomRecipients?.Count; i++)
@@ -81,7 +83,7 @@ public class CorrespondenceClient : ICorrespondenceClient
 
 
         // Recipients
-        for (int i = 0; i < correspondenceData.Recipients.Count; i++)
+        for (int i = 0; i < correspondenceData?.Recipients.Count; i++)
         {
 
             // security reasons
@@ -136,6 +138,18 @@ public class CorrespondenceClient : ICorrespondenceClient
         return correspondenceResponse;
 
     }
+
+    public async Task<string> GetCorrespondenseStatus(string correspondenceId)
+    {
+        string requestUrl = $"/correspondence/api/v1/correspondence/{{correspondenceId}}/details";
+
+        var response = await _client.GetAsync(requestUrl);
+        var result = await response.Content.ReadAsStringAsync();
+
+        return result;
+
+    }
+
 
     //helper function for all optional fields
     private static bool AddIfNotNull(MultipartFormDataContent form, string? value, string name)
