@@ -69,9 +69,10 @@ public class CorrespondenceClient : ICorrespondenceClient
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailBody, "correspondence.notification.emailbody");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailSubject, "correspondence.notification.emailsubject");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailContentType, "correspondence.notification.emailcontenttype");
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationChannel, "correspondence.notification.emailsubject");
+        AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationChannel, "correspondence.notification.notificationChannel");
         AddIfNotNull(form, correspondenceData.Correspondence.IgnoreReservation.ToString(), "correspondence.ignorereservation");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.SendReminder.ToString(), "correspondence.notification.sendreminder");
+        AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationTemplate, "correspondence.notification.notificationtemplate");
         form.Add(new StringContent(DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture)), "correspondence.notification.requestedSendTime");
 
 
@@ -97,14 +98,12 @@ public class CorrespondenceClient : ICorrespondenceClient
         var fileContent = new ByteArrayContent(bytes);
         fileContent.Headers.ContentType =
             new MediaTypeHeaderValue("text/plain");
-
         fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
         form.Add(fileContent, "Attachments", "testfile.txt");
         form.Add(
             new StringContent("testfile-1"),
             "correspondence.content.attachments[0].sendersReference"
         );
-
         form.Add(
             new StringContent("testfile.txt"),
             "correspondence.content.attachments[0].filename"
@@ -124,6 +123,7 @@ public class CorrespondenceClient : ICorrespondenceClient
 
         var requestHeaders = string.Join("\r\n", filteredHeaders);
 
+        //response
         CorrespondenceResponse correspondenceResponse = new CorrespondenceResponse
         {
             StatusCode = response.StatusCode,
