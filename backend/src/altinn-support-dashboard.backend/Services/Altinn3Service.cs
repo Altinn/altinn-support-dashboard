@@ -48,7 +48,7 @@ public class Altinn3Service : IAltinn3Service
         var json = await _client.GetOrganizationInfo(orgNumber, environment);
         var result = JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions);
 
-        if (result == null || result.PartyNames[0].Name.IsNullOrEmpty())
+        if (result == null || string.IsNullOrEmpty(result.PartyNames[0].Name))
         {
             throw new Exception($"No data found for org with orgnumber: {orgNumber}");
         }

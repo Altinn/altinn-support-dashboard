@@ -34,7 +34,7 @@ public class ER_Roller_APIController : ControllerBase
         try
         {
             var result = await _dataBrregService.GetRolesAsync(orgNumber, environmentName);
-            if (result == null || (result.Rollegrupper.IsNullOrEmpty() && result.ApiRoller.IsNullOrEmpty()))
+            if (result == null || (result.Rollegrupper?.Count == 0 && result.ApiRoller?.Count == 0))
             {
                 return NotFound("Ingen data funnet");
             }

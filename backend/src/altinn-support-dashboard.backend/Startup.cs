@@ -78,7 +78,7 @@ namespace AltinnSupportDashboard
 
             //enables only from frontend
             string[] baseUrl = Configuration.GetSection("RedirectConfiguration:AllowedUrls").Get<string[]>() ?? throw new Exception("Redirecrt url not set");
-            if (!baseUrl.IsNullOrEmpty())
+            if (baseUrl != null && baseUrl.Length != 0)
             {
                 services.AddCors(options =>
                 {
