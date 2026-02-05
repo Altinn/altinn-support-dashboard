@@ -306,7 +306,7 @@ public class Altinn3Service : IAltinn3Service
         var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
         //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
-        if (rolesAndRights.PartyFilter.Count >= 1)
+        if (roles.Count >= 1)
         {
             var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value, rolesAndRights.PartyFilter[0].Value, environment);
             if (altinn2Roles != null)
