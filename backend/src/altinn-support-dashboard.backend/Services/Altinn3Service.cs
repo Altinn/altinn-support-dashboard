@@ -63,7 +63,6 @@ public class Altinn3Service : IAltinn3Service
     {
         PartyNameDto partyName = await GetOrganizationPartyNameAltinn3(orgNumber, environment);
 
-
         var organization = new Organization
         {
             OrganizationNumber = partyName.OrgNo,
