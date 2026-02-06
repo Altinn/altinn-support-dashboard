@@ -63,7 +63,6 @@ public class Altinn3Service : IAltinn3Service
     {
         PartyNameDto partyName = await GetOrganizationPartyNameAltinn3(orgNumber, environment);
 
-
         var organization = new Organization
         {
             OrganizationNumber = partyName.OrgNo,
@@ -71,9 +70,10 @@ public class Altinn3Service : IAltinn3Service
         };
 
         var breggResult = await _breggService.GetUnderenhet(orgNumber, environment);
-        if (breggResult != null)
+        if (breggResult?.overordnetEnhet != null)
         {
-            organization.HeadUnit = new Organization { OrganizationNumber = breggResult.overordnetEnhet, Name = breggResult.navn };
+            PartyNameDto headUnitPartyName = await GetOrganizationPartyNameAltinn3(breggResult.overordnetEnhet, environment);
+            organization.HeadUnit = new Organization { OrganizationNumber = headUnitPartyName.OrgNo, Name = headUnitPartyName.Name };
         }
         return organization;
     }
@@ -83,7 +83,6 @@ public class Altinn3Service : IAltinn3Service
         var notificationAddesses = await GetNotificationAddressesByEmailAltinn3(email, environment);
         var organizations = await GetOrganizationsFromProfileAltinn3(personalContacts, notificationAddesses, environment);
 
-        _logger.LogDebug($"OrgCount Altinn3 : {organizations.Count}");
 
         return organizations;
 
@@ -307,7 +306,7 @@ public class Altinn3Service : IAltinn3Service
         var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
         //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
-        if (rolesAndRights.PartyFilter.Count >= 1)
+        if (roles.Count >= 1)
         {
             var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value, rolesAndRights.PartyFilter[0].Value, environment);
             if (altinn2Roles != null)

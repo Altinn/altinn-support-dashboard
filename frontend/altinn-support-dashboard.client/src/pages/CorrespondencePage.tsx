@@ -29,6 +29,10 @@ export const CorrespondencePage = () => {
     const item = getLocalStorageValue("confirmationNeeded");
     return item ? JSON.parse(item) : false;
   });
+  const [sendNotification, setSendNotification] = useState<boolean>(() => {
+    const item = getLocalStorageValue("sendNotification");
+    return item ? JSON.parse(item) : false;
+  });
 
   const [responseMessage, setResponseMessage] =
     useState<CorrespondenceResponse>(() => {
@@ -46,6 +50,11 @@ export const CorrespondencePage = () => {
   const handleConfirmationChange = (bool: boolean) => {
     setConfirmationNeeded(bool);
     setLocalStorageValue("confirmationNeeded", JSON.stringify(bool));
+  };
+
+  const handleNotificationChange = (bool: boolean) => {
+    setSendNotification(bool);
+    setLocalStorageValue("sendNotification", JSON.stringify(bool));
   };
 
   return (
@@ -97,6 +106,13 @@ export const CorrespondencePage = () => {
             onChange={(e) => handleConfirmationChange(e.target.checked)}
             label="Ja"
           />
+          <Label className={classes.checkboxLabel}>Send Varsling?</Label>
+          <Checkbox
+            className={classes.checkbox}
+            checked={sendNotification}
+            onChange={(e) => handleNotificationChange(e.target.checked)}
+            label="Ja"
+          />
 
           <CorrespondenceResourceType
             resourceType={resourceType}
@@ -113,7 +129,8 @@ export const CorrespondencePage = () => {
             title={title}
             summary={summary}
             body={body}
-            checked={confirmationNeeded}
+            confirmationNeeded={confirmationNeeded}
+            sendNotification={sendNotification}
             setResponseMessage={setResponseMessage}
           />
         </div>

@@ -56,4 +56,12 @@ public class CorrespondenceService : ICorrespondenceService
 
         return await _client.UploadCorrespondence(uploadRequest);
     }
+
+    public async Task<object> GetCorrespondenceStatus(string correspondenceId)
+    {
+        var result = await _client.GetCorrespondenseStatus(correspondenceId);
+        var json = JsonSerializer.Deserialize<object>(result) ?? throw new Exception("Error serializing");
+        return json;
+
+    }
 }
