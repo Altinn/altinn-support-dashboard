@@ -44,12 +44,12 @@ public class CorrespondenceService : ICorrespondenceService
         uploadRequest.Recipients = newRecipients;
 
         //Sets defualt values if none are given
-        if (uploadRequest.Correspondence.Content.MessageTitle.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(uploadRequest.Correspondence.Content.MessageTitle))
         {
             uploadRequest.Correspondence.Content.MessageTitle = "Test Title";
         }
 
-        if (uploadRequest.Correspondence.Content.MessageBody.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(uploadRequest.Correspondence.Content.MessageBody))
         {
             uploadRequest.Correspondence.Content.MessageBody = "Test Body";
         }
