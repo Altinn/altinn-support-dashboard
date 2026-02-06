@@ -1,4 +1,3 @@
-
 using altinn_support_dashboard.Server.Clients;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Utils;
@@ -6,9 +5,9 @@ using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Compliance.Redaction;
-using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 
 
 namespace AltinnSupportDashboard
@@ -78,7 +77,7 @@ namespace AltinnSupportDashboard
 
             //enables only from frontend
             string[] baseUrl = Configuration.GetSection("RedirectConfiguration:AllowedUrls").Get<string[]>() ?? throw new Exception("Redirecrt url not set");
-            if (!baseUrl.IsNullOrEmpty())
+            if (baseUrl != null && baseUrl.Length != 0)
             {
                 services.AddCors(options =>
                 {
@@ -173,6 +172,11 @@ namespace AltinnSupportDashboard
             {
                 endpoints.MapFallbackToFile("index.html");
             });
+
+              // This will print to the console when the app is ready
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("Backend is now running!");
+        Console.ResetColor();
         }
     }
 }

@@ -47,13 +47,14 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
                 roles={roleInfo[0].authorizedAccessPackages}
                 type="Tilgangspakke"
               />
+
+              <RoleList
+                roles={roleInfo[0].authorizedResources}
+                type="Enkelrettighet"
+              />
               <RoleList
                 roles={roleInfo[0].authorizedRoles}
                 type="Altinn2 rolle"
-              />
-              <RoleList
-                roles={roleInfo[0].authorizedResources}
-                type="Altinn3 Ressurs"
               />
               <RoleList
                 roles={roleInfo[0].authorizedInstances}
