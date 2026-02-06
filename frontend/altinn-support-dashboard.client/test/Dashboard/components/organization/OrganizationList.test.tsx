@@ -1,6 +1,7 @@
-import { beforeEach, describe, vi } from "vitest";
+import { beforeEach, describe, vi, expect, it } from "vitest";
 import { SelectedOrg } from "../../../../src/models/models";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import '@testing-library/jest-dom';
 import { OrganizationList } from "../../../../src/components/Dashboard/components/organizations/OrganizationList";
 
 
@@ -71,9 +72,6 @@ describe('OrganizationList', () => {
             },
             subunitQuery: {
                 data: [],
-                isLoading: false,
-                isError: false,
-                error: null,
             },
         }),
     ]);
@@ -118,9 +116,6 @@ describe('OrganizationList', () => {
             },
             subunitQuery: {
                 data: [],
-                isLoading: false,
-                isError: false,
-                error: null,
             },
         });
 
@@ -147,9 +142,6 @@ describe('OrganizationList', () => {
             },
             subunitQuery: {
                 data: [],
-                isLoading: false,
-                isError: false,
-                error: null,
             },
         });
 
@@ -218,4 +210,88 @@ describe('OrganizationList', () => {
         expect(screen.getByTestId('org-card-222222222')).toBeInTheDocument();
         expect(screen.queryByTestId('org-card-333333333')).not.toBeInTheDocument();
      });
+
+     it('should render BEDR org if not in subunit list', () => {
+        const orgsWithBEDR = [
+            { name: 'Org 1', organizationNumber: '111111111', type: 'BEDR' },
+            { name: 'Org 2', organizationNumber: '222222222', type: 'AS' },
+        ];
+
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (useOrgSearch as any).mockReturnValue({
+            orgQuery: {
+                data: orgsWithBEDR,
+                isLoading: false,
+                isError: false,
+                error: null,
+            },
+            subunitQuery: {
+                data: [],
+            },
+        });
+
+        render(
+            <OrganizationList
+                setSelectedOrg={mockSetSelectedOrg}
+                selectedOrg={mockSelectedOrg}
+                query="test"
+            />
+        );
+
+        expect(screen.getByTestId('org-card-111111111')).toBeInTheDocument();
+        expect(screen.getByTestId('org-card-222222222')).toBeInTheDocument();
+     });
+
+     it('should show error popup when query fails', async () => {
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (useOrgSearch as any).mockReturnValue({
+            orgQuery: {
+                data: null,
+                isLoading: false,
+                isError: true,
+                error: { message: 'Failed to fetch organizations' },
+            },
+            subunitQuery: {
+                data: [],
+            },
+        });
+        render(
+            <OrganizationList
+                setSelectedOrg={mockSetSelectedOrg}
+                selectedOrg={mockSelectedOrg}
+                query="test"
+            />
+        );
+
+        await waitFor(() => {
+            expect(showPopup).toHaveBeenCalledWith('Failed to fetch organizations', 'error');
+        });
+     });
+
+     it('should show "Ukjent feil oppstod" popup when query fails without error message', async () => {
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (useOrgSearch as any).mockReturnValue({
+            orgQuery: {
+                data: null,
+                isLoading: false,
+                isError: true,
+                error: null,
+            },
+            subunitQuery: {
+                data: [],
+            },
+        });
+        render(
+            <OrganizationList
+                setSelectedOrg={mockSetSelectedOrg}
+                selectedOrg={mockSelectedOrg}
+                query="test"
+            />
+        );
+
+        await waitFor(() => {
+            expect(showPopup).toHaveBeenCalledWith('Ukjent feil oppstod', 'error');
+        });
+    });
 })
+
