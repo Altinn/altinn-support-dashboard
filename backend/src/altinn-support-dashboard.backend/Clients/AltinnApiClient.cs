@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Text;
 using System.Net;
+using altinn_support_dashboard.Server.Services.Interfaces;
 
 public class AltinnApiClient : IAltinnApiClient
 {

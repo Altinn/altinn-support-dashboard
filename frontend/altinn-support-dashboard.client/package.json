@@ -14,7 +14,7 @@
   "dependencies": {
     "@azure/msal-browser": "^3.27.0",
     "@azure/msal-react": "^2.2.0",
-    "@digdir/designsystemet": "^0.0.1",
+    "@digdir/designsystemet": "^0.101.0",
     "@digdir/designsystemet-css": "^1.6.0",
     "@digdir/designsystemet-react": "^1.6.0",
     "@digdir/designsystemet-theme": "^1.6.0",
@@ -26,6 +26,7 @@
     "@tanstack/react-query": "^5.89.0",
     "mui": "^0.0.1",
     "react": "^18.3.1",
+    "react-day-picker": "^9.13.0",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
     "react-router-dom": "^6.28.0",

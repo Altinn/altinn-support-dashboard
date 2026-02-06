@@ -17,14 +17,20 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   subUnits,
   setSelectedOrg,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpandedSub, setIsExpandedSub] = useState(false);
+  const [isExpandedHead, setIsExpandedHead] = useState(false);
 
   const hasSubUnits = subUnits.some(
     (sub) => sub.overordnetEnhet === org.organizationNumber,
   );
 
-  const handleExpanded = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setIsExpanded(!isExpanded);
+  const handleExpandedSub = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setIsExpandedSub(!isExpandedSub);
+    e.stopPropagation();
+  };
+
+  const handleExpandedHead = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setIsExpandedHead(!isExpandedHead);
     e.stopPropagation();
   };
 
@@ -42,37 +48,74 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
 
   return (
     <div className={classes.container}>
+      {isExpandedHead && org.headUnit && (
+        <Card
+          className={`${classes.headUnit} ${classes.card}`}
+          variant={
+            checkIsSelected(org.headUnit.organizationNumber)
+              ? "tinted"
+              : "default"
+          }
+          data-color="neutral"
+          key={org.headUnit.organizationNumber}
+          onClick={() => {
+            if (!org.headUnit) return;
+            setSelectedOrg({
+              Name: org.headUnit.name,
+              OrganizationNumber: org.headUnit.organizationNumber,
+            });
+          }}
+        >
+          <Paragraph variant="short" className={classes.cardHeader}>
+            {org.headUnit.name}
+          </Paragraph>
+          <Paragraph variant="short" className={classes.cardParagraph}>
+            Org Nr: {org.headUnit.organizationNumber}
+          </Paragraph>
+        </Card>
+      )}
       <Card
         data-color="neutral"
         variant={checkIsSelected(org.organizationNumber) ? "tinted" : "default"}
-        className={classes.card}
+        className={`${classes.card} ${classes.mainCard}`}
         onClick={() => handleSelectedOrg()}
       >
-        <Heading level={6} className={classes.cardHeader}>
-          {org.name}
-        </Heading>
-        <Paragraph variant="short" className={classes.cardParagraph}>
-          Org Nr: {org.organizationNumber}
-        </Paragraph>
-        <Paragraph variant="short" className={classes.cardParagraph}>
-          Type: {org.type}
-        </Paragraph>
+        <div className={classes.cardInfoContainer}>
+          {" "}
+          <Heading level={6} className={classes.cardHeader}>
+            {org.name}
+          </Heading>
+          <Paragraph variant="short" className={classes.cardParagraph}>
+            Org Nr: {org.organizationNumber}
+          </Paragraph>
+        </div>
+        {org.headUnit && (
+          <Button
+            className={classes.expandButtonHead}
+            variant="secondary"
+            onClick={(e) => {
+              handleExpandedHead(e);
+            }}
+          >
+            {isExpandedHead ? <ChevronUpIcon /> : <ChevronDownIcon />}
+          </Button>
+        )}
 
         {hasSubUnits && (
           <Button
-            className={classes.expandButton}
+            className={classes.expandButtonSub}
             variant="secondary"
             onClick={(e) => {
-              handleExpanded(e);
+              handleExpandedSub(e);
             }}
           >
-            {isExpanded ? <ChevronDownIcon /> : <ChevronUpIcon />}
+            {isExpandedSub ? <ChevronDownIcon /> : <ChevronUpIcon />}
           </Button>
         )}
       </Card>
 
       {/* Subunits list */}
-      {isExpanded && (
+      {isExpandedSub && (
         <div>
           {subUnits
             .filter((sub) => sub.overordnetEnhet === org.organizationNumber)

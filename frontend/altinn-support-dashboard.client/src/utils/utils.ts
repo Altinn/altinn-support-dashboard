@@ -44,6 +44,32 @@ export async function authorizedFetch(
   return response;
 }
 
+// temporary, might change later
+export async function authorizedPost<T>(
+  url: string,
+  body: T,
+  options: RequestInit = {},
+): Promise<Response> {
+  const token =
+    localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Basic ${token}`,
+    ...options.headers,
+  };
+
+  const response = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers,
+    credentials: "include",
+    ...options,
+  });
+
+  return response;
+}
+
 export const getFormattedDateTime = (date: Date) => {
   const optionsTime: Intl.DateTimeFormatOptions = {
     hour: "2-digit",

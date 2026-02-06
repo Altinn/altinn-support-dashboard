@@ -4,6 +4,7 @@ using Altinn.Studio.Designer.Infrastructure.AnsattPorten;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,7 @@ namespace AltinnSupportDashboard
                     // Load the standard appsettings.json
                     config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
+
                     // Load environment-specific appsettings.{env}.json
                     config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
@@ -50,14 +52,14 @@ namespace AltinnSupportDashboard
                 })
                 .ConfigureLogging(logging =>
                 {
-                    // Clear default logging providers
-                    logging.ClearProviders();
-
                     // Add console logging
                     logging.AddConsole();
+                    logging.AddApplicationInsights();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddApplicationInsightsTelemetry();
+
                     // Bind Configuration section to the Configuration class and add to DI
                     services.Configure<Configuration>(hostContext.Configuration.GetSection("Configuration"));
                     services.Configure<BrregApiConfiguration>(hostContext.Configuration.GetSection("Brreg"));
@@ -87,8 +89,17 @@ namespace AltinnSupportDashboard
                     services.AddScoped<AltinnApiClient>();
                     services.AddScoped<Altinn3ApiClient>();
                     services.AddScoped<IAltinnApiService, AltinnApiService>();
+                    services.AddScoped<IAltinn3Service, Altinn3Service>();
                     services.AddScoped<PartyApiClient>();
                     services.AddScoped<IPartyApiService, PartyApiService>();
+                    services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
+                    services.AddScoped<ICorrespondenceService, CorrespondenceService>();
+                    services.AddScoped<ISsnTokenService, SsnTokenService>();
+                    services.AddScoped<ISsnTokenService, SsnTokenService>();
+
+                    services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
+                    services.AddScoped<ICorrespondenceService, CorrespondenceService>();
+                    services.AddScoped<ISsnTokenService, SsnTokenService>();
                 });
     }
 }

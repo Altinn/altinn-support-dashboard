@@ -1,10 +1,14 @@
 
 using altinn_support_dashboard.Server.Clients;
 using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Utils;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace AltinnSupportDashboard
@@ -66,10 +70,15 @@ namespace AltinnSupportDashboard
                 });
             });
 
+            services.AddRedaction(redaction =>
+            {
+                redaction.SetRedactor<SsnRedactor>(CustomDataClassifications.SSN);
+            });
+
 
             //enables only from frontend
-            string baseUrl = Configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>() ?? throw new Exception("Redirecrt url not set");
-            if (!String.IsNullOrEmpty(baseUrl))
+            string[] baseUrl = Configuration.GetSection("RedirectConfiguration:AllowedUrls").Get<string[]>() ?? throw new Exception("Redirecrt url not set");
+            if (baseUrl != null && baseUrl.Length != 0)
             {
                 services.AddCors(options =>
                 {
@@ -90,13 +99,35 @@ namespace AltinnSupportDashboard
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+
+
+            // Set up error handling
+            app.UseExceptionHandler(errorApp =>
             {
-                app.UseDeveloperExceptionPage();
-            }
-            else
+                errorApp.Run(async context =>
+                {
+                    var exception = context.Features
+                        .Get<IExceptionHandlerFeature>()?.Error;
+
+                    context.Response.ContentType = "application/json";
+
+                    context.Response.StatusCode = exception switch
+                    {
+                        BadRequestException => StatusCodes.Status400BadRequest,
+                        _ => StatusCodes.Status500InternalServerError
+                    };
+
+                    await context.Response.WriteAsJsonAsync(new
+                    {
+                        message = exception?.Message
+                    });
+                });
+            });
+
+            if (!env.IsDevelopment())
             {
-                app.UseExceptionHandler("/Error");
+
+
                 app.UseHsts();
             }
 

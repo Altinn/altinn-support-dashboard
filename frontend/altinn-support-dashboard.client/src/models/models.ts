@@ -1,29 +1,15 @@
 export interface Organization {
   name: string;
   organizationNumber: string;
-  type: string;
-  lastChanged: string;
-  lastConfirmed: string;
-  _links: OrganizationLink[];
-}
-
-export interface OrganizationLink {
-  rel: string;
-  href: string;
-  title: string;
-  fileNameWithExtension: string;
-  mimeType: string;
-  isTemplated: boolean;
-  encrypted: boolean;
-  signingLocked: boolean;
-  signedByDefault: boolean;
-  fileSize: number;
+  headUnit?: Organization;
 }
 
 export interface PersonalContact {
   personalContactId: string;
   name: string;
   socialSecurityNumber: string;
+  displayedSocialSecurityNumber: string;
+  ssnToken: string;
   mobileNumber: string;
   mobileNumberChanged: string;
   eMailAddress: string;
@@ -126,3 +112,25 @@ export interface SelectedOrg {
   Name: string;
   OrganizationNumber: string;
 }
+
+export interface NotificationAdresses {
+  notificationAddressId: number;
+  countryCode?: string;
+  email?: string;
+  phone?: string;
+  sourceOrgNumber: string;
+  requestedOrgNumber: string;
+  lastChanged?: string;
+}
+
+export interface PersonalContactAltinn3 {
+  orgNr?: string;
+  nationalIdentityNumber?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  lastChanged?: string;
+  displayedSocialSecurityNumber?: string;
+  ssnToken?: string;
+}
+

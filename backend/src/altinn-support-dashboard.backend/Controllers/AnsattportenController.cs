@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Security;
 using System.IdentityModel.Tokens.Jwt;
-using altinn_support_dashboard.Server.Validation;
+using altinn_support_dashboard.Server.Utils;
 using altinn_support_dashboard.Server.Models.ansattporten;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Microsoft.ApplicationInsights;
 
 
 namespace AltinnSupportDashboard.Controllers;
@@ -17,21 +18,22 @@ namespace AltinnSupportDashboard.Controllers;
 public class AnsattportenController : ControllerBase
 {
     private bool ansattportenFeatureFlag;
-    private string baseUrl;
     private IAnsattportenService _ansattportenService;
-    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService)
+    private ILogger<AnsattportenController> _logger;
+    private bool isDev;
+
+    public AnsattportenController(IConfiguration configuration, IAnsattportenService ansattportenService, ILogger<AnsattportenController> logger, IWebHostEnvironment environment)
     {
+        isDev = environment.IsDevelopment();
         _ansattportenService = ansattportenService;
+        _logger = logger;
         ansattportenFeatureFlag = configuration.GetSection($"FeatureManagement:Ansattporten").Get<bool>();
-        baseUrl = configuration.GetSection("RedirectConfiguration:RedirectUrl").Get<string>() ?? "";
     }
 
     [HttpGet("login")]
-    public async Task<IActionResult> Login([FromQuery] string? redirectTo = "/")
+    public async Task<IActionResult> Login([FromQuery] string redirectTo = "/")
     {
-
-        string safeRedirectPath = baseUrl + ValidationService.SanitizeRedirectUrl(redirectTo ?? "");
-
+        var safeRedirectPath = SanitizeUrl(redirectTo);
         if (ansattportenFeatureFlag != true)
         {
             return Redirect(safeRedirectPath);
@@ -59,11 +61,13 @@ public class AnsattportenController : ControllerBase
             });
         }
 
+
         var result = await HttpContext.AuthenticateAsync(AnsattportenConstants.AnsattportenCookiesAuthenticationScheme);
 
 
         List<string> userPolicies = await _ansattportenService.GetUserPolicies(User);
         string orgName = await _ansattportenService.GetRepresentationOrgName(User);
+
 
 
         return Ok(new AuthDetails
@@ -92,10 +96,10 @@ public class AnsattportenController : ControllerBase
     }
 
     [HttpGet("logout")]
-    public async Task<IActionResult> Logout([FromQuery] string? redirectTo = "/")
+    public async Task<IActionResult> Logout([FromQuery] string redirectTo = "/")
     {
 
-        string safeRedirectPath = baseUrl + ValidationService.SanitizeRedirectUrl(redirectTo);
+        string safeRedirectPath = SanitizeUrl(redirectTo);
 
 
         if (ansattportenFeatureFlag != true)
@@ -117,6 +121,14 @@ public class AnsattportenController : ControllerBase
 
         return Redirect(safeRedirectPath);
 
+    }
+
+    //Helper function to santize and set url to correct port if in local development
+    private string SanitizeUrl(string url)
+    {
+        return isDev
+           ? "https://localhost:5173" + ValidationService.SanitizeRedirect(url ?? "/")
+           : ValidationService.SanitizeRedirect(url ?? "/");
     }
 
 }

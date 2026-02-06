@@ -7,18 +7,25 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using AltinnSupportDashboard.Controllers;
 using Microsoft.VisualBasic;
 using Models.altinn3Dtos;
+using Microsoft.Extensions.Compliance.Redaction;
 
 namespace altinn_support_dashboard.backend.Tests.Controllers
 {
     public class AltinnApiControllerTests
     {
         private readonly AltinnTT02Controller _controller;
-        private readonly Mock<IAltinnApiService> _mockService;
+        private readonly Mock<IAltinnApiService> _mockServiceAltinn2;
+        private readonly Mock<IAltinn3Service> _mockServiceAltinn3;
+        private readonly Mock<IRedactorProvider> _mockRedactorProvider;
+        private readonly Mock<ISsnTokenService> _mockSsnTokenService;
 
         public AltinnApiControllerTests()
         {
-            _mockService = new Mock<IAltinnApiService>();
-            _controller = new AltinnTT02Controller(_mockService.Object);
+            _mockServiceAltinn2 = new Mock<IAltinnApiService>();
+            _mockServiceAltinn3 = new Mock<IAltinn3Service>();
+            _mockRedactorProvider = new Mock<IRedactorProvider>();
+            _mockSsnTokenService = new Mock<ISsnTokenService>();
+            _controller = new AltinnTT02Controller(_mockServiceAltinn2.Object, _mockServiceAltinn3.Object, _mockSsnTokenService.Object);
         }
 
         [Fact]
@@ -30,7 +37,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 OrganizationNumber = validOrgNumber,
                 Name = "Test Organization"
             };
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetOrganizationInfo(validOrgNumber, "TT02"))
             .ReturnsAsync(expectedResult);
 
@@ -45,7 +52,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetOrganizationInfo_Returns500_WhenServiceFails()
         {
             var validOrgNumber = "123456789";
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetOrganizationInfo(validOrgNumber, "TT02"))
             .ThrowsAsync(new System.Exception("Service failure"));
 
@@ -77,14 +84,14 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [Fact]
         public async Task GetOrganizationsByPhoneNumber_ReturnsOrganizations_WhenPhoneNumberIsValid()
         {
-            var validPhoneNumber = "+4712345678";
+            var validPhoneNumber = "12345678";
             var expectedOrganizations = new List<Organization>
             {
                 new Organization { OrganizationNumber = "123456789", Name = "Org1" },
                 new Organization { OrganizationNumber = "987654321", Name = "Org2" }
             };
 
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetOrganizationsByPhoneNumber(validPhoneNumber, "TT02"))
             .ReturnsAsync(expectedOrganizations);
 
@@ -100,7 +107,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             var validPhoneNumber = "+4712345678";
 
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetOrganizationsByPhoneNumber(validPhoneNumber, "TT02"))
             .ThrowsAsync(new System.Exception("Service failure"));
 
@@ -142,7 +149,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 new Organization { OrganizationNumber = "987654321", Name = "Org2" }
             };
 
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetOrganizationsByEmail(validEmail, "TT02"))
             .ReturnsAsync(expectedOrganizations);
 
@@ -157,7 +164,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetOrganizationsByEmail_Returns500_WhenServiceFails()
         {
             var validEmail = "test@test.no";
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetOrganizationsByEmail(validEmail, "TT02"))
             .ThrowsAsync(new System.Exception("Service failure"));
 
@@ -195,7 +202,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 new PersonalContact { Name = "Contact2", EMailAddress = "contact2@test.no" }
             };
 
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetPersonalContacts(validOrgNumber, "TT02"))
             .ReturnsAsync(expectedContacts);
 
@@ -211,7 +218,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             var validOrgNumber = "123456789";
 
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetPersonalContacts(validOrgNumber, "TT02"))
             .ThrowsAsync(new System.Exception("Service failure"));
 
@@ -255,15 +262,15 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [InlineData("test@test.no")]
         public async Task Search_CallsService_WhenQueryIsValid(string validQuery)
         {
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetOrganizationInfo(It.IsAny<string>(), "TT02"))
             .ReturnsAsync(new Organization());
 
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetOrganizationsByPhoneNumber(It.IsAny<string>(), "TT02"))
             .ReturnsAsync(new List<Organization>());
 
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetOrganizationsByEmail(It.IsAny<string>(), "TT02"))
             .ReturnsAsync(new List<Organization>());
 
@@ -311,7 +318,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 new Role { RoleName = "Role2" }
             };
 
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetPersonRoles(validSubjectId, validReporteeId, "TT02"))
             .ReturnsAsync(expectedRoles);
 
@@ -328,7 +335,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var validSubjectId = "123456789";
             var validReporteeId = "987654321";
 
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetPersonRoles(validSubjectId, validReporteeId, "TT02"))
             .ThrowsAsync(new System.Exception("Service failure"));
 
@@ -362,7 +369,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 new OfficialContact { EMailAddress = "official2@example.com" }
             };
 
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetOfficialContacts(validOrgNumber, "TT02"))
             .ReturnsAsync(expectedContacts);
 
@@ -378,7 +385,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             var validOrgNumber = "123456789";
 
-            _mockService
+            _mockServiceAltinn2
             .Setup(x => x.GetOfficialContacts(validOrgNumber, "TT02"))
             .ThrowsAsync(new System.Exception("Service failure"));
 
@@ -409,13 +416,13 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetPersonalContactsAltinn3_ReturnsRoles_WhenOrgNumberIsValid()
         {
             var validOrgNumber = "123456789";
-            var expectedContacts = new List<PersonalContact>
+            var expectedContacts = new List<PersonalContactAltinn3>
             {
-                new PersonalContact { Name = "Contact1", EMailAddress = "contact1@test.no" },
-                new PersonalContact { Name = "Contact2", EMailAddress = "contact2@test.no" }
+                new PersonalContactAltinn3 { Name = "Contact1", Email = "contact1@test.no", Phone = "", NationalIdentityNumber = "" },
+                new PersonalContactAltinn3 { Name = "Contact2", Email = "contact2@test.no", Phone = "", NationalIdentityNumber = "" }
             };
 
-            _mockService
+            _mockServiceAltinn3
             .Setup(x => x.GetPersonalContactsByOrgAltinn3(validOrgNumber, "TT02"))
             .ReturnsAsync(expectedContacts);
 
@@ -459,31 +466,17 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 }
             };
 
-            _mockService
-            .Setup(x => x.GetNotificationAddressesAltinn3(validOrgNumber, "TT02"))
+            _mockServiceAltinn3
+            .Setup(x => x.GetNotificationAddressesByOrgAltinn3(validOrgNumber, "TT02"))
             .ReturnsAsync(expectedAddresses);
 
-            var result = await _controller.GetNotificationAddresses(validOrgNumber);
+            var result = await _controller.GetNotificationAddressesByOrg(validOrgNumber);
 
             Assert.NotNull(result);
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(expectedAddresses, okResult.Value);
         }
 
-        [Fact]
-        public async Task GetNotificationAddresses_Returns500_WhenServiceFails()
-        {
-            var validOrgNumber = "123456789";
-
-            _mockService
-            .Setup(x => x.GetNotificationAddressesAltinn3(validOrgNumber, "TT02"))
-            .ThrowsAsync(new System.Exception("Service failure"));
-
-            var result = await _controller.GetNotificationAddresses(validOrgNumber);
-
-            var objectResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal(500, objectResult.StatusCode);
-        }
 
         [Theory]
         [InlineData("")]
@@ -496,10 +489,43 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [InlineData("   ")]
         public async Task GetNotificationAddresses_ReturnsBadRequest_WhenOrgNumberIsInvalid(string invalidOrgNumber)
         {
-            var result = await _controller.GetNotificationAddresses(invalidOrgNumber);
+            var result = await _controller.GetNotificationAddressesByOrg(invalidOrgNumber);
 
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task GetSsnFromToken_ReturnsSsn_WhenTokenIsValid()
+        {
+            var validToken = "valid-token";
+            var expectedSsn = "12345678901";
+
+            _mockSsnTokenService
+            .Setup(x => x.GetSsnFromToken(validToken))
+            .Returns(expectedSsn);
+
+            var result = _controller.GetSsnFromToken(validToken);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var response = okResult.Value;
+            var ssn = response?.GetType().GetProperty("socialSecurityNumber");
+            Assert.Equal(expectedSsn, ssn?.GetValue(response));
+
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("invalid-token")]
+        public void GetSsnFromToken_ReturnsBadRequest_WhenTokenIsInvalid(string invalidToken)
+        {
+            _mockSsnTokenService
+            .Setup(x => x.GetSsnFromToken(invalidToken))
+            .Returns(string.Empty);
+
+            var exception = Assert.Throws<Exception>(() => _controller.GetSsnFromToken(invalidToken));
+
+            Assert.Equal("Invalid or expired SSN token.", exception.Message);
         }
     }
 }

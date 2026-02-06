@@ -1,16 +1,15 @@
 {
-  "version": "4.0.0",
-  "releaseDate": "2025-11-06",
+  "version": "4.1.0",
+  "releaseDate": "2026-01-20",
   "changes": [
     {
-      "title": "Designsystemet og refaktorering",
-      "description": "Denne releasen inkluderer implementasjon av designsystemet sitt komponentsystem, og en del mindre endringer. Både frontend og backend har blitt gjort moderate endringer på for å gjøre videreutvikling av ASD enklere og mere effektivt i fremtiden.",
+      "title": "Meldinger og maskering av fødselsnummer",
+      "description": "Denne releasen gir mulgiheten til å sende meldinger til hvilken som helt org eller person i tt02, samt introduserer maskering av SSN.",
       "details": [
-        "Frontend er refaktorert til å bruke designsystemet i stedet for Google MUI. Layout og funksjonalitet er stort sett uendret.",
-        "Når du holder musepekeren over e-post eller telefonnummer til en kontaktperson, vises nå informasjon om når disse opplysningene sist ble endret.",
-        "I søk med testorganisasjoner i tt02 som ikke kommer fra Tenor kommer nå ER informasjon som hvem som er daglig leder og deres SSN (bare i tt02).",
-        "E-post og telefonnummer som blir brukt i søk skiller seg ut i organisasjonsinformasjonen.",
-        "Flere endringer på baksiden gjør det enklere å feilsøke problemer og videreutvikle Altinn support dashboard fremover."
+        "Mulgihet til å sende meldinger, er det minimumme man trenger akkurat nå, men mere kan komme senere!",
+        "Maskering av SSN, man må nå fysisk trykke på et fødselsnummer for å se det",
+        "Hovedenhet kan nå komme opp ved søk av en underenhet, knappen kommer på oversiden av org kortet istedet for nedenfor for å vise dette.",
+        "Andre småendringer og bug fixes"
       ]
     }
   ]
