@@ -1,6 +1,6 @@
 {
-  "version": "4.1.0",
-  "releaseDate": "2026-01-20",
+  "version": "4.2.0",
+  "releaseDate": "2026-02-09",
   "changes": [
     {
       "title": "Altinn 3 endepunkter og utvidet rollesøk",
