@@ -70,9 +70,10 @@ public class Altinn3Service : IAltinn3Service
         };
 
         var breggResult = await _breggService.GetUnderenhet(orgNumber, environment);
-        if (breggResult != null)
+        if (breggResult?.overordnetEnhet != null)
         {
-            organization.HeadUnit = new Organization { OrganizationNumber = breggResult.overordnetEnhet, Name = breggResult.navn };
+            PartyNameDto headUnitPartyName = await GetOrganizationPartyNameAltinn3(breggResult.overordnetEnhet, environment);
+            organization.HeadUnit = new Organization { OrganizationNumber = headUnitPartyName.OrgNo, Name = headUnitPartyName.Name };
         }
         return organization;
     }
@@ -82,7 +83,6 @@ public class Altinn3Service : IAltinn3Service
         var notificationAddesses = await GetNotificationAddressesByEmailAltinn3(email, environment);
         var organizations = await GetOrganizationsFromProfileAltinn3(personalContacts, notificationAddesses, environment);
 
-        _logger.LogDebug($"OrgCount Altinn3 : {organizations.Count}");
 
         return organizations;
 
