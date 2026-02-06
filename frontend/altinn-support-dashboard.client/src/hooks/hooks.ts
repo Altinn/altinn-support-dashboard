@@ -54,6 +54,7 @@ export function useOrgSearch(environment: string, query: string) {
   const orgQuery = useQuery({
     queryKey: ["organizations", environment, query],
     queryFn: () => fetchOrganizations(environment, query),
+    retry: false,
     enabled: !!query, // only run when query is non-empty
   });
 
@@ -72,6 +73,7 @@ export function useOrgSearch(environment: string, query: string) {
       return all.flat();
     },
     enabled: !!orgQuery.data, // wait until organizations are fetched
+    retry: false,
   });
 
   return {
@@ -86,12 +88,14 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
       queryKey: ["contacts", environment, orgNumber],
       queryFn: () => fetchPersonalContacts(environment, orgNumber!),
       enabled: !!orgNumber,
+      retry: false,
     });
 
   const ERolesQuery: UseQueryResult<ERRoles[], Error> = useQuery({
     queryKey: ["erroles", environment, orgNumber],
     queryFn: () => fetchERoles(environment, orgNumber!),
     enabled: !!orgNumber,
+    retry: false,
   });
   const officialContactsQuery: UseQueryResult<OfficialContact[], Error> =
     useQuery({
@@ -107,6 +111,7 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     queryKey: ["notificationAdresses", environment, orgNumber],
     queryFn: () => fetchNotificationAddresses(environment, orgNumber!),
     enabled: !!orgNumber,
+    retry: false,
   });
 
   return {
@@ -128,6 +133,7 @@ export const useRoles = (
       !!request.partyFilter &&
       !!request.value &&
       !!(request.partyFilter.length >= 1), // only run if both exist
+    retry: false,
   });
 
   return rolesQuery;
