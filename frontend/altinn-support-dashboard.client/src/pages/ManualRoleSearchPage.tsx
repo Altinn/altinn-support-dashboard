@@ -37,7 +37,7 @@ export const ManualRoleSearchPage: React.FC = () => {
       </Button>
       <InformationDialogBox dialogRef={dialogRef} />
 
-      <div className={styles.inputRow}>
+      <div className={styles["input-row"]}>
         <InputComponent
           searchTrigger={searchTrigger}
           setRollehaver={setRollehaver}
@@ -49,7 +49,7 @@ export const ManualRoleSearchPage: React.FC = () => {
           handleSearch={handleSearch}
         />
       </div>
-      <div className={styles.resultArea}>
+      <div className={styles["result-area"]}>
         {(rollehaver.trim() !== "" || rollegiver.trim() !== "") && (
           <EmptySearch
             setRollehaver={setRollehaver}
