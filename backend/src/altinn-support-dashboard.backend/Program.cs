@@ -66,10 +66,7 @@ namespace AltinnSupportDashboard
                     // Register Maskinporten clients with their respective settings (adjust as needed)
                     services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(
                         nameof(config.Production),
-                        config?.Production.MaskinportenSettings, configureClientDefinition =>
-                        {
-                            configureClientDefinition.ClientSettings.ExhangeToAltinnToken = true;
-                        });
+                        config?.Production.MaskinportenSettings);
 
                     services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(
                         nameof(config.TT02),
