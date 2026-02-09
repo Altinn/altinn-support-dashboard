@@ -5,7 +5,7 @@ import { RoleDetails } from "./RoleDetails";
 import ContactsSearchBar from "./contacts/ContactsSearchBar";
 import ContactsTable from "./contacts/ContactsTable";
 import { useOrgDetails } from "../../../hooks/hooks";
-import {  PersonalContactAltinn3, SelectedOrg } from "../../../models/models";
+import { PersonalContact, SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
 import { Card } from "@digdir/designsystemet-react";
 import styles from "../styles/DetailedOrgView.module.css";
@@ -18,7 +18,7 @@ interface DetailedOrgViewProps {
 const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
   const environment = useAppStore((state) => state.environment);
   const [selectedContact, setSelectedContact] =
-    useState<PersonalContactAltinn3 | null>(null);
+    useState<PersonalContact | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   const { notificationAdressesQuery } = useOrgDetails(

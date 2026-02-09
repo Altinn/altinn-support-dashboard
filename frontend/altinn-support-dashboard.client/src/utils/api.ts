@@ -1,5 +1,5 @@
 import { authorizedFetch, getBaseUrl } from "./utils";
-import { OfficialContact, PersonalContactAltinn3, Role, Subunit } from "../models/models";
+import { OfficialContact, Role, Subunit } from "../models/models";
 import { NotificationAdresses} from "../models/models";
 
 //this file defines which which api endpoints we want to fetch data from
@@ -49,9 +49,9 @@ export const fetchSubunits = async (environment: string, orgNumber: string) => {
 export const fetchPersonalContacts = async (
   environment: string,
   orgNumber: string,
-): Promise<PersonalContactAltinn3[]> => {
+) => {
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/personalcontacts/org/${orgNumber}`,
+    `${getBaseUrl(environment)}/serviceowner/organizations/${orgNumber}/personalcontacts`,
   );
 
   if (res.status === 404) {

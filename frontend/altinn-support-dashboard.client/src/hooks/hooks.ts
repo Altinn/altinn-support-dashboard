@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import {
+  PersonalContact,
   Role,
   OfficialContact,
   ERRoles,
   NotificationAdresses,
-  PersonalContactAltinn3,
 } from "../models/models";
 import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
@@ -81,7 +81,7 @@ export function useOrgSearch(environment: string, query: string) {
 }
 
 export function useOrgDetails(environment: string, orgNumber?: string) {
-  const contactsQuery: UseQueryResult<PersonalContactAltinn3[], Error> = useQuery({
+  const contactsQuery: UseQueryResult<PersonalContact[], Error> = useQuery({
     queryKey: ["contacts", environment, orgNumber],
     queryFn: () => fetchPersonalContacts(environment, orgNumber!),
     enabled: !!orgNumber,

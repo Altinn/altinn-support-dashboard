@@ -11,10 +11,10 @@ import {
   Alert,
 } from "@digdir/designsystemet-react";
 import styles from "../styles/RoleDetails.module.css";
-import { PersonalContactAltinn3 } from "../../../models/models";
+import { PersonalContact } from "../../../models/models";
 
 interface RoleDetailsProps {
-  selectedContact: PersonalContactAltinn3;
+  selectedContact: PersonalContact;
   organizationNumber: string;
   onBack: () => void;
 }
@@ -28,7 +28,7 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
 
   const roleQuery = useRoles(
     environment,
-    selectedContact.ssnToken || "",
+    selectedContact.ssnToken,
     organizationNumber,
   );
   const roleInfo = roleQuery.data;

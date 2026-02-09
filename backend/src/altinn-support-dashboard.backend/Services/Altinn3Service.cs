@@ -87,10 +87,8 @@ public class Altinn3Service : IAltinn3Service
 
     public async Task<List<Organization>> GetOrganizationsByPhoneAltinn3(string phonenumber, string environment)
     {
-        phonenumber = phonenumber.Trim();
-        string strippedPhoneNumber = Regex.Replace(phonenumber, @"^\+\d{1,2}", "");
-        var personalContacts = await GetPersonalContactsByPhoneAltinn3(strippedPhoneNumber, environment);
-        var notificationAddesses = await GetNotificationAddressesByPhoneAltinn3(strippedPhoneNumber, environment);
+        var personalContacts = await GetPersonalContactsByPhoneAltinn3(phonenumber, environment);
+        var notificationAddesses = await GetNotificationAddressesByPhoneAltinn3(phonenumber, environment);
         var organizations = await GetOrganizationsFromProfileAltinn3(personalContacts, notificationAddesses, environment);
 
         return organizations;
@@ -150,7 +148,7 @@ public class Altinn3Service : IAltinn3Service
         return result.PartyNames;
     }
 
-    public async Task<List<PersonalContactAltinn3>> GetPersonalContactsByOrgAltinn3(string orgNumber, string environment)
+    public async Task<List<PersonalContactDto>> GetPersonalContactsByOrgAltinn3(string orgNumber, string environment)
     {
         if (!ValidationService.IsValidOrgNumber(orgNumber))
         {
@@ -159,35 +157,7 @@ public class Altinn3Service : IAltinn3Service
         var result = await _client.GetPersonalContactsByOrg(orgNumber, environment);
         var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
-        var contacts = contactsAltinn3.Select(contact => new PersonalContactAltinn3 
-        {
-            OrgNr = contact.OrgNr,
-            NationalIdentityNumber = contact.NationalIdentityNumber,
-            Name = contact.Name,
-            Phone = contact.Phone,
-            Email = contact.Email,
-            LastChanged = contact.LastChanged,
-        }).ToList();
-
-        foreach (var contact in contacts)
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(contact.NationalIdentityNumber))
-                {
-                    contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.NationalIdentityNumber);
-                    _logger.LogDebug($"Displayed ssn created {contact.DisplayedSocialSecurityNumber}");
-                    contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.NationalIdentityNumber);
-                    contact.NationalIdentityNumber = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error redacting: {ex.Message}");
-            }
-        }
-
-        return contacts;
+        return contactsAltinn3;
     }
 
     public async Task<List<PersonalContactDto>> GetPersonalContactsByEmailAltinn3(string email, string environment)
@@ -210,7 +180,6 @@ public class Altinn3Service : IAltinn3Service
         {
             throw new ArgumentException("Phone number is invalid");
         }
-        
         var result = await _client.GetPersonalContactsByPhone(phoneNumber, environment);
         var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
@@ -260,9 +229,7 @@ public class Altinn3Service : IAltinn3Service
         {
             throw new ArgumentException("Organization number invalid. It must be 9 digits long.");
         }
-        phoneNumber = phoneNumber.Trim();
-        string strippedPhoneNumber = Regex.Replace(phoneNumber, @"^\+\d{1,2}", "");
-        var result = await _client.GetNotificationAddressesByPhone(strippedPhoneNumber, environment);
+        var result = await _client.GetNotificationAddressesByPhone(phoneNumber, environment);
         var notificationAddresses = JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
         return notificationAddresses;

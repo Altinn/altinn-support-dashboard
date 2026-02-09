@@ -416,10 +416,10 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task GetPersonalContactsAltinn3_ReturnsRoles_WhenOrgNumberIsValid()
         {
             var validOrgNumber = "123456789";
-            var expectedContacts = new List<PersonalContactAltinn3>
+            var expectedContacts = new List<PersonalContactDto>
             {
-                new PersonalContactAltinn3 { Name = "Contact1", Email = "contact1@test.no", Phone = "", NationalIdentityNumber = "" },
-                new PersonalContactAltinn3 { Name = "Contact2", Email = "contact2@test.no", Phone = "", NationalIdentityNumber = "" }
+                new PersonalContactDto { Name = "Contact1", Email = "contact1@test.no", Phone = "", NationalIdentityNumber = "" },
+                new PersonalContactDto { Name = "Contact2", Email = "contact2@test.no", Phone = "", NationalIdentityNumber = "" }
             };
 
             _mockServiceAltinn3
