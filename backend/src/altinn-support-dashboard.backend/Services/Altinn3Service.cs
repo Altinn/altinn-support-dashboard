@@ -242,31 +242,4 @@ public class Altinn3Service : IAltinn3Service
 
         return notificationAddresses;
     }
-
-    public async Task<List<RolesAndRightsDto>> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment)
-    {
-        rolesAndRights.Type = getTypeFromValue(rolesAndRights.Value);
-        foreach (PartyFilter party in rolesAndRights.PartyFilter)
-        {
-            party.Type = getTypeFromValue(party.Value);
-        }
-        var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
-        var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
-
-        return roles;
-
-    }
-    private string getTypeFromValue(string value)
-    {
-        if (ValidationService.isValidSsn(value))
-        {
-            return "urn:altinn:person:identifier-no";
-        }
-        else if (ValidationService.IsValidOrgNumber(value))
-        {
-            return "urn:altinn:organization:identifier-no";
-        }
-        return "";
-    }
-
 }
