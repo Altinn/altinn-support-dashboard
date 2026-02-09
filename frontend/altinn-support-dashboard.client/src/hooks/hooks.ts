@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  Role,
   OfficialContact,
   ERRoles,
   NotificationAdresses,
@@ -23,7 +24,6 @@ import {
 } from "../models/correspondenceModels";
 import { sendCorrespondence } from "../utils/correspondenceApi";
 import { toast } from "react-toastify";
-import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -81,12 +81,11 @@ export function useOrgSearch(environment: string, query: string) {
 }
 
 export function useOrgDetails(environment: string, orgNumber?: string) {
-  const contactsQuery: UseQueryResult<PersonalContactAltinn3[], Error> =
-    useQuery({
-      queryKey: ["contacts", environment, orgNumber],
-      queryFn: () => fetchPersonalContacts(environment, orgNumber!),
-      enabled: !!orgNumber,
-    });
+  const contactsQuery: UseQueryResult<PersonalContactAltinn3[], Error> = useQuery({
+    queryKey: ["contacts", environment, orgNumber],
+    queryFn: () => fetchPersonalContacts(environment, orgNumber!),
+    enabled: !!orgNumber,
+  });
 
   const ERolesQuery: UseQueryResult<ERRoles[], Error> = useQuery({
     queryKey: ["erroles", environment, orgNumber],
@@ -100,38 +99,41 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
       enabled: !!orgNumber,
     });
 
-  const notificationAdressesQuery: UseQueryResult<
-    NotificationAdresses[],
-    Error
-  > = useQuery({
-    queryKey: ["notificationAdresses", environment, orgNumber],
-    queryFn: () => fetchNotificationAddresses(environment, orgNumber!),
-    enabled: !!orgNumber,
-  });
+    const notificationAdressesQuery: UseQueryResult<NotificationAdresses[], Error> =
+    useQuery({
+      queryKey: ["notificationAdresses", environment, orgNumber],
+      queryFn: () => fetchNotificationAddresses(environment, orgNumber!),
+      enabled: !!orgNumber,
+    });
 
-  return {
-    contactsQuery,
-    ERolesQuery,
-    officialContactsQuery,
-    notificationAdressesQuery,
-  };
+  return { contactsQuery, ERolesQuery, officialContactsQuery, notificationAdressesQuery };
 }
 
 export const useRoles = (
   environment: string,
-  request: RolesAndRightsRequest,
+  subject?: string,
+  reportee?: string,
 ) => {
-  const rolesQuery: UseQueryResult<RolesAndRights[], Error> = useQuery({
-    queryKey: ["roles", environment, request],
-    queryFn: () => fetchRolesForOrg(environment, request),
-    enabled:
-      !!request.partyFilter &&
-      !!request.value &&
-      !!(request.partyFilter.length >= 1), // only run if both exist
+  const rolesQuery: UseQueryResult<Role[], Error> = useQuery({
+    queryKey: ["roles", environment, subject, reportee],
+    queryFn: () => fetchRolesForOrg(environment, subject!, reportee!),
+    enabled: !!subject && !!reportee, // only run if both exist
   });
 
   return rolesQuery;
 };
+
+export function UseManualRoleSearch(
+  rollehaver: string,
+  rollegiver: string,
+  environment: string,
+) {
+  return useQuery({
+    queryKey: ["manualroles", environment, rollehaver, rollegiver],
+    queryFn: async () => fetchRolesForOrg(environment, rollehaver, rollegiver),
+    enabled: !!rollehaver && !!rollegiver,
+  });
+}
 
 export const useSsnFromToken = (environment: string, ssnToken?: string) => {
   return useQuery({

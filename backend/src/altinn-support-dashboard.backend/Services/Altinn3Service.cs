@@ -19,12 +19,8 @@ public class Altinn3Service : IAltinn3Service
     private readonly IRedactorProvider _redactorProvider;
     private readonly ILogger<IAltinn3Service> _logger;
 
-    //temporary for altinn2 roles
-    private readonly IAltinnApiService _altinn2Service;
-
-    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IAltinnApiService altinnApiService)
+    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger)
     {
-        _altinn2Service = altinnApiService;
         _logger = logger;
         _breggService = dataBrregService;
         _client = altinn3Client;
@@ -163,7 +159,7 @@ public class Altinn3Service : IAltinn3Service
         var result = await _client.GetPersonalContactsByOrg(orgNumber, environment);
         var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
-        var contacts = contactsAltinn3.Select(contact => new PersonalContactAltinn3
+        var contacts = contactsAltinn3.Select(contact => new PersonalContactAltinn3 
         {
             OrgNr = contact.OrgNr,
             NationalIdentityNumber = contact.NationalIdentityNumber,
@@ -214,7 +210,7 @@ public class Altinn3Service : IAltinn3Service
         {
             throw new ArgumentException("Phone number is invalid");
         }
-
+        
         var result = await _client.GetPersonalContactsByPhone(phoneNumber, environment);
         var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
@@ -286,47 +282,16 @@ public class Altinn3Service : IAltinn3Service
 
     public async Task<List<RolesAndRightsDto>> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment)
     {
-
-        var ssn = _ssnTokenService.GetSsnFromToken(rolesAndRights.Value);
-
-
-        if (string.IsNullOrWhiteSpace(ssn))
-        {
-            ssn = rolesAndRights.Value; //If the subject isn't a token, use it as is
-        }
-
-        rolesAndRights.Value = ssn;
-        rolesAndRights.Type = getTypeFromValue(ssn);
-
+        rolesAndRights.Type = getTypeFromValue(rolesAndRights.Value);
         foreach (PartyFilter party in rolesAndRights.PartyFilter)
         {
             party.Type = getTypeFromValue(party.Value);
         }
-
         var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
         var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
-        //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
-        if (rolesAndRights.PartyFilter.Count >= 1)
-        {
-            var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value, rolesAndRights.PartyFilter[0].Value, environment);
-            if (altinn2Roles != null)
-            {
-                List<string> altinn2RolesList = [];
-                foreach (Role role in altinn2Roles)
-                {
-                    if (!string.IsNullOrEmpty(role.RoleName))
-                    {
-                        altinn2RolesList.Add(role.RoleName);
-                    }
-                }
-                roles[0].AuthorizedRoles = altinn2RolesList;
-            }
-
-
-
-        }
         return roles;
+
     }
     private string getTypeFromValue(string value)
     {

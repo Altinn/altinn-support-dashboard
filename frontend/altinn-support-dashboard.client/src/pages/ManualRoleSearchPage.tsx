@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { getLocalStorageValue } from "../components/ManualRoleSearch/utils/storageUtils";
+import { UseManualRoleSearch } from "../hooks/hooks";
 import InputComponent from "../components/ManualRoleSearch/ManualRoleSearchInput";
 import SearchButton from "../components/ManualRoleSearch/ManualRoleSearchButton";
 import EmptySearch from "../components/ManualRoleSearch/ManualRoleEmptySearchButton";
-import { Heading, Button } from "@digdir/designsystemet-react";
+import ManualRoleSearchResult from "../components/ManualRoleSearch/ManualRoleSearchResult";
+import { Heading, Button} from '@digdir/designsystemet-react';
 import InformationDialogBox from "../components/InformationDialog/InformationDialogBox";
-import { InformationIcon } from "@navikt/aksel-icons";
-import styles from "./styles/ManualRoleSearchPage.module.css";
-import RoleTable from "../components/ManualRoleSearch/RoleTable";
+import { InformationIcon } from '@navikt/aksel-icons';
+import styles from"./styles/ManualRoleSearchPage.module.css";
+import { useAppStore } from "../stores/Appstore";
 
 export const ManualRoleSearchPage: React.FC = () => {
   const [rollehaver, setRollehaver] = useState<string>(
@@ -16,47 +18,61 @@ export const ManualRoleSearchPage: React.FC = () => {
   const [rollegiver, setRollegiver] = useState<string>(
     getLocalStorageValue("rollegiver"),
   );
-  const [searchTrigger, setSearchTrigger] = useState(0);
+  const [hasSearched, setHasSearched] = useState(false);
+  const environment = useAppStore((state) => state.environment);
   const dialogRef = React.useRef<HTMLDialogElement>(null);
 
-  const handleSearch = () => {
-    setSearchTrigger((prev) => prev + 1);
-  };
+  const {
+    data: roles = [],
+    isLoading,
+    error,
+    refetch,
+  } = UseManualRoleSearch(rollehaver, rollegiver, environment);
 
   return (
     <div>
-      <Heading level={1} data-size="sm">
+      <Heading level={1} data-size="sm" >
         Manuelt Rollesøk
       </Heading>
-      <Button
-        onClick={() => dialogRef.current?.showModal()}
-        className={styles.infoButton}
-        variant="secondary"
-      >
+      <Button 
+      onClick={() => dialogRef.current?.showModal()}
+      className={styles.infoButton}
+      variant="secondary">
         <InformationIcon />
       </Button>
       <InformationDialogBox dialogRef={dialogRef} />
 
       <div className={styles["input-row"]}>
         <InputComponent
-          searchTrigger={searchTrigger}
+          rollehaver={rollehaver}
+          rollegiver={rollegiver}
           setRollehaver={setRollehaver}
           setRollegiver={setRollegiver}
         />
         <SearchButton
           rollehaver={rollehaver}
           rollegiver={rollegiver}
-          handleSearch={handleSearch}
+          isLoading={isLoading}
+          refetch={refetch}
+          sethasSearched={setHasSearched}
         />
       </div>
       <div className={styles["result-area"]}>
-        {(rollehaver.trim() !== "" || rollegiver.trim() !== "") && (
+        {(hasSearched ||
+          rollehaver.trim() !== "" ||
+          rollegiver.trim() !== "") && (
           <EmptySearch
+            sethasSearched={setHasSearched}
             setRollehaver={setRollehaver}
             setRollegiver={setRollegiver}
           />
         )}
-        <RoleTable subject={rollehaver} reportee={rollegiver} />
+        <ManualRoleSearchResult
+          error={error}
+          isLoading={isLoading}
+          hasSearched={hasSearched}
+          roles={roles}
+        />
       </div>
     </div>
   );

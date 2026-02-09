@@ -115,22 +115,21 @@ export interface SelectedOrg {
 
 export interface NotificationAdresses {
   notificationAddressId: number;
-  countryCode?: string;
-  email?: string;
-  phone?: string;
+  countryCode: string | null;
+  email: string | null;
+  phone: string | null;
   sourceOrgNumber: string;
   requestedOrgNumber: string;
   lastChanged?: string;
 }
 
 export interface PersonalContactAltinn3 {
-  orgNr?: string;
-  nationalIdentityNumber?: string;
-  name?: string;
-  email?: string;
-  phone?: string;
-  lastChanged?: string;
-  displayedSocialSecurityNumber?: string;
-  ssnToken?: string;
+  orgNr: string | null;
+  nationalIdentityNumber: string | null;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  lastChanged: string | null;
+  displayedSocialSecurityNumber: string | null;
+  ssnToken: string | null;
 }
-

@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import classes from "../../styles/ContactInfoCell.module.css";
 
 interface ContactInfoCellProps {
-  contact?: string;
-  contactLastChanged?: string;
+  contact: string | null;
+  contactLastChanged: string | null;
 }
 
 const ContactInfoCell: React.FC<ContactInfoCellProps> = ({

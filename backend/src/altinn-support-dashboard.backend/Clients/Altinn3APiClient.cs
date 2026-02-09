@@ -226,7 +226,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
         var client = _clients[environmentName];
 
-        var requestUrl = $"accessmanagement/api/v1/resourceowner/authorizedparties?includeAltinn3=true&includeResources=false&includeAccessPackages=true";
+        var requestUrl = $"accessmanagement/api/v1/resourceowner/authorizedparties?includeAltinn3=true&includeResources=false&includeAccessPackages=true&includeRoles=true&includeAltinn2=true";
 
 
         string jsonPayload = JsonSerializer.Serialize(dto);
