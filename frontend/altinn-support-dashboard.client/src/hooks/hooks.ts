@@ -4,13 +4,11 @@ import {
   Role,
   OfficialContact,
   ERRoles,
-  NotificationAdresses,
 } from "../models/models";
 import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   fetchERoles,
-  fetchNotificationAddresses,
   fetchOfficialContacts,
   fetchOrganizations,
   fetchPersonalContacts,
@@ -99,14 +97,7 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
       enabled: !!orgNumber,
     });
 
-    const notificationAdressesQuery: UseQueryResult<NotificationAdresses[], Error> =
-    useQuery({
-      queryKey: ["notificationAdresses", environment, orgNumber],
-      queryFn: () => fetchNotificationAddresses(environment, orgNumber!),
-      enabled: !!orgNumber,
-    });
-
-  return { contactsQuery, ERolesQuery, officialContactsQuery, notificationAdressesQuery };
+  return { contactsQuery, ERolesQuery, officialContactsQuery };
 }
 
 export const useRoles = (

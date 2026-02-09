@@ -21,7 +21,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
     useState<PersonalContact | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { notificationAdressesQuery } = useOrgDetails(
+  const { officialContactsQuery } = useOrgDetails(
     environment,
     selectedOrg?.OrganizationNumber,
   );
@@ -67,15 +67,15 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
                 <div className={styles.officialContactBottom}>
                   <NotificationContactTable
                     title="Mobilnummer"
-                    field="phone"
-                    changedField="lastChanged"
-                    contacts={notificationAdressesQuery.data ?? []}
+                    field="mobileNumber"
+                    changedField="mobileNumberChanged"
+                    contacts={officialContactsQuery.data ?? []}
                   />
                   <NotificationContactTable
                     title="E-post"
-                    field="email"
-                    changedField="lastChanged"
-                    contacts={notificationAdressesQuery.data ?? []}
+                    field="eMailAddress"
+                    changedField="eMailAddressChanged"
+                    contacts={officialContactsQuery.data ?? []}
                   />
                 </div>
               </Card>

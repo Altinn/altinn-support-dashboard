@@ -112,13 +112,3 @@ export interface SelectedOrg {
   Name: string;
   OrganizationNumber: string;
 }
-
-export interface NotificationAdresses {
-  notificationAddressId: number;
-  countryCode: string | null;
-  email: string | null;
-  phone: string | null;
-  sourceOrgNumber: string;
-  requestedOrgNumber: string;
-  lastChanged?: string;
-}

@@ -1,6 +1,5 @@
 import { authorizedFetch, getBaseUrl } from "./utils";
 import { OfficialContact, Role, Subunit } from "../models/models";
-import { NotificationAdresses} from "../models/models";
 
 //this file defines which which api endpoints we want to fetch data from
 
@@ -126,22 +125,3 @@ export const fetchSsnFromToken = async (
   const data = await res.json();
   return data.socialSecurityNumber;
 }
-
-export const fetchNotificationAddresses = async (
-  environment: string,
-  orgNumber: string,
-): Promise<NotificationAdresses[]> => {
-  const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/organizations/${orgNumber}/altinn3/notificationaddresses`,
-  );
-
-  if (res.status === 404) {
-    return [];
-  }
-
-  if (!res.ok)
-    throw new Error((await res.text()) || "Error fetching Notification addresses");
-
-  const data = await res.json();
-  return Array.isArray(data) ? data : [data];
-};
