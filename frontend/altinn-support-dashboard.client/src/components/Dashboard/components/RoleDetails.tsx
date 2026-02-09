@@ -1,10 +1,20 @@
-import { Button, Heading, Card } from "@digdir/designsystemet-react";
+import { useRoles } from "../../../hooks/hooks";
+import { useAppStore } from "../../../stores/Appstore";
+import RoleTypeCell from "../../RoleTypeCell";
+import {
+  Button,
+  Heading,
+  Table,
+  Card,
+  Paragraph,
+  Skeleton,
+  Alert,
+} from "@digdir/designsystemet-react";
 import styles from "../styles/RoleDetails.module.css";
-import RoleTable from "../../ManualRoleSearch/RoleTable";
-import { PersonalContactAltinn3 } from "../../../models/models";
+import { PersonalContact } from "../../../models/models";
 
 interface RoleDetailsProps {
-  selectedContact: PersonalContactAltinn3;
+  selectedContact: PersonalContact;
   organizationNumber: string;
   onBack: () => void;
 }
@@ -14,6 +24,22 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
   organizationNumber,
   onBack,
 }) => {
+  const environment = useAppStore((state) => state.environment);
+
+  const roleQuery = useRoles(
+    environment,
+    selectedContact.ssnToken,
+    organizationNumber,
+  );
+  const roleInfo = roleQuery.data;
+
+  if (roleQuery.isLoading) {
+    return <Skeleton variant="rectangle" height={300} />;
+  }
+  if (roleQuery.isError) {
+    return <Alert data-color="danger">Error when fetching roles</Alert>;
+  }
+
   const handleBack = () => {
     onBack();
   };
@@ -30,10 +56,33 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
       >
         Tilbake til oversikt
       </Button>
-      <RoleTable
-        subject={selectedContact.ssnToken}
-        reportee={organizationNumber}
-      />
+
+      <Table border>
+        <Table.Head>
+          <Table.Row>
+            <Table.HeaderCell>Rolletype</Table.HeaderCell>
+            <Table.HeaderCell>Rollenavn</Table.HeaderCell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
+          {roleInfo && roleInfo.length > 0 ? (
+            roleInfo.map((role, index) => (
+              <Table.Row key={index}>
+                <RoleTypeCell roleType={role.roleType} />
+                <Table.Cell>{role.roleName}</Table.Cell>
+              </Table.Row>
+            ))
+          ) : (
+            <Table.Row>
+              <Table.Cell colSpan={2}>
+                <Paragraph style={{ textAlign: "center" }}>
+                  Ingen roller funnet
+                </Paragraph>
+              </Table.Cell>
+            </Table.Row>
+          )}
+        </Table.Body>
+      </Table>
     </Card>
   );
 };

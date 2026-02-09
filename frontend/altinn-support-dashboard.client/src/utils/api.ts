@@ -1,11 +1,5 @@
-import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
-import {
-  NotificationAdresses,
-  OfficialContact,
-  PersonalContactAltinn3,
-  Subunit,
-} from "../models/models";
-import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
+import { authorizedFetch, getBaseUrl } from "./utils";
+import { OfficialContact, Role, Subunit } from "../models/models";
 
 //this file defines which which api endpoints we want to fetch data from
 
@@ -16,7 +10,7 @@ export const fetchOrganizations = async (
   const trimmedQuery = query.replace(/\s/g, "");
 
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search?query=${encodeURIComponent(trimmedQuery)}`,
+    `${getBaseUrl(environment)}/serviceowner/organizations/search?query=${encodeURIComponent(trimmedQuery)}`,
   );
 
   if (res.status === 404) {
@@ -25,20 +19,6 @@ export const fetchOrganizations = async (
 
   if (!res.ok)
     throw new Error((await res.text()) || "Error fetching organizations");
-
-  const data = await res.json();
-  return Array.isArray(data) ? data : [data];
-};
-
-export const fetchRolesForOrg = async (
-  environment: string,
-  request: RolesAndRightsRequest,
-): Promise<RolesAndRights[]> => {
-  const res = await authorizedPost(
-    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/roles`,
-    request,
-  );
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
 
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
@@ -68,9 +48,9 @@ export const fetchSubunits = async (environment: string, orgNumber: string) => {
 export const fetchPersonalContacts = async (
   environment: string,
   orgNumber: string,
-): Promise<PersonalContactAltinn3[]> => {
+) => {
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/personalcontacts/org/${orgNumber}`,
+    `${getBaseUrl(environment)}/serviceowner/organizations/${orgNumber}/personalcontacts`,
   );
 
   if (res.status === 404) {
@@ -118,6 +98,20 @@ export const fetchOfficialContacts = async (
   return Array.isArray(data) ? data : [data];
 };
 
+export const fetchRolesForOrg = async (
+  environment: string,
+  ssnToken: string,
+  rollegiver: string,
+): Promise<Role[]> => {
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/${ssnToken}/roles/${rollegiver}`,
+  );
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
+
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+};
+
 export const fetchSsnFromToken = async (
   environment: string,
   ssnToken: string,
@@ -126,30 +120,8 @@ export const fetchSsnFromToken = async (
     `${getBaseUrl(environment)}/serviceowner/personalcontacts/${ssnToken}/ssn`,
   );
 
-  if (!res.ok)
-    throw new Error((await res.text()) || "Error fetching SSN from token");
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching SSN from token");
 
   const data = await res.json();
   return data.socialSecurityNumber;
-};
-
-export const fetchNotificationAddresses = async (
-  environment: string,
-  orgNumber: string,
-): Promise<NotificationAdresses[]> => {
-  const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/organizations/${orgNumber}/altinn3/notificationaddresses`,
-  );
-
-  if (res.status === 404) {
-    return [];
-  }
-
-  if (!res.ok)
-    throw new Error(
-      (await res.text()) || "Error fetching Notification addresses",
-    );
-
-  const data = await res.json();
-  return Array.isArray(data) ? data : [data];
-};
+}

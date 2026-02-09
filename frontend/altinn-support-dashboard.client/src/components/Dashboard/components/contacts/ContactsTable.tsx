@@ -3,7 +3,7 @@ import classes from "../../styles/ContactsTable.module.css";
 import { SortDirection } from "../../models/mainContentTypes";
 import { filterContacts, sortContacts } from "../../utils/contactUtils";
 import { useOrgDetails } from "../../../../hooks/hooks";
-import { PersonalContactAltinn3, SelectedOrg } from "../../../../models/models";
+import { PersonalContact, SelectedOrg } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import ContactInfoCell from "./ContactInfoCell";
 import { Button, Table, Paragraph, Card } from "@digdir/designsystemet-react";
@@ -12,7 +12,7 @@ import SsnCell from "../../../SsnCell";
 interface ContactsTableProps {
   searchQuery: string;
   selectedOrg: SelectedOrg;
-  setSelectedContact: (personalContact: PersonalContactAltinn3) => void;
+  setSelectedContact: (personalContact: PersonalContact) => void;
 }
 
 const ContactsTable: React.FC<ContactsTableProps> = ({
@@ -20,9 +20,9 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
   selectedOrg,
   setSelectedContact,
 }) => {
-  const [sortField, setSortField] = useState<
-    keyof PersonalContactAltinn3 | null
-  >(null);
+  const [sortField, setSortField] = useState<keyof PersonalContact | null>(
+    null,
+  );
 
   const environment = useAppStore((state) => state.environment);
   const { contactsQuery } = useOrgDetails(
@@ -41,7 +41,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
     sortDirection,
   );
 
-  const handleSort = (field: keyof PersonalContactAltinn3) => {
+  const handleSort = (field: keyof PersonalContact) => {
     if (field === sortField) {
       if (sortDirection === "ascending") {
         setSortDirection("descending");
@@ -78,23 +78,23 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
             <Table.HeaderCell
               className={classes.tableHeaderCell}
               sort={
-                sortField === "nationalIdentityNumber" ? sortDirection : "none"
+                sortField === "socialSecurityNumber" ? sortDirection : "none"
               }
-              onClick={() => handleSort("nationalIdentityNumber")}
+              onClick={() => handleSort("socialSecurityNumber")}
             >
               Fødselsnummer
             </Table.HeaderCell>
             <Table.HeaderCell
               className={classes.tableHeaderCell}
-              sort={sortField === "phone" ? sortDirection : "none"}
-              onClick={() => handleSort("phone")}
+              sort={sortField === "mobileNumber" ? sortDirection : "none"}
+              onClick={() => handleSort("mobileNumber")}
             >
               Mobilnummer
             </Table.HeaderCell>
             <Table.HeaderCell
               className={classes.tableHeaderCell}
-              sort={sortField === "email" ? sortDirection : "none"}
-              onClick={() => handleSort("email")}
+              sort={sortField === "eMailAddress" ? sortDirection : "none"}
+              onClick={() => handleSort("eMailAddress")}
             >
               E-post
             </Table.HeaderCell>
@@ -104,22 +104,22 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
         <Table.Body>
           {sortedContacts.length > 0 ? (
             sortedContacts.map((contact, index) => (
-              <Table.Row key={`${contact.nationalIdentityNumber}-${index}`}>
+              <Table.Row key={`${contact.personalContactId}-${index}`}>
                 <Table.Cell className={classes.tableCell}>
                   {contact.name}
                 </Table.Cell>
-                <SsnCell contact={contact} environment={environment} />
+                <SsnCell contact={contact} environment={environment}/>
                 <Table.Cell className={classes.tableCell}>
                   <ContactInfoCell
-                    contact={contact.phone}
-                    contactLastChanged={contact.lastChanged}
+                    contact={contact.mobileNumber}
+                    contactLastChanged={contact.mobileNumberChanged}
                   />
                 </Table.Cell>
 
                 <Table.Cell className={classes.tableCell}>
                   <ContactInfoCell
-                    contact={contact.email}
-                    contactLastChanged={contact.lastChanged}
+                    contact={contact.eMailAddress}
+                    contactLastChanged={contact.eMailAddressChanged}
                   />
                 </Table.Cell>
 

@@ -44,7 +44,7 @@ namespace altinn_support_dashboard.Server.Services
 
             var result = await _client.GetRolesAsync(orgNumber, environmentName);
 
-            if (environmentName == "TT02" && string.IsNullOrEmpty(result))
+            if (environmentName == "TT02" && result.IsNullOrEmpty())
             {
                 var partyResult = await _partyService.GetRolesFromOrgAsync(orgNumber);
 

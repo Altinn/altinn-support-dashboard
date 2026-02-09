@@ -19,7 +19,6 @@ public class Altinn3ServiceTests
     private readonly Mock<ISsnTokenService> _mockSsnTokenService;
     private readonly Mock<IRedactorProvider> _mockRedactorProvider;
     private readonly Mock<ILogger<IAltinn3Service>> _mockLogger;
-    private readonly Mock<IAltinnApiService> _mockAltinn2Service;
 
     public Altinn3ServiceTests()
     {
@@ -62,8 +61,7 @@ public class Altinn3ServiceTests
         _mockSsnTokenService = new Mock<ISsnTokenService>();
         _mockRedactorProvider = new Mock<IRedactorProvider>();
         _mockLogger = new Mock<ILogger<IAltinn3Service>>();
-        _mockAltinn2Service = new Mock<IAltinnApiService>();
-        _altinnApiService = new Altinn3Service(_mockAltinn3Client.Object, _mockBreggService.Object, _mockSsnTokenService.Object, _mockRedactorProvider.Object, _mockLogger.Object, _mockAltinn2Service.Object);
+        _altinnApiService = new Altinn3Service(_mockAltinn3Client.Object, _mockBreggService.Object, _mockSsnTokenService.Object, _mockRedactorProvider.Object, _mockLogger.Object);
     }
     [Fact]
     public async Task GetPersonalContactsAltinn3_ReturnsContacts_WhenOrgNumberIsValid()
@@ -95,7 +93,7 @@ public class Altinn3ServiceTests
 
         Assert.NotNull(resultList);
         Assert.Equal(2, resultList.Count);
-        Assert.IsType<List<PersonalContactAltinn3>>(resultList);
+        Assert.IsType<List<PersonalContactDto>>(resultList);
     }
 
     [Theory]
@@ -194,69 +192,4 @@ public class Altinn3ServiceTests
 
         await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetNotificationAddressesByOrgAltinn3("123456789", "TT02"));
     }
-
-    [Fact]
-    public async Task GetRolesAndRightsAltinn3_SetsPersonType_WhenValueIsValidSsn()
-    {
-        var request = new RolesAndRightsRequest
-        {
-            Value = "01010112345", // valid SSN
-            PartyFilter = new List<PartyFilter>
-        {
-            new PartyFilter { Value = "123456789" } // valid org
-        }
-        };
-
-        var jsonResponse = @"[
-        {
-            ""role"": ""Daglig leder"",
-            ""right"": ""Read""
-        }
-    ]";
-
-        _mockAltinn3Client
-            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
-            .ReturnsAsync(jsonResponse);
-
-        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
-
-        Assert.NotNull(result);
-        Assert.Single(result);
-        Assert.Equal("urn:altinn:person:identifier-no", request.Type);
-        Assert.Equal("urn:altinn:organization:identifier-no", request.PartyFilter[0].Type);
-    }
-    [Fact]
-    public async Task GetRolesAndRightsAltinn3_SetsOrgType_WhenValueIsOrgNumber()
-    {
-        var request = new RolesAndRightsRequest
-        {
-            Value = "123456789",
-            PartyFilter = new List<PartyFilter>()
-        };
-
-        _mockAltinn3Client
-            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
-            .ReturnsAsync("[]");
-
-        await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
-
-        Assert.Equal("urn:altinn:organization:identifier-no", request.Type);
-    }
-    [Fact]
-    public async Task GetRolesAndRightsAltinn3_ThrowsException_WhenResponseIsNull()
-    {
-        var request = new RolesAndRightsRequest
-        {
-            Value = "123456789",
-            PartyFilter = new List<PartyFilter>()
-        };
-
-        _mockAltinn3Client
-            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
-            .ReturnsAsync("null");
-
-        await Assert.ThrowsAsync<Exception>(() =>
-            _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02"));
-    }
-
 }

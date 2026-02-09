@@ -44,24 +44,16 @@ public class CorrespondenceService : ICorrespondenceService
         uploadRequest.Recipients = newRecipients;
 
         //Sets defualt values if none are given
-        if (string.IsNullOrEmpty(uploadRequest.Correspondence.Content.MessageTitle))
+        if (uploadRequest.Correspondence.Content.MessageTitle.IsNullOrEmpty())
         {
             uploadRequest.Correspondence.Content.MessageTitle = "Test Title";
         }
 
-        if (string.IsNullOrEmpty(uploadRequest.Correspondence.Content.MessageBody))
+        if (uploadRequest.Correspondence.Content.MessageBody.IsNullOrEmpty())
         {
             uploadRequest.Correspondence.Content.MessageBody = "Test Body";
         }
 
         return await _client.UploadCorrespondence(uploadRequest);
-    }
-
-    public async Task<object> GetCorrespondenceStatus(string correspondenceId)
-    {
-        var result = await _client.GetCorrespondenseStatus(correspondenceId);
-        var json = JsonSerializer.Deserialize<object>(result) ?? throw new Exception("Error serializing");
-        return json;
-
     }
 }

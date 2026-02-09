@@ -38,7 +38,6 @@ export const DashboardPage: React.FC = () => {
           />
         </div>
 
-        <div></div>
         <div className={styles["detailed-org-container"]}>
           <DetailedOrgView selectedOrg={selectedOrg} />
         </div>

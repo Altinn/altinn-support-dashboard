@@ -63,26 +63,13 @@ public class CorrespondenceClient : ICorrespondenceClient
             form.Add(new StringContent(DateTime.UtcNow.AddDays(7).ToString("o", CultureInfo.InvariantCulture)), "correspondence.duedatetime");
         }
         ;
+
+
         AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageSummary, "correspondence.content.messageSummary");
 
-        //notification fields
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailBody, "correspondence.notification.emailbody");
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailSubject, "correspondence.notification.emailsubject");
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailContentType, "correspondence.notification.emailcontenttype");
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationChannel, "correspondence.notification.notificationChannel");
-        AddIfNotNull(form, correspondenceData.Correspondence.IgnoreReservation.ToString(), "correspondence.ignorereservation");
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.SendReminder.ToString(), "correspondence.notification.sendreminder");
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationTemplate, "correspondence.notification.notificationtemplate");
-        form.Add(new StringContent(DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture)), "correspondence.notification.requestedSendTime");
 
-
-        //custom recipients for notification
-        for (int i = 0; i < correspondenceData?.Correspondence?.Notification?.CustomRecipients?.Count; i++)
-        {
-            AddIfNotNull(form, JsonSerializer.Serialize(correspondenceData?.Correspondence?.Notification?.CustomRecipients[i]?.EmailAddress), $"correspondence.notification.customrecipients[{i}].emailaddress");
-        }
         // Recipients
-        for (int i = 0; i < correspondenceData?.Recipients.Count; i++)
+        for (int i = 0; i < correspondenceData.Recipients.Count; i++)
         {
 
             // security reasons
@@ -98,12 +85,14 @@ public class CorrespondenceClient : ICorrespondenceClient
         var fileContent = new ByteArrayContent(bytes);
         fileContent.Headers.ContentType =
             new MediaTypeHeaderValue("text/plain");
+
         fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
         form.Add(fileContent, "Attachments", "testfile.txt");
         form.Add(
             new StringContent("testfile-1"),
             "correspondence.content.attachments[0].sendersReference"
         );
+
         form.Add(
             new StringContent("testfile.txt"),
             "correspondence.content.attachments[0].filename"
@@ -123,7 +112,6 @@ public class CorrespondenceClient : ICorrespondenceClient
 
         var requestHeaders = string.Join("\r\n", filteredHeaders);
 
-        //response
         CorrespondenceResponse correspondenceResponse = new CorrespondenceResponse
         {
             StatusCode = response.StatusCode,
@@ -136,19 +124,6 @@ public class CorrespondenceClient : ICorrespondenceClient
         return correspondenceResponse;
 
     }
-
-    public async Task<string> GetCorrespondenseStatus(string correspondenceId)
-
-    {
-        string requestUrl = $"/correspondence/api/v1/correspondence/{correspondenceId}/details";
-
-        var response = await _client.GetAsync(requestUrl);
-        var result = await response.Content.ReadAsStringAsync();
-
-        return result;
-
-    }
-
 
     //helper function for all optional fields
     private static bool AddIfNotNull(MultipartFormDataContent form, string? value, string name)

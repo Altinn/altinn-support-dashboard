@@ -4,7 +4,12 @@ using Altinn.Studio.Designer.Infrastructure.AnsattPorten;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace AltinnSupportDashboard
 {
@@ -29,7 +34,6 @@ namespace AltinnSupportDashboard
                     // Load the standard appsettings.json
                     config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
-
                     // Load environment-specific appsettings.{env}.json
                     config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
@@ -49,13 +53,11 @@ namespace AltinnSupportDashboard
                 {
                     // Add console logging
                     logging.AddConsole();
+                    logging.AddApplicationInsights();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    if (!hostContext.HostingEnvironment.IsDevelopment())
-                    {
-                        services.AddApplicationInsightsTelemetry();
-                    }
+                    services.AddApplicationInsightsTelemetry();
 
                     // Bind Configuration section to the Configuration class and add to DI
                     services.Configure<Configuration>(hostContext.Configuration.GetSection("Configuration"));
@@ -66,10 +68,7 @@ namespace AltinnSupportDashboard
                     // Register Maskinporten clients with their respective settings (adjust as needed)
                     services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(
                         nameof(config.Production),
-                        config?.Production.MaskinportenSettings, configureClientDefinition =>
-                        {
-                            configureClientDefinition.ClientSettings.ExhangeToAltinnToken = true;
-                        });
+                        config?.Production.MaskinportenSettings);
 
                     services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(
                         nameof(config.TT02),
@@ -92,6 +91,11 @@ namespace AltinnSupportDashboard
                     services.AddScoped<IAltinn3Service, Altinn3Service>();
                     services.AddScoped<PartyApiClient>();
                     services.AddScoped<IPartyApiService, PartyApiService>();
+                    services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
+                    services.AddScoped<ICorrespondenceService, CorrespondenceService>();
+                    services.AddScoped<ISsnTokenService, SsnTokenService>();
+                    services.AddScoped<ISsnTokenService, SsnTokenService>();
+
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
                     services.AddScoped<ICorrespondenceService, CorrespondenceService>();
                     services.AddScoped<ISsnTokenService, SsnTokenService>();
