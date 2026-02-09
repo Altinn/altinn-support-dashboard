@@ -32,7 +32,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
   }
 
   return (
-    <Card>
+    <Card data-color="neutral">
       <Table border>
         <Table.Head>
           <Table.Row>
