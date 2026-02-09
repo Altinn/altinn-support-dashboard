@@ -5,7 +5,6 @@ export interface CorrespondenceUploadRequest {
 export interface Correspondence {
   resourceType: string;
   content?: CorrespondenceContent;
-  notification?: CorrespondenceNotification;
   isConfirmationNeeded?: boolean;
   dueDateTime?: string;
 }
@@ -22,9 +21,4 @@ export interface CorrespondenceResponse {
   requestHeader: string;
   requestBody: string;
   statusCode: string;
-}
-
-export interface CorrespondenceNotification {
-  notificationTemplate: string;
-  notificationChannel: string;
 }

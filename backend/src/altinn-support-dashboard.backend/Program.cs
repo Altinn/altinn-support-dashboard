@@ -34,7 +34,6 @@ namespace AltinnSupportDashboard
                     // Load the standard appsettings.json
                     config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
-
                     // Load environment-specific appsettings.{env}.json
                     config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
