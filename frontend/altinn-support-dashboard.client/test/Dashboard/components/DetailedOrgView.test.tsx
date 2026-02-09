@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { SelectedOrg } from "../../../src/models/models";
 import DetailedOrgView from "../../../src/components/Dashboard/components/DetailedOrgView";
-
+import '@testing-library/jest-dom';
 
 vi.mock("../../../src/hooks/hooks", () => ({
   useOrgDetails: vi.fn(),
