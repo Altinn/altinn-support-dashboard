@@ -4,7 +4,7 @@
   "changes": [
     {
       "title": "Altinn 3 endepunkter og utvidet rollesøk",
-      "description": "I denne releasen så har vi skiftet ut alle altinn2 endepunkter med nye altinn3 endepunkter. Dette gjør det også mulig å se tigangspakker og enkelttjenester en person har til et org",
+      "description": "I denne releasen så har vi skiftet ut alle altinn2 endepunkter med nye altinn3 endepunkter. Dette gjør det også mulig å se tilgangspakker og enkelttjenester en person har til et org",
       "details": [
         "Byttet ut gamle endepunkter med nye altinn3 endepunkter",
         "Mulig å se tilgangspakker og enkelttjenester",
