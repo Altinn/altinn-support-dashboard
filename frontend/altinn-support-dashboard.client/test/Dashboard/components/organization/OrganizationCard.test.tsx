@@ -2,7 +2,7 @@ import { describe, expect, vi, it, beforeEach } from "vitest";
 import { Organization, SelectedOrg, Subunit } from "../../../../src/models/models";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { OrganizationCard } from "../../../../src/components/Dashboard/components/organizations/OrganizationCard";
-
+import '@testing-library/jest-dom';
 
 
 
