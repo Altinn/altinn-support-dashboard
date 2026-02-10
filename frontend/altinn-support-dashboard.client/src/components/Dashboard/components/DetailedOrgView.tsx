@@ -5,7 +5,7 @@ import { RoleDetails } from "./RoleDetails";
 import ContactsSearchBar from "./contacts/ContactsSearchBar";
 import ContactsTable from "./contacts/ContactsTable";
 import { useOrgDetails } from "../../../hooks/hooks";
-import { PersonalContact, SelectedOrg } from "../../../models/models";
+import {  PersonalContactAltinn3, SelectedOrg } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
 import { Card } from "@digdir/designsystemet-react";
 import styles from "../styles/DetailedOrgView.module.css";
@@ -18,10 +18,10 @@ interface DetailedOrgViewProps {
 const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
   const environment = useAppStore((state) => state.environment);
   const [selectedContact, setSelectedContact] =
-    useState<PersonalContact | null>(null);
+    useState<PersonalContactAltinn3 | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { officialContactsQuery } = useOrgDetails(
+  const { notificationAdressesQuery } = useOrgDetails(
     environment,
     selectedOrg?.OrganizationNumber,
   );
@@ -67,15 +67,15 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
                 <div className={styles.officialContactBottom}>
                   <NotificationContactTable
                     title="Mobilnummer"
-                    field="mobileNumber"
-                    changedField="mobileNumberChanged"
-                    contacts={officialContactsQuery.data ?? []}
+                    field="phone"
+                    changedField="lastChanged"
+                    contacts={notificationAdressesQuery.data ?? []}
                   />
                   <NotificationContactTable
                     title="E-post"
-                    field="eMailAddress"
-                    changedField="eMailAddressChanged"
-                    contacts={officialContactsQuery.data ?? []}
+                    field="email"
+                    changedField="lastChanged"
+                    contacts={notificationAdressesQuery.data ?? []}
                   />
                 </div>
               </Card>

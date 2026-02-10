@@ -1,30 +1,29 @@
-
-.input-row {
-    display: flex;
-    flex: 1;
-    width: 80%;
-    gap: 1rem;
-    align-items: center;
-    margin-bottom: 2rem;
+.inputRow {
+  display: flex;
+  flex: 1;
+  width: 80%;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
-@media (max-width:1439px) {
-    .input-row {
-        margin-bottom: 1rem;
-    }
+@media (max-width: 1439px) {
+  .inputRow {
+    margin-bottom: 1rem;
+  }
 }
 
-.result-area {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
+.resultArea {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
-@media (min-width:1024px){
-    .result-area {
-        max-height: 70vh;
-    }
+@media (min-width: 1024px) {
+  .resultArea {
+    max-height: 70vh;
+  }
 }
 
 .infoButton {
@@ -36,5 +35,3 @@
   min-width: 0;
   margin-left: auto;
 }
-
-
