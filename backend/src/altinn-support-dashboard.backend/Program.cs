@@ -66,7 +66,10 @@ namespace AltinnSupportDashboard
                     // Register Maskinporten clients with their respective settings (adjust as needed)
                     services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(
                         nameof(config.Production),
-                        config?.Production.MaskinportenSettings);
+                        config?.Production.MaskinportenSettings, configureClientDefinition =>
+                        {
+                            configureClientDefinition.ClientSettings.ExhangeToAltinnToken = true;
+                        });
 
                     services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(
                         nameof(config.TT02),
@@ -89,11 +92,6 @@ namespace AltinnSupportDashboard
                     services.AddScoped<IAltinn3Service, Altinn3Service>();
                     services.AddScoped<PartyApiClient>();
                     services.AddScoped<IPartyApiService, PartyApiService>();
-                    services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
-                    services.AddScoped<ICorrespondenceService, CorrespondenceService>();
-                    services.AddScoped<ISsnTokenService, SsnTokenService>();
-                    services.AddScoped<ISsnTokenService, SsnTokenService>();
-
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
                     services.AddScoped<ICorrespondenceService, CorrespondenceService>();
                     services.AddScoped<ISsnTokenService, SsnTokenService>();
