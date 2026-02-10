@@ -1,25 +1,25 @@
-import { ErRoleTableItem, PersonalContactAltinn3 } from "../../../models/models";
+import { ErRoleTableItem, PersonalContact } from "../../../models/models";
 import { ERRolesSortField, SortDirection } from "../models/mainContentTypes";
 
 export const filterContacts = (
-  contacts: PersonalContactAltinn3[],
+  contacts: PersonalContact[],
   searchQuery: string,
-): PersonalContactAltinn3[] => {
+): PersonalContact[] => {
   if (searchQuery.trim().length < 3) return contacts;
   return contacts.filter(
     (contact) =>
       contact.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      contact.nationalIdentityNumber?.includes(searchQuery) ||
-      contact.phone?.includes(searchQuery) ||
-      contact.email?.toLowerCase().includes(searchQuery.toLowerCase()),
+      contact.socialSecurityNumber?.includes(searchQuery) ||
+      contact.mobileNumber?.includes(searchQuery) ||
+      contact.eMailAddress?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 };
 
 export const sortContacts = (
-  contacts: PersonalContactAltinn3[],
-  sortField: keyof PersonalContactAltinn3 | null,
+  contacts: PersonalContact[],
+  sortField: keyof PersonalContact | null,
   sortDirection: SortDirection,
-): PersonalContactAltinn3[] => {
+): PersonalContact[] => {
   if (!sortField) return contacts;
   return [...contacts].sort((a, b) => {
     const aValue = a[sortField] || "";

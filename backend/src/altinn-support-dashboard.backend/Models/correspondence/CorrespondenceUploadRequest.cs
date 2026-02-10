@@ -7,4 +7,5 @@ public class CorrespondenceUploadRequest
     public List<Guid>? ExistingAttachments { get; set; }
     public List<string>? Attachments { get; set; }
     public Guid? IdempotentKey { get; set; }
+
 }

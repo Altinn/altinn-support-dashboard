@@ -3,7 +3,6 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Compliance.Redaction;
-using Microsoft.IdentityModel.Tokens;
 using Models.altinn3Dtos;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -19,12 +18,8 @@ public class Altinn3Service : IAltinn3Service
     private readonly IRedactorProvider _redactorProvider;
     private readonly ILogger<IAltinn3Service> _logger;
 
-    //temporary for altinn2 roles
-    private readonly IAltinnApiService _altinn2Service;
-
-    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IAltinnApiService altinnApiService)
+    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger)
     {
-        _altinn2Service = altinnApiService;
         _logger = logger;
         _breggService = dataBrregService;
         _client = altinn3Client;
@@ -48,13 +43,11 @@ public class Altinn3Service : IAltinn3Service
         var json = await _client.GetOrganizationInfo(orgNumber, environment);
         var result = JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions);
 
-        if (result == null || string.IsNullOrEmpty(result.PartyNames[0].Name))
+
+        if (result == null)
         {
             throw new Exception($"No data found for org with orgnumber: {orgNumber}");
         }
-
-
-
         return result.PartyNames[0];
     }
 
@@ -70,10 +63,9 @@ public class Altinn3Service : IAltinn3Service
         };
 
         var breggResult = await _breggService.GetUnderenhet(orgNumber, environment);
-        if (breggResult?.overordnetEnhet != null)
+        if (breggResult != null)
         {
-            PartyNameDto headUnitPartyName = await GetOrganizationPartyNameAltinn3(breggResult.overordnetEnhet, environment);
-            organization.HeadUnit = new Organization { OrganizationNumber = headUnitPartyName.OrgNo, Name = headUnitPartyName.Name };
+            organization.HeadUnit = new Organization { OrganizationNumber = breggResult.overordnetEnhet, Name = breggResult.navn };
         }
         return organization;
     }
@@ -83,6 +75,7 @@ public class Altinn3Service : IAltinn3Service
         var notificationAddesses = await GetNotificationAddressesByEmailAltinn3(email, environment);
         var organizations = await GetOrganizationsFromProfileAltinn3(personalContacts, notificationAddesses, environment);
 
+        _logger.LogDebug($"OrgCount Altinn3 : {organizations.Count}");
 
         return organizations;
 
@@ -90,10 +83,8 @@ public class Altinn3Service : IAltinn3Service
 
     public async Task<List<Organization>> GetOrganizationsByPhoneAltinn3(string phonenumber, string environment)
     {
-        phonenumber = phonenumber.Trim();
-        string strippedPhoneNumber = Regex.Replace(phonenumber, @"^\+\d{1,2}", "");
-        var personalContacts = await GetPersonalContactsByPhoneAltinn3(strippedPhoneNumber, environment);
-        var notificationAddesses = await GetNotificationAddressesByPhoneAltinn3(strippedPhoneNumber, environment);
+        var personalContacts = await GetPersonalContactsByPhoneAltinn3(phonenumber, environment);
+        var notificationAddesses = await GetNotificationAddressesByPhoneAltinn3(phonenumber, environment);
         var organizations = await GetOrganizationsFromProfileAltinn3(personalContacts, notificationAddesses, environment);
 
         return organizations;
@@ -153,7 +144,7 @@ public class Altinn3Service : IAltinn3Service
         return result.PartyNames;
     }
 
-    public async Task<List<PersonalContactAltinn3>> GetPersonalContactsByOrgAltinn3(string orgNumber, string environment)
+    public async Task<List<PersonalContactDto>> GetPersonalContactsByOrgAltinn3(string orgNumber, string environment)
     {
         if (!ValidationService.IsValidOrgNumber(orgNumber))
         {
@@ -162,35 +153,7 @@ public class Altinn3Service : IAltinn3Service
         var result = await _client.GetPersonalContactsByOrg(orgNumber, environment);
         var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
-        var contacts = contactsAltinn3.Select(contact => new PersonalContactAltinn3
-        {
-            OrgNr = contact.OrgNr,
-            NationalIdentityNumber = contact.NationalIdentityNumber,
-            Name = contact.Name,
-            Phone = contact.Phone,
-            Email = contact.Email,
-            LastChanged = contact.LastChanged,
-        }).ToList();
-
-        foreach (var contact in contacts)
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(contact.NationalIdentityNumber))
-                {
-                    contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.NationalIdentityNumber);
-                    _logger.LogDebug($"Displayed ssn created {contact.DisplayedSocialSecurityNumber}");
-                    contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.NationalIdentityNumber);
-                    contact.NationalIdentityNumber = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error redacting: {ex.Message}");
-            }
-        }
-
-        return contacts;
+        return contactsAltinn3;
     }
 
     public async Task<List<PersonalContactDto>> GetPersonalContactsByEmailAltinn3(string email, string environment)
@@ -213,7 +176,6 @@ public class Altinn3Service : IAltinn3Service
         {
             throw new ArgumentException("Phone number is invalid");
         }
-
         var result = await _client.GetPersonalContactsByPhone(phoneNumber, environment);
         var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
@@ -263,9 +225,7 @@ public class Altinn3Service : IAltinn3Service
         {
             throw new ArgumentException("Organization number invalid. It must be 9 digits long.");
         }
-        phoneNumber = phoneNumber.Trim();
-        string strippedPhoneNumber = Regex.Replace(phoneNumber, @"^\+\d{1,2}", "");
-        var result = await _client.GetNotificationAddressesByPhone(strippedPhoneNumber, environment);
+        var result = await _client.GetNotificationAddressesByPhone(phoneNumber, environment);
         var notificationAddresses = JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
         return notificationAddresses;
@@ -282,62 +242,4 @@ public class Altinn3Service : IAltinn3Service
 
         return notificationAddresses;
     }
-
-    public async Task<List<RolesAndRightsDto>> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment)
-    {
-
-        var ssn = _ssnTokenService.GetSsnFromToken(rolesAndRights.Value);
-
-
-        if (string.IsNullOrWhiteSpace(ssn))
-        {
-            ssn = rolesAndRights.Value; //If the subject isn't a token, use it as is
-        }
-
-        rolesAndRights.Value = ssn;
-        rolesAndRights.Type = getTypeFromValue(ssn);
-
-        foreach (PartyFilter party in rolesAndRights.PartyFilter)
-        {
-            party.Type = getTypeFromValue(party.Value);
-        }
-
-        var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
-        var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
-
-        //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
-        if (roles.Count >= 1)
-        {
-            var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value, rolesAndRights.PartyFilter[0].Value, environment);
-            if (altinn2Roles != null)
-            {
-                List<string> altinn2RolesList = [];
-                foreach (Role role in altinn2Roles)
-                {
-                    if (!string.IsNullOrEmpty(role.RoleName))
-                    {
-                        altinn2RolesList.Add(role.RoleName);
-                    }
-                }
-                roles[0].AuthorizedRoles = altinn2RolesList;
-            }
-
-
-
-        }
-        return roles;
-    }
-    private string getTypeFromValue(string value)
-    {
-        if (ValidationService.isValidSsn(value))
-        {
-            return "urn:altinn:person:identifier-no";
-        }
-        else if (ValidationService.IsValidOrgNumber(value))
-        {
-            return "urn:altinn:organization:identifier-no";
-        }
-        return "";
-    }
-
 }

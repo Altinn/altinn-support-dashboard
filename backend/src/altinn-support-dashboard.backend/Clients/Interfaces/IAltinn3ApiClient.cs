@@ -1,7 +1,5 @@
 
 
-using Models.altinn3Dtos;
-
 public interface IAltinn3ApiClient
 {
     Task<string> GetOrganizationInfo(string orgNumber, string environmentName);
@@ -12,5 +10,4 @@ public interface IAltinn3ApiClient
     Task<string> GetNotificationAddressesByOrg(string orgNumber, string environmentName);
     Task<string> GetNotificationAddressesByPhone(string phoneNumber, string environmentName);
     Task<string> GetNotificationAddressesByEmail(string email, string environmentName);
-    Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, string environmentName);
 }

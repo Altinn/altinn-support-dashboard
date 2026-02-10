@@ -40,11 +40,4 @@ public class CorrespondenceController : ControllerBase
 
         return Ok(response);
     }
-
-    [HttpGet("status/{correspondenceId}")]
-    public async Task<IActionResult> GetCorrespondenceStatus(string correspondenceId)
-    {
-        var response = await _service.GetCorrespondenceStatus(correspondenceId);
-        return Ok(response);
-    }
 }
