@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Text;
 using System.Net;
+using Models.altinn3Dtos;
 
 public class Altinn3ApiClient : IAltinn3ApiClient
 {
@@ -218,5 +219,29 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         {
             throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
+    }
+
+    public async Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, string environmentName)
+    {
+
+        var client = _clients[environmentName];
+
+        var requestUrl = $"accessmanagement/api/v1/resourceowner/authorizedparties?includeAltinn3=true&includeResources=true&includeAccessPackages=true";
+
+
+        string jsonPayload = JsonSerializer.Serialize(dto);
+
+        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+        var response = await client.PostAsync(requestUrl, content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        return responseBody;
+
+
     }
 }

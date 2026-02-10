@@ -11,18 +11,21 @@ type CorrespondenceButtonProps = {
   title: string;
   summary: string;
   body: string;
-  checked: boolean;
+  confirmationNeeded: boolean;
+  sendNotification: boolean;
+
   setResponseMessage: (responseData: CorrespondenceResponse) => void;
   dueDate: string;
 };
 
 const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
+  sendNotification,
   resourceType,
   recipients,
   title,
   summary,
   body,
-  checked,
+  confirmationNeeded,
   setResponseMessage,
   dueDate,
 }) => {
@@ -39,10 +42,17 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
         },
 
         resourceType: resourceType,
-        isConfirmationNeeded: checked,
+        isConfirmationNeeded: confirmationNeeded,
         dueDateTime: dueDate || undefined,
       },
     };
+    //sets notification options
+    if (correspondence.correspondence && sendNotification) {
+      correspondence.correspondence.notification = {
+        notificationTemplate: "GenericAltinnMessage",
+        notificationChannel: "EmailAndSms",
+      };
+    }
     const response = await post.mutateAsync(correspondence);
     setResponseMessage(response);
     sessionStorage.setItem("responseMessage", JSON.stringify(response));
@@ -50,7 +60,10 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
 
   return (
     <div>
-      <Button onClick={handleSendMessage} disabled={filteredRecipients.length === 0}>
+      <Button
+        onClick={handleSendMessage}
+        disabled={filteredRecipients.length === 0}
+      >
         Send melding
       </Button>
     </div>
