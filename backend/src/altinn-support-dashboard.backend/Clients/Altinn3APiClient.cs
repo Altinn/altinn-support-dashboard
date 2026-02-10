@@ -28,11 +28,12 @@ public class Altinn3ApiClient : IAltinn3ApiClient
     {
         var client = _clientFactory.CreateClient(environmentName);
 
-        client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", configuration.Ocp_Apim_Subscription_Key);
 
         client.BaseAddress = new Uri(configuration.BaseAddressAltinn3);
         client.Timeout = TimeSpan.FromSeconds(configuration.Timeout);
         client.DefaultRequestHeaders.Add("ApiKey", configuration.ApiKey);
+
+        client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", configuration.Ocp_Apim_Subscription_Key);
 
         _clients.Add(environmentName, client);
     }
@@ -57,6 +58,17 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
         var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
+        // Log request headers
+        _logger.LogInformation("=== GetOrganizationInfo Request Headers ===");
+        _logger.LogInformation("Request URL: {Url}", $"{client.BaseAddress}{requestUrl}");
+        foreach (var header in client.DefaultRequestHeaders)
+        {
+            _logger.LogInformation("Header: {Key} = {Value}", header.Key, string.Join(", ", header.Value));
+        }
+        _logger.LogInformation("Content-Type: application/json");
+        _logger.LogInformation("Request Payload: {Payload}", jsonPayload);
+        _logger.LogInformation("==========================================");
+
         var response = await client.PostAsync(requestUrl, content);
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -72,6 +84,8 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
     {
         var client = _clients[environmentName];
+        _logger.LogInformation(client.DefaultRequestHeaders.ToString());
+
 
         var requestUrl = $"register/api/v1/parties/nameslookup";
 
