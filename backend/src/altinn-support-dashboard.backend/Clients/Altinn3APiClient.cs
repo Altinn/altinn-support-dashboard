@@ -58,17 +58,6 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
         var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
-        // Log request headers
-        _logger.LogInformation("=== GetOrganizationInfo Request Headers ===");
-        _logger.LogInformation("Request URL: {Url}", $"{client.BaseAddress}{requestUrl}");
-        foreach (var header in client.DefaultRequestHeaders)
-        {
-            _logger.LogInformation("Header: {Key} = {Value}", header.Key, string.Join(", ", header.Value));
-        }
-        _logger.LogInformation("Content-Type: application/json");
-        _logger.LogInformation("Request Payload: {Payload}", jsonPayload);
-        _logger.LogInformation("==========================================");
-
         var response = await client.PostAsync(requestUrl, content);
         var responseBody = await response.Content.ReadAsStringAsync();
 
