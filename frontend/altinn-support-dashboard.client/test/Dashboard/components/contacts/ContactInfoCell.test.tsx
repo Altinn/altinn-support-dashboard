@@ -37,7 +37,7 @@ describe('ContactInfoCell', () => {
         mockQuery = "";
     });
 
-    it('should render contact text when contactLastChangedm exists', () => {
+    it('should render contact text when contactLastChanged exists', () => {
         render(
             <ContactInfoCell
                 contact="Test Contact"
@@ -75,7 +75,7 @@ describe('ContactInfoCell', () => {
         });
     });
 
-    it('should apply bold class case-insesitively', async () => {
+    it('should apply bold class case-insensitively', async () => {
         mockQuery = "TEST CONTACT";
 
         render(
@@ -132,5 +132,54 @@ describe('ContactInfoCell', () => {
         const label = container.querySelector('span');
         expect(label).toBeInTheDocument();
         expect(label).toHaveTextContent("");
-    })
+    });
+
+    it('should handle undefined contact value', () => {
+        const { container } = render(
+            <ContactInfoCell
+                contact={undefined}
+                contactLastChanged="2026-01-01T12:00:00Z"
+            />
+        );
+
+        const label = container.querySelector('span');
+        expect(label).toBeInTheDocument();
+        expect(label).toHaveTextContent("");
+    });
+
+    it('should not render when contactLastChanged is missing', () => {
+        const { container } = render(
+            <ContactInfoCell
+                contact="Test Contact"
+            />
+        );
+
+        const label = container.querySelector('span');
+        expect(label).not.toBeInTheDocument();
+    });
+
+    it('should update bold class when query changes', async () => {
+        const { rerender } = render(
+            <ContactInfoCell
+                contact="Test Contact"
+                contactLastChanged="2026-01-01T12:00:00Z"
+            />
+        );
+
+        let label = screen.getByText("Test Contact");
+        expect(label.className).not.toContain("bold");
+
+        mockQuery = "Test Contact";
+        rerender(
+            <ContactInfoCell
+                contact="Test Contact"
+                contactLastChanged="2026-01-01T12:00:00Z"
+            />
+        );
+
+        await waitFor(() => {
+            label = screen.getByText("Test Contact");
+            expect(label.className).toContain("bold");
+        });
+    });
 })
