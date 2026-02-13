@@ -285,13 +285,12 @@ public class Altinn3Service : IAltinn3Service
 
     public async Task<List<RolesAndRightsDto>> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment)
     {
-
         var ssn = _ssnTokenService.GetSsnFromToken(rolesAndRights.Value);
 
 
         if (string.IsNullOrWhiteSpace(ssn))
         {
-            ssn = rolesAndRights.Value; //If the subject isn't a token, use it as is
+            ssn = rolesAndRights.Value.Trim(); //If the subject isn't a token, use it as is
         }
 
         rolesAndRights.Value = ssn;
@@ -308,13 +307,13 @@ public class Altinn3Service : IAltinn3Service
         //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
         if (roles.Count >= 1)
         {
-            var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value, rolesAndRights.PartyFilter[0].Value, environment);
+            var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value.Replace(" ", ""), rolesAndRights.PartyFilter[0].Value.Replace(" ", ""), environment);
             if (altinn2Roles != null)
             {
                 List<string> altinn2RolesList = [];
                 foreach (Role role in altinn2Roles)
                 {
-                    if (!string.IsNullOrEmpty(role.RoleName))
+                    if (!string.IsNullOrEmpty(role.RoleName) && role.RoleDefinitionCode != "Rights")
                     {
                         altinn2RolesList.Add(role.RoleName);
                     }
@@ -329,15 +328,16 @@ public class Altinn3Service : IAltinn3Service
     }
     private string getTypeFromValue(string value)
     {
-        if (ValidationService.isValidSsn(value))
+        string trimmedValued = value.Replace(" ", "");
+        if (ValidationService.isValidSsn(trimmedValued))
         {
             return "urn:altinn:person:identifier-no";
         }
-        else if (ValidationService.IsValidOrgNumber(value))
+        else if (ValidationService.IsValidOrgNumber(trimmedValued))
         {
             return "urn:altinn:organization:identifier-no";
         }
-        return "";
+        throw new Exception("Not a valid format, needs to be either a orgnumber or ssn");
     }
 
 }
