@@ -34,7 +34,6 @@ describe('NotificationContactCell', () => {
     };
 
     beforeEach(() => {
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
         mockUseDashboardStore.mockReturnValue({ query: "" });
     });
 
