@@ -85,12 +85,23 @@ describe('useVersionCheck', () => {
         expect(result.current.error).toBeNull();
     });
 
-    it('should not show dialog when stored version matches fetched version', () => {
+    it('should not show dialog when stored version matches fetched version', async () => {
         localStorageMock['altinn_support_dashboard_version'] = '1.0.0';
+
+        vi.mocked(globalThis.fetch).mockResolvedValue({
+            ok: true,
+            json: async () => mockVersionData,
+        } as Response);
 
         const { result } = renderHook(() => useVersionCheck());
 
+        await waitFor(() => {
+            expect(result.current.isLoading).toBe(false);
+        });
+
         expect(result.current.shouldShowDialog).toBe(false);
+        expect(result.current.error).toBeNull();
+        expect(result.current.versionInfo).toEqual(mockVersionData);
     });
 
     it('should handle fetch error when response is not okay', async () => {
@@ -130,5 +141,56 @@ describe('useVersionCheck', () => {
             'Feil ved henting av versjonsinformasjon:',
             networkError
         );
-    })
+    });
+
+    it('should handle non-Error exception', async () => {
+        vi.mocked(globalThis.fetch).mockRejectedValue('Unexpected error');
+
+        const { result } = renderHook(() => useVersionCheck());
+
+        await waitFor(() => {
+            expect(result.current.isLoading).toBe(false);
+        });
+
+        expect(result.current.error).toBe('Ukjent feil');
+        expect(console.error).toHaveBeenCalledWith(
+            'Feil ved henting av versjonsinformasjon:',
+            'Unexpected error'
+        );
+    });
+
+    it('should save version to localStorage and close dialog when acknowledgeVersion is called', async () => {
+        vi.mocked(globalThis.fetch).mockResolvedValue({
+            ok: true,
+            json: async () => mockVersionData,
+        } as Response);
+
+        const { result } = renderHook(() => useVersionCheck());
+
+        await waitFor(() => {
+            expect(result.current.isLoading).toBe(false);
+        });
+
+        expect(result.current.shouldShowDialog).toBe(true);
+
+        result.current.acknowledgeVersion();
+
+        expect(localStorage.setItem).toHaveBeenCalledWith('altinn_support_dashboard_version', '1.0.0');
+
+        await waitFor(() => {
+            expect(result.current.shouldShowDialog).toBe(false);
+        });
+    });
+
+    it('should not error when acknowledgeVersion is called before versionInfo is loaded', () => {
+        vi.mocked(globalThis.fetch).mockImplementation(() =>
+            new Promise(() => {})
+        );
+
+        const { result } = renderHook(() => useVersionCheck());
+
+        expect(() => result.current.acknowledgeVersion()).not.toThrow();
+        expect(localStorage.setItem).not.toHaveBeenCalled();
+        expect(result.current.shouldShowDialog).toBe(false);
+    });
 })
