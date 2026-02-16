@@ -4,6 +4,15 @@ import Sidebar from "../../src/components/Sidebar/Sidebar";
 import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 
+
+vi.mock('../../src/assets/logo.png', () => ({
+    default: 'logo.png'
+}));
+
+vi.mock('/asd_128_white.png', () => ({
+    default: 'asd_128_white.png'
+}));
+
 vi.mock('../../src/components/Sidebar/hooks/useSidebarDrag', () => ({
     useSidebarDrag: vi.fn()
 }));
@@ -35,7 +44,7 @@ vi.mock('../../src/components/Sidebar/SidebarEnvToggle', () => ({
 }));
 
 describe('Sidebar', () => {
-    const mockToggleCollapse = vi.fn();
+    const mockToggleCollapse = vi.fn(); 
     const mockHandleDragStart = vi.fn();
 
     beforeEach(async () => {
