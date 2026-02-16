@@ -172,4 +172,138 @@ describe('SsnCell', () => {
 
         expect(screen.getByText("123456*****")).toBeInTheDocument();
     });
+
+    it('should update title attribute when toggling', async () => {
+        mockUnredactedSsn = "12345678901";
+
+        render(<SsnCell contact={mockContact} />);
+
+        const cell = screen.getByTestId("table-cell");
+
+        expect(cell).toHaveAttribute("title", "Vis fullt fødselsnummer");
+
+        await act(async () => {
+            fireEvent.click(cell);
+        });
+
+        expect(cell).toHaveAttribute("title", "Skjul fullt fødselsnummer");
+    });
+
+    it('should auto redact SSN after 15 seconds', async () => {
+        mockUnredactedSsn = "12345678901";
+
+        render(<SsnCell contact={mockContact} />);
+
+        const cell = screen.getByTestId("table-cell");
+
+        await act(async () => {
+            fireEvent.click(cell);
+        });
+
+        expect(screen.getByText("12345678901")).toBeInTheDocument();
+
+        act(() => {
+            vi.advanceTimersByTime(15000);
+        });
+
+        expect(screen.getByText("123456*****")).toBeInTheDocument();
+    });
+
+    it('should not auto-redact before 15 seconds', async () => {
+        mockUnredactedSsn = "12345678901";
+
+        render(<SsnCell contact={mockContact} />);
+
+        const cell = screen.getByTestId("table-cell");
+
+        await act(async () => {
+            fireEvent.click(cell);
+        });
+
+        expect(screen.getByText("12345678901")).toBeInTheDocument();
+
+        act(() => {
+            vi.advanceTimersByTime(14000);
+        });
+
+        expect(screen.getByText("12345678901")).toBeInTheDocument();
+    });
+
+    it('should not set timeout when SSN is redacted', () => {
+        render(<SsnCell contact={mockContact} />);
+
+        expect(vi.getTimerCount()).toBe(0);
+        expect(screen.getByText("123456*****")).toBeInTheDocument();
+    });
+
+    it('should clear timeout on unmount', async () => {
+        mockUnredactedSsn = "12345678901";
+
+        const { unmount } = render(<SsnCell contact={mockContact} />);
+
+        const cell = screen.getByTestId("table-cell");
+
+        await act(async () => {
+            fireEvent.click(cell);
+        });
+
+        expect(screen.getByText("12345678901")).toBeInTheDocument();
+        expect(vi.getTimerCount()).toBe(1);
+
+        unmount();
+
+        expect(vi.getTimerCount()).toBe(0);
+    });
+
+    it('should clear existing timeout when toggling redacted state', async () => {
+        mockUnredactedSsn = "12345678901";
+
+        render(<SsnCell contact={mockContact} />);
+
+        const cell = screen.getByTestId("table-cell");
+
+        await act(async () => {
+            fireEvent.click(cell);
+        });
+
+        expect(screen.getByText("12345678901")).toBeInTheDocument();
+        expect(vi.getTimerCount()).toBe(1);
+
+        await act(async () => {
+            fireEvent.click(cell);
+        });
+
+        expect(screen.getByText("123456*****")).toBeInTheDocument();
+        expect(vi.getTimerCount()).toBe(0);
+    });
+
+    it('should handle missing ssnToken', async () => {
+        const contactWithoutToken = { ...mockContact, ssnToken: undefined };
+
+        render(<SsnCell contact={contactWithoutToken} />);
+
+        expect(screen.getByText("123456*****")).toBeInTheDocument();
+    });
+
+    it('should handle null unredactedSsn from hook', async () => {
+        mockUnredactedSsn = null;
+
+        render(<SsnCell contact={mockContact} />);
+
+        const cell = screen.getByTestId("table-cell");
+
+        await act(async () => {
+            fireEvent.click(cell);
+        });
+
+        expect(screen.getByText("123456*****")).toBeInTheDocument();
+        expect(mockRefetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle empty string as environment', () => {
+        render(<SsnCell contact={mockContact} environment="" />);
+
+        expect(screen.getByText("123456*****")).toBeInTheDocument();
+    })
+
 })
