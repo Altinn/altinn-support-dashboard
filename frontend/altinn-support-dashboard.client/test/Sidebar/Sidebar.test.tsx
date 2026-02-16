@@ -9,7 +9,7 @@ vi.mock('../../src/assets/logo.png', () => ({
     default: 'logo.png'
 }));
 
-vi.mock('../../../public/asd_128_white.png', () => ({
+vi.mock('/asd_128_white.png', () => ({
     default: 'asd_128_white.png'
 }));
 
