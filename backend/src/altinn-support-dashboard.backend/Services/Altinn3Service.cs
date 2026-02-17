@@ -46,7 +46,7 @@ public class Altinn3Service : IAltinn3Service
         }
 
         var json = await _client.GetOrganizationInfo(orgNumber, environment);
-        var result = JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions);
+        var result = string.IsNullOrEmpty(json) ? null : JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions);
 
         if (result == null || string.IsNullOrEmpty(result.PartyNames[0].Name))
         {
@@ -107,9 +107,9 @@ public class Altinn3Service : IAltinn3Service
         // adds orgnumbers to list
         foreach (PersonalContactDto p in personalContacts)
         {
-            if (p.OrgNr != null)
+            if (p.OrganizationNumber != null && !orgNumbers.Contains(p.OrganizationNumber))
             {
-                orgNumbers.Add(p.OrgNr);
+                orgNumbers.Add(p.OrganizationNumber);
             }
         }
 
@@ -148,6 +148,7 @@ public class Altinn3Service : IAltinn3Service
             }
         }
         var json = await _client.GetOrganizationsInfo(orgNumbers, environment);
+        if (string.IsNullOrEmpty(json)) return [];
         var result = JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions) ?? throw new Exception("Error serializing result");
 
         return result.PartyNames;
@@ -160,11 +161,12 @@ public class Altinn3Service : IAltinn3Service
             throw new ArgumentException("Organizationnumber invalid. It must be 9 digits long.");
         }
         var result = await _client.GetPersonalContactsByOrg(orgNumber, environment);
+        if (string.IsNullOrEmpty(result)) return [];
         var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
         var contacts = contactsAltinn3.Select(contact => new PersonalContactAltinn3
         {
-            OrgNr = contact.OrgNr,
+            OrgNr = contact.OrganizationNumber,
             NationalIdentityNumber = contact.NationalIdentityNumber,
             Name = contact.Name,
             Phone = contact.Phone,
@@ -200,6 +202,7 @@ public class Altinn3Service : IAltinn3Service
             throw new ArgumentException("email is invalid");
         }
         var result = await _client.GetPersonalContactsByEmail(email, environment);
+        if (string.IsNullOrEmpty(result)) return [];
         var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
 
@@ -215,6 +218,7 @@ public class Altinn3Service : IAltinn3Service
         }
 
         var result = await _client.GetPersonalContactsByPhone(phoneNumber, environment);
+        if (string.IsNullOrEmpty(result)) return [];
         var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
 
@@ -253,6 +257,7 @@ public class Altinn3Service : IAltinn3Service
             throw new ArgumentException("Organization number invalid. It must be 9 digits long.");
         }
         var result = await _client.GetNotificationAddressesByOrg(orgNumber, environment);
+        if (string.IsNullOrEmpty(result)) return [];
         var notificationAddresses = JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
         return notificationAddresses;
@@ -266,6 +271,7 @@ public class Altinn3Service : IAltinn3Service
         phoneNumber = phoneNumber.Trim();
         string strippedPhoneNumber = Regex.Replace(phoneNumber, @"^\+\d{1,2}", "");
         var result = await _client.GetNotificationAddressesByPhone(strippedPhoneNumber, environment);
+        if (string.IsNullOrEmpty(result)) return [];
         var notificationAddresses = JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
         return notificationAddresses;
@@ -278,6 +284,7 @@ public class Altinn3Service : IAltinn3Service
             throw new ArgumentException("Organization number invalid. It must be 9 digits long.");
         }
         var result = await _client.GetNotificationAddressesByEmail(email, environment);
+        if (string.IsNullOrEmpty(result)) return [];
         var notificationAddresses = JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
         return notificationAddresses;
@@ -302,6 +309,7 @@ public class Altinn3Service : IAltinn3Service
         }
 
         var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
+        if (string.IsNullOrEmpty(result)) return [];
         var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
         //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
