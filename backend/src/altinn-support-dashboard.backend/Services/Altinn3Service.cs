@@ -107,9 +107,9 @@ public class Altinn3Service : IAltinn3Service
         // adds orgnumbers to list
         foreach (PersonalContactDto p in personalContacts)
         {
-            if (p.OrgNr != null)
+            if (p.OrganizationNumber != null)
             {
-                orgNumbers.Add(p.OrgNr);
+                orgNumbers.Add(p.OrganizationNumber);
             }
         }
 
@@ -164,7 +164,7 @@ public class Altinn3Service : IAltinn3Service
 
         var contacts = contactsAltinn3.Select(contact => new PersonalContactAltinn3
         {
-            OrgNr = contact.OrgNr,
+            OrgNr = contact.OrganizationNumber,
             NationalIdentityNumber = contact.NationalIdentityNumber,
             Name = contact.Name,
             Phone = contact.Phone,

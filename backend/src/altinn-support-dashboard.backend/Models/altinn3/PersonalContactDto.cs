@@ -3,7 +3,7 @@ namespace Models.altinn3Dtos;
 
 public class PersonalContactDto
 {
-    public string? OrgNr { get; set; }
+    public string? OrganizationNumber { get; set; }
     public required string NationalIdentityNumber { get; set; }
     public required string Name { get; set; }
     public required string Email { get; set; }
