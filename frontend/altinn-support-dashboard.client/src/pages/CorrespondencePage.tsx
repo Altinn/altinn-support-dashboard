@@ -9,7 +9,10 @@ import CorrespondenceButton from "../components/Correspondence/CorrespondenceBut
 import MessageInputField from "../components/Correspondence/MessageInputField";
 import CorrespondenceRecipientsList from "../components/Correspondence/CorrespondenceRecipientsList";
 import CorrespondenceResponseField from "../components/Correspondence/CorrespondenceResponseField";
-import { CorrespondenceResponse } from "../models/correspondenceModels";
+import {
+  CorrespondenceResponse,
+  NotificationChannel,
+} from "../models/correspondenceModels";
 import ResponseStatusCode from "../components/Correspondence/ResponseStatusCode";
 import { TestFlaskIcon } from "@navikt/aksel-icons";
 import CorrespondenceDueDate from "../components/Correspondence/CorrespondenceDueDate";
@@ -29,10 +32,11 @@ export const CorrespondencePage = () => {
     const item = getLocalStorageValue("confirmationNeeded");
     return item ? JSON.parse(item) : false;
   });
-  const [sendNotification, setSendNotification] = useState<boolean>(() => {
-    const item = getLocalStorageValue("sendNotification");
-    return item ? JSON.parse(item) : false;
-  });
+  const [notificationChannel, setNotificationChannel] =
+    useState<NotificationChannel | null>(() => {
+      const item = getLocalStorageValue("notificationChannel");
+      return item ? JSON.parse(item) : null;
+    });
 
   const [responseMessage, setResponseMessage] =
     useState<CorrespondenceResponse>(() => {
@@ -52,9 +56,9 @@ export const CorrespondencePage = () => {
     setLocalStorageValue("confirmationNeeded", JSON.stringify(bool));
   };
 
-  const handleNotificationChange = (bool: boolean) => {
-    setSendNotification(bool);
-    setLocalStorageValue("sendNotification", JSON.stringify(bool));
+  const handleNotificationChange = (channel: NotificationChannel) => {
+    setNotificationChannel(channel);
+    setLocalStorageValue("sendNotification", JSON.stringify(channel));
   };
 
   return (

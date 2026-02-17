@@ -11,13 +11,22 @@ public class CorrespondenceNotification
     public string? ReminderEmailSubject { get; set; }
     public string? ReminderEmailContentType { get; set; }
     public string? ReminderSmsBody { get; set; }
-    public string? NotificationChannel { get; set; }
+    public NotificationChannel? NotificationChannel { get; set; }
     public string? ReminderNotificationChannel { get; set; }
     public string? SendersRefernce { get; set; }
     public DateTime? RequestedSendTime { get; set; }
     public List<CorrespondenceRecipient>? CustomRecipients { get; set; }
     public bool? OverrideRegisteredContactInformation { get; set; }
+}
 
+
+public enum NotificationChannel
+{
+    Email = 0,
+    Sms = 1,
+    EmailPreffered = 2,
+    SmsPreffered = 3,
+    EmailAndSms = 4
 }
 
 

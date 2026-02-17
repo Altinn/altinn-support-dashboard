@@ -26,5 +26,13 @@ export interface CorrespondenceResponse {
 
 export interface CorrespondenceNotification {
   notificationTemplate: string;
-  notificationChannel: string;
+  notificationChannel: NotificationChannel;
+}
+
+export enum NotificationChannel {
+  Email = 0,
+  Sms = 1,
+  EmailPreffered = 2,
+  SmsPreffered = 3,
+  EmailAndSms = 4,
 }

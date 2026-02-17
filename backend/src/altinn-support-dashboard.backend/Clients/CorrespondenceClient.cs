@@ -69,7 +69,7 @@ public class CorrespondenceClient : ICorrespondenceClient
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailBody, "correspondence.notification.emailbody");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailSubject, "correspondence.notification.emailsubject");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailContentType, "correspondence.notification.emailcontenttype");
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationChannel, "correspondence.notification.notificationChannel");
+        AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationChannel.ToString(), "correspondence.notification.notificationChannel");
         AddIfNotNull(form, correspondenceData.Correspondence.IgnoreReservation.ToString(), "correspondence.ignorereservation");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.SendReminder.ToString(), "correspondence.notification.sendreminder");
         AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationTemplate, "correspondence.notification.notificationtemplate");

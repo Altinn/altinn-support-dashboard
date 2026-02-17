@@ -50,7 +50,7 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
     if (correspondence.correspondence && sendNotification) {
       correspondence.correspondence.notification = {
         notificationTemplate: "GenericAltinnMessage",
-        notificationChannel: "EmailAndSms",
+        notificationChannel: 0,
       };
     }
     const response = await post.mutateAsync(correspondence);
