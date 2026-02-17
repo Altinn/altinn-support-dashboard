@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, vi } from "vitest";
+import { beforeEach, describe, expect, vi, it } from "vitest";
 import { showPopup } from "../src/components/Popup";
 import { toast } from "react-toastify";
 

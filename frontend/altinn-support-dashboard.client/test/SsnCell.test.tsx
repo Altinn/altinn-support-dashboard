@@ -1,6 +1,7 @@
-import { afterEach, beforeEach, expect, vi } from "vitest";
+import { afterEach, beforeEach, expect, vi, describe, it } from "vitest";
 import { PersonalContactAltinn3 } from "../src/models/models";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import '@testing-library/jest-dom';
 import SsnCell from "../src/components/SsnCell";
 
 

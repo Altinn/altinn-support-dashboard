@@ -1,4 +1,4 @@
-import { afterEach, describe, vi, beforeEach, expect } from "vitest";
+import { afterEach, describe, vi, beforeEach, expect, it } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { VersionInfo, useVersionCheck } from "../../src/hooks/useVersionCheck";
 

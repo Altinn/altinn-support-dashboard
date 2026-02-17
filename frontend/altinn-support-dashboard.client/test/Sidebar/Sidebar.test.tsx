@@ -1,7 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, vi } from "vitest";
+import { describe, expect, vi, beforeEach, it } from "vitest";
 import Sidebar from "../../src/components/Sidebar/Sidebar";
 import { MemoryRouter } from "react-router-dom";
+import '@testing-library/jest-dom';
 import userEvent from "@testing-library/user-event";
 
 vi.mock('../../src/components/Sidebar/hooks/useSidebarDrag', () => ({
