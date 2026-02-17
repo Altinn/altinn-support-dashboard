@@ -107,7 +107,7 @@ public class Altinn3Service : IAltinn3Service
         // adds orgnumbers to list
         foreach (PersonalContactDto p in personalContacts)
         {
-            if (p.OrganizationNumber != null)
+            if (p.OrganizationNumber != null && !orgNumbers.Contains(p.OrganizationNumber))
             {
                 orgNumbers.Add(p.OrganizationNumber);
             }
