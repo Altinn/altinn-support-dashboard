@@ -2,9 +2,6 @@ import { describe, expect, it } from "vitest";
 import { isSuccess, isError } from "../../src/utils/httpUtils";
 
 
-
-
-
 describe('httpUtils', () => {
     describe('isSuccess', () => {
         it('should return true for 2xx status codes', () =>{
