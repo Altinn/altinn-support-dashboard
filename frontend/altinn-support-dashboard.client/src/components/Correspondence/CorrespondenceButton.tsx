@@ -3,6 +3,7 @@ import { useCorrespondencePost } from "../../hooks/hooks";
 import {
   CorrespondenceResponse,
   CorrespondenceUploadRequest,
+  NotificationChannel,
 } from "../../models/correspondenceModels";
 
 type CorrespondenceButtonProps = {
@@ -12,14 +13,14 @@ type CorrespondenceButtonProps = {
   summary: string;
   body: string;
   confirmationNeeded: boolean;
-  sendNotification: boolean;
+  notificationChannel: NotificationChannel | null;
 
   setResponseMessage: (responseData: CorrespondenceResponse) => void;
   dueDate: string;
 };
 
 const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
-  sendNotification,
+  notificationChannel,
   resourceType,
   recipients,
   title,
@@ -47,10 +48,10 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
       },
     };
     //sets notification options
-    if (correspondence.correspondence && sendNotification) {
+    if (correspondence.correspondence && notificationChannel) {
       correspondence.correspondence.notification = {
         notificationTemplate: "GenericAltinnMessage",
-        notificationChannel: 0,
+        notificationChannel: notificationChannel,
       };
     }
     const response = await post.mutateAsync(correspondence);

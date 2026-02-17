@@ -17,6 +17,7 @@ import ResponseStatusCode from "../components/Correspondence/ResponseStatusCode"
 import { TestFlaskIcon } from "@navikt/aksel-icons";
 import CorrespondenceDueDate from "../components/Correspondence/CorrespondenceDueDate";
 import CorrespondenceResourceType from "../components/Correspondence/CorrespondenceResourceType";
+import CorrespondenceNotificationChannel from "../components/Correspondence/CorrespondenceNotificationChannel";
 
 export const CorrespondencePage = () => {
   const [recipients, setRecipients] = useState<string[]>(() => {
@@ -55,12 +56,6 @@ export const CorrespondencePage = () => {
     setConfirmationNeeded(bool);
     setLocalStorageValue("confirmationNeeded", JSON.stringify(bool));
   };
-
-  const handleNotificationChange = (channel: NotificationChannel) => {
-    setNotificationChannel(channel);
-    setLocalStorageValue("sendNotification", JSON.stringify(channel));
-  };
-
   return (
     <div>
       <Heading className={classes.heading} level={1} data-size="sm">
@@ -111,13 +106,10 @@ export const CorrespondencePage = () => {
             label="Ja"
           />
           <Label className={classes.checkboxLabel}>Send Varsling?</Label>
-          <Checkbox
-            className={classes.checkbox}
-            checked={sendNotification}
-            onChange={(e) => handleNotificationChange(e.target.checked)}
-            label="Ja"
+          <CorrespondenceNotificationChannel
+            setChannel={setNotificationChannel}
+            channel={notificationChannel}
           />
-
           <CorrespondenceResourceType
             resourceType={resourceType}
             setResourceType={setResourceType}
@@ -134,7 +126,7 @@ export const CorrespondencePage = () => {
             summary={summary}
             body={body}
             confirmationNeeded={confirmationNeeded}
-            sendNotification={sendNotification}
+            notificationChannel={notificationChannel}
             setResponseMessage={setResponseMessage}
           />
         </div>
