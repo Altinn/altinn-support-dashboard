@@ -8,8 +8,6 @@ import { MemoryRouter } from "react-router-dom";
 
 vi.mock('@digdir/designsystemet-react', () => ({
     Tooltip: ({ children, content }: { children: React.ReactNode, content: string }) => {
-        //eslint-disable-next-line @typescript-eslint/no-var-requires
-        const React = require('react');
         return React.createElement('div', { 'data-tooltip': content }, children);
     }
 }));
