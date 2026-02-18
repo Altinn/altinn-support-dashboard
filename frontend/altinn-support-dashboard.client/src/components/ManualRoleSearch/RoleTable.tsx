@@ -1,10 +1,4 @@
-import {
-  Alert,
-  Card,
-  Paragraph,
-  Skeleton,
-  Table,
-} from "@digdir/designsystemet-react";
+import { Card, Paragraph, Skeleton, Table } from "@digdir/designsystemet-react";
 import RoleList from "../Dashboard/components/RoleList";
 import { useAppStore } from "../../stores/Appstore";
 import { useRoles } from "../../hooks/hooks";
