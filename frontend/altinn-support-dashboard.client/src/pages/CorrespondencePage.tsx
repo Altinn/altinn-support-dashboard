@@ -9,11 +9,15 @@ import CorrespondenceButton from "../components/Correspondence/CorrespondenceBut
 import MessageInputField from "../components/Correspondence/MessageInputField";
 import CorrespondenceRecipientsList from "../components/Correspondence/CorrespondenceRecipientsList";
 import CorrespondenceResponseField from "../components/Correspondence/CorrespondenceResponseField";
-import { CorrespondenceResponse } from "../models/correspondenceModels";
+import {
+  CorrespondenceResponse,
+  NotificationChannel,
+} from "../models/correspondenceModels";
 import ResponseStatusCode from "../components/Correspondence/ResponseStatusCode";
 import { TestFlaskIcon } from "@navikt/aksel-icons";
 import CorrespondenceDueDate from "../components/Correspondence/CorrespondenceDueDate";
 import CorrespondenceResourceType from "../components/Correspondence/CorrespondenceResourceType";
+import CorrespondenceNotificationChannel from "../components/Correspondence/CorrespondenceNotificationChannel";
 
 export const CorrespondencePage = () => {
   const [recipients, setRecipients] = useState<string[]>(() => {
@@ -29,10 +33,11 @@ export const CorrespondencePage = () => {
     const item = getLocalStorageValue("confirmationNeeded");
     return item ? JSON.parse(item) : false;
   });
-  const [sendNotification, setSendNotification] = useState<boolean>(() => {
-    const item = getLocalStorageValue("sendNotification");
-    return item ? JSON.parse(item) : false;
-  });
+  const [notificationChannel, setNotificationChannel] =
+    useState<NotificationChannel>(() => {
+      const item = getLocalStorageValue("notificationChannel");
+      return item ? JSON.parse(item) : -1;
+    });
 
   const [responseMessage, setResponseMessage] =
     useState<CorrespondenceResponse>(() => {
@@ -51,12 +56,6 @@ export const CorrespondencePage = () => {
     setConfirmationNeeded(bool);
     setLocalStorageValue("confirmationNeeded", JSON.stringify(bool));
   };
-
-  const handleNotificationChange = (bool: boolean) => {
-    setSendNotification(bool);
-    setLocalStorageValue("sendNotification", JSON.stringify(bool));
-  };
-
   return (
     <div>
       <Heading className={classes.heading} level={1} data-size="sm">
@@ -107,13 +106,10 @@ export const CorrespondencePage = () => {
             label="Ja"
           />
           <Label className={classes.checkboxLabel}>Send Varsling?</Label>
-          <Checkbox
-            className={classes.checkbox}
-            checked={sendNotification}
-            onChange={(e) => handleNotificationChange(e.target.checked)}
-            label="Ja"
+          <CorrespondenceNotificationChannel
+            setChannel={setNotificationChannel}
+            channel={notificationChannel}
           />
-
           <CorrespondenceResourceType
             resourceType={resourceType}
             setResourceType={setResourceType}
@@ -130,7 +126,7 @@ export const CorrespondencePage = () => {
             summary={summary}
             body={body}
             confirmationNeeded={confirmationNeeded}
-            sendNotification={sendNotification}
+            notificationChannel={notificationChannel}
             setResponseMessage={setResponseMessage}
           />
         </div>

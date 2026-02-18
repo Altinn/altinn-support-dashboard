@@ -66,15 +66,18 @@ public class CorrespondenceClient : ICorrespondenceClient
         AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageSummary, "correspondence.content.messageSummary");
 
         //notification fields
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailBody, "correspondence.notification.emailbody");
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailSubject, "correspondence.notification.emailsubject");
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailContentType, "correspondence.notification.emailcontenttype");
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationChannel, "correspondence.notification.notificationChannel");
-        AddIfNotNull(form, correspondenceData.Correspondence.IgnoreReservation.ToString(), "correspondence.ignorereservation");
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.SendReminder.ToString(), "correspondence.notification.sendreminder");
-        AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationTemplate, "correspondence.notification.notificationtemplate");
-        form.Add(new StringContent(DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture)), "correspondence.notification.requestedSendTime");
 
+        if (correspondenceData.Correspondence.Notification.NotificationChannel >= 0)
+        {
+            AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailBody, "correspondence.notification.emailbody");
+            AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailSubject, "correspondence.notification.emailsubject");
+            AddIfNotNull(form, correspondenceData.Correspondence.Notification.EmailContentType, "correspondence.notification.emailcontenttype");
+            AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationChannel.ToString(), "correspondence.notification.notificationChannel");
+            AddIfNotNull(form, correspondenceData.Correspondence.IgnoreReservation.ToString(), "correspondence.ignorereservation");
+            AddIfNotNull(form, correspondenceData.Correspondence.Notification.SendReminder.ToString(), "correspondence.notification.sendreminder");
+            AddIfNotNull(form, correspondenceData.Correspondence.Notification.NotificationTemplate, "correspondence.notification.notificationtemplate");
+            form.Add(new StringContent(DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture)), "correspondence.notification.requestedSendTime");
+        }
 
         //custom recipients for notification
         for (int i = 0; i < correspondenceData?.Correspondence?.Notification?.CustomRecipients?.Count; i++)

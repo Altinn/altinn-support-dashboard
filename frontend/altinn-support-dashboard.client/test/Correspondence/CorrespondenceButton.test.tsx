@@ -6,7 +6,10 @@ import { describe, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event/dist/cjs/setup/index.js";
 import CorrespondenceButton from "../../src/components/Correspondence/CorrespondenceButton";
-import { CorrespondenceUploadRequest } from "../../src/models/correspondenceModels";
+import {
+  CorrespondenceUploadRequest,
+  NotificationChannel,
+} from "../../src/models/correspondenceModels";
 import { useCorrespondencePost } from "../../src/hooks/hooks";
 
 vi.mock("../../src/hooks/hooks", () => ({
@@ -34,7 +37,7 @@ describe("CorrespondenceButton", () => {
         summary="test"
         body="test"
         confirmationNeeded={false}
-        sendNotification={false}
+        notificationChannel={NotificationChannel.None}
         resourceType=""
         dueDate=""
         setResponseMessage={mockSetResponseMessage}
@@ -59,7 +62,7 @@ describe("CorrespondenceButton", () => {
         summary="Test"
         body="Test"
         confirmationNeeded={true}
-        sendNotification={true}
+        notificationChannel={NotificationChannel.EmailAndSms}
         resourceType=""
         dueDate=""
         setResponseMessage={mockSetResponseMessage}
@@ -79,7 +82,7 @@ describe("CorrespondenceButton", () => {
         resourceType: "",
         notification: {
           notificationTemplate: "GenericAltinnMessage",
-          notificationChannel: "EmailAndSms",
+          notificationChannel: NotificationChannel.EmailAndSms,
         },
 
         content: {
@@ -107,7 +110,7 @@ describe("CorrespondenceButton", () => {
         summary="test"
         body="test"
         confirmationNeeded={false}
-        sendNotification={false}
+        notificationChannel={NotificationChannel.None}
         resourceType=""
         dueDate=""
         setResponseMessage={mockSetResponseMessage}
@@ -134,7 +137,7 @@ describe("CorrespondenceButton", () => {
         summary="test"
         body="test"
         confirmationNeeded={false}
-        sendNotification={false}
+        notificationChannel={NotificationChannel.None}
         resourceType=""
         dueDate=""
         setResponseMessage={mockSetResponseMessage}
@@ -167,7 +170,7 @@ describe("CorrespondenceButton", () => {
         summary="test"
         body="test"
         confirmationNeeded={false}
-        sendNotification={false}
+        notificationChannel={NotificationChannel.None}
         resourceType=""
         dueDate=""
         setResponseMessage={mockSetResponseMessage}
@@ -194,7 +197,7 @@ describe("CorrespondenceButton", () => {
         summary="test"
         body="test"
         confirmationNeeded={false}
-        sendNotification={false}
+        notificationChannel={NotificationChannel.None}
         resourceType="confidentiality"
         dueDate="2026-01-26"
         setResponseMessage={mockSetResponseMessage}
@@ -227,7 +230,7 @@ describe("CorrespondenceButton", () => {
         summary="test"
         body="test"
         confirmationNeeded={false}
-        sendNotification={false}
+        notificationChannel={NotificationChannel.None}
         resourceType="default"
         dueDate="2026-01-26"
         setResponseMessage={mockSetResponseMessage}
@@ -263,7 +266,7 @@ describe("CorrespondenceButton", () => {
         summary="test"
         body="test"
         confirmationNeeded={false}
-        sendNotification={false}
+        notificationChannel={NotificationChannel.None}
         resourceType=""
         dueDate=""
         setResponseMessage={mockSetResponseMessage}
@@ -295,7 +298,7 @@ describe("CorrespondenceButton", () => {
         summary="test"
         body="test"
         confirmationNeeded={false}
-        sendNotification={false}
+        notificationChannel={NotificationChannel.None}
         resourceType=""
         dueDate=""
         setResponseMessage={mockSetResponseMessage}
@@ -320,7 +323,7 @@ describe("CorrespondenceButton", () => {
         summary="test"
         body="test"
         confirmationNeeded={false}
-        sendNotification={false}
+        notificationChannel={NotificationChannel.None}
         resourceType=""
         dueDate=""
         setResponseMessage={mockSetResponseMessage}
