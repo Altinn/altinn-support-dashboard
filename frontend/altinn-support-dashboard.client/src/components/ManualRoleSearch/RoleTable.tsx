@@ -27,9 +27,6 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
   if (roleQuery.isLoading) {
     return <Skeleton variant="rectangle" height={300} />;
   }
-  if (roleQuery.isError) {
-    return <Alert data-color="danger">Error when fetching roles</Alert>;
-  }
 
   return (
     <Card data-color="neutral">
