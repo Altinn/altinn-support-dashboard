@@ -34,9 +34,9 @@ export const CorrespondencePage = () => {
     return item ? JSON.parse(item) : false;
   });
   const [notificationChannel, setNotificationChannel] =
-    useState<NotificationChannel | null>(() => {
+    useState<NotificationChannel>(() => {
       const item = getLocalStorageValue("notificationChannel");
-      return item ? JSON.parse(item) : null;
+      return item ? JSON.parse(item) : -1;
     });
 
   const [responseMessage, setResponseMessage] =

@@ -13,7 +13,7 @@ type CorrespondenceButtonProps = {
   summary: string;
   body: string;
   confirmationNeeded: boolean;
-  notificationChannel: NotificationChannel | null;
+  notificationChannel: NotificationChannel;
 
   setResponseMessage: (responseData: CorrespondenceResponse) => void;
   dueDate: string;
@@ -48,7 +48,8 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
       },
     };
     //sets notification options
-    if (correspondence.correspondence && notificationChannel) {
+    if (correspondence.correspondence) {
+      console.log(notificationChannel);
       correspondence.correspondence.notification = {
         notificationTemplate: "GenericAltinnMessage",
         notificationChannel: notificationChannel,

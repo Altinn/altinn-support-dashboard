@@ -30,6 +30,7 @@ export interface CorrespondenceNotification {
 }
 
 export enum NotificationChannel {
+  None = -1,
   Email = 0,
   Sms = 1,
   EmailPreffered = 2,

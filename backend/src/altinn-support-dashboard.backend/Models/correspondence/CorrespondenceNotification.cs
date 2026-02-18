@@ -22,6 +22,7 @@ public class CorrespondenceNotification
 
 public enum NotificationChannel
 {
+    None = -1,
     Email = 0,
     Sms = 1,
     EmailPreffered = 2,

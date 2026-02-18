@@ -3,21 +3,16 @@ import { setLocalStorageValue } from "../ManualRoleSearch/utils/storageUtils";
 import { NotificationChannel } from "../../models/correspondenceModels";
 
 interface CorrespondenceNotificationChannelProps {
-  channel: NotificationChannel | null;
-  setChannel: (channel: NotificationChannel | null) => void;
+  channel: NotificationChannel;
+  setChannel: (channel: NotificationChannel) => void;
 }
 
 const CorrespondenceNotificationChannel: React.FC<
   CorrespondenceNotificationChannelProps
 > = ({ channel, setChannel }) => {
   const handleChannelChange = (newChannel: number) => {
-    if (newChannel < 0) {
-      setChannel(null);
-      setLocalStorageValue("notificationChannel", JSON.stringify(channel));
-    } else {
-      setChannel(channel);
-      setLocalStorageValue("notificationChannel", JSON.stringify(channel));
-    }
+    setChannel(newChannel);
+    setLocalStorageValue("notificationChannel", JSON.stringify(newChannel));
   };
   return (
     <div>
@@ -28,6 +23,10 @@ const CorrespondenceNotificationChannel: React.FC<
       >
         <Select.Option value={-1}>Ingen varsling</Select.Option>
         <Select.Option value={NotificationChannel.Email}>Email</Select.Option>
+        <Select.Option value={NotificationChannel.Sms}>Sms</Select.Option>
+        <Select.Option value={NotificationChannel.EmailAndSms}>
+          Email og Sms
+        </Select.Option>
       </Select>
     </div>
   );
