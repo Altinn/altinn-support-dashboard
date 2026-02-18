@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { getLocalStorageValue } from "../components/ManualRoleSearch/utils/storageUtils";
 import InputComponent from "../components/ManualRoleSearch/ManualRoleSearchInput";
-import SearchButton from "../components/ManualRoleSearch/ManualRoleSearchButton";
-import EmptySearch from "../components/ManualRoleSearch/ManualRoleEmptySearchButton";
 import { Heading, Button } from "@digdir/designsystemet-react";
 import InformationDialogBox from "../components/InformationDialog/InformationDialogBox";
 import { InformationIcon } from "@navikt/aksel-icons";
@@ -16,12 +14,7 @@ export const ManualRoleSearchPage: React.FC = () => {
   const [rollegiver, setRollegiver] = useState<string>(
     getLocalStorageValue("rollegiver"),
   );
-  const [searchTrigger, setSearchTrigger] = useState(0);
   const dialogRef = React.useRef<HTMLDialogElement>(null);
-
-  const handleSearch = () => {
-    setSearchTrigger((prev) => prev + 1);
-  };
 
   return (
     <div>
@@ -39,23 +32,11 @@ export const ManualRoleSearchPage: React.FC = () => {
 
       <div className={styles.inputRow}>
         <InputComponent
-          searchTrigger={searchTrigger}
           setRollehaver={setRollehaver}
           setRollegiver={setRollegiver}
         />
-        <SearchButton
-          rollehaver={rollehaver}
-          rollegiver={rollegiver}
-          handleSearch={handleSearch}
-        />
       </div>
       <div className={styles.resultArea}>
-        {(rollehaver.trim() !== "" || rollegiver.trim() !== "") && (
-          <EmptySearch
-            setRollehaver={setRollehaver}
-            setRollegiver={setRollegiver}
-          />
-        )}
         <RoleTable subject={rollehaver} reportee={rollegiver} />
       </div>
     </div>
