@@ -28,3 +28,8 @@
   gap: 0.1rem;
   border-style: hidden;
 }
+
+.searchField input:focus {
+  outline: none;
+  box-shadow:none;
+}

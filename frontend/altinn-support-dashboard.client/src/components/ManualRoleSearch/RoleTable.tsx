@@ -1,4 +1,4 @@
-import { Card, Paragraph, Skeleton, Table, Checkbox} from "@digdir/designsystemet-react";
+import { Card, Paragraph, Skeleton, Table, Checkbox, Textfield} from "@digdir/designsystemet-react";
 import RoleList from "../Dashboard/components/RoleList";
 import { useAppStore } from "../../stores/Appstore";
 import { useRoles } from "../../hooks/hooks";
@@ -33,6 +33,15 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
     })
   }
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filterRoles = (roles?: string[]) => {
+    if (!roles || !searchTerm) return roles;
+    return roles.filter((role) => 
+      role.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  };
+
   if (roleQuery.isLoading) {
     return <Skeleton variant="rectangle" height={300} />;
   }
@@ -40,6 +49,13 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
 
   return (
     <Card data-color="neutral">
+      <Textfield
+        className = {style.searchField}
+        label="Søk etter rolle"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Skriv inn rollenavn"
+      />
       <div className={style.checkboxContainer}>
         <Checkbox label="Tilgangspakke" className ={style.checkbox} 
           checked={activeFilters.has("Tilgangspakke")} 
@@ -70,28 +86,28 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
             <>
               {(activeFilters.size == 0 || activeFilters.has("Tilgangspakke")) && (
                 <RoleList
-                  roles={roleInfo[0].authorizedAccessPackages}
+                  roles={filterRoles(roleInfo[0].authorizedAccessPackages)}
                   type="Tilgangspakke"
                 />
               )}
 
               {(activeFilters.size == 0 || activeFilters.has("Enkelrettighet")) && (
               <RoleList
-                roles={roleInfo[0].authorizedResources}
+                roles={filterRoles(roleInfo[0].authorizedResources)}
                 type="Enkelrettighet"
               />
               )}
 
               {(activeFilters.size == 0 || activeFilters.has("Altinn2 rolle")) && (
               <RoleList
-                roles={roleInfo[0].authorizedRoles}
+                roles={filterRoles(roleInfo[0].authorizedRoles)}
                 type="Altinn2 rolle"
               />
               )}
 
               {(activeFilters.size == 0 || activeFilters.has("Altinn3 instanse")) && (
               <RoleList
-                roles={roleInfo[0].authorizedInstances}
+                roles={filterRoles(roleInfo[0].authorizedInstances)}
                 type="Altinn3 instanse"
               />
               )}
