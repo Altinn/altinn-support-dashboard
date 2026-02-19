@@ -3,8 +3,6 @@ import { Button } from "@digdir/designsystemet-react";
 import style from "./styles/SearchButton.module.css";
 
 type SearchButtonProps = {
-  rollehaver: string;
-  rollegiver: string;
   handleSearch: () => void;
 };
 

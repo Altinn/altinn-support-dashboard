@@ -11,13 +11,9 @@ import SearchButton from "./ManualRoleSearchButton";
 type InputComponentProps = {
   setRollehaver: (value: string) => void;
   setRollegiver: (value: string) => void;
-  rollehaver: string;
-  rollegiver: string;
 };
 
 const InputComponent: React.FC<InputComponentProps> = ({
-  rollehaver,
-  rollegiver,
   setRollehaver,
   setRollegiver,
 }) => {
@@ -75,8 +71,6 @@ const InputComponent: React.FC<InputComponentProps> = ({
       <div className={style["button-group"]}>
         <SearchButton
           handleSearch={handleSearch}
-          rollehaver={rollehaver}
-          rollegiver={rollegiver}
         />
         {(localRollehaver.trim() !== "" || localRollegiver.trim() !== "") && (
           <Button variant="secondary" onClick={clearSearch}>
