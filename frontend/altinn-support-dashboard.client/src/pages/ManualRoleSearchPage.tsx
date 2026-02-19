@@ -32,8 +32,6 @@ export const ManualRoleSearchPage: React.FC = () => {
 
       <div className={styles.inputRow}>
         <InputComponent
-          rollehaver={rollehaver}
-          rollegiver={rollegiver}
           setRollehaver={setRollehaver}
           setRollegiver={setRollegiver}
         />
