@@ -1,10 +1,4 @@
-import {
-  Alert,
-  Card,
-  Paragraph,
-  Skeleton,
-  Table,
-} from "@digdir/designsystemet-react";
+import { Card, Paragraph, Skeleton, Table } from "@digdir/designsystemet-react";
 import RoleList from "../Dashboard/components/RoleList";
 import { useAppStore } from "../../stores/Appstore";
 import { useRoles } from "../../hooks/hooks";
@@ -26,9 +20,6 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
 
   if (roleQuery.isLoading) {
     return <Skeleton variant="rectangle" height={300} />;
-  }
-  if (roleQuery.isError) {
-    return <Alert data-color="danger">Error when fetching roles</Alert>;
   }
 
   return (

@@ -55,7 +55,6 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
         .filter((org) => {
           // filter out subunits if parent is already included
           if (
-            (org.type === "BEDR" || org.type === "AAFY") &&
             subUnits.some(
               (sub) => sub.organisasjonsnummer === org.organizationNumber,
             )

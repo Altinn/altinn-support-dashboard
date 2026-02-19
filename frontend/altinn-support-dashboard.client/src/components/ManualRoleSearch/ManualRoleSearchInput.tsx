@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   getLocalStorageValue,
   setLocalStorageValue,
 } from "./utils/storageUtils";
 import ManualRoleSearchTextField from "./ManualRoleSearchTextfield";
-import { Tooltip } from "@digdir/designsystemet-react";
+import { Button, Tooltip } from "@digdir/designsystemet-react";
 import style from "./styles/InputComponent.module.css";
+import SearchButton from "./ManualRoleSearchButton";
 
 type InputComponentProps = {
   setRollehaver: (value: string) => void;
   setRollegiver: (value: string) => void;
-  searchTrigger: number;
 };
 
 const InputComponent: React.FC<InputComponentProps> = ({
   setRollehaver,
   setRollegiver,
-  searchTrigger,
 }) => {
   const [localRollehaver, setLocalRollehaver] = useState<string>(
     getLocalStorageValue("rollehaver") || "",
@@ -25,10 +24,17 @@ const InputComponent: React.FC<InputComponentProps> = ({
     getLocalStorageValue("rollegiver") || "",
   );
 
-  useEffect(() => {
+  const handleSearch = () => {
     setRollegiver(localRollegiver);
     setRollehaver(localRollehaver);
-  }, [searchTrigger]);
+  };
+
+  const clearSearch = () => {
+    setLocalRollegiver("");
+    setLocalRollehaver("");
+    setLocalStorageValue("rollegiver", "");
+    setLocalStorageValue("rollehaver", "");
+  };
 
   return (
     <div className={style["input-fields"]}>
@@ -62,9 +68,18 @@ const InputComponent: React.FC<InputComponentProps> = ({
           />
         </span>
       </Tooltip>
+      <div className={style["button-group"]}>
+        <SearchButton
+          handleSearch={handleSearch}
+        />
+        {(localRollehaver.trim() !== "" || localRollegiver.trim() !== "") && (
+          <Button variant="secondary" onClick={clearSearch}>
+            Tøm søk
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
 
 export default InputComponent;
-

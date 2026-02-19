@@ -10,8 +10,6 @@ describe("SearchButton", () => {
 
     render(
       <SearchButton
-        rollehaver="123"
-        rollegiver="456"
         handleSearch={mockHandleSearch}
       />,
     );
