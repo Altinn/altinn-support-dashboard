@@ -58,20 +58,20 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
       />
       <div className={style.checkboxContainer}>
         <Checkbox label="Tilgangspakke" className ={style.checkbox} 
-          checked={activeFilters.has("Tilgangspakke")} 
-          onChange={() => toggleType("Tilgangspakke")} 
+          checked={activeFilters.has("authorizedAccessPackages")} 
+          onChange={() => toggleType("authorizedAccessPackages")} 
         />
         <Checkbox label="Altinn2 rolle" className ={style.checkbox}
-          checked={activeFilters.has("Altinn2 rolle")} 
-          onChange={() => toggleType("Altinn2 rolle")} 
+          checked={activeFilters.has("authorizedRoles")} 
+          onChange={() => toggleType("authorizedRoles")} 
         />
         <Checkbox label="Altinn3 instanse" className ={style.checkbox}
-          checked={activeFilters.has("Altinn3 instanse")} 
-          onChange={() => toggleType("Altinn3 instanse")} 
+          checked={activeFilters.has("authorizedInstances")} 
+          onChange={() => toggleType("authorizedInstances")} 
         />
         <Checkbox label="Enkelrettighet" className ={style.checkbox}
-          checked={activeFilters.has("Enkelrettighet")} 
-          onChange={() => toggleType("Enkelrettighet")} 
+          checked={activeFilters.has("authorizedResources")} 
+          onChange={() => toggleType("authorizedResources")} 
         />
       </div>
       <Table border>
@@ -84,28 +84,28 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
         <Table.Body>
           {roleInfo && roleInfo.length >= 1 ? (
             <>
-              {(activeFilters.size == 0 || activeFilters.has("Tilgangspakke")) && (
+              {(activeFilters.size == 0 || activeFilters.has("authorizedAccessPackages")) && (
                 <RoleList
                   roles={filterRoles(roleInfo[0].authorizedAccessPackages)}
                   type="Tilgangspakke"
                 />
               )}
 
-              {(activeFilters.size == 0 || activeFilters.has("Enkelrettighet")) && (
+              {(activeFilters.size == 0 || activeFilters.has("authorizedResources")) && (
               <RoleList
                 roles={filterRoles(roleInfo[0].authorizedResources)}
                 type="Enkelrettighet"
               />
               )}
 
-              {(activeFilters.size == 0 || activeFilters.has("Altinn2 rolle")) && (
+              {(activeFilters.size == 0 || activeFilters.has("authorizedRoles")) && (
               <RoleList
                 roles={filterRoles(roleInfo[0].authorizedRoles)}
                 type="Altinn2 rolle"
               />
               )}
 
-              {(activeFilters.size == 0 || activeFilters.has("Altinn3 instanse")) && (
+              {(activeFilters.size == 0 || activeFilters.has("authorizedInstances")) && (
               <RoleList
                 roles={filterRoles(roleInfo[0].authorizedInstances)}
                 type="Altinn3 instanse"
