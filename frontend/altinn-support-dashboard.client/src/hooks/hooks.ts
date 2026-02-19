@@ -72,7 +72,7 @@ export function useOrgSearch(environment: string, query: string) {
       );
       return all.flat();
     },
-    enabled: !!orgQuery.data, // wait until organizations are fetched
+    enabled: orgQuery.isSuccess && !orgQuery.isFetching, // wait until fresh org data is available
     retry: false,
   });
 
