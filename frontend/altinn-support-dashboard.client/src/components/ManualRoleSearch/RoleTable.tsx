@@ -3,6 +3,7 @@ import RoleList from "../Dashboard/components/RoleList";
 import { useAppStore } from "../../stores/Appstore";
 import { useRoles } from "../../hooks/hooks";
 import { useState } from "react";
+import RoleType from "../../models/roleType";
 import style from "./styles/RoleTable.module.css";
 
 interface RoleTableProps {
@@ -58,20 +59,20 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
       />
       <div className={style.checkboxContainer}>
         <Checkbox label="Tilgangspakke" className ={style.checkbox} 
-          checked={activeFilters.has("authorizedAccessPackages")} 
-          onChange={() => toggleType("authorizedAccessPackages")} 
+          checked={activeFilters.has(RoleType.AuthorizedAccessPackages)} 
+          onChange={() => toggleType(RoleType.AuthorizedAccessPackages)} 
         />
         <Checkbox label="Altinn2 rolle" className ={style.checkbox}
-          checked={activeFilters.has("authorizedRoles")} 
-          onChange={() => toggleType("authorizedRoles")} 
+          checked={activeFilters.has(RoleType.AuthorizedRoles)} 
+          onChange={() => toggleType(RoleType.AuthorizedRoles)} 
         />
         <Checkbox label="Altinn3 instanse" className ={style.checkbox}
-          checked={activeFilters.has("authorizedInstances")} 
-          onChange={() => toggleType("authorizedInstances")} 
+          checked={activeFilters.has(RoleType.AuthorizedInstances)} 
+          onChange={() => toggleType(RoleType.AuthorizedInstances)} 
         />
         <Checkbox label="Enkelrettighet" className ={style.checkbox}
-          checked={activeFilters.has("authorizedResources")} 
-          onChange={() => toggleType("authorizedResources")} 
+          checked={activeFilters.has(RoleType.AuthorizedResources)} 
+          onChange={() => toggleType(RoleType.AuthorizedResources)} 
         />
       </div>
       <Table border>
@@ -84,28 +85,28 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
         <Table.Body>
           {roleInfo && roleInfo.length >= 1 ? (
             <>
-              {(activeFilters.size == 0 || activeFilters.has("authorizedAccessPackages")) && (
+              {(activeFilters.size == 0 || activeFilters.has(RoleType.AuthorizedAccessPackages)) && (
                 <RoleList
                   roles={filterRoles(roleInfo[0].authorizedAccessPackages)}
                   type="Tilgangspakke"
                 />
               )}
 
-              {(activeFilters.size == 0 || activeFilters.has("authorizedResources")) && (
+              {(activeFilters.size == 0 || activeFilters.has(RoleType.AuthorizedResources)) && (
               <RoleList
                 roles={filterRoles(roleInfo[0].authorizedResources)}
                 type="Enkelrettighet"
               />
               )}
 
-              {(activeFilters.size == 0 || activeFilters.has("authorizedRoles")) && (
+              {(activeFilters.size == 0 || activeFilters.has(RoleType.AuthorizedRoles)) && (
               <RoleList
                 roles={filterRoles(roleInfo[0].authorizedRoles)}
                 type="Altinn2 rolle"
               />
               )}
 
-              {(activeFilters.size == 0 || activeFilters.has("authorizedInstances")) && (
+              {(activeFilters.size == 0 || activeFilters.has(RoleType.AuthorizedInstances)) && (
               <RoleList
                 roles={filterRoles(roleInfo[0].authorizedInstances)}
                 type="Altinn3 instanse"
