@@ -55,6 +55,8 @@ export function useOrgSearch(environment: string, query: string) {
     queryKey: ["organizations", environment, query],
     queryFn: () => fetchOrganizations(environment, query),
     retry: false,
+    staleTime: 2 * 60 * 1000, // fresh for 2 minutes
+    refetchOnWindowFocus: false,
     enabled: !!query, // only run when query is non-empty
   });
 
@@ -73,6 +75,8 @@ export function useOrgSearch(environment: string, query: string) {
       return all.flat();
     },
     enabled: orgQuery.isSuccess && !orgQuery.isFetching, // wait until fresh org data is available
+    staleTime: 2 * 60 * 1000, // fresh for 2 minutes
+    refetchOnWindowFocus: false,
     retry: false,
   });
 
@@ -89,12 +93,16 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
       queryFn: () => fetchPersonalContacts(environment, orgNumber!),
       enabled: !!orgNumber,
       retry: false,
+      staleTime: 2 * 60 * 1000, // fresh for 2 minutes
+      refetchOnWindowFocus: false,
     });
 
   const ERolesQuery: UseQueryResult<ERRoles[], Error> = useQuery({
     queryKey: ["erroles", environment, orgNumber],
     queryFn: () => fetchERoles(environment, orgNumber!),
     enabled: !!orgNumber,
+    staleTime: 2 * 60 * 1000, // fresh for 2 minutes
+    refetchOnWindowFocus: false,
     retry: false,
   });
   const officialContactsQuery: UseQueryResult<OfficialContact[], Error> =
@@ -111,6 +119,8 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     queryKey: ["notificationAdresses", environment, orgNumber],
     queryFn: () => fetchNotificationAddresses(environment, orgNumber!),
     enabled: !!orgNumber,
+    staleTime: 2 * 60 * 1000, // fresh for 2 minutes
+    refetchOnWindowFocus: false,
     retry: false,
   });
 
@@ -134,6 +144,8 @@ export const useRoles = (
       !!request.value &&
       !!(request.partyFilter.length >= 1), // only run if both exist
     retry: false,
+    staleTime: 2 * 60 * 1000, // fresh for 2 minutes
+    refetchOnWindowFocus: false,
   });
 
   return rolesQuery;
