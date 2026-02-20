@@ -14,3 +14,22 @@
     font-size: var(--ds-font-size-3);
   }
 }
+
+.checkboxContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.checkbox {
+  gap: 0.1rem;
+  border-style: hidden;
+}
+
+.searchField input:focus {
+  outline: none;
+  box-shadow:none;
+}
