@@ -329,9 +329,27 @@ public class Altinn3Service : IAltinn3Service
                 roles[0].AuthorizedRoles = altinn2RolesList;
             }
 
+            var authorizedResources = roles[0]?.AuthorizedResources;
+            if (authorizedResources?.Count >= 1)
+            {
+                List<string> newResourceList = [];
+                foreach (string resource in authorizedResources)
+                {
+                    ResourceDetailsDto? newResource = await GetResourceDetailsFromRegistry(resource, environment);
+                    //If not found add resourceId instead
+                    if (newResource == null)
+                    {
+                        newResourceList.Add(resource);
+                        continue;
+                    }
 
+                    newResourceList.Add(newResource.Title.NB);
+                }
+                roles[0]?.AuthorizedResources = newResourceList;
+            }
 
         }
+        //get title name for more readability
         return roles;
     }
     private string getTypeFromValue(string value)
@@ -348,9 +366,14 @@ public class Altinn3Service : IAltinn3Service
         throw new Exception("Not a valid format, needs to be either a orgnumber or ssn");
     }
 
-    public async Task<string> GetResourceDetailsFromRegistry(string resourceId, string environmentName)
+    public async Task<ResourceDetailsDto?> GetResourceDetailsFromRegistry(string resourceId, string environmentName)
     {
         string response = await _client.GetResourceDetailsFromRegistry(resourceId, environmentName);
-        return response;
+        if (response == string.Empty)
+        {
+            return null;
+        }
+        var resourceDetails = JsonSerializer.Deserialize<ResourceDetailsDto>(response, jsonOptions) ?? throw new Exception("Error serializing resourceDetails");
+        return resourceDetails;
     }
 }

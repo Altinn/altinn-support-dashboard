@@ -22,5 +22,5 @@ public interface IAltinn3Service
 
     Task<List<RolesAndRightsDto>> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment);
 
-    Task<string> GetResourceDetailsFromRegistry(string resourceId, string environmentName);
+    Task<ResourceDetailsDto?> GetResourceDetailsFromRegistry(string resourceId, string environmentName);
 }

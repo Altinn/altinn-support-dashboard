@@ -287,6 +287,10 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
         var response = await client.GetAsync(requestUrl);
         var responseBody = await response.Content.ReadAsStringAsync();
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return string.Empty;
+        }
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
