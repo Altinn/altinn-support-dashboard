@@ -13,4 +13,5 @@ public interface IAltinn3ApiClient
     Task<string> GetNotificationAddressesByPhone(string phoneNumber, string environmentName);
     Task<string> GetNotificationAddressesByEmail(string email, string environmentName);
     Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, string environmentName);
+    Task<string> GetResourceDetailsFromRegistry(string resourceId, string environmentName);
 }

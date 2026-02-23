@@ -348,4 +348,9 @@ public class Altinn3Service : IAltinn3Service
         throw new Exception("Not a valid format, needs to be either a orgnumber or ssn");
     }
 
+    public async Task<string> GetResourceDetailsFromRegistry(string resourceId, string environmentName)
+    {
+        string response = await _client.GetResourceDetailsFromRegistry(resourceId, environmentName);
+        return response;
+    }
 }

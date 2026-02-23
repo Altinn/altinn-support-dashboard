@@ -277,7 +277,20 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
         }
         return responseBody;
+    }
 
+    public async Task<string> GetResourceDetailsFromRegistry(string resourceId, string environmentName)
+    {
+        var client = _clients[environmentName];
 
+        var requestUrl = $"/resourceregistry/api/v1/resource/{resourceId}";
+
+        var response = await client.GetAsync(requestUrl);
+        var responseBody = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        return responseBody;
     }
 }
