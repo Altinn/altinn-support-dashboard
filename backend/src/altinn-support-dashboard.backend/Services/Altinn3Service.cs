@@ -87,11 +87,13 @@ public class Altinn3Service : IAltinn3Service
         return organizations;
     }
 
-    public async Task<string> GetOrganizationsIdentifiers(List<string> orgNumbers, string environment)
+    //Gets the identifiers of a list of orgs
+    public async Task<List<PartyIdentifierDto>> GetOrganizationsIdentifiers(List<string> orgNumbers, string environment)
     {
         var result = await _client.GetOrganizationIdentifiers(orgNumbers, environment);
+        var identifiers = JsonSerializer.Deserialize<List<PartyIdentifierDto>>(result, jsonOptions) ?? throw new Exception("Error deserializing");
 
-        return result;
+        return identifiers;
     }
 
     public async Task<List<Organization>> GetOrganizationsByPhoneAltinn3(string phonenumber, string environment)
