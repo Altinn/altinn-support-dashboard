@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text;
 using System.Net;
 using Models.altinn3Dtos;
+using System.Web;
 
 public class Altinn3ApiClient : IAltinn3ApiClient
 {
@@ -93,6 +94,33 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         var response = await client.PostAsync(requestUrl, content);
         var responseBody = await response.Content.ReadAsStringAsync();
 
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return string.Empty;
+        }
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        return responseBody;
+    }
+
+    //Used to get Uuids of orgs
+    public async Task<string> GetOrganizationIdentifiers(List<string> orgNumbers, string environmentName)
+    {
+
+        var client = _clients[environmentName];
+        var query = HttpUtility.ParseQueryString(string.Empty);
+        //Have to set the list in a get request
+        foreach (string orgNumber in orgNumbers)
+        {
+            query.Add("orgs", orgNumber);
+        }
+
+        var requestUrl = $"register/api/v1/parties/identifiers?{query}";
+        var response = await client.GetAsync(requestUrl);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return string.Empty;

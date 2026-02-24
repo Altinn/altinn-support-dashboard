@@ -11,6 +11,7 @@ public interface IAltinn3Service
     Task<List<PartyNameDto>> GetPartyNamesByOrgAltinn3(List<string> orgNumbers, string environment);
     Task<List<Organization>> GetOrganizationsByEmailAltinn3(string email, string environment);
     Task<List<Organization>> GetOrganizationsByPhoneAltinn3(string phonenumber, string environment);
+    Task<string> GetOrganizationsIdentifiers(List<string> orgNumbers, string environment);
 
     Task<List<PersonalContactAltinn3>> GetPersonalContactsByOrgAltinn3(string orgNumber, string environment);
     Task<List<PersonalContactDto>> GetPersonalContactsByEmailAltinn3(string email, string environment);

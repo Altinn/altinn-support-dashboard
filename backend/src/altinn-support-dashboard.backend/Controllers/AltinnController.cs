@@ -91,7 +91,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/altinn3/search")]
-        public async Task<IActionResult> SearchAltinn3 ([FromQuery] string query)
+        public async Task<IActionResult> SearchAltinn3([FromQuery] string query)
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -370,6 +370,13 @@ namespace AltinnSupportDashboard.Controllers
         {
             var result = await _altinn3Service.GetRolesAndRightsAltinn3(request, environmentName);
 
+            return Ok(result);
+        }
+
+        [HttpPost("organizations/altinn3/identifiers")]
+        public async Task<IActionResult> PostOrganizationsIdentifiers([FromBody] OrgNumbersRequestDto request)
+        {
+            var result = await _altinn3Service.GetOrganizationsIdentifiers(request.OrgNumbers, environmentName);
             return Ok(result);
         }
     }

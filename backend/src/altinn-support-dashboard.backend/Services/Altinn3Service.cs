@@ -85,7 +85,13 @@ public class Altinn3Service : IAltinn3Service
 
 
         return organizations;
+    }
 
+    public async Task<string> GetOrganizationsIdentifiers(List<string> orgNumbers, string environment)
+    {
+        var result = await _client.GetOrganizationIdentifiers(orgNumbers, environment);
+
+        return result;
     }
 
     public async Task<List<Organization>> GetOrganizationsByPhoneAltinn3(string phonenumber, string environment)
