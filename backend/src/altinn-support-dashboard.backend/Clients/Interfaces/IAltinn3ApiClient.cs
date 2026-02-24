@@ -11,4 +11,9 @@ public interface IAltinn3ApiClient
     Task<string> GetNotificationAddressesByEmail(string email, string environmentName);
     Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, string environmentName);
     Task<string> GetOrganizationIdentifiers(List<string> orgNumbers, string environmentName);
+    Task<string> GetOrganizationsPartyInfoByPartyId(List<int> partyIds, string environmentName);
 }
+
+
+
+

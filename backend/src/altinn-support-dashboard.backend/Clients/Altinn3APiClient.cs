@@ -131,6 +131,36 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         return responseBody;
     }
+
+    public async Task<string> GetOrganizationsPartyInfoByPartyId(List<int> partyIds, string environmentName)
+    {
+        var client = _clients[environmentName];
+        var requestUrl = "register/api/v1/parties/partylist";
+
+        var payload = new
+        {
+            partyIds = partyIds
+        };
+        string jsonPayload = JsonSerializer.Serialize(payload);
+
+        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+        var response = await client.PostAsync(requestUrl, content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return string.Empty;
+        }
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        return responseBody;
+
+
+
+    }
     public async Task<string> GetPersonalContactsByOrg(string orgNumber, string environmentName)
     {
         try
