@@ -95,11 +95,12 @@ public class Altinn3Service : IAltinn3Service
 
         return identifiers;
     }
-    public async Task<string> GetOrganizationspartyInfo(List<int> partyIds, string environment)
+    //get party info from organizationParty
+    public async Task<List<OrgPartyInfoDto>> GetOrganizationspartyInfo(List<int> partyIds, string environment)
     {
         var result = await _client.GetOrganizationsPartyInfoByPartyId(partyIds, environment);
-
-        return result;
+        var parties = JsonSerializer.Deserialize<List<OrgPartyInfoDto>>(result, jsonOptions) ?? throw new Exception("Error deserializing");
+        return parties;
     }
 
     public async Task<List<Organization>> GetOrganizationsByPhoneAltinn3(string phonenumber, string environment)
