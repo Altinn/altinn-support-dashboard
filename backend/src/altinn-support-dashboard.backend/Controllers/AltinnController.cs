@@ -379,5 +379,12 @@ namespace AltinnSupportDashboard.Controllers
             var result = await _altinn3Service.GetOrganizationsIdentifiers(request.OrgNumbers, environmentName);
             return Ok(result);
         }
+
+        [HttpPost("organizations/altinn3/partyinfo")]
+        public async Task<IActionResult> PostOrganizationsPartyInfo([FromBody] OrgPartyInfoRequest partyIds)
+        {
+            var result = await _altinn3Service.GetOrganizationspartyInfo(partyIds.PartyIds, environmentName);
+            return Ok(result);
+        }
     }
 }

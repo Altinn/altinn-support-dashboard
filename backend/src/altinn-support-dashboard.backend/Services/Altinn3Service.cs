@@ -95,6 +95,12 @@ public class Altinn3Service : IAltinn3Service
 
         return identifiers;
     }
+    public async Task<string> GetOrganizationspartyInfo(List<int> partyIds, string environment)
+    {
+        var result = await _client.GetOrganizationsPartyInfoByPartyId(partyIds, environment);
+
+        return result;
+    }
 
     public async Task<List<Organization>> GetOrganizationsByPhoneAltinn3(string phonenumber, string environment)
     {

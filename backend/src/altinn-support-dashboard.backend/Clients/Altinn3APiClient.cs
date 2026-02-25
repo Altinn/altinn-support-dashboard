@@ -132,16 +132,13 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         return responseBody;
     }
 
+    //used to get the partyInformation of a org
     public async Task<string> GetOrganizationsPartyInfoByPartyId(List<int> partyIds, string environmentName)
     {
         var client = _clients[environmentName];
         var requestUrl = "register/api/v1/parties/partylist";
 
-        var payload = new
-        {
-            partyIds = partyIds
-        };
-        string jsonPayload = JsonSerializer.Serialize(payload);
+        string jsonPayload = JsonSerializer.Serialize(partyIds);
 
         var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
@@ -157,10 +154,8 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
         }
         return responseBody;
-
-
-
     }
+
     public async Task<string> GetPersonalContactsByOrg(string orgNumber, string environmentName)
     {
         try
