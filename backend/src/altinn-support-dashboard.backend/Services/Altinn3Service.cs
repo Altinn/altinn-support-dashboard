@@ -91,8 +91,28 @@ public class Altinn3Service : IAltinn3Service
                 OrganizationNumber = party.OrgNumber,
                 Name = party.Name,
                 IsDeleted = party.IsDeleted,
-                UnitType = party.UnitType
+                UnitType = party.UnitType,
             };
+
+            if (party.ChildParties != null)
+            {
+                List<Organization> subunits = [];
+                foreach (OrgPartyInfoDto subUnitParty in party.ChildParties)
+                {
+
+                    Organization subUnit = new Organization
+                    {
+                        OrganizationNumber = subUnitParty.OrgNumber,
+                        Name = subUnitParty.Name,
+                        IsDeleted = subUnitParty.IsDeleted,
+                        UnitType = subUnitParty.UnitType,
+                    };
+                    subunits.Add(subUnit);
+                }
+                org.Subunits = subunits;
+
+
+            }
             organizations.Add(org);
         }
         return organizations;

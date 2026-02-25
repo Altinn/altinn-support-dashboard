@@ -80,13 +80,17 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
         className={`${classes.card} ${classes.mainCard}`}
         onClick={() => handleSelectedOrg()}
       >
-        <div className={classes.cardInfoContainer}>
-          {" "}
+        <div
+          className={`${classes.cardInfoContainer} ${org.isDeleted && classes.cardIsDeleted}`}
+        >
           <Heading level={6} className={classes.cardHeader}>
             {org.name}
           </Heading>
           <Paragraph variant="short" className={classes.cardParagraph}>
             Org Nr: {org.organizationNumber}
+          </Paragraph>
+          <Paragraph variant="short" className={classes.cardParagraph}>
+            Type: {org.unitType}
           </Paragraph>
         </div>
         {org.headUnit && (

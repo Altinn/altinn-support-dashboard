@@ -1,6 +1,8 @@
 export interface Organization {
   name: string;
   organizationNumber: string;
+  unitType: string;
+  isDeleted: boolean;
   headUnit?: Organization;
 }
 
@@ -133,4 +135,3 @@ export interface PersonalContactAltinn3 {
   displayedSocialSecurityNumber?: string;
   ssnToken?: string;
 }
-

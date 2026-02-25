@@ -29,6 +29,9 @@
 .cardInfoContainer {
   flex: 8;
 }
+.cardIsDeleted {
+  background-color: salmon;
+}
 
 .mainCard {
   display: flex;

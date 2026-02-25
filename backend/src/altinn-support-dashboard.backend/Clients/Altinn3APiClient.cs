@@ -69,7 +69,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
     public async Task<string> GetOrganizationsPartyInfoByPartyId(List<int> partyIds, string environmentName)
     {
         var client = _clients[environmentName];
-        var requestUrl = "register/api/v1/parties/partylist";
+        var requestUrl = "register/api/v1/parties/partylist?fetchSubUnits=true";
 
         string jsonPayload = JsonSerializer.Serialize(partyIds);
 

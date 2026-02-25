@@ -10,4 +10,5 @@ public class OrgPartyInfoDto
     public required string OrgNumber { get; set; }
     public required string Name { get; set; }
     public required bool IsDeleted { get; set; }
+    public List<OrgPartyInfoDto>? ChildParties { get; set; }
 }
