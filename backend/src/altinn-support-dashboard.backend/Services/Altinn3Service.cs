@@ -38,27 +38,6 @@ public class Altinn3Service : IAltinn3Service
     }
 
 
-    public async Task<PartyNameDto> GetOrganizationPartyNameAltinn3(string orgNumber, string environment)
-    {
-        if (!ValidationService.IsValidOrgNumber(orgNumber))
-        {
-            throw new ArgumentException("Orgnumber invalid. It has to be 9 digits long");
-        }
-
-        var json = await _client.GetOrganizationInfo(orgNumber, environment);
-        var result = string.IsNullOrEmpty(json) ? null : JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions);
-
-        if (result == null || string.IsNullOrEmpty(result.PartyNames[0].Name))
-        {
-            throw new Exception($"No data found for org with orgnumber: {orgNumber}");
-        }
-
-
-
-        return result.PartyNames[0];
-    }
-
-
     public async Task<Organization> GetOrganizationByOrgNoAltinn3(string orgNumber, string environment)
     {
         List<Organization> organizationsResult = await GetOrganizationsByOrgNumbers([orgNumber], environment);

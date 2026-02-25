@@ -243,11 +243,11 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpPost("organizations/altinn3/organizations")]
-        public async Task<IActionResult> GetOrganizationsInfoAltinn3([FromBody] OrgNumbersRequestDto orgnumbers)
+        public async Task<IActionResult> GetOrganizationsAltinn3([FromBody] OrgNumbersRequestDto orgnumbers)
         {
             var data = orgnumbers.OrgNumbers;
 
-            var result = await _altinn3Service.GetPartyNamesByOrgAltinn3(data, environmentName);
+            var result = await _altinn3Service.GetOrganizationsByOrgNumbers(data, environmentName);
             return Ok(result);
         }
 
