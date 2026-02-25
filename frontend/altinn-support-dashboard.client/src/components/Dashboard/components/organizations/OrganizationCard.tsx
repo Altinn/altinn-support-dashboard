@@ -1,28 +1,22 @@
 import classes from "../../styles/OrganizationCard.module.css";
 import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
-import { Organization, SelectedOrg, Subunit } from "../../../../models/models";
+import { Organization, SelectedOrg } from "../../../../models/models";
 import { useState } from "react";
 import { Card, Button, Heading, Paragraph } from "@digdir/designsystemet-react";
 
 interface OrganizationCardProps {
   org: Organization;
   selectedOrg?: SelectedOrg | null;
-  subUnits: Subunit[];
   setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
 }
 
 export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   org,
   selectedOrg,
-  subUnits,
   setSelectedOrg,
 }) => {
   const [isExpandedSub, setIsExpandedSub] = useState(false);
   const [isExpandedHead, setIsExpandedHead] = useState(false);
-
-  const hasSubUnits = subUnits.some(
-    (sub) => sub.overordnetEnhet === org.organizationNumber,
-  );
 
   const handleExpandedSub = (e: React.MouseEvent<HTMLButtonElement>) => {
     setIsExpandedSub(!isExpandedSub);
@@ -89,9 +83,6 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           <Paragraph variant="short" className={classes.cardParagraph}>
             Org Nr: {org.organizationNumber}
           </Paragraph>
-          <Paragraph variant="short" className={classes.cardParagraph}>
-            Type: {org.unitType}
-          </Paragraph>
         </div>
         {org.headUnit && (
           <Button
@@ -105,7 +96,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           </Button>
         )}
 
-        {hasSubUnits && (
+        {org.subUnits && (
           <Button
             className={classes.expandButtonSub}
             variant="secondary"
@@ -119,32 +110,33 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
       </Card>
 
       {/* Subunits list */}
-      {isExpandedSub && (
+      {org.subUnits && isExpandedSub && (
         <div>
-          {subUnits
-            .filter((sub) => sub.overordnetEnhet === org.organizationNumber)
-            .map((sub) => (
+          {org.subUnits
+            .filter(
+              (sub: Organization) =>
+                sub.headUnit?.organizationNumber === org.organizationNumber,
+            )
+            .map((sub: Organization) => (
               <Card
                 className={`${classes.subunit} ${classes.card}`}
                 variant={
-                  checkIsSelected(sub.organisasjonsnummer)
-                    ? "tinted"
-                    : "default"
+                  checkIsSelected(sub.organizationNumber) ? "tinted" : "default"
                 }
                 data-color="neutral"
-                key={sub.organisasjonsnummer}
+                key={sub.organizationNumber}
                 onClick={() =>
                   setSelectedOrg({
-                    Name: sub.navn,
-                    OrganizationNumber: sub.organisasjonsnummer,
+                    Name: sub.name,
+                    OrganizationNumber: sub.organizationNumber,
                   })
                 }
               >
                 <Paragraph variant="short" className={classes.cardHeader}>
-                  {sub.navn}
+                  {sub.name}
                 </Paragraph>
                 <Paragraph variant="short" className={classes.cardParagraph}>
-                  Org Nr: {sub.organisasjonsnummer}
+                  Org Nr: {sub.organizationNumber}
                 </Paragraph>
               </Card>
             ))}

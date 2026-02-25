@@ -96,6 +96,14 @@ public class Altinn3Service : IAltinn3Service
 
             if (party.ChildParties != null)
             {
+                //ref to stop circular expression
+                Organization orgRef = new Organization
+                {
+                    OrganizationNumber = org.OrganizationNumber,
+                    Name = org.Name,
+                    IsDeleted = org.IsDeleted,
+                    UnitType = org.UnitType,
+                };
                 List<Organization> subunits = [];
                 foreach (OrgPartyInfoDto subUnitParty in party.ChildParties)
                 {
@@ -106,12 +114,11 @@ public class Altinn3Service : IAltinn3Service
                         Name = subUnitParty.Name,
                         IsDeleted = subUnitParty.IsDeleted,
                         UnitType = subUnitParty.UnitType,
+                        HeadUnit = orgRef
                     };
                     subunits.Add(subUnit);
                 }
-                org.Subunits = subunits;
-
-
+                org.SubUnits = subunits;
             }
             organizations.Add(org);
         }

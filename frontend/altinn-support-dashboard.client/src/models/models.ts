@@ -4,6 +4,7 @@ export interface Organization {
   unitType: string;
   isDeleted: boolean;
   headUnit?: Organization;
+  subUnits?: Organization[];
 }
 
 export interface PersonalContact {
@@ -39,16 +40,6 @@ export interface PersonalContactLink {
   signingLocked: boolean;
   signedByDefault: boolean;
   fileSize: number;
-}
-
-export interface Subunit {
-  navn: string;
-  organisasjonsnummer: string;
-  overordnetEnhet: string;
-  organisasjonsform?: organisasjonsform;
-}
-export interface organisasjonsform {
-  kode: string;
 }
 
 export interface ERRoles {

@@ -6,6 +6,6 @@ public class Organization
     public string? UnitType { get; set; }
     public string? OrganizationNumber { get; set; }
     public Organization? HeadUnit { get; set; }
-    public List<Organization>? Subunits { get; set; }
+    public List<Organization>? SubUnits { get; set; }
     public bool? IsDeleted { get; set; }
 }
