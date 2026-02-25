@@ -1,8 +1,8 @@
-import { SelectedOrg } from "../models/models";
+import { Organization, SelectedOrg } from "../models/models";
 
 export interface DashboardState {
   query: string;
-  selectedOrg: SelectedOrg | null;
+  selectedOrg: Organization | null;
   setQuery: (q: string) => void;
-  setSelectedOrg: (org: SelectedOrg | null) => void;
+  setSelectedOrg: (org: Organization | null) => void;
 }

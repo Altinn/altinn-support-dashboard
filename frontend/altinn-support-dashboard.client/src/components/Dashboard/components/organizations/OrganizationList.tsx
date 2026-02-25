@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { OrganizationCard } from "./OrganizationCard";
 import { useOrgSearch } from "../../../../hooks/hooks";
-import { Organization, SelectedOrg } from "../../../../models/models";
+import { Organization } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import classes from "../../styles/OrganizationList.module.css";
 import { showPopup } from "../../../Popup";
@@ -9,8 +9,8 @@ import { showPopup } from "../../../Popup";
 import { Skeleton, Alert, Heading } from "@digdir/designsystemet-react";
 
 interface OrganizationListProps {
-  setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
-  selectedOrg: SelectedOrg | null;
+  setSelectedOrg: (SelectedOrg: Organization) => void;
+  selectedOrg: Organization | null;
   query: string;
 }
 

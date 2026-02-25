@@ -3,7 +3,11 @@ import classes from "../../styles/ContactsTable.module.css";
 import { SortDirection } from "../../models/mainContentTypes";
 import { filterContacts, sortContacts } from "../../utils/contactUtils";
 import { useOrgDetails } from "../../../../hooks/hooks";
-import { PersonalContactAltinn3, SelectedOrg } from "../../../../models/models";
+import {
+  Organization,
+  PersonalContactAltinn3,
+  SelectedOrg,
+} from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import ContactInfoCell from "./ContactInfoCell";
 import { Button, Table, Paragraph, Card } from "@digdir/designsystemet-react";
@@ -11,7 +15,7 @@ import SsnCell from "../../../SsnCell";
 
 interface ContactsTableProps {
   searchQuery: string;
-  selectedOrg: SelectedOrg;
+  selectedOrg: Organization;
   setSelectedContact: (personalContact: PersonalContactAltinn3) => void;
 }
 
@@ -27,7 +31,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
   const environment = useAppStore((state) => state.environment);
   const { contactsQuery } = useOrgDetails(
     environment,
-    selectedOrg?.OrganizationNumber,
+    selectedOrg?.organizationNumber,
   );
 
   const filteredContacts = filterContacts(
