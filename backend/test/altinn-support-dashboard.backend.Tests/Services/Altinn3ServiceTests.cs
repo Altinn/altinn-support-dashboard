@@ -2,6 +2,7 @@ using Altinn.ApiClients.Maskinporten.Config;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -20,12 +21,14 @@ public class Altinn3ServiceTests
     private readonly Mock<IRedactorProvider> _mockRedactorProvider;
     private readonly Mock<ILogger<IAltinn3Service>> _mockLogger;
     private readonly Mock<IAltinnApiService> _mockAltinn2Service;
+    private readonly Mock<IMemoryCache> _mockCache;
 
     public Altinn3ServiceTests()
     {
         var mockHttpClient = new Mock<IHttpClientFactory>();
         var mockConfig = new Mock<IOptions<Configuration>>();
         _mockBreggService = new Mock<IDataBrregService>();
+        _mockCache = new Mock<IMemoryCache>();
 
         mockConfig.Setup(x => x.Value).Returns(new Configuration
         {
@@ -63,7 +66,7 @@ public class Altinn3ServiceTests
         _mockRedactorProvider = new Mock<IRedactorProvider>();
         _mockLogger = new Mock<ILogger<IAltinn3Service>>();
         _mockAltinn2Service = new Mock<IAltinnApiService>();
-        _altinnApiService = new Altinn3Service(_mockAltinn3Client.Object, _mockBreggService.Object, _mockSsnTokenService.Object, _mockRedactorProvider.Object, _mockLogger.Object, _mockAltinn2Service.Object);
+        _altinnApiService = new Altinn3Service(_mockAltinn3Client.Object, _mockBreggService.Object, _mockSsnTokenService.Object, _mockRedactorProvider.Object, _mockLogger.Object, _mockAltinn2Service.Object, _mockCache.Object);
     }
     [Fact]
     public async Task GetPersonalContactsAltinn3_ReturnsContacts_WhenOrgNumberIsValid()

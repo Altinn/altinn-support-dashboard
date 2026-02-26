@@ -22,6 +22,8 @@ public interface IAltinn3Service
     Task<List<NotificationAddressDto>> GetNotificationAddressesByEmailAltinn3(string email, string environment);
 
     Task<List<RolesAndRightsDto>> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment);
+    Task<List<ResourceDetailsDto>> GetResourceListFromResourceRegistry(string environmentName);
+    Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName);
 
 }
 

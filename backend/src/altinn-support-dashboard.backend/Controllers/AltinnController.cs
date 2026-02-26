@@ -386,5 +386,12 @@ namespace AltinnSupportDashboard.Controllers
             var result = await _altinn3Service.GetOrganizationspartyInfo(partyIds.PartyIds, environmentName);
             return Ok(result);
         }
+
+        [HttpGet("resources")]
+        public async Task<IActionResult> GetResourcesFromResourceRegistry()
+        {
+            var result = await _altinn3Service.GetResourceListFromResourceRegistry(environmentName);
+            return Ok(result);
+        }
     }
 }

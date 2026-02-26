@@ -2,6 +2,7 @@ using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.IdentityModel.Tokens;
 using Models.altinn3Dtos;
@@ -18,11 +19,12 @@ public class Altinn3Service : IAltinn3Service
     private readonly ISsnTokenService _ssnTokenService;
     private readonly IRedactorProvider _redactorProvider;
     private readonly ILogger<IAltinn3Service> _logger;
+    private readonly IMemoryCache _cache;
 
     //temporary for altinn2 roles
     private readonly IAltinnApiService _altinn2Service;
 
-    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IAltinnApiService altinnApiService)
+    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IAltinnApiService altinnApiService, IMemoryCache cache)
     {
         _altinn2Service = altinnApiService;
         _logger = logger;
@@ -30,6 +32,7 @@ public class Altinn3Service : IAltinn3Service
         _client = altinn3Client;
         _ssnTokenService = ssnTokenService;
         _redactorProvider = redactorProvider;
+        _cache = cache;
         jsonOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -337,11 +340,55 @@ public class Altinn3Service : IAltinn3Service
                 roles[0].AuthorizedRoles = altinn2RolesList;
             }
 
-
-
+            //Sets resources to name to be more readable
+            var authorizedResources = roles[0].AuthorizedResources;
+            if (authorizedResources != null && authorizedResources.Count >= 1)
+            {
+                var resourceNames = await GetResourceNamesFromCodes(authorizedResources, environment);
+                if (resourceNames != null)
+                {
+                    roles[0].AuthorizedResources = resourceNames;
+                }
+            }
         }
         return roles;
     }
+
+    public async Task<List<ResourceDetailsDto>> GetResourceListFromResourceRegistry(string environmentName)
+    {
+        //Cache so we dont have to fetch list from resourceRegistry every call
+        return await _cache.GetOrCreateAsync($"resourceList_{environmentName}", async entry =>
+        {
+            //How long between each refresh call 
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+            var response = await _client.GetResourceListFromResourceRegistry(environmentName);
+            var resources = JsonSerializer.Deserialize<List<ResourceDetailsDto>>(response, jsonOptions) ?? throw new Exception("Error deserializing");
+            return resources;
+
+        }) ?? throw new Exception("Cache returned null");
+    }
+
+    public async Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName)
+    {
+        List<ResourceDetailsDto> resourceList = await GetResourceListFromResourceRegistry(environmentName);
+        List<string> resourceNames = [];
+        foreach (string resourceCode in resourceCodes)
+        {
+            var resource = resourceList.FirstOrDefault(r => r.Identifier == resourceCode);
+            string? resourceName = resource?.Title.FindFirstTitle();
+            if (resourceName != null)
+            {
+                resourceNames.Add(resourceName);
+            }
+            //Failsafe if it is not part of the registry
+            else
+            {
+                resourceNames.Add(resourceCode);
+            }
+        }
+        return resourceNames;
+    }
+
     private string getTypeFromValue(string value)
     {
         string trimmedValued = value.Replace(" ", "");
