@@ -365,9 +365,10 @@ public class Altinn3Service : IAltinn3Service
         foreach (string resourceCode in resourceCodes)
         {
             var resource = resourceList.FirstOrDefault(r => r.Identifier == resourceCode);
-            if (resource != null)
+            string? resourceName = resource?.Title.FindFirstTitle();
+            if (resourceName != null)
             {
-                resourceNames.Add(resource.Title.NB);
+                resourceNames.Add(resourceName);
             }
             //Failsafe if it is not part of the registry
             else
