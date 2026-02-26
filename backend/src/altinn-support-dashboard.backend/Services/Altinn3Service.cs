@@ -329,9 +329,9 @@ public class Altinn3Service : IAltinn3Service
                 List<string> altinn2RolesList = [];
                 foreach (Role role in altinn2Roles)
                 {
-                    if (!string.IsNullOrEmpty(role.RoleName) && role.RoleDefinitionCode != "Rights")
+                    if (!string.IsNullOrEmpty(role.RoleName))
                     {
-                        altinn2RolesList.Add(role.RoleName);
+                        altinn2RolesList.Add($"{role.RoleName}");
                     }
                 }
                 roles[0].AuthorizedRoles = altinn2RolesList;
