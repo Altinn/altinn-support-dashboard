@@ -101,10 +101,6 @@ export interface Role {
   roleDescription: string;
   roleDefinitionCode: string;
 }
-export interface SelectedOrg {
-  Name: string;
-  OrganizationNumber: string;
-}
 
 export interface NotificationAdresses {
   notificationAddressId: number;
