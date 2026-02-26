@@ -1,14 +1,17 @@
 {
-  "version": "4.2.0",
-  "releaseDate": "2026-02-09",
+  "version": "4.2.5",
+  "releaseDate": "2026-02-26",
   "changes": [
     {
-      "title": "Altinn 3 endepunkter og utvidet rollesøk",
-      "description": "I denne releasen så har vi skiftet ut alle altinn2 endepunkter med nye altinn3 endepunkter. Dette gjør det også mulig å se tilgangspakker og enkelttjenester en person har til et org",
+      "title": "Fiksing av diverese problemerø",
+      "description": "Siden sist oppdatering så har det kommet opp en del problem/bugs som kommer av integrasjon med de nye altinn3 api'ene. Mange av disse problemene skal være fikset, pluss en del livskvalitets endringer!",
       "details": [
-        "Byttet ut gamle endepunkter med nye altinn3 endepunkter",
-        "Mulig å se tilgangspakker og enkelttjenester",
-        "Mulig å sende melding med varsling"
+        "En org som er slettet vises nå som rødt i organisasjonsvelgeren, vises også i informasjonsiden",
+        "Mulighet for å søke og filtrere imellom de forskjellige rolletypene i rolledetaljsiden(tilgangspakker,altinn2 rolle,enkeltrettigheter)",
+        "OrgType vises nå på informasjonsiden",
+        "organisasjonslisten blir nå vist i alfabetisk rekkefølge",
+        "altinn2 listen viser om en person har 'single rights' igjen",
+        "Altinn3 ressurser(enkeltrettigheter) vises nå med navn og ikke kode, dette gjelder ikke altinn2 ressurser som også kan dukke opp her"
       ]
     }
   ]
