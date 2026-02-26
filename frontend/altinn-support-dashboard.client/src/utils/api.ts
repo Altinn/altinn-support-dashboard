@@ -43,27 +43,6 @@ export const fetchRolesForOrg = async (
   return Array.isArray(data) ? data : [data];
 };
 
-export const fetchSubunits = async (environment: string, orgNumber: string) => {
-  const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/brreg/${orgNumber}/underenheter`,
-  );
-
-  if (res.status === 404) {
-    return [];
-  }
-
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching Subunits");
-
-  const data = await res.json();
-  if (!data?._embedded?.underenheter) return [];
-  return data._embedded.underenheter.map((sub: Subunit) => ({
-    navn: sub.navn,
-    organisasjonsnummer: sub.organisasjonsnummer,
-    overordnetEnhet: sub.overordnetEnhet,
-    type: sub.organisasjonsform?.kode,
-  }));
-};
-
 export const fetchPersonalContacts = async (
   environment: string,
   orgNumber: string,
