@@ -6,7 +6,6 @@ import { useOrgDetails } from "../../../../hooks/hooks";
 import {
   Organization,
   PersonalContactAltinn3,
-  SelectedOrg,
 } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import ContactInfoCell from "./ContactInfoCell";

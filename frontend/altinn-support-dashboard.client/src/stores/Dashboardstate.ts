@@ -1,4 +1,4 @@
-import { Organization, SelectedOrg } from "../models/models";
+import { Organization } from "../models/models";
 
 export interface DashboardState {
   query: string;

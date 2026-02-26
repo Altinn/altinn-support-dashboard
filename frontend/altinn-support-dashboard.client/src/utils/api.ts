@@ -3,7 +3,6 @@ import {
   NotificationAdresses,
   OfficialContact,
   PersonalContactAltinn3,
-  Subunit,
 } from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 
