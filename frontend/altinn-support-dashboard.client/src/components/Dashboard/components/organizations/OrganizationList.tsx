@@ -57,6 +57,9 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
           }
           return false;
         })
+        .sort((a: Organization, b: Organization) =>
+          a.name.localeCompare(b.name),
+        )
         .map((org) => (
           <OrganizationCard
             selectedOrg={selectedOrg}
