@@ -41,28 +41,40 @@ public class Altinn3ApiClient : IAltinn3ApiClient
     //Used to get Uuids of orgs
     public async Task<string> GetOrganizationIdentifiers(List<string> orgNumbers, string environmentName)
     {
-
         var client = _clients[environmentName];
-        var query = HttpUtility.ParseQueryString(string.Empty);
-        //Have to set the list in a get request
-        foreach (string orgNumber in orgNumbers)
+        const int chunkSize = 40;
+        var allResults = new List<JsonElement>();
+
+        //have to do this because url becomes to long otherwise
+        foreach (var chunk in orgNumbers.Chunk(chunkSize))
         {
-            query.Add("orgs", orgNumber);
+            var query = HttpUtility.ParseQueryString(string.Empty);
+            foreach (string orgNumber in chunk)
+            {
+                query.Add("orgs", orgNumber);
+            }
+
+            var requestUrl = $"register/api/v1/parties/identifiers?{query}";
+            var response = await client.GetAsync(requestUrl);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                continue;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+
+            using var doc = JsonDocument.Parse(responseBody);
+            foreach (var element in doc.RootElement.EnumerateArray())
+            {
+                allResults.Add(element.Clone());
+            }
         }
 
-        var requestUrl = $"register/api/v1/parties/identifiers?{query}";
-        var response = await client.GetAsync(requestUrl);
-
-        var responseBody = await response.Content.ReadAsStringAsync();
-        if (response.StatusCode == HttpStatusCode.NotFound)
-        {
-            return string.Empty;
-        }
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
-        }
-        return responseBody;
+        return JsonSerializer.Serialize(allResults);
     }
 
     //used to get the partyInformation of a org
