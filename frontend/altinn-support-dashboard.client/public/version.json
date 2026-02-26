@@ -3,7 +3,7 @@
   "releaseDate": "2026-02-26",
   "changes": [
     {
-      "title": "Fiksing av diverese problemerø",
+      "title": "Fiksing av diverese problemer",
       "description": "Siden sist oppdatering så har det kommet opp en del problem/bugs som kommer av integrasjon med de nye altinn3 api'ene. Mange av disse problemene skal være fikset, pluss en del livskvalitets endringer!",
       "details": [
         "En org som er slettet vises nå som rødt i organisasjonsvelgeren, vises også i informasjonsiden",
