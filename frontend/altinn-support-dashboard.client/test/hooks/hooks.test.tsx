@@ -3,7 +3,6 @@ import { ReactNode } from "react";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import {
   useCurrentDateTime,
-  useOrgDetails,
   useOrgSearch,
   useRoles,
   useSsnFromToken,
@@ -392,4 +391,3 @@ describe("hooks", () => {
     });
   });
 });
-
