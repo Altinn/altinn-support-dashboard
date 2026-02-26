@@ -337,11 +337,47 @@ public class Altinn3Service : IAltinn3Service
                 roles[0].AuthorizedRoles = altinn2RolesList;
             }
 
-
-
+            //Sets resources to name to be more readable
+            var authorizedResources = roles[0].AuthorizedResources;
+            if (authorizedResources != null && authorizedResources.Count >= 1)
+            {
+                var resourceNames = await GetResourceNamesFromCodes(authorizedResources, environment);
+                if (resourceNames != null)
+                {
+                    roles[0].AuthorizedResources = resourceNames;
+                }
+            }
         }
         return roles;
     }
+
+    public async Task<List<ResourceDetailsDto>> GetResourceListFromResourceRegistry(string environmentName)
+    {
+        var response = await _client.GetResourceListFromResourceRegistry(environmentName);
+        var resources = JsonSerializer.Deserialize<List<ResourceDetailsDto>>(response, jsonOptions) ?? throw new Exception("Error deserializing");
+        return resources;
+    }
+
+    public async Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName)
+    {
+        List<ResourceDetailsDto> resourceList = await GetResourceListFromResourceRegistry(environmentName);
+        List<string> resourceNames = [];
+        foreach (string resourceCode in resourceCodes)
+        {
+            var resource = resourceList.FirstOrDefault(r => r.Identifier == resourceCode);
+            if (resource != null)
+            {
+                resourceNames.Add(resource.Title.NB);
+            }
+            //Failsafe if it is not part of the registry
+            else
+            {
+                resourceNames.Add(resourceCode);
+            }
+        }
+        return resourceNames;
+    }
+
     private string getTypeFromValue(string value)
     {
         string trimmedValued = value.Replace(" ", "");
