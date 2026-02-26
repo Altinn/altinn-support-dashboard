@@ -1,7 +1,10 @@
 export interface Organization {
   name: string;
   organizationNumber: string;
+  unitType: string;
+  isDeleted: boolean;
   headUnit?: Organization;
+  subUnits?: Organization[];
 }
 
 export interface PersonalContact {
@@ -37,16 +40,6 @@ export interface PersonalContactLink {
   signingLocked: boolean;
   signedByDefault: boolean;
   fileSize: number;
-}
-
-export interface Subunit {
-  navn: string;
-  organisasjonsnummer: string;
-  overordnetEnhet: string;
-  organisasjonsform?: organisasjonsform;
-}
-export interface organisasjonsform {
-  kode: string;
 }
 
 export interface ERRoles {
@@ -108,10 +101,6 @@ export interface Role {
   roleDescription: string;
   roleDefinitionCode: string;
 }
-export interface SelectedOrg {
-  Name: string;
-  OrganizationNumber: string;
-}
 
 export interface NotificationAdresses {
   notificationAddressId: number;
@@ -133,4 +122,3 @@ export interface PersonalContactAltinn3 {
   displayedSocialSecurityNumber?: string;
   ssnToken?: string;
 }
-

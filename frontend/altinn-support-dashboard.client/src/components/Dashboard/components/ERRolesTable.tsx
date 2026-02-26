@@ -3,20 +3,20 @@ import { formatDate } from "../utils/dateUtils";
 import { ERRolesSortField, SortDirection } from "../models/mainContentTypes";
 import { sortERRoles } from "../utils/contactUtils";
 import { useOrgDetails } from "../../../hooks/hooks";
-import { ERRoles, ErRoleTableItem, SelectedOrg } from "../../../models/models";
+import { ERRoles, ErRoleTableItem, Organization } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
 import { Table, Heading, Paragraph, Card } from "@digdir/designsystemet-react";
 import styles from "../styles/ERRolesTable.module.css";
 
 interface ERRolesTableProps {
-  selectedOrg: SelectedOrg;
+  selectedOrg: Organization;
 }
 
 const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
   const environment = useAppStore((state) => state.environment);
   const { ERolesQuery } = useOrgDetails(
     environment,
-    selectedOrg.OrganizationNumber,
+    selectedOrg.organizationNumber,
   );
   const roles = ERolesQuery.data;
 

@@ -5,14 +5,14 @@ import { RoleDetails } from "./RoleDetails";
 import ContactsSearchBar from "./contacts/ContactsSearchBar";
 import ContactsTable from "./contacts/ContactsTable";
 import { useOrgDetails } from "../../../hooks/hooks";
-import {  PersonalContactAltinn3, SelectedOrg } from "../../../models/models";
+import { Organization, PersonalContactAltinn3 } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
 import { Card } from "@digdir/designsystemet-react";
 import styles from "../styles/DetailedOrgView.module.css";
 import NotificationContactTable from "./contacts/NotificationContactTable";
 
 interface DetailedOrgViewProps {
-  selectedOrg: SelectedOrg | null;
+  selectedOrg: Organization | null;
 }
 
 const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
@@ -23,7 +23,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
 
   const { notificationAdressesQuery } = useOrgDetails(
     environment,
-    selectedOrg?.OrganizationNumber,
+    selectedOrg?.organizationNumber,
   );
   const handleClearSearch = () => {
     setSearchQuery("");
@@ -40,10 +40,12 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
         <div
           className={`${styles.orgDetails} ${selectedContact ? "full-width" : ""}`}
         >
-          <Heading className={styles.orgNumer}>
-            Org Nr: {selectedOrg.OrganizationNumber}
+          <Heading className={styles.orgInformation}>
+            <span>Org Nr: {selectedOrg.organizationNumber}</span>
+            <span>Type: {selectedOrg.unitType}</span>
+            <span>IsDeleted: {selectedOrg.isDeleted ? "true" : "false"}</span>
           </Heading>
-          <Heading className={styles.orgName}>{selectedOrg.Name}</Heading>
+          <Heading className={styles.orgName}>{selectedOrg.name}</Heading>
 
           {!selectedContact ? (
             <>
@@ -85,7 +87,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
           ) : (
             <RoleDetails
               selectedContact={selectedContact}
-              organizationNumber={selectedOrg.OrganizationNumber}
+              organizationNumber={selectedOrg.organizationNumber}
               onBack={() => {
                 setSelectedContact(null);
               }}
