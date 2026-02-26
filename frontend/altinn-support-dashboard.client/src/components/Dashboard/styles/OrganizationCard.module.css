@@ -30,7 +30,7 @@
   flex: 8;
 }
 .cardIsDeleted {
-  background-color: salmon;
+  background-color: rgb(250, 128, 114, 0.8);
 }
 
 .mainCard {

@@ -60,12 +60,10 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
       <Card
         data-color="neutral"
         variant={checkIsSelected(org.organizationNumber) ? "tinted" : "default"}
-        className={`${classes.card} ${classes.mainCard}`}
+        className={`${classes.card} ${classes.mainCard} ${org.isDeleted && classes.cardIsDeleted}`}
         onClick={() => setSelectedOrg(org)}
       >
-        <div
-          className={`${classes.cardInfoContainer} ${org.isDeleted && classes.cardIsDeleted}`}
-        >
+        <div className={`${classes.cardInfoContainer}`}>
           <Heading level={6} className={classes.cardHeader}>
             {org.name}
           </Heading>
