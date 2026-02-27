@@ -12,7 +12,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@azure/msal-browser": "^3.27.0",
+    "@azure/msal-browser": "^5.0.0",
     "@azure/msal-react": "^2.2.0",
     "@digdir/designsystemet": "^0.101.0",
     "@digdir/designsystemet-css": "^1.6.0",
