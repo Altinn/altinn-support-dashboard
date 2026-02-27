@@ -78,6 +78,8 @@ namespace AltinnSupportDashboard
                             configureClientDefinition.ClientSettings.ExhangeToAltinnToken = true;
                         });
 
+                    services.AddMemoryCache();
+
                     //Ansattporten
                     services.AddAnsattPortenAuthenticationAndAuthorization(hostContext.Configuration);
                     services.AddSingleton<IAuthorizationHandler, AltinnResourceHandler>();

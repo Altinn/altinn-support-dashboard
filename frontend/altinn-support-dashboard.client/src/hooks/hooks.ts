@@ -15,7 +15,6 @@ import {
   fetchPersonalContacts,
   fetchRolesForOrg,
   fetchSsnFromToken,
-  fetchSubunits,
 } from "../utils/api";
 import {
   CorrespondenceResponse,
@@ -60,29 +59,8 @@ export function useOrgSearch(environment: string, query: string) {
     enabled: !!query, // only run when query is non-empty
   });
 
-  const subunitQuery = useQuery({
-    queryKey: ["subunits", environment, query],
-    queryFn: async () => {
-      if (!orgQuery.data) return [];
-      const mainUnits = orgQuery.data.filter(
-        (org) => org.type !== "BEDR" && org.type !== "AAFY",
-      );
-      const all = await Promise.all(
-        mainUnits.map((org) =>
-          fetchSubunits(environment, org.organizationNumber),
-        ),
-      );
-      return all.flat();
-    },
-    enabled: orgQuery.isSuccess && !orgQuery.isFetching, // wait until fresh org data is available
-    staleTime: 2 * 60 * 1000, // fresh for 2 minutes
-    refetchOnWindowFocus: false,
-    retry: false,
-  });
-
   return {
     orgQuery,
-    subunitQuery,
   };
 }
 
