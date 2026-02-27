@@ -2,6 +2,7 @@ using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.IdentityModel.Tokens;
 using Models.altinn3Dtos;
@@ -18,11 +19,12 @@ public class Altinn3Service : IAltinn3Service
     private readonly ISsnTokenService _ssnTokenService;
     private readonly IRedactorProvider _redactorProvider;
     private readonly ILogger<IAltinn3Service> _logger;
+    private readonly IMemoryCache _cache;
 
     //temporary for altinn2 roles
     private readonly IAltinnApiService _altinn2Service;
 
-    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IAltinnApiService altinnApiService)
+    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IAltinnApiService altinnApiService, IMemoryCache cache)
     {
         _altinn2Service = altinnApiService;
         _logger = logger;
@@ -30,6 +32,7 @@ public class Altinn3Service : IAltinn3Service
         _client = altinn3Client;
         _ssnTokenService = ssnTokenService;
         _redactorProvider = redactorProvider;
+        _cache = cache;
         jsonOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -38,42 +41,17 @@ public class Altinn3Service : IAltinn3Service
     }
 
 
-    public async Task<PartyNameDto> GetOrganizationPartyNameAltinn3(string orgNumber, string environment)
-    {
-        if (!ValidationService.IsValidOrgNumber(orgNumber))
-        {
-            throw new ArgumentException("Orgnumber invalid. It has to be 9 digits long");
-        }
-
-        var json = await _client.GetOrganizationInfo(orgNumber, environment);
-        var result = string.IsNullOrEmpty(json) ? null : JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions);
-
-        if (result == null || string.IsNullOrEmpty(result.PartyNames[0].Name))
-        {
-            throw new Exception($"No data found for org with orgnumber: {orgNumber}");
-        }
-
-
-
-        return result.PartyNames[0];
-    }
-
-
     public async Task<Organization> GetOrganizationByOrgNoAltinn3(string orgNumber, string environment)
     {
-        PartyNameDto partyName = await GetOrganizationPartyNameAltinn3(orgNumber, environment);
+        List<Organization> organizationsResult = await GetOrganizationsByOrgNumbers([orgNumber], environment);
 
-        var organization = new Organization
-        {
-            OrganizationNumber = partyName.OrgNo,
-            Name = partyName.Name
-        };
+        var organization = organizationsResult[0];
 
         var breggResult = await _breggService.GetUnderenhet(orgNumber, environment);
         if (breggResult?.overordnetEnhet != null)
         {
-            PartyNameDto headUnitPartyName = await GetOrganizationPartyNameAltinn3(breggResult.overordnetEnhet, environment);
-            organization.HeadUnit = new Organization { OrganizationNumber = headUnitPartyName.OrgNo, Name = headUnitPartyName.Name };
+            List<Organization> headUnitResult = await GetOrganizationsByOrgNumbers([breggResult.overordnetEnhet], environment);
+            organization.HeadUnit = headUnitResult[0];
         }
         return organization;
     }
@@ -85,7 +63,69 @@ public class Altinn3Service : IAltinn3Service
 
 
         return organizations;
+    }
 
+    //Gets the identifiers of a list of orgs
+    public async Task<List<PartyIdentifierDto>> GetOrganizationsIdentifiers(List<string> orgNumbers, string environment)
+    {
+        var result = await _client.GetOrganizationIdentifiers(orgNumbers, environment);
+        var identifiers = JsonSerializer.Deserialize<List<PartyIdentifierDto>>(result, jsonOptions) ?? throw new Exception("Error deserializing");
+
+        return identifiers;
+    }
+    //get party info from organizationParty
+    public async Task<List<OrgPartyInfoDto>> GetOrganizationspartyInfo(List<int> partyIds, string environment)
+    {
+        var result = await _client.GetOrganizationsPartyInfoByPartyId(partyIds, environment);
+        var parties = JsonSerializer.Deserialize<List<OrgPartyInfoDto>>(result, jsonOptions) ?? throw new Exception("Error deserializing");
+        return parties;
+    }
+
+    public async Task<List<Organization>> GetOrganizationsByOrgNumbers(List<string> orgNumbers, string environment)
+    {
+        var identifiers = await GetOrganizationsIdentifiers(orgNumbers, environment);
+        var parties = await GetOrganizationspartyInfo(identifiers.Select((i) => i.PartyId).ToList(), environment);
+        List<Organization> organizations = [];
+
+        foreach (OrgPartyInfoDto party in parties)
+        {
+            Organization org = new Organization
+            {
+                OrganizationNumber = party.OrgNumber,
+                Name = party.Name,
+                IsDeleted = party.IsDeleted,
+                UnitType = party.UnitType,
+            };
+
+            if (party.ChildParties != null)
+            {
+                //ref to stop circular expression
+                Organization orgRef = new Organization
+                {
+                    OrganizationNumber = org.OrganizationNumber,
+                    Name = org.Name,
+                    IsDeleted = org.IsDeleted,
+                    UnitType = org.UnitType,
+                };
+                List<Organization> subunits = [];
+                foreach (OrgPartyInfoDto subUnitParty in party.ChildParties)
+                {
+
+                    Organization subUnit = new Organization
+                    {
+                        OrganizationNumber = subUnitParty.OrgNumber,
+                        Name = subUnitParty.Name,
+                        IsDeleted = subUnitParty.IsDeleted,
+                        UnitType = subUnitParty.UnitType,
+                        HeadUnit = orgRef
+                    };
+                    subunits.Add(subUnit);
+                }
+                org.SubUnits = subunits;
+            }
+            organizations.Add(org);
+        }
+        return organizations;
     }
 
     public async Task<List<Organization>> GetOrganizationsByPhoneAltinn3(string phonenumber, string environment)
@@ -95,7 +135,6 @@ public class Altinn3Service : IAltinn3Service
         var personalContacts = await GetPersonalContactsByPhoneAltinn3(strippedPhoneNumber, environment);
         var notificationAddesses = await GetNotificationAddressesByPhoneAltinn3(strippedPhoneNumber, environment);
         var organizations = await GetOrganizationsFromProfileAltinn3(personalContacts, notificationAddesses, environment);
-
         return organizations;
     }
 
@@ -120,39 +159,11 @@ public class Altinn3Service : IAltinn3Service
                 orgNumbers.Add(n.SourceOrgNumber);
             }
         }
-        List<PartyNameDto> partyNames = await GetPartyNamesByOrgAltinn3(orgNumbers, environment);
-        List<Organization> organizations = [];
-
-        foreach (PartyNameDto partyName in partyNames)
-        {
-            Organization newOrg = new Organization
-            {
-                OrganizationNumber = partyName.OrgNo,
-                Name = partyName.Name
-            };
-            organizations.Add(newOrg);
-        }
+        List<Organization> organizations = await GetOrganizationsByOrgNumbers(orgNumbers, environment);
         return organizations;
 
     }
 
-
-    public async Task<List<PartyNameDto>> GetPartyNamesByOrgAltinn3(List<string> orgNumbers, string environment)
-
-    {
-        foreach (string orgNumber in orgNumbers)
-        {
-            if (!ValidationService.IsValidOrgNumber(orgNumber))
-            {
-                throw new ArgumentException("Orgnumber invalid. It has to be 9 digits long");
-            }
-        }
-        var json = await _client.GetOrganizationsInfo(orgNumbers, environment);
-        if (string.IsNullOrEmpty(json)) return [];
-        var result = JsonSerializer.Deserialize<PartyNamesResponseDto>(json, jsonOptions) ?? throw new Exception("Error serializing result");
-
-        return result.PartyNames;
-    }
 
     public async Task<List<PersonalContactAltinn3>> GetPersonalContactsByOrgAltinn3(string orgNumber, string environment)
     {
@@ -321,19 +332,63 @@ public class Altinn3Service : IAltinn3Service
                 List<string> altinn2RolesList = [];
                 foreach (Role role in altinn2Roles)
                 {
-                    if (!string.IsNullOrEmpty(role.RoleName) && role.RoleDefinitionCode != "Rights")
+                    if (!string.IsNullOrEmpty(role.RoleName))
                     {
-                        altinn2RolesList.Add(role.RoleName);
+                        altinn2RolesList.Add($"{role.RoleName}");
                     }
                 }
                 roles[0].AuthorizedRoles = altinn2RolesList;
             }
 
-
-
+            //Sets resources to name to be more readable
+            var authorizedResources = roles[0].AuthorizedResources;
+            if (authorizedResources != null && authorizedResources.Count >= 1)
+            {
+                var resourceNames = await GetResourceNamesFromCodes(authorizedResources, environment);
+                if (resourceNames != null)
+                {
+                    roles[0].AuthorizedResources = resourceNames;
+                }
+            }
         }
         return roles;
     }
+
+    public async Task<List<ResourceDetailsDto>> GetResourceListFromResourceRegistry(string environmentName)
+    {
+        //Cache so we dont have to fetch list from resourceRegistry every call
+        return await _cache.GetOrCreateAsync($"resourceList_{environmentName}", async entry =>
+        {
+            //How long between each refresh call 
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+            var response = await _client.GetResourceListFromResourceRegistry(environmentName);
+            var resources = JsonSerializer.Deserialize<List<ResourceDetailsDto>>(response, jsonOptions) ?? throw new Exception("Error deserializing");
+            return resources;
+
+        }) ?? throw new Exception("Cache returned null");
+    }
+
+    public async Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName)
+    {
+        List<ResourceDetailsDto> resourceList = await GetResourceListFromResourceRegistry(environmentName);
+        List<string> resourceNames = [];
+        foreach (string resourceCode in resourceCodes)
+        {
+            var resource = resourceList.FirstOrDefault(r => r.Identifier == resourceCode);
+            string? resourceName = resource?.Title.FindFirstTitle();
+            if (resourceName != null)
+            {
+                resourceNames.Add(resourceName);
+            }
+            //Failsafe if it is not part of the registry
+            else
+            {
+                resourceNames.Add(resourceCode);
+            }
+        }
+        return resourceNames;
+    }
+
     private string getTypeFromValue(string value)
     {
         string trimmedValued = value.Replace(" ", "");

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { OrganizationCard } from "./OrganizationCard";
 import { useOrgSearch } from "../../../../hooks/hooks";
-import { SelectedOrg } from "../../../../models/models";
+import { Organization } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import classes from "../../styles/OrganizationList.module.css";
 import { showPopup } from "../../../Popup";
@@ -9,8 +9,8 @@ import { showPopup } from "../../../Popup";
 import { Skeleton, Alert, Heading } from "@digdir/designsystemet-react";
 
 interface OrganizationListProps {
-  setSelectedOrg: (SelectedOrg: SelectedOrg) => void;
-  selectedOrg: SelectedOrg | null;
+  setSelectedOrg: (SelectedOrg: Organization) => void;
+  selectedOrg: Organization | null;
   query: string;
 }
 
@@ -20,9 +20,8 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
   query,
 }) => {
   const environment = useAppStore((state) => state.environment);
-  const { orgQuery, subunitQuery } = useOrgSearch(environment, query);
+  const { orgQuery } = useOrgSearch(environment, query);
   const organizations = orgQuery.data ?? [];
-  const subUnits = subunitQuery.data ?? [];
 
   useEffect(() => {
     if (orgQuery.isError) {
@@ -52,23 +51,23 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
   return (
     <div className={classes.container}>
       {organizations
-        .filter((org) => {
-          // filter out subunits if parent is already included
-          if (
-            subUnits.some(
-              (sub) => sub.organisasjonsnummer === org.organizationNumber,
-            )
-          ) {
-            return false;
-          }
-          return true;
-        })
+        .filter(
+          (org: Organization) =>
+            !organizations.some((other) =>
+              other.subUnits?.some(
+                (sub: Organization) =>
+                  sub.organizationNumber === org.organizationNumber,
+              ),
+            ),
+        )
+        .sort((a: Organization, b: Organization) =>
+          a.name.localeCompare(b.name),
+        )
         .map((org) => (
           <OrganizationCard
             selectedOrg={selectedOrg}
             key={org.organizationNumber}
             org={org}
-            subUnits={subUnits}
             setSelectedOrg={setSelectedOrg}
           />
         ))}

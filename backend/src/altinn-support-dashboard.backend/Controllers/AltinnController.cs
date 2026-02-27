@@ -91,7 +91,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/altinn3/search")]
-        public async Task<IActionResult> SearchAltinn3 ([FromQuery] string query)
+        public async Task<IActionResult> SearchAltinn3([FromQuery] string query)
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -243,11 +243,11 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpPost("organizations/altinn3/organizations")]
-        public async Task<IActionResult> GetOrganizationsInfoAltinn3([FromBody] OrgNumbersRequestDto orgnumbers)
+        public async Task<IActionResult> GetOrganizationsAltinn3([FromBody] OrgNumbersRequestDto orgnumbers)
         {
             var data = orgnumbers.OrgNumbers;
 
-            var result = await _altinn3Service.GetPartyNamesByOrgAltinn3(data, environmentName);
+            var result = await _altinn3Service.GetOrganizationsByOrgNumbers(data, environmentName);
             return Ok(result);
         }
 
@@ -370,6 +370,27 @@ namespace AltinnSupportDashboard.Controllers
         {
             var result = await _altinn3Service.GetRolesAndRightsAltinn3(request, environmentName);
 
+            return Ok(result);
+        }
+
+        [HttpPost("organizations/altinn3/identifiers")]
+        public async Task<IActionResult> PostOrganizationsIdentifiers([FromBody] OrgNumbersRequestDto request)
+        {
+            var result = await _altinn3Service.GetOrganizationsIdentifiers(request.OrgNumbers, environmentName);
+            return Ok(result);
+        }
+
+        [HttpPost("organizations/altinn3/partyinfo")]
+        public async Task<IActionResult> PostOrganizationsPartyInfo([FromBody] OrgPartyInfoRequest partyIds)
+        {
+            var result = await _altinn3Service.GetOrganizationspartyInfo(partyIds.PartyIds, environmentName);
+            return Ok(result);
+        }
+
+        [HttpGet("resources")]
+        public async Task<IActionResult> GetResourcesFromResourceRegistry()
+        {
+            var result = await _altinn3Service.GetResourceListFromResourceRegistry(environmentName);
             return Ok(result);
         }
     }

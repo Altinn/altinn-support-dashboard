@@ -3,10 +3,6 @@ import { ERRoles } from "../../../src/models/models";
 import { fireEvent, render, screen } from "@testing-library/react";
 import ERRolesTable from "../../../src/components/Dashboard/components/ERRolesTable";
 
-
-
-
-
 vi.mock("../../../src/hooks/hooks", () => ({
   useOrgDetails: vi.fn(),
 }));
@@ -36,11 +32,13 @@ vi.mock("@digdir/designsystemet-react", () => ({
       Row: ({ children }: any) => <tr>{children}</tr>,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       HeaderCell: ({ children, onClick, sort, ...props }: any) => (
-        <th onClick={onClick} data-sort={sort} {...props}>{children}</th>
+        <th onClick={onClick} data-sort={sort} {...props}>
+          {children}
+        </th>
       ),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       Cell: ({ children, ...props }: any) => <td {...props}>{children}</td>,
-    }
+    },
   ),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Heading: ({ children, level, ...props }: any) => {
@@ -56,259 +54,262 @@ vi.mock("@digdir/designsystemet-react", () => ({
 
 const { useOrgDetails } = await import("../../../src/hooks/hooks");
 const { useAppStore } = await import("../../../src/stores/Appstore");
-const { sortERRoles } = await import("../../../src/components/Dashboard/utils/contactUtils");
+const { sortERRoles } =
+  await import("../../../src/components/Dashboard/utils/contactUtils");
 
+describe("ERRolesTable", () => {
+  const mockSelectedOrg = {
+    organizationNumber: "123456789",
+    name: "Test Org",
+    isDeleted: false,
+    unitType: "test",
+  };
 
-describe('ERRolesTable', () => {
-    const mockSelectedOrg = {
-        OrganizationNumber: "123456789",
-        Name: "Test Org",
-    };
-
-    const mockRoles: ERRoles[] = [
+  const mockRoles: ERRoles[] = [
+    {
+      type: { kode: "ERole", beskrivelse: "ERole" },
+      sistEndret: "2026-01-01",
+      roller: [
         {
-            type: { kode: "ERole", beskrivelse: "ERole" },
-            sistEndret: "2026-01-01",
-            roller: [
-                {
-                    type: { kode: "Admin", beskrivelse: "Admin" },
-                    person: {
-                        navn: { fornavn: "Test", mellomnavn: "", etternavn: "User" },
-                        erDoed: false,
-                    },
-                    fratraadt: false,
-                },
-            ],
+          type: { kode: "Admin", beskrivelse: "Admin" },
+          person: {
+            navn: { fornavn: "Test", mellomnavn: "", etternavn: "User" },
+            erDoed: false,
+          },
+          fratraadt: false,
         },
+      ],
+    },
+  ];
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useAppStore as any).mockReturnValue({ environment: "test" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useOrgDetails as any).mockReturnValue({
+      ERolesQuery: {
+        data: mockRoles,
+      },
+    });
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (sortERRoles as any).mockImplementation((roles: any) => roles);
+  });
+
+  it("should render ER-roller heading", () => {
+    render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
+    expect(screen.getByText("ER-roller")).toBeInTheDocument();
+  });
+
+  it("should render table headers", () => {
+    render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
+
+    expect(screen.getByText("Rolletype")).toBeInTheDocument();
+    expect(screen.getByText("Person/Virksomhet")).toBeInTheDocument();
+    expect(screen.getByText("Dato Endret")).toBeInTheDocument();
+    expect(screen.getByText("Status")).toBeInTheDocument();
+  });
+
+  it("should render person role data", () => {
+    render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
+
+    expect(screen.getByText("Admin")).toBeInTheDocument();
+    expect(screen.getByText("Test User")).toBeInTheDocument();
+    expect(screen.getByText("Formatted: 2026-01-01")).toBeInTheDocument();
+    expect(screen.getByText("Aktiv")).toBeInTheDocument();
+  });
+
+  it("should render company role data", () => {
+    const company: ERRoles[] = [
+      {
+        type: { kode: "ERole", beskrivelse: "ERole" },
+        sistEndret: "2026-01-01",
+        roller: [
+          {
+            type: { kode: "Admin", beskrivelse: "Admin" },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            person: undefined as any,
+            enhet: {
+              navn: ["Test Company"],
+              organisasjonsnummer: "987654321",
+              organisasjonsform: { kode: "AS", beskrivelse: "Aksjeselskap" },
+              erSlettet: false,
+            },
+            fratraadt: false,
+          },
+        ],
+      },
     ];
 
-    beforeEach(() => {
-        vi.clearAllMocks();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (useAppStore as any).mockReturnValue({ environment: "test" });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (useOrgDetails as any).mockReturnValue({
-            ERolesQuery: {
-                data: mockRoles,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useOrgDetails as any).mockReturnValue({
+      ERolesQuery: {
+        data: company,
+      },
+    });
+
+    render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
+
+    expect(screen.getByText("Test Company (987654321)")).toBeInTheDocument();
+  });
+
+  it('should display "Fratrådt" status for inactive roles', () => {
+    const inactiveRole: ERRoles[] = [
+      {
+        type: { kode: "ERole", beskrivelse: "ERole" },
+        sistEndret: "2026-01-01",
+        roller: [
+          {
+            type: { kode: "Admin", beskrivelse: "Admin" },
+            person: {
+              navn: { fornavn: "Inactive", mellomnavn: "", etternavn: "User" },
+              erDoed: false,
             },
-        });
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (sortERRoles as any).mockImplementation((roles: any) => roles);
+            fratraadt: true,
+          },
+        ],
+      },
+    ];
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useOrgDetails as any).mockReturnValue({
+      ERolesQuery: {
+        data: inactiveRole,
+      },
     });
 
-    it('should render ER-roller heading', () => {
-        render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
-        expect(screen.getByText('ER-roller')).toBeInTheDocument();
-    });
+    render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
 
-    it('should render table headers', () => {
-        render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
+    expect(screen.getByText("Fratrådt")).toBeInTheDocument();
+  });
 
-        expect(screen.getByText('Rolletype')).toBeInTheDocument();
-        expect(screen.getByText('Person/Virksomhet')).toBeInTheDocument();
-        expect(screen.getByText('Dato Endret')).toBeInTheDocument();
-        expect(screen.getByText('Status')).toBeInTheDocument();
-    });
-
-    it('should render person role data', () => {
-        render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
-
-        expect(screen.getByText('Admin')).toBeInTheDocument();
-        expect(screen.getByText('Test User')).toBeInTheDocument();
-        expect(screen.getByText('Formatted: 2026-01-01')).toBeInTheDocument();
-        expect(screen.getByText('Aktiv')).toBeInTheDocument();
-    });
-
-    it('should render company role data', () => {
-        const company: ERRoles[] = [ 
-            {
-                type: { kode: "ERole", beskrivelse: "ERole" },
-                sistEndret: "2026-01-01",
-                roller: [
-                    {
-                        type: { kode: "Admin", beskrivelse: "Admin" },
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        person: undefined as any,
-                        enhet: {
-                            navn: ["Test Company"],
-                            organisasjonsnummer: "987654321",
-                            organisasjonsform: {kode: "AS", beskrivelse: "Aksjeselskap"},
-                            erSlettet: false,
-                        },
-                        fratraadt: false,
-                    },
-                ],
+  it('should display "Død" for deceased persons', () => {
+    const deceasedRole: ERRoles[] = [
+      {
+        type: { kode: "ERole", beskrivelse: "ERole" },
+        sistEndret: "2026-01-01",
+        roller: [
+          {
+            type: { kode: "Admin", beskrivelse: "Admin" },
+            person: {
+              navn: { fornavn: "Deceased", mellomnavn: "", etternavn: "User" },
+              erDoed: true,
             },
-        ];
+            fratraadt: false,
+          },
+        ],
+      },
+    ];
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (useOrgDetails as any).mockReturnValue({
-            ERolesQuery: {
-                data: company,
-            },
-        });
-
-        render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
-
-        expect(screen.getByText('Test Company (987654321)')).toBeInTheDocument();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useOrgDetails as any).mockReturnValue({
+      ERolesQuery: {
+        data: deceasedRole,
+      },
     });
 
-    it('should display "Fratrådt" status for inactive roles', () => {
-        const inactiveRole: ERRoles[] = [
-            {
-                type: { kode: "ERole", beskrivelse: "ERole" },
-                sistEndret: "2026-01-01",
-                roller: [
-                    {
-                        type: { kode: "Admin", beskrivelse: "Admin" },
-                        person: {
-                            navn: { fornavn: "Inactive", mellomnavn: "", etternavn: "User" },
-                            erDoed: false,
-                        },
-                        fratraadt: true,
-                    },
-                ],
+    render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
+
+    expect(screen.getByText("Aktiv (Død)")).toBeInTheDocument();
+  });
+
+  it('should display "Slettet" for deleted companies', () => {
+    const deletedCompanyRole: ERRoles[] = [
+      {
+        type: { kode: "ERole", beskrivelse: "ERole" },
+        sistEndret: "2026-01-01",
+        roller: [
+          {
+            type: { kode: "Admin", beskrivelse: "Admin" },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            person: undefined as any,
+            enhet: {
+              navn: ["Deleted Company"],
+              organisasjonsnummer: "987654321",
+              organisasjonsform: { kode: "AS", beskrivelse: "Aksjeselskap" },
+              erSlettet: true,
             },
-        ];
+            fratraadt: false,
+          },
+        ],
+      },
+    ];
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (useOrgDetails as any).mockReturnValue({
-            ERolesQuery: {
-                data: inactiveRole,
-            },
-        });
-
-        render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
-
-        expect(screen.getByText('Fratrådt')).toBeInTheDocument();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useOrgDetails as any).mockReturnValue({
+      ERolesQuery: {
+        data: deletedCompanyRole,
+      },
     });
 
-    it('should display "Død" for deceased persons', () => {
-        const deceasedRole: ERRoles[] = [
-            {
-                type: { kode: "ERole", beskrivelse: "ERole" },
-                sistEndret: "2026-01-01",
-                roller: [
-                    {
-                        type: { kode: "Admin", beskrivelse: "Admin" },
-                        person: {
-                            navn: { fornavn: "Deceased", mellomnavn: "", etternavn: "User" },
-                            erDoed: true,
-                        },
-                        fratraadt: false,
-                    },
-                ],
-            },
-        ];
+    render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (useOrgDetails as any).mockReturnValue({
-            ERolesQuery: {
-                data: deceasedRole,
-            },
-        });
+    expect(screen.getByText("Aktiv (Slettet)")).toBeInTheDocument();
+  });
 
-        render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
-
-        expect(screen.getByText('Aktiv (Død)')).toBeInTheDocument();
+  it('should display "Ingen roller funnet" when there are no roles', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useOrgDetails as any).mockReturnValue({
+      ERolesQuery: {
+        data: [],
+      },
     });
 
-    it('should display "Slettet" for deleted companies', () => {
-        const deletedCompanyRole: ERRoles[] = [
-            {
-                type: { kode: "ERole", beskrivelse: "ERole" },
-                sistEndret: "2026-01-01",
-                roller: [
-                    {
-                        type: { kode: "Admin", beskrivelse: "Admin" },
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        person: undefined as any,
-                        enhet: {
-                            navn: ["Deleted Company"],
-                            organisasjonsnummer: "987654321",
-                            organisasjonsform: {kode: "AS", beskrivelse: "Aksjeselskap"},
-                            erSlettet: true,
-                        },
-                        fratraadt: false,
-                    },
-                ],
-            },
-        ];
+    render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (useOrgDetails as any).mockReturnValue({
-            ERolesQuery: {
-                data: deletedCompanyRole,
-            },
-        });
+    expect(screen.getByText("Ingen roller funnet")).toBeInTheDocument();
+  });
 
-        render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
-
-        expect(screen.getByText('Aktiv (Slettet)')).toBeInTheDocument();
+  it('should display "Ingen roller funnet" when ERoles is undefined', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useOrgDetails as any).mockReturnValue({
+      ERolesQuery: {
+        data: undefined,
+      },
     });
 
-    it('should display "Ingen roller funnet" when there are no roles', () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (useOrgDetails as any).mockReturnValue({
-            ERolesQuery: {
-                data: [],
-            },
-        });
+    render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
 
-        render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
+    expect(screen.getByText("Ingen roller funnet")).toBeInTheDocument();
+  });
 
-        expect(screen.getByText('Ingen roller funnet')).toBeInTheDocument();
-    });
+  it("should handle sorting by type", async () => {
+    render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
 
-    it('should display "Ingen roller funnet" when ERoles is undefined', () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (useOrgDetails as any).mockReturnValue({
-            ERolesQuery: {
-                data: undefined,
-            },
-        });
+    const typeHeader = screen.getByText("Rolletype");
+    await fireEvent.click(typeHeader);
 
-        render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
+    expect(sortERRoles).toHaveBeenCalledWith(
+      expect.any(Array),
+      "type",
+      "ascending",
+    );
+  });
 
-        expect(screen.getByText('Ingen roller funnet')).toBeInTheDocument();
-    });
+  it("should cycle through sort directions on repeated clicks", async () => {
+    render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
 
-    it('should handle sorting by type', async () => {
-        render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
+    const typeHeader = screen.getByText("Rolletype");
+    await fireEvent.click(typeHeader);
+    expect(sortERRoles).toHaveBeenCalledWith(
+      expect.any(Array),
+      "type",
+      "ascending",
+    );
 
-        const typeHeader = screen.getByText('Rolletype');
-        await fireEvent.click(typeHeader);
-        
-        expect(sortERRoles).toHaveBeenCalledWith(
-            expect.any(Array),
-            'type',
-            'ascending'
-        );
-    });
+    await fireEvent.click(typeHeader);
+    expect(sortERRoles).toHaveBeenCalledWith(
+      expect.any(Array),
+      "type",
+      "descending",
+    );
 
-    it('should cycle through sort directions on repeated clicks', async () => {
-        render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
+    await fireEvent.click(typeHeader);
+    expect(sortERRoles).toHaveBeenCalledWith(
+      expect.any(Array),
+      null,
+      undefined,
+    );
+  });
+});
 
-        const typeHeader = screen.getByText('Rolletype');
-        await fireEvent.click(typeHeader);
-        expect(sortERRoles).toHaveBeenCalledWith(
-            expect.any(Array),
-            'type',
-            'ascending'
-        );
-
-        await fireEvent.click(typeHeader);
-        expect(sortERRoles).toHaveBeenCalledWith(
-            expect.any(Array),
-            'type',
-            'descending'
-        );
-
-        await fireEvent.click(typeHeader);
-        expect(sortERRoles).toHaveBeenCalledWith(
-            expect.any(Array),
-            null,
-            undefined
-        );
-    });
-})

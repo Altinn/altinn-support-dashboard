@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text;
 using System.Net;
 using Models.altinn3Dtos;
+using System.Web;
 
 public class Altinn3ApiClient : IAltinn3ApiClient
 {
@@ -37,56 +38,52 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         _clients.Add(environmentName, client);
     }
 
-
-    //endpoint which gives the name of a spesific organization
-    public async Task<string> GetOrganizationInfo(string orgNumber, string environmentName)
+    //Used to get Uuids of orgs
+    public async Task<string> GetOrganizationIdentifiers(List<string> orgNumbers, string environmentName)
     {
         var client = _clients[environmentName];
+        const int chunkSize = 40;
+        var allResults = new List<JsonElement>();
 
-        var requestUrl = $"register/api/v1/parties/nameslookup";
-
-        var payload = new
+        //have to do this because url becomes to long otherwise
+        foreach (var chunk in orgNumbers.Chunk(chunkSize))
         {
-            parties = new[]
+            var query = HttpUtility.ParseQueryString(string.Empty);
+            foreach (string orgNumber in chunk)
             {
-            new {OrgNo = orgNumber}
+                query.Add("orgs", orgNumber);
             }
-        };
 
-        string jsonPayload = JsonSerializer.Serialize(payload);
+            var requestUrl = $"register/api/v1/parties/identifiers?{query}";
+            var response = await client.GetAsync(requestUrl);
+            var responseBody = await response.Content.ReadAsStringAsync();
 
-        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                continue;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
 
-        var response = await client.PostAsync(requestUrl, content);
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        if (response.StatusCode == HttpStatusCode.NotFound)
-        {
-            return string.Empty;
+            using var doc = JsonDocument.Parse(responseBody);
+            foreach (var element in doc.RootElement.EnumerateArray())
+            {
+                allResults.Add(element.Clone());
+            }
         }
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
-        }
-        return responseBody;
+
+        return JsonSerializer.Serialize(allResults);
     }
 
-    //Gets the org information for multiple orgs
-    public async Task<string> GetOrganizationsInfo(List<string> orgNumbers, string environmentName)
-
+    //used to get the partyInformation of a org
+    public async Task<string> GetOrganizationsPartyInfoByPartyId(List<int> partyIds, string environmentName)
     {
         var client = _clients[environmentName];
+        var requestUrl = "register/api/v1/parties/partylist?fetchSubUnits=true";
 
-        var requestUrl = $"register/api/v1/parties/nameslookup";
-
-
-        var payload = new
-        {
-            parties = orgNumbers.Select(orgNumber => new { OrgNo = orgNumber })
-
-        };
-
-        string jsonPayload = JsonSerializer.Serialize(payload);
+        string jsonPayload = JsonSerializer.Serialize(partyIds);
 
         var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
@@ -103,6 +100,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         return responseBody;
     }
+
     public async Task<string> GetPersonalContactsByOrg(string orgNumber, string environmentName)
     {
         try
@@ -277,7 +275,16 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
         }
         return responseBody;
+    }
 
+    public async Task<string> GetResourceListFromResourceRegistry(string environmentName)
+    {
+        var client = _clients[environmentName];
+        var requestUrl = "/resourceregistry/api/v1/resource/resourcelist";
+        var response = await client.GetAsync(requestUrl);
 
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        return responseBody;
     }
 }
