@@ -38,6 +38,12 @@ public class CorrespondenceService : ICorrespondenceService
                 newRecipients.Add(newRecipient);
                 continue;
             }
+            if (ValidationService.IsValidEmail(r))
+            {
+                string newRecipient = $"urn:altinn:person:idporten-email:{r}";
+                newRecipients.Add(newRecipient);
+                continue;
+            }
             throw new BadRequestException($"Recipient:{r} is not a valid org or ssn");
         }
 
