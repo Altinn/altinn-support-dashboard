@@ -1,22 +1,37 @@
-import { Button, Heading, Card } from "@digdir/designsystemet-react";
+import {
+  Button,
+  Heading,
+  Card,
+  Select,
+  Label,
+} from "@digdir/designsystemet-react";
 import styles from "../styles/RoleDetails.module.css";
 import RoleTable from "../../ManualRoleSearch/RoleTable";
-import { PersonalContactAltinn3 } from "../../../models/models";
+import { Organization, PersonalContactAltinn3 } from "../../../models/models";
+import { useState } from "react";
 
 interface RoleDetailsProps {
   selectedContact: PersonalContactAltinn3;
-  organizationNumber: string;
+  selectedOrg: Organization;
   onBack: () => void;
 }
 
 export const RoleDetails: React.FC<RoleDetailsProps> = ({
   selectedContact,
-  organizationNumber,
+  selectedOrg,
   onBack,
 }) => {
   const handleBack = () => {
     onBack();
   };
+  const [orgNoFocus, setOrgNoFocus] = useState<string>(
+    selectedOrg.organizationNumber,
+  );
+
+  const optionCount =
+    1 +
+    (selectedOrg.headUnit ? 1 : 0) +
+    (selectedOrg.subUnits?.length ?? 0);
 
   return (
     <Card data-color="neutral" className={styles.Container}>
@@ -30,10 +45,33 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
       >
         Tilbake til oversikt
       </Button>
-      <RoleTable
-        subject={selectedContact.ssnToken}
-        reportee={organizationNumber}
-      />
+      <Label>Organinisasjon</Label>
+      <Select
+        className={styles.select}
+        value={orgNoFocus}
+        onChange={(e) => setOrgNoFocus(e.target.value)}
+        disabled={optionCount === 1}
+      >
+        <Select.Option value={selectedOrg.organizationNumber}>
+          {selectedOrg.organizationNumber}
+        </Select.Option>
+        {selectedOrg.headUnit && (
+          <Select.Option value={selectedOrg.headUnit.organizationNumber}>
+            {selectedOrg.headUnit.organizationNumber} (hovedenhet)
+          </Select.Option>
+        )}
+        {selectedOrg.subUnits &&
+          selectedOrg.subUnits.map((sub: Organization) => (
+            <Select.Option
+              key={sub.organizationNumber}
+              value={sub.organizationNumber}
+            >
+              {sub.organizationNumber} (underenhet)
+            </Select.Option>
+          ))}
+      </Select>
+
+      <RoleTable subject={selectedContact.ssnToken} reportee={orgNoFocus} />
     </Card>
   );
 };

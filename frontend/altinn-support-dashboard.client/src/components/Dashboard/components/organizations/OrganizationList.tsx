@@ -51,12 +51,15 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
   return (
     <div className={classes.container}>
       {organizations
-        .filter((org: Organization) => {
-          if (org.headUnit == null) {
-            return true;
-          }
-          return false;
-        })
+        .filter(
+          (org: Organization) =>
+            !organizations.some((other) =>
+              other.subUnits?.some(
+                (sub: Organization) =>
+                  sub.organizationNumber === org.organizationNumber,
+              ),
+            ),
+        )
         .sort((a: Organization, b: Organization) =>
           a.name.localeCompare(b.name),
         )
