@@ -56,7 +56,7 @@ public class Altinn3ServiceTests
                 MaskinportenSettings = new MaskinportenSettings
                 { }
             },
-            Correspondence = new CorrespondenceResourceType { DefaultResourceId = "default", ConfidentialityResourceId = "confident" }
+            Correspondence = new CorrespondenceResourceType { DefaultResourceId = "default", ConfidentialityResourceId = "confident", SelfIdentifiedResourceId = "self" }
         });
         mockHttpClient.Setup(x => x.CreateClient(It.IsAny<string>()))
             .Returns(new HttpClient());
