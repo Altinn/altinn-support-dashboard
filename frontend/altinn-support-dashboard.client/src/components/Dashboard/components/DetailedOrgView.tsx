@@ -87,7 +87,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
           ) : (
             <RoleDetails
               selectedContact={selectedContact}
-              organizationNumber={selectedOrg.organizationNumber}
+              selectedOrg={selectedOrg}
               onBack={() => {
                 setSelectedContact(null);
               }}
