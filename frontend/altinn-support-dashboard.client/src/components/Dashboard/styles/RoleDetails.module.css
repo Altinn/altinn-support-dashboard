@@ -12,3 +12,9 @@
   min-width: unset;
   min-height: unset;
 }
+
+.select {
+  box-shadow: none;
+  outline: none;
+  margin-bottom: 0.5rem;
+}
