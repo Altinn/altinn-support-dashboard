@@ -13,9 +13,12 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'npm run dev',
+    command: 'npx vite --host',
     url: 'https://localhost:5173',
     ignoreHTTPSErrors: true,
     reuseExistingServer: !process.env.CI,
+    env: {
+      NODE_ENV: 'test',
+    },
   },
 });
