@@ -72,7 +72,7 @@ jobs:
         uses: daun/playwright-report-summary@v3
         with:
           report-file: frontend/altinn-support-dashboard.client/playwright-results.json
-          comment-file: "Playwright Test Results"
+          comment-title: "Playwright Test Results"
 
       - uses: actions/upload-artifact@v4
         with:
