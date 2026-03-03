@@ -51,6 +51,7 @@ export const TopSearchBarTextField: React.FC<Props> = ({
         onClick={handleSearch}
         variant="tertiary"
         className={styles.searchButton}
+        data-testid="search-button"
       >
         <Search />
       </Button>
