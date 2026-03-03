@@ -9,7 +9,7 @@ export default defineConfig({
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
   workers: isCI ? 1 : undefined,
-  reporter: 'html',
+  reporter: isCI ? [['html'], ['json']] : 'html',
   use: {
     baseURL: baseURL,
     ignoreHTTPSErrors: true,

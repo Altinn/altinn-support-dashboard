@@ -64,6 +64,15 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
         working-directory: ./frontend/altinn-support-dashboard.client
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-results.json
+
+      - name: Post Playwright Results
+        if: always()
+        uses: daun/playwright-report-summary@v3
+        with:
+          report-file: frontend/altinn-support-dashboard.client/playwright-results.json
+          comment-file: "Playwright Test Results"
 
       - uses: actions/upload-artifact@v4
         with:
