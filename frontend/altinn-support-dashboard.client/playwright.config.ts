@@ -7,13 +7,13 @@ export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
   forbidOnly: isCI,
-  retries: isCI ? 2 : 0,
-  workers: isCI ? 1 : undefined,
+  retries: isCI ? 1 : 0,
+  workers: isCI ? 2 : undefined,
   reporter: 'html',
   use: {
     baseURL: baseURL,
     ignoreHTTPSErrors: true,
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
   },
   webServer: {
     command: 'npx vite --host',
