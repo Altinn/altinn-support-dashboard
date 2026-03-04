@@ -6,10 +6,6 @@ test.describe("DashboardPage", () => {
         await page.evaluate(() => {
             localStorage.clear();
             sessionStorage.clear();
-            localStorage.setItem("app-storage", JSON.stringify({
-                state: { environment: "TT02", isDarkMode: false },
-                version: 0
-            }));
         });
         //This is so the versiondialog doesn't block the tests, as it is set to show on first visit. The version is not relevant for these tests, so we can just set it to a value.
         await page.evaluate(async () => {
