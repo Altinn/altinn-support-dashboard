@@ -44,6 +44,9 @@ public class CorrespondenceClient : ICorrespondenceClient
 
                 form.Add(new StringContent(resourceTypes.ConfidentialityResourceId.ToString()), "correspondence.resourceid");
                 break;
+            case "selfIdentified":
+                form.Add(new StringContent(resourceTypes.SelfIdentifiedResourceId.ToString()), "correspondence.resourceid");
+                break;
             default:
                 throw new BadRequestException($"ResourceType {correspondenceData.Correspondence.ResourceType} not valid");
         }

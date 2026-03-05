@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Textfield, Button, Search } from "@digdir/designsystemet-react";
 import styles from "./styles/TopSearchBarTextfield.module.css";
-import { SelectedOrg } from "../../models/models";
+import { Organization } from "../../models/models";
 
 type Props = {
   query: string;
   setQuery: (query: string) => void;
-  setSelectedOrg: (selectedOrg: SelectedOrg | null) => void;
+  setSelectedOrg: (selectedOrg: Organization | null) => void;
 };
 
 export const TopSearchBarTextField: React.FC<Props> = ({

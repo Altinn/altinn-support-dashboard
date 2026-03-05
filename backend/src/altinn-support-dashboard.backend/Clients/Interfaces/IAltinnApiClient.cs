@@ -1,9 +1,5 @@
-
-
-
 public interface IAltinnApiClient
 {
-
     Task<string> GetOrganizationInfo(string orgNumber, string environmentName);
     Task<string> GetOrganizationsByPhoneNumber(string phoneNumber, string environmentName);
     Task<string> GetOrganizationsByEmail(string email, string environmentName);
