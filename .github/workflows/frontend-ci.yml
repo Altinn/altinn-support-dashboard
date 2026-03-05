@@ -57,23 +57,36 @@ jobs:
           recreate: true
           path: "code-coverage-results.md"
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@baa11fbfe1d6520db94683bd5c7a3818018e4309 # v5
+        with:
+          dotnet-version: '10.x'
+
       - name: Start backend
         working-directory: ./backend/src/altinn-support-dashboard.backend
         run: dotnet run &
         env:
-          Environments__TT02__MaskinportenSettings__ClientId: ${{ secrets.TT02_MASKINPORTEN_CLIENT_ID }}
-          Environments__TT02__MaskinportenSettings__Scope: ${{ secrets.TT02_MASKINPORTEN_SCOPE }}
-          Environments__TT02__MaskinportenSettings__EncodedJwk: ${{ secrets.TT02_MASKINPORTEN_ENCODED_JWK }}
+          Environments__TT02__MaskinportenSettings__ClientId: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__CLIENTID }}
+          Environments__TT02__MaskinportenSettings__Scope: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__SCOPE }}
+          Environments__TT02__MaskinportenSettings__EncodedJwk: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__ENCODEDJWK }}
           Environments__TT02__MaskinportenSettings__Environment: test
-          Environments__TT02__ApiKey: ${{ secrets.TT02_API_KEY }}
-          Environments__TT02__Ocp_Apim_Subscription_Key: ${{ secrets.TT02_OCP_APIM_KEY }}
+          Environments__TT02__ApiKey: ${{ secrets.CONFIGURATION__TT02__APIKEY }}
+          Environments__TT02__Ocp_Apim_Subscription_Key: ${{ secrets.CONFIGURATION__TT02__OCP_APIM_SUBSCRIPTION_KEY }}
+
+          #Same values for PROD, just so startup don't crash
+          Environments__Production__MaskinportenSettings__ClientId: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__CLIENTID}}
+          Environments__Production__MaskinportenSettings__Scope: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__SCOPE}}
+          Environments__Production__MaskinportenSettings__EncodedJwk: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__ENCODEDJWK }}
+          Environments__Production__MaskinportenSettings__Environment: test
+          Environments__Production__ApiKey: ${{ secrets.CONFIGURATION__TT02__APIKEY }}
+          Environments__Production__Ocp_Apim_Subscription_Key: ${{ secrets.CONFIGURATION__TT02__OCP_APIM_SUBSCRIPTION_KEY}}
           FeatureManagement__Ansattporten: "false"
 
       - name: Wait for backend to be ready
         run: |
           echo "Waiting for backend..."
           for i in $(seq 1 30); do
-            if curl -s -o /dev/null -w "%{http_code}" http://localhost:5237 | grep -qE "200|404"; then
+            if curl -s http://localhost:5237/swagger/index.html > /dev/null 2>&1; then
               echo "Backend is ready!"
               break
             fi
