@@ -4,7 +4,7 @@ import InformationDialogContent from "./InformationDialogContent";
 import styles from "./styles/InformationDialogBox.module.css";
 
 interface InformationDialogBoxProps {
-  dialogRef: React.RefObject<HTMLDialogElement>;
+  dialogRef: React.RefObject<HTMLDialogElement | null>;
 }
 
 const InformationDialogBox: React.FC<InformationDialogBoxProps> = ({
@@ -20,4 +20,3 @@ const InformationDialogBox: React.FC<InformationDialogBoxProps> = ({
   );
 };
 export default InformationDialogBox;
-
