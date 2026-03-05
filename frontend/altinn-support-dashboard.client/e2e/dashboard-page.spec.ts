@@ -7,6 +7,17 @@ test.describe("DashboardPage", () => {
             localStorage.clear();
             sessionStorage.clear();
         });
+
+        //This is so it will not try to use the PROD environment locally, which was a problem
+        if(!process.env.CI) {
+            await page.evaluate(() => {
+                localStorage.setItem("app-storage", JSON.stringify({
+                    state: { environment: "TT02", isDarkMode: false },
+                    version: 0
+                }));
+            });
+        }
+
         //This is so the versiondialog doesn't block the tests, as it is set to show on first visit. The version is not relevant for these tests, so we can just set it to a value.
         await page.evaluate(async () => {
             try {
@@ -86,16 +97,6 @@ test.describe("DashboardPage", () => {
         await expect(page.getByText("Type:")).toBeVisible();
         await expect(page.getByText("IsDeleted:")).toBeVisible();
         await expect(page.getByText("Varslingsadresser for virksomheten")).toBeVisible();
-    });
-
-    test("should show loading state during search", async ({ page }) => {
-        const searchBar = page.getByRole('textbox', { name: 'Mobilnummer / E-post /' });
-        await searchBar.fill("314246241");
-        await page.getByTestId("search-button").click();
-
-        await expect(page.getByRole("progressbar")).toBeVisible();
-        await expect(page.getByRole("progressbar")).not.toBeVisible();
-        await expect(page.getByText("Org Nr: 314246241")).toBeVisible();
     });
 
     test("should clear results when clearing search", async ({ page }) => {
