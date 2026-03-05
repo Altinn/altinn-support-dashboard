@@ -20,6 +20,11 @@ export default defineConfig({
     url: baseURL,
     ignoreHTTPSErrors: true,
     reuseExistingServer: !isCI,
-    ...(isCI && { env: { NODE_ENV: 'test' } }),
+    ...(isCI && { 
+      env: { 
+        NODE_ENV: 'test' ,
+        ASPNETCORE_URLS: 'http://localhost:5237',
+      } 
+    }),
   },
 });

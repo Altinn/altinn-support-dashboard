@@ -64,22 +64,22 @@ jobs:
 
       - name: Start backend
         working-directory: ./backend/src/altinn-support-dashboard.backend
-        run: dotnet run &
+        run: dotnet run  --launch-profile http &
         env:
-          Environments__TT02__MaskinportenSettings__ClientId: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__CLIENTID }}
-          Environments__TT02__MaskinportenSettings__Scope: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__SCOPE }}
-          Environments__TT02__MaskinportenSettings__EncodedJwk: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__ENCODEDJWK }}
-          Environments__TT02__MaskinportenSettings__Environment: test
-          Environments__TT02__ApiKey: ${{ secrets.CONFIGURATION__TT02__APIKEY }}
-          Environments__TT02__Ocp_Apim_Subscription_Key: ${{ secrets.CONFIGURATION__TT02__OCP_APIM_SUBSCRIPTION_KEY }}
+          Configuration__TT02__MaskinportenSettings__ClientId: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__CLIENTID }}
+          Configuration__TT02__MaskinportenSettings__Scope: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__SCOPE }}
+          Configuration__TT02__MaskinportenSettings__EncodedJwk: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__ENCODEDJWK }}
+          Configuration__TT02__MaskinportenSettings__Environment: test
+          Configuration__TT02__ApiKey: ${{ secrets.CONFIGURATION__TT02__APIKEY }}
+          Configuration__TT02__Ocp_Apim_Subscription_Key: ${{ secrets.CONFIGURATION__TT02__OCP_APIM_SUBSCRIPTION_KEY }}
 
           #Same values for PROD, just so startup don't crash
-          Environments__Production__MaskinportenSettings__ClientId: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__CLIENTID}}
-          Environments__Production__MaskinportenSettings__Scope: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__SCOPE}}
-          Environments__Production__MaskinportenSettings__EncodedJwk: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__ENCODEDJWK }}
-          Environments__Production__MaskinportenSettings__Environment: test
-          Environments__Production__ApiKey: ${{ secrets.CONFIGURATION__TT02__APIKEY }}
-          Environments__Production__Ocp_Apim_Subscription_Key: ${{ secrets.CONFIGURATION__TT02__OCP_APIM_SUBSCRIPTION_KEY}}
+          Configuration__Production__MaskinportenSettings__ClientId: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__CLIENTID}}
+          Configuration__Production__MaskinportenSettings__Scope: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__SCOPE}}
+          Configuration__Production__MaskinportenSettings__EncodedJwk: ${{ secrets.CONFIGURATION__TT02__MASKINPORTENSETTINGS__ENCODEDJWK }}
+          Configuration__Production__MaskinportenSettings__Environment: test
+          Configuration__Production__ApiKey: ${{ secrets.CONFIGURATION__TT02__APIKEY }}
+          Configuration__Production__Ocp_Apim_Subscription_Key: ${{ secrets.CONFIGURATION__TT02__OCP_APIM_SUBSCRIPTION_KEY}}
           FeatureManagement__Ansattporten: "false"
 
       - name: Wait for backend to be ready
