@@ -1,5 +1,5 @@
 // utils.test.ts
-import { describe, it, expect, beforeEach, vi, beforeAll, afterAll, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import {
   getBaseUrl,
   authorizedFetch,
