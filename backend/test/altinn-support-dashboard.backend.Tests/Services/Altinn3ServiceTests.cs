@@ -246,7 +246,7 @@ public class Altinn3ServiceTests
         Assert.Equal("urn:altinn:organization:identifier-no", request.Type);
     }
     [Fact]
-    public async Task GetRolesAndRightsAltinn3_ThrowsException_WhenResponseIsNull()
+    public async Task GetRolesAndRightsAltinn3_ReturnsEmptyList_WhenResponseIsNull()
     {
         var request = new RolesAndRightsRequest
         {
@@ -258,8 +258,8 @@ public class Altinn3ServiceTests
             .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
             .ReturnsAsync("null");
 
-        await Assert.ThrowsAsync<Exception>(() =>
-            _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02"));
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+        Assert.Empty(result);
     }
 
 }

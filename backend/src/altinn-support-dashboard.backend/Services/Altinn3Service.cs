@@ -323,7 +323,10 @@ public class Altinn3Service : IAltinn3Service
         List<RolesAndRightsDto> roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
 
         //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
-        var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value.Replace(" ", ""), rolesAndRights.PartyFilter[0].Value.Replace(" ", ""), environment);
+        var partyFilterValue = rolesAndRights.PartyFilter.Count > 0 ? rolesAndRights.PartyFilter[0].Value.Replace(" ", "") : null;
+        var altinn2Roles = partyFilterValue != null
+            ? await _altinn2Service.GetPersonRoles(rolesAndRights.Value.Replace(" ", ""), partyFilterValue, environment)
+            : null;
         if (altinn2Roles != null)
         {
             List<string> altinn2RolesList = [];
