@@ -1,17 +1,13 @@
 {
-  "version": "4.2.5",
-  "releaseDate": "2026-02-26",
+  "version": "4.2.6",
+  "releaseDate": "2026-03-05",
   "changes": [
     {
-      "title": "Fiksing av diverese problemer",
-      "description": "Siden sist oppdatering så har det kommet opp en del problem/bugs som kommer av integrasjon med de nye altinn3 api'ene. Mange av disse problemene skal være fikset, pluss en del livskvalitets endringer!",
+      "title": "småfiksing av diverse problemer",
+      "description": "Har fikset diverse småproblemer og lagt til muligheten til å se roller en person har i under/overenheten i rolledetalj vinduet",
       "details": [
-        "En org som er slettet vises nå som rødt i organisasjonsvelgeren, vises også i informasjonsiden",
-        "Mulighet for å søke og filtrere imellom de forskjellige rolletypene i rolledetaljsiden(tilgangspakker,altinn2 rolle,enkeltrettigheter)",
-        "OrgType vises nå på informasjonsiden",
-        "organisasjonslisten blir nå vist i alfabetisk rekkefølge",
-        "altinn2 listen viser om en person har 'single rights' igjen",
-        "Altinn3 ressurser(enkeltrettigheter) vises nå med navn og ikke kode, dette gjelder ikke altinn2 ressurser som også kan dukke opp her"
+        "fikset rolleproblem",
+        "lagt til funksjonalitet for å se roller en person har til under/overenheter"
       ]
     }
   ]
