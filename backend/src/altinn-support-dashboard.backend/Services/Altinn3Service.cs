@@ -320,26 +320,27 @@ public class Altinn3Service : IAltinn3Service
         }
 
         var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
-        if (string.IsNullOrEmpty(result)) return [];
-        var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+        List<RolesAndRightsDto> roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
 
         //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
+        var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value.Replace(" ", ""), rolesAndRights.PartyFilter[0].Value.Replace(" ", ""), environment);
+        if (altinn2Roles != null)
+        {
+            List<string> altinn2RolesList = [];
+            foreach (Role role in altinn2Roles)
+            {
+                if (!string.IsNullOrEmpty(role.RoleName))
+                {
+                    altinn2RolesList.Add($"{role.RoleName}");
+                }
+            }
+            if (roles.Count == 0)
+                roles.Add(new RolesAndRightsDto { });
+            roles[0].AuthorizedRoles = altinn2RolesList;
+        }
+
         if (roles.Count >= 1)
         {
-            var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value.Replace(" ", ""), rolesAndRights.PartyFilter[0].Value.Replace(" ", ""), environment);
-            if (altinn2Roles != null)
-            {
-                List<string> altinn2RolesList = [];
-                foreach (Role role in altinn2Roles)
-                {
-                    if (!string.IsNullOrEmpty(role.RoleName))
-                    {
-                        altinn2RolesList.Add($"{role.RoleName}");
-                    }
-                }
-                roles[0].AuthorizedRoles = altinn2RolesList;
-            }
-
             //Sets resources to name to be more readable
             var authorizedResources = roles[0].AuthorizedResources;
             if (authorizedResources != null && authorizedResources.Count >= 1)
