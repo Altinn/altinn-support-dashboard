@@ -1,5 +1,5 @@
 // utils.test.ts
-import { describe, it, expect, beforeEach, vi, beforeAll, afterAll, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import {
   getBaseUrl,
   authorizedFetch,
@@ -26,37 +26,19 @@ describe("Utils tests", () => {
   });
 
   describe("getBaseUrl", () => {
-    const originalLocation = window.location;
+    it("should return base API URL without environment", () => {
+    expect(getBaseUrl()).toBe("/api");
+  });
 
-    beforeAll(() => {
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: {
-          ...originalLocation,
-          hostname: "localhost",
-        } as unknown as Location,
-      });
-    });
-    afterAll(() => {
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: originalLocation,
-      });
-    });
+  it("should return environment-specific URL", () => {
+    expect(getBaseUrl("TT02")).toBe("/api/TT02");
+    expect(getBaseUrl("PROD")).toBe("/api/Production");
+  });
 
-    it("should return local dev URL if localhost", () => {
-      expect(getBaseUrl()).toContain(":5237/api");
-    });
-
-    it("should return environment-specific URL", () => {
-      expect(getBaseUrl("TT02")).toContain("/api/TT02");
-      expect(getBaseUrl("PROD")).toContain("/api/Production");
-    });
-
-    it("should return base URL for other environments", () => {
-      expect(getBaseUrl("DEV")).toContain("/api");
-      expect(getBaseUrl("DEV")).not.toContain("/DEV");
-    })
+  it("should return base URL for other environments", () => {
+    expect(getBaseUrl("DEV")).toBe("/api");
+    expect(getBaseUrl("DEV")).not.toContain("/DEV");
+  });
   });
 
   describe("getFormattedDateTime", () => {

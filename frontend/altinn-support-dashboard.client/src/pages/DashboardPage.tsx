@@ -20,6 +20,7 @@ export const DashboardPage: React.FC = () => {
         onClick={() => dialogRef.current?.showModal()}
         className={styles.infoButton}
         variant="secondary"
+        data-testid="info-button"
       >
         <InformationIcon />
       </Button>
