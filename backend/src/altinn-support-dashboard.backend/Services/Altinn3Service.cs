@@ -316,6 +316,7 @@ public class Altinn3Service : IAltinn3Service
 
         foreach (PartyFilter party in rolesAndRights.PartyFilter)
         {
+            party.Value = party.Value.Trim();
             party.Type = getTypeFromValue(party.Value);
         }
 
