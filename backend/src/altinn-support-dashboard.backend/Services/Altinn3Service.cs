@@ -308,7 +308,7 @@ public class Altinn3Service : IAltinn3Service
 
         if (string.IsNullOrWhiteSpace(ssn))
         {
-            ssn = rolesAndRights.Value.Trim(); //If the subject isn't a token, use it as is
+            ssn = rolesAndRights.Value.Replace(" ", ""); //If the subject isn't a token, use it as is
         }
 
         rolesAndRights.Value = ssn;
@@ -316,30 +316,35 @@ public class Altinn3Service : IAltinn3Service
 
         foreach (PartyFilter party in rolesAndRights.PartyFilter)
         {
+            party.Value = party.Value.Replace(" ", "");
             party.Type = getTypeFromValue(party.Value);
         }
 
         var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
-        if (string.IsNullOrEmpty(result)) return [];
-        var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+        List<RolesAndRightsDto> roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
 
         //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
+        var partyFilterValue = rolesAndRights.PartyFilter.Count > 0 ? rolesAndRights.PartyFilter[0].Value.Replace(" ", "") : null;
+        var altinn2Roles = partyFilterValue != null
+            ? await _altinn2Service.GetPersonRoles(rolesAndRights.Value.Replace(" ", ""), partyFilterValue, environment)
+            : null;
+        if (altinn2Roles != null)
+        {
+            List<string> altinn2RolesList = [];
+            foreach (Role role in altinn2Roles)
+            {
+                if (!string.IsNullOrEmpty(role.RoleName))
+                {
+                    altinn2RolesList.Add($"{role.RoleName}");
+                }
+            }
+            if (roles.Count == 0)
+                roles.Add(new RolesAndRightsDto { });
+            roles[0].AuthorizedRoles = altinn2RolesList;
+        }
+
         if (roles.Count >= 1)
         {
-            var altinn2Roles = await _altinn2Service.GetPersonRoles(rolesAndRights.Value.Replace(" ", ""), rolesAndRights.PartyFilter[0].Value.Replace(" ", ""), environment);
-            if (altinn2Roles != null)
-            {
-                List<string> altinn2RolesList = [];
-                foreach (Role role in altinn2Roles)
-                {
-                    if (!string.IsNullOrEmpty(role.RoleName))
-                    {
-                        altinn2RolesList.Add($"{role.RoleName}");
-                    }
-                }
-                roles[0].AuthorizedRoles = altinn2RolesList;
-            }
-
             //Sets resources to name to be more readable
             var authorizedResources = roles[0].AuthorizedResources;
             if (authorizedResources != null && authorizedResources.Count >= 1)
