@@ -17,7 +17,7 @@ export const fetchAuthDetails = async (): Promise<authDetails> => {
     const data = (await res.json()) as authDetails;
 
     return data;
-  } catch (err) {
+  } catch {
     return {
       isLoggedIn: false,
       name: "",
