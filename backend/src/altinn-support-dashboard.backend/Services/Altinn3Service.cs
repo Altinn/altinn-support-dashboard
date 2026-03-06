@@ -308,7 +308,7 @@ public class Altinn3Service : IAltinn3Service
 
         if (string.IsNullOrWhiteSpace(ssn))
         {
-            ssn = rolesAndRights.Value.Trim(); //If the subject isn't a token, use it as is
+            ssn = rolesAndRights.Value.Replace(" ", ""); //If the subject isn't a token, use it as is
         }
 
         rolesAndRights.Value = ssn;
@@ -316,6 +316,7 @@ public class Altinn3Service : IAltinn3Service
 
         foreach (PartyFilter party in rolesAndRights.PartyFilter)
         {
+            party.Value = party.Value.Replace(" ", "");
             party.Type = getTypeFromValue(party.Value);
         }
 
