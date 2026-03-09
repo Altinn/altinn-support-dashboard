@@ -181,4 +181,14 @@ test.describe("DashboardPage", () => {
 
         expect(rowsAfter).toBeLessThanOrEqual(rowsBefore);
     });
+
+    test("should show loading state during search", async ({ page }) => {
+        const searchBar = page.getByRole('textbox', { name: 'Mobilnummer / E-post /' });
+        await searchBar.fill("314246241");
+        await page.getByTestId("search-button").click();
+
+        await expect(page.getByRole("progressbar")).toBeVisible();
+
+        await expect(page.getByText("Org Nr: 314246241")).toBeVisible();
+    });
 })
