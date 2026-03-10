@@ -1,29 +1,9 @@
 /* eslint-disable */
 export function getBaseUrl(environment?: string): string {
-  const apiHost = window.location.hostname;
-
-  // Determine if this is local development
-  const localDev =
-    typeof process !== "undefined" && process.env.REACT_APP_LOCAL_DEV
-      ? process.env.REACT_APP_LOCAL_DEV === "true" ||
-        process.env.REACT_APP_LOCAL_DEV === "1"
-      : window.location.hostname === "localhost";
-
-  // Set protocol based on environment
-  const protocol = "https:";
-
-  // Port for local development
-  const portSegment = localDev ? ":5237" : "";
-
-  let baseUrl = "";
-
   if (environment === "TT02" || environment === "PROD") {
-    baseUrl = `${protocol}//${apiHost}${portSegment}/api/${environment === "TT02" ? "TT02" : "Production"}`;
-  } else {
-    baseUrl = `${protocol}//${apiHost}${portSegment}/api`;
+    return `/api/${environment === "TT02" ? "TT02" : "Production"}`;
   }
-
-  return baseUrl;
+  return "/api";
 }
 export async function authorizedFetch(
   url: string,
