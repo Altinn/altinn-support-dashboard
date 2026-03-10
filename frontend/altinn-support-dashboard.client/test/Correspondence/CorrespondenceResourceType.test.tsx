@@ -1,7 +1,8 @@
-import { describe, expect, vi } from "vitest";
+import { describe, expect, vi, beforeEach, it } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import CorrespondenceResourceType from "../../src/components/Correspondence/CorrespondenceResourceType";
 import { setLocalStorageValue } from "../../src/components/ManualRoleSearch/utils/storageUtils";
+import '@testing-library/jest-dom';
 
 
 vi.mock("../../src/components/ManualRoleSearch/utils/storageUtils", () => ({
