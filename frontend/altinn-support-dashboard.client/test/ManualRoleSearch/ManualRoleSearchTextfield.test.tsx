@@ -14,7 +14,8 @@ describe('ManualRoleSearchTextfield', () => {
                 onChange = {vi.fn()}
             />
         );
-        expect(screen.getByLabelText('Test')).toBeInTheDocument();
+        expect(screen.getByText('Test')).toBeInTheDocument();
+        expect(screen.getByRole('textbox')).toBeInTheDocument();
     });
 
     it('renders with correct value', () => {
@@ -36,7 +37,7 @@ describe('ManualRoleSearchTextfield', () => {
                 onChange = {vi.fn()}
             />
         );
-        expect(screen.getByLabelText('Test label')).toBeInTheDocument();
+        expect(screen.getByText('Test label')).toBeInTheDocument();
         expect(screen.getByDisplayValue('Test value')).toBeInTheDocument();
     });
 
@@ -52,7 +53,7 @@ describe('ManualRoleSearchTextfield', () => {
             />
         );
 
-        const input = screen.getByLabelText('Change Test');
+        const input = screen.getByRole('textbox');
         await user.type(input, 'New Value'); //Mocks typing 'New Value' into the input field
 
         expect(mockOnChange).toHaveBeenCalledTimes(9); // Called for everytime a character is typed, here 9 characters (8 letters and one space)

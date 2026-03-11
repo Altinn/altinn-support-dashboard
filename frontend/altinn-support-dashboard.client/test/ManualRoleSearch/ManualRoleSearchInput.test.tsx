@@ -26,8 +26,8 @@ describe("ManualRoleSearchInput", () => {
       />,
     );
 
-    expect(screen.getByLabelText("Tilganger fra")).toBeInTheDocument();
-    expect(screen.getByLabelText("Tilganger til")).toBeInTheDocument();
+    expect(screen.getByText("Tilganger fra")).toBeInTheDocument();
+    expect(screen.getByText("Tilganger til")).toBeInTheDocument();
   });
 
   it("renders the Søk button", () => {
@@ -69,7 +69,7 @@ describe("ManualRoleSearchInput", () => {
       />,
     );
 
-    const input = screen.getByLabelText("Tilganger fra");
+    const input = screen.getAllByRole("textbox")[0];
     await user.clear(input);
     await user.type(input, "123");
 
@@ -86,7 +86,7 @@ describe("ManualRoleSearchInput", () => {
       />,
     );
 
-    const input = screen.getByLabelText("Tilganger til");
+    const input = screen.getAllByRole("textbox")[1];
     await user.clear(input);
     await user.type(input, "456");
 
