@@ -133,7 +133,7 @@ export const useSsnFromToken = (environment: string, ssnToken?: string) => {
   return useQuery({
     queryKey: ["ssn", environment, ssnToken],
     queryFn: () => fetchSsnFromToken(environment, ssnToken!),
-    enabled: false && !!ssnToken, // only run if ssnToken exists and manuallyenabled
+    enabled: !!ssnToken, // only run if ssnToken exists and manuallyenabled
     staleTime: 0, // always refetch to ensure ssn is fresh
   });
 };
