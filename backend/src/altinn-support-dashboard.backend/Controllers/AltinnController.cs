@@ -6,7 +6,7 @@ using Security;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Compliance.Redaction;
 using Models.altinn3Dtos;
-using Microsoft.ApplicationInsights;
+using altinn_support_dashboard.Server.Services.Interfaces;
 
 namespace AltinnSupportDashboard.Controllers
 {
@@ -29,7 +29,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
     {
-        public AltinnTT02Controller(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, TelemetryClient telemetryClient, IConfiguration configuration) : base(altinnApiService, altinn3Service, "TT02", ssnTokenService, telemetryClient, configuration)
+        public AltinnTT02Controller(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration) : base(altinnApiService, altinn3Service, "TT02", ssnTokenService, telemetryService, configuration)
         {
         }
 
@@ -41,7 +41,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/Production/serviceowner")]
     public class AltinnProductionController : AltinnBaseController
     {
-        public AltinnProductionController(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, TelemetryClient telemetryClient, IConfiguration configuration) : base(altinnApiService, altinn3Service, "Production", ssnTokenService, telemetryClient, configuration)
+        public AltinnProductionController(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration) : base(altinnApiService, altinn3Service, "Production", ssnTokenService, telemetryService, configuration)
         {
         }
     }
@@ -57,16 +57,16 @@ namespace AltinnSupportDashboard.Controllers
         protected readonly IAltinn3Service _altinn3Service;
         protected string environmentName;
         protected readonly ISsnTokenService _ssnTokenService;
-        protected readonly TelemetryClient _telemetryClient;
+        protected readonly ITelemetryService _telemetryService;
         private readonly IConfiguration _configuration;
 
-        public AltinnBaseController(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, string environmentName, ISsnTokenService ssnTokenService, TelemetryClient telemetryClient, IConfiguration configuration)
+        public AltinnBaseController(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, string environmentName, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration)
         {
             _altinn3Service = altinn3Service;
             this.environmentName = environmentName;
             _altinnApiService = altinnApiService;
             _ssnTokenService = ssnTokenService;
-            _telemetryClient = telemetryClient;
+            _telemetryService = telemetryService;
             _configuration = configuration;
         }
 
@@ -371,7 +371,7 @@ namespace AltinnSupportDashboard.Controllers
             var trackedEnvironments = _configuration.GetSection("LoggingConfiguration:TrackedEnvironments").Get<string[]>() ?? ["Production"];
             if (trackedEnvironments.Contains(environmentName))
             {
-                _telemetryClient.TrackEvent("ssnUnmasked", new Dictionary<string, string>
+                _telemetryService.TrackEvent("ssnUnmasked", new Dictionary<string, string>
                 {
                     { "userId", User.Identity?.Name ?? "unknown" },
                     { "environment", environmentName }

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.ApplicationInsights;
+using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
@@ -87,7 +87,7 @@ public static class AnsattportenExtensions
 
                     options.Events.OnTokenValidated = context =>
                     {
-                        var telemetry = context.HttpContext.RequestServices.GetRequiredService<TelemetryClient>();
+                        var telemetry = context.HttpContext.RequestServices.GetRequiredService<ITelemetryService>();
 
                         var name = context?.Principal?.Identity?.Name ?? "unknown";
 
