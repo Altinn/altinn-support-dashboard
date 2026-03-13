@@ -136,7 +136,7 @@ jobs:
         run: npx playwright test
         working-directory: ./frontend/altinn-support-dashboard.client
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: steps.e2e-changes.outputs.e2e == 'true'
         with:
           name: playwright-report
