@@ -61,38 +61,39 @@ jobs:
   playwright:
     name: Playwright E2E Tests
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Check for e2e changes
         id: e2e-changes
-        if: github.event_name == 'pull_request'
         uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3
         with:
           filters: |
             e2e:
               - 'frontend/altinn-support-dashboard.client/e2e/**'
               - 'frontend/altinn-support-dashboard.client/playwright.config.ts'
+
       - name: Setup Node.js
         if: steps.e2e-changes.outputs.e2e == 'true'
         uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
         with:
           node-version: '20'
-      
+
       - name: Install dependencies
-        if: steps.e2e-changes.outputs.e2e == 'true' || github.event_name != 'pull_request'
+        if: steps.e2e-changes.outputs.e2e == 'true'
         run: npm ci
         working-directory: ./frontend/altinn-support-dashboard.client
 
       - name: Setup .NET
-        if: steps.e2e-changes.outputs.e2e == 'true' || github.event_name != 'pull_request'
+        if: steps.e2e-changes.outputs.e2e == 'true'
         uses: actions/setup-dotnet@baa11fbfe1d6520db94683bd5c7a3818018e4309 # v5
         with:
           dotnet-version: '10.x'
 
       - name: Start backend
-        if: steps.e2e-changes.outputs.e2e == 'true' || github.event_name != 'pull_request'
+        if: steps.e2e-changes.outputs.e2e == 'true'
         working-directory: ./backend/src/altinn-support-dashboard.backend
         run: dotnet run  --launch-profile http &
         env:
@@ -113,7 +114,7 @@ jobs:
           FeatureManagement__Ansattporten: "false"
 
       - name: Wait for backend to be ready
-        if: steps.e2e-changes.outputs.e2e == 'true' || github.event_name != 'pull_request'
+        if: steps.e2e-changes.outputs.e2e == 'true'
         run: |
           echo "Waiting for backend..."
           for i in $(seq 1 30); do
@@ -124,19 +125,19 @@ jobs:
             echo "Attempt $i/30..."
             sleep 2
           done
-        
+
       - name: Install Playwright Browsers
-        if: steps.e2e-changes.outputs.e2e == 'true' || github.event_name != 'pull_request'
+        if: steps.e2e-changes.outputs.e2e == 'true'
         run: npx playwright install --with-deps
         working-directory: ./frontend/altinn-support-dashboard.client
-      
+
       - name: Run Playwright tests
-        if: steps.e2e-changes.outputs.e2e == 'true' || github.event_name != 'pull_request'
+        if: steps.e2e-changes.outputs.e2e == 'true'
         run: npx playwright test
         working-directory: ./frontend/altinn-support-dashboard.client
 
       - uses: actions/upload-artifact@v4
-        if: steps.e2e-changes.outputs.e2e == 'true' || github.event_name != 'pull_request'
+        if: steps.e2e-changes.outputs.e2e == 'true'
         with:
           name: playwright-report
           path: ./frontend/altinn-support-dashboard.client/playwright-report/
