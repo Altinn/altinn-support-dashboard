@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Utils;
 using Security;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Compliance.Redaction;
 using Models.altinn3Dtos;
-using altinn_support_dashboard.Server.Services.Interfaces;
 
 namespace AltinnSupportDashboard.Controllers
 {
