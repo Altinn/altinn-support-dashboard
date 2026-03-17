@@ -5,6 +5,10 @@ using System.Text;
 
 namespace altinn_support_dashboard.Server.Services;
 
+/// <summary>
+/// Tracks user activity events to Application Insights for audit logging and suspicious behaviour detection.
+/// Sensitive values such as SSNs are hashed with SHA-256 before being logged.
+/// </summary>
 public class TelemetryService : ITelemetryService
 {
     private readonly TelemetryClient _telemetryClient;
