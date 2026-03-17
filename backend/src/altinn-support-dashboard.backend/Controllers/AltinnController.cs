@@ -371,11 +371,11 @@ namespace AltinnSupportDashboard.Controllers
             var trackedEnvironments = _configuration.GetSection("LoggingConfiguration:TrackedEnvironments").Get<string[]>() ?? ["Production"];
             if (trackedEnvironments.Contains(environmentName))
             {
-                _telemetryService.TrackEvent("ssnUnmasked", new Dictionary<string, string>
-                {
-                    { "userId", User.Identity?.Name ?? "unknown" },
-                    { "environment", environmentName }
-                });
+                _telemetryService.TrackSsnUnmasked(
+                    User.Identity?.Name ?? "unknown",
+                    environmentName,
+                    ssn
+                );
             }
 
             return Ok(new { socialSecurityNumber = ssn });
