@@ -14,12 +14,6 @@ public class TelemetryService : ITelemetryService
 
     public void TrackEvent(string eventName, IDictionary<string, string>? properties = null)
     {
-        var props = properties != null
-            ? new Dictionary<string, string>(properties)
-            : new Dictionary<string, string>();
-
-        props["timestamp"] = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
-
-        _telemetryClient.TrackEvent(eventName, props);
+        _telemetryClient.TrackEvent(eventName, properties);
     }
 }
