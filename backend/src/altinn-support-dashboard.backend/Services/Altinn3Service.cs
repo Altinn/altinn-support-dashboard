@@ -430,12 +430,14 @@ public class Altinn3Service : IAltinn3Service
             var result = await _client.GetRolesAndRightsAltinn3(request, environment);
             var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
 
-            if(roles.Count >= 1 &&
-                roles[0].AuthorizedAccessPackages != null &&
-                roles[0].AuthorizedAccessPackages.Any(p => 
-                    p.Equals("Hovedadministrator", StringComparison.OrdinalIgnoreCase)))
+            if (roles.Count >= 1)
             {
-                hovedadmins.Add(contact.DisplayedSocialSecurityNumber ?? "");
+
+                if (roles[0].AuthorizedAccessPackages?.Any(p => 
+                    p.Equals("Hovedadministrator", StringComparison.OrdinalIgnoreCase)) == true)
+                {
+                    hovedadmins.Add(contact.DisplayedSocialSecurityNumber ?? "");
+                }
             }
         }
 
