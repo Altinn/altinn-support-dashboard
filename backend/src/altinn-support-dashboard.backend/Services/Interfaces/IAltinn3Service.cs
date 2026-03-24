@@ -25,6 +25,8 @@ public interface IAltinn3Service
     Task<List<ResourceDetailsDto>> GetResourceListFromResourceRegistry(string environmentName);
     Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName);
 
+    Task<List<string>> GetHovedadministrator(string orgNumber, string environment);
+
 }
 
 

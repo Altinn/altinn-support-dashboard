@@ -131,3 +131,16 @@ export const fetchNotificationAddresses = async (
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
 };
+
+export const fetchHovedadministrator = async (
+  environment: string,
+  orgNumber: string,
+) : Promise<string[]> => {
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/${orgNumber}/hovedadministrator`,
+  );
+  if (res.status === 404) return [];
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching Hovedadministrator");
+
+  return await res.json();
+}

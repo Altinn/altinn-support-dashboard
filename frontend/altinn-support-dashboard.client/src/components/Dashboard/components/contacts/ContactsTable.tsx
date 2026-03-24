@@ -28,10 +28,12 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
   >(null);
 
   const environment = useAppStore((state) => state.environment);
-  const { contactsQuery } = useOrgDetails(
+  const { contactsQuery, hovedadminQuery} = useOrgDetails(
     environment,
     selectedOrg?.organizationNumber,
   );
+  const hovedadmins = hovedadminQuery.data ?? [];
+
 
   const filteredContacts = filterContacts(
     contactsQuery.data || [],
@@ -43,6 +45,10 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
     sortField,
     sortDirection,
   );
+
+  console.log("hovedadminQuery status:", hovedadminQuery.status);
+  console.log("hovedadmins:", hovedadmins);
+  console.log("first contact ssnToken:", sortedContacts[0]?.ssnToken);
 
   const handleSort = (field: keyof PersonalContactAltinn3) => {
     if (field === sortField) {
@@ -109,7 +115,9 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
             sortedContacts.map((contact, index) => (
               <Table.Row key={`${contact.nationalIdentityNumber}-${index}`}>
                 <Table.Cell className={classes.tableCell}>
-                  {contact.name}
+                  {hovedadmins.includes(contact.displayedSocialSecurityNumber ?? "")
+                    ? <strong>{contact.name}</strong>
+                  : contact.name}
                 </Table.Cell>
                 <SsnCell contact={contact} environment={environment} />
                 <Table.Cell className={classes.tableCell}>

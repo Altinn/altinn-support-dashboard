@@ -408,4 +408,38 @@ public class Altinn3Service : IAltinn3Service
         throw new Exception("Not a valid format, needs to be either a orgnumber or ssn");
     }
 
+    public async Task<List<string>> GetHovedadministrator(string orgNumber, string environment)
+    {
+        var contacts = await GetPersonalContactsByOrgAltinn3(orgNumber, environment);
+        var hovedadmins = new List<string>();
+
+        foreach(var contact in contacts)
+        {
+            if(string.IsNullOrEmpty(contact.SsnToken)) continue;
+
+            var ssn = _ssnTokenService.GetSsnFromToken(contact.SsnToken);
+            if (string.IsNullOrEmpty(ssn)) continue;
+
+            var request = new RolesAndRightsRequest
+            {
+                Value = ssn,
+                Type = getTypeFromValue(ssn),
+                PartyFilter = [new PartyFilter { Value = orgNumber, Type = getTypeFromValue(orgNumber) }]
+            };
+
+            var result = await _client.GetRolesAndRightsAltinn3(request, environment);
+            var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
+
+            if(roles.Count >= 1 &&
+                roles[0].AuthorizedAccessPackages != null &&
+                roles[0].AuthorizedAccessPackages.Any(p => 
+                    p.Equals("Hovedadministrator", StringComparison.OrdinalIgnoreCase)))
+            {
+                hovedadmins.Add(contact.DisplayedSocialSecurityNumber ?? "");
+            }
+        }
+
+        return hovedadmins;
+    }
+
 }
