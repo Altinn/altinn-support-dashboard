@@ -15,6 +15,11 @@ vi.mock('../../../../src/hooks/hooks', () => ({
             isLoading: false,
             isError: false,
         },
+        hovedadminQuery: {
+            data: [],
+            isLoading: false,
+            isError: false,
+        }
     })),
 }));
 
