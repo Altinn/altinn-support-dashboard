@@ -47,10 +47,6 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
     sortDirection,
   );
 
-  console.log("hovedadminQuery status:", hovedadminQuery.status);
-  console.log("hovedadmins:", hovedadmins);
-  console.log("first contact ssnToken:", sortedContacts[0]?.ssnToken);
-
   const handleSort = (field: keyof PersonalContactAltinn3) => {
     if (field === sortField) {
       if (sortDirection === "ascending") {
