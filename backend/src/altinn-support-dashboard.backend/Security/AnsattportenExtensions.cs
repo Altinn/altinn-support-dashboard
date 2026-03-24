@@ -88,14 +88,54 @@ public static class AnsattportenExtensions
                     options.Events.OnTokenValidated = context =>
                     {
                         var telemetry = context.HttpContext.RequestServices.GetRequiredService<ITelemetryService>();
+                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("AnsattportenLogin");
 
                         var name = context?.Principal?.Identity?.Name ?? "unknown";
+
+                        logger.LogInformation("[AnsattportenLogin] Token validated | User: {User}", name);
+
+                        var authDetailsClaims = context?.Principal?.Claims
+                            .Where(c => c.Type == "authorization_details")
+                            .ToList() ?? [];
+
+                        if (!authDetailsClaims.Any())
+                        {
+                            logger.LogWarning("[AnsattportenLogin] No 'authorization_details' claims in token | User: {User}", name);
+                        }
+                        else
+                        {
+                            logger.LogInformation("[AnsattportenLogin] {Count} 'authorization_details' claim(s) in token | User: {User}", authDetailsClaims.Count, name);
+                            foreach (var claim in authDetailsClaims)
+                            {
+                                try
+                                {
+                                    using var doc = System.Text.Json.JsonDocument.Parse(claim.Value);
+                                    var root = doc.RootElement;
+
+                                    var resource = root.TryGetProperty("resource", out var r) ? r.GetString() : "(missing)";
+
+                                    var parties = "(missing)";
+                                    if (root.TryGetProperty("authorized_parties", out var partiesEl))
+                                    {
+                                        var partyCount = partiesEl.GetArrayLength();
+                                        var partyNames = Enumerable.Range(0, partyCount)
+                                            .Select(i => partiesEl[i].TryGetProperty("name", out var n) ? n.GetString() : "(no name)");
+                                        parties = partyCount == 0 ? "(empty array)" : string.Join(", ", partyNames);
+                                    }
+
+                                    logger.LogInformation("[AnsattportenLogin] authorization_details => resource: '{Resource}' | authorized_parties: [{Parties}] | User: {User}",
+                                        resource, parties, name);
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.LogError(ex, "[AnsattportenLogin] Failed to parse authorization_details claim | User: {User}", name);
+                                }
+                            }
+                        }
 
                         telemetry.TrackEvent("userLogin", new Dictionary<string, string> { { "id", name } });
 
                         return Task.CompletedTask;
-
-
                     };
 
                     //handles errors and redirects correctly
