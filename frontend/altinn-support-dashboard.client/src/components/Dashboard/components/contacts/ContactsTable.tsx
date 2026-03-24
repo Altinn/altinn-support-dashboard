@@ -11,6 +11,7 @@ import { useAppStore } from "../../../../stores/Appstore";
 import ContactInfoCell from "./ContactInfoCell";
 import { Button, Table, Paragraph, Card } from "@digdir/designsystemet-react";
 import SsnCell from "../../../SsnCell";
+import { StarIcon } from '@navikt/aksel-icons';
 
 interface ContactsTableProps {
   searchQuery: string;
@@ -116,7 +117,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
               <Table.Row key={`${contact.nationalIdentityNumber}-${index}`}>
                 <Table.Cell className={classes.tableCell}>
                   {hovedadmins.includes(contact.displayedSocialSecurityNumber ?? "")
-                    ? <strong>{contact.name}</strong>
+                    ? <> <StarIcon /> {contact.name}</>
                   : contact.name}
                 </Table.Cell>
                 <SsnCell contact={contact} environment={environment} />
