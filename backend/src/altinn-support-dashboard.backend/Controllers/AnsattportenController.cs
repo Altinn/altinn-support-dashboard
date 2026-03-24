@@ -50,7 +50,7 @@ public class AnsattportenController : ControllerBase
     {
         await Task.CompletedTask;
 
-        if (User == null || ansattportenFeatureFlag != true)
+        if (User == null && ansattportenFeatureFlag != true)
         {
             return Ok(new AuthDetails
             {
