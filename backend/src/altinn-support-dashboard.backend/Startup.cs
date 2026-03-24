@@ -28,16 +28,12 @@ namespace AltinnSupportDashboard
 
             // Configure Gitea settings
             services.Configure<GiteaConfiguration>(Configuration.GetSection("Gitea"));
-            services.Configure<BrregApiConfiguration>(Configuration.GetSection("Brreg"));
             services.Configure<BrregConfiguration>(Configuration.GetSection("BrregConfiguration"));
 
             // Register clients and services
             services.AddSingleton<GiteaApiClient>();
             services.AddScoped<IGiteaService, GiteaService>();
-            services.AddScoped<IDataBrregService, DataBrregService>();
-            services.AddScoped<IAltinnApiService, AltinnApiService>();
             services.AddScoped<IPartyApiClient, PartyApiClient>();
-            services.AddScoped<IPartyApiService, PartyApiService>();
             services.AddScoped<IAltinnApiClient, AltinnApiClient>();
             services.AddScoped<IAltinn3ApiClient, Altinn3ApiClient>();
             services.AddScoped<IDataBrregClient, DataBrregClient>();
