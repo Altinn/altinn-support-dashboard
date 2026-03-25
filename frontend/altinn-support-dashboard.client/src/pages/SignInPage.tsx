@@ -6,10 +6,7 @@ import coloredLogo from "../assets/log-in-blue.png";
 import { useAppStore } from "../stores/Appstore";
 import cat from "../assets/fun/sleeping cat.gif";
 import dog from "../assets/fun/sleeping dog.gif";
-import {
-  initiateSignIn,
-  initiateTemporarySignIn,
-} from "../utils/ansattportenApi";
+import { initiateSignIn } from "../utils/ansattportenApi";
 import { useLocation } from "react-router-dom";
 import { showPopup } from "../components/Popup";
 
@@ -36,10 +33,6 @@ export const SignInPage: React.FC = () => {
     initiateSignIn("/dashboard");
   };
 
-  const handleSignInTemporary = () => {
-    initiateTemporarySignIn();
-  };
-
   return (
     <div className={style.container}>
       <img
@@ -55,15 +48,6 @@ export const SignInPage: React.FC = () => {
       >
         Logg inn med Ansattporten
       </Button>
-
-      <Button
-        variant="primary"
-        className={style.ansattPortenButton}
-        onClick={handleSignInTemporary}
-      >
-        temporary login
-      </Button>
-
       <div className={style.gifContainer}>
         <img src={selectedImage} alt="gif" className={style.catGif} />
       </div>

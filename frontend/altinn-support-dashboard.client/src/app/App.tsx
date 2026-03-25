@@ -52,8 +52,6 @@ const App: React.FC = () => {
           <Sidebar />
           <main className="main-content">
             <Routes>
-              <Route path="/signin" element={<SignInPage />} />
-
               {/*Forces signin screen if user not logged in */}
               <Route element={<PrivateRoutes />}>
                 <Route path="/dashboard" element={<DashboardPage />} />
@@ -72,7 +70,10 @@ const App: React.FC = () => {
                 />
                 <Route path="/new-org" element={<NewOrganizationPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
-                <Route path="/correspondence" element={<CorrespondencePage />} />
+                <Route
+                  path="/correspondence"
+                  element={<CorrespondencePage />}
+                />
                 <Route path="/signout" element={<SignOutPage />} />
               </Route>
             </Routes>
