@@ -36,8 +36,8 @@ export const initiateSignIn = async (redirectTo: string) => {
 };
 
 //temporary
-export const initiateAiDevSignIn = async (redirectTo: string) => {
-  window.location.href = `/.auth/login/aad?post_login_redirect_uri=${redirectTo}`;
+export const initiateTemporarySignIn = async () => {
+  window.location.href = `/.auth/login/entraid?post_login_redirect_uri=/dashboard`;
 };
 
 export const initiateSignOut = async (redirectTo: string) => {
@@ -46,7 +46,6 @@ export const initiateSignOut = async (redirectTo: string) => {
   if (authDetails.ansattportenActive) {
     window.location.href = `${getBaseUrl()}/auth/logout?redirectTo=${redirectTo}`;
   } else {
-    window.location.href =
-      "/.auth/logout?post_logout_redirect_uri=/.auth/login/aad?post_login_redirect_uri=/dashboard";
+    window.location.href = "/.auth/logout";
   }
 };
