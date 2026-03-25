@@ -1,26 +1,17 @@
-import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
+// import { Navigate } from "react-router-dom";
+// import { useAuthDetails } from "../hooks/ansattportenHooks";
+// import { Spinner } from "@digdir/designsystemet-react";
 
 const PrivateRoutes = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  // Ansattporten auth (restore when switching back from temporary Azure EntraID login):
+  // const authDetails = useAuthDetails();
+  // if (authDetails.isLoading) {
+  //   return <Spinner aria-label="authorizing" data-size="xl" />;
+  // }
+  // return authDetails?.data?.isLoggedIn ? <Outlet /> : <Navigate to="/signin" />;
 
-  useEffect(() => {
-    fetch("/.auth/me")
-      .then((res) => res.json())
-      .then((data) => {
-        setIsLoggedIn(data?.clientPrincipal != null);
-      })
-      .catch(() => setIsLoggedIn(false));
-  }, []);
-
-  if (isLoggedIn === null) return null;
-
-  if (!isLoggedIn) {
-    window.location.href =
-      "/.auth/login/entraid?post_login_redirect_uri=/dashboard";
-    return null;
-  }
-
+  // Temporary: auth is enforced by Azure App Service (Easy Auth), so no client-side guard needed.
   return <Outlet />;
 };
 
