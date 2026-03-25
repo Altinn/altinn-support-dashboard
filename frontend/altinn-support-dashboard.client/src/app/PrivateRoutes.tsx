@@ -15,7 +15,12 @@ const PrivateRoutes = () => {
 
   if (isLoggedIn === null) return null;
 
-  return isLoggedIn ? <Outlet /> : <Navigate to="/signin" />;
+  if (!isLoggedIn) {
+    window.location.href = "/.auth/login/entraid?post_login_redirect_uri=/dashboard";
+    return null;
+  }
+
+  return <Outlet />;
 };
 
 export default PrivateRoutes;
