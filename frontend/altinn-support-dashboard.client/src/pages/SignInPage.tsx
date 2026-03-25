@@ -7,7 +7,6 @@ import { useAppStore } from "../stores/Appstore";
 import cat from "../assets/fun/sleeping cat.gif";
 import dog from "../assets/fun/sleeping dog.gif";
 import {
-  initiateAiDevSignIn,
   initiateSignIn,
   initiateTemporarySignIn,
 } from "../utils/ansattportenApi";
