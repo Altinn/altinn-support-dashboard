@@ -3,7 +3,6 @@ import * as utils from "../../src/utils/utils";
 import {
   fetchAuthDetails,
   initiateSignIn,
-  initiateSignOut,
 } from "../../src/utils/ansattportenApi";
 
 vi.mock("../../src/utils/utils");
