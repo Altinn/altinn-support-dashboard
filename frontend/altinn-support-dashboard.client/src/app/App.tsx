@@ -17,7 +17,6 @@ import NewOrganizationPage from "../pages/NewOrganizationPage";
 import SettingsPage from "../pages/SettingsPage";
 import { CorrespondencePage } from "../pages/CorrespondencePage";
 import { useAppStore } from "../stores/Appstore";
-import SignInPage from "../pages/SignInPage";
 import PrivateRoutes from "./PrivateRoutes";
 import { ToastContainer } from "react-toastify";
 
@@ -52,8 +51,6 @@ const App: React.FC = () => {
           <Sidebar />
           <main className="main-content">
             <Routes>
-              <Route path="/signin" element={<SignInPage />} />
-
               {/*Forces signin screen if user not logged in */}
               <Route element={<PrivateRoutes />}>
                 <Route path="/dashboard" element={<DashboardPage />} />
@@ -72,7 +69,10 @@ const App: React.FC = () => {
                 />
                 <Route path="/new-org" element={<NewOrganizationPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
-                <Route path="/correspondence" element={<CorrespondencePage />} />
+                <Route
+                  path="/correspondence"
+                  element={<CorrespondencePage />}
+                />
                 <Route path="/signout" element={<SignOutPage />} />
               </Route>
             </Routes>
