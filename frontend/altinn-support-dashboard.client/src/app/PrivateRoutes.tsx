@@ -1,15 +1,21 @@
+import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
 const PrivateRoutes = () => {
-  // const authDetails = useAuthDetails();
-  //
-  // if (authDetails.isLoading) {
-  //   return <Spinner aria-label="authorizing" data-size="xl" />;
-  // }
-  // return authDetails?.data?.isLoggedIn ? <Outlet /> : <Navigate to="/signin" />;
-  const isLoggedInList = (window.location.href = `/.auth/me`);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
-  return isLoggedInList.length <= 0 ? <Outlet /> : <Navigate to="/signin" />;
+  useEffect(() => {
+    fetch("/.auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        setIsLoggedIn(data?.clientPrincipal != null);
+      })
+      .catch(() => setIsLoggedIn(false));
+  }, []);
+
+  if (isLoggedIn === null) return null;
+
+  return isLoggedIn ? <Outlet /> : <Navigate to="/signin" />;
 };
 
 export default PrivateRoutes;
