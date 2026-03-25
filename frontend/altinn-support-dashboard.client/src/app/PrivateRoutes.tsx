@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 const PrivateRoutes = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
@@ -16,7 +16,8 @@ const PrivateRoutes = () => {
   if (isLoggedIn === null) return null;
 
   if (!isLoggedIn) {
-    window.location.href = "/.auth/login/entraid?post_login_redirect_uri=/dashboard";
+    window.location.href =
+      "/.auth/login/entraid?post_login_redirect_uri=/dashboard";
     return null;
   }
 
