@@ -411,32 +411,54 @@ public class Altinn3Service : IAltinn3Service
     public async Task<List<string>> GetHovedadministrator(string orgNumber, string environment)
     {
         var contacts = await GetPersonalContactsByOrgAltinn3(orgNumber, environment);
-        var hovedadmins = new List<string>();
+        
+        var ssnToDisplayMap = new Dictionary<string, string>();
+        var partyFilters = new List<PartyFilter>();
 
-        foreach(var contact in contacts)
+        foreach (var contact in contacts)
         {
             if(string.IsNullOrEmpty(contact.SsnToken)) continue;
 
             var ssn = _ssnTokenService.GetSsnFromToken(contact.SsnToken);
             if (string.IsNullOrEmpty(ssn)) continue;
+            if(string.IsNullOrEmpty(contact.DisplayedSocialSecurityNumber)) continue;
 
-            var request = new RolesAndRightsRequest
+            if (!ssnToDisplayMap.ContainsKey(ssn))
             {
-                Value = ssn,
-                Type = getTypeFromValue(ssn),
-                PartyFilter = [new PartyFilter { Value = orgNumber, Type = getTypeFromValue(orgNumber) }]
-            };
-
-            var result = await _client.GetRolesAndRightsAltinn3(request, environment);
-            var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
-
-            if (roles.Count >= 1)
-            {
-
-                if (roles[0].AuthorizedAccessPackages?.Any(p => 
-                    p.Equals("Hovedadministrator", StringComparison.OrdinalIgnoreCase)) == true)
+                ssnToDisplayMap[ssn] = contact.DisplayedSocialSecurityNumber;
+                partyFilters.Add(new PartyFilter
                 {
-                    hovedadmins.Add(contact.DisplayedSocialSecurityNumber ?? "");
+                    Type = getTypeFromValue(ssn),
+                    Value = ssn
+                });
+            }
+        }
+
+        if(partyFilters.Count == 0) return [];
+
+        var request = new RolesAndRightsRequest
+        {
+            Value = orgNumber,
+            Type = getTypeFromValue(orgNumber),
+            PartyFilter = partyFilters
+        };
+
+        var result = await _client.GetAuthorizedPartiesWithResourceFilter(
+            request, ["urn:altinn:accesspackage:hovedadministrator"], environment
+        );
+
+        _logger.LogInformation("GetHovedadministrator raw response: {Response}", result);
+
+        var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
+
+        var hovedadmins = new List<string>();
+        foreach(var role in roles)
+        {
+            if(role.Name != null && ssnToDisplayMap.TryGetValue(role.Name, out var displaySsn))
+            {
+                if (!hovedadmins.Contains(displaySsn))
+                {
+                    hovedadmins.Add(displaySsn);
                 }
             }
         }
