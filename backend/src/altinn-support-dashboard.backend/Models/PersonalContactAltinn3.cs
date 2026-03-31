@@ -12,4 +12,5 @@ public class PersonalContactAltinn3
     public DateTime? LastChanged { get; set; }
     public string? DisplayedSocialSecurityNumber { get; set; }
     public string? SsnToken { get; set; }
+    public bool IsHovedadministrator { get; set; }
 }

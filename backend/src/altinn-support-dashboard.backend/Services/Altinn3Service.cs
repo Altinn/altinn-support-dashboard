@@ -203,6 +203,40 @@ public class Altinn3Service : IAltinn3Service
             }
         }
 
+        var tasks = new List<(Task<string> task, PersonalContactAltinn3 contact)>();
+        foreach(var contact in contacts)
+        {
+            if(string.IsNullOrEmpty(contact.SsnToken)) continue;
+
+            var ssn = _ssnTokenService.GetSsnFromToken(contact.SsnToken);
+            if (string.IsNullOrEmpty(ssn)) continue;
+
+            var request = new RolesAndRightsRequest
+            {
+                Value = ssn,
+                Type = getTypeFromValue(ssn),
+                PartyFilter = [new PartyFilter
+                {
+                    Value = orgNumber,
+                    Type = getTypeFromValue(orgNumber)
+                }]
+            };
+
+            tasks.Add(( _client.GetRolesAndRightsAltinn3(request, environment), contact));
+        }
+        await Task.WhenAll(tasks.Select(t => t.task));
+
+        foreach(var (task, contact) in tasks)
+        {
+            var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(task.Result, jsonOptions) ?? [];
+
+            if (roles.Count >= 1 && roles[0].AuthorizedAccessPackages?.Any(p =>
+            p.Equals("Hovedadministrator", StringComparison.OrdinalIgnoreCase)) == true)
+            {
+                contact.IsHovedadministrator = true;
+            }
+        };
+
         return contacts;
     }
 
@@ -443,9 +477,7 @@ public class Altinn3Service : IAltinn3Service
             PartyFilter = partyFilters
         };
 
-        var result = await _client.GetAuthorizedPartiesWithResourceFilter(
-            request, ["urn:altinn:accesspackage:hovedadministrator"], environment
-        );
+        var result = await _client.GetRolesAndRightsAltinn3(request, environment);
 
         _logger.LogInformation("GetHovedadministrator raw response: {Response}", result);
 
