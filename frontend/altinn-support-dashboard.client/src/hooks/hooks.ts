@@ -9,7 +9,6 @@ import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   fetchERoles,
-  fetchHovedadministrator,
   fetchNotificationAddresses,
   fetchOfficialContacts,
   fetchOrganizations,
@@ -103,21 +102,11 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     retry: false,
   });
 
-  const hovedadminQuery = useQuery({
-    queryKey: ["hovedadministrator", environment, orgNumber],
-    queryFn: () => fetchHovedadministrator(environment, orgNumber!),
-    enabled: !!orgNumber,
-    staleTime: 2 * 60 * 1000, // fresh for 2 minutes
-    refetchOnWindowFocus: false,
-    retry: false,
-  });
-
   return {
     contactsQuery,
     ERolesQuery,
     officialContactsQuery,
-    notificationAdressesQuery,
-    hovedadminQuery,
+    notificationAdressesQuery
   };
 }
 

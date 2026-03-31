@@ -29,11 +29,10 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
   >(null);
 
   const environment = useAppStore((state) => state.environment);
-  const { contactsQuery, hovedadminQuery} = useOrgDetails(
+  const { contactsQuery} = useOrgDetails(
     environment,
     selectedOrg?.organizationNumber,
   );
-  const hovedadmins = hovedadminQuery.data ?? [];
 
 
   const filteredContacts = filterContacts(
@@ -112,9 +111,9 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
             sortedContacts.map((contact, index) => (
               <Table.Row key={`${contact.nationalIdentityNumber}-${index}`}>
                 <Table.Cell className={classes.tableCell}>
-                  {hovedadmins.includes(contact.displayedSocialSecurityNumber ?? "")
+                  {contact.isHovedadministrator
                     ? <> <StarIcon /> {contact.name}</>
-                  : contact.name}
+                    : contact.name}
                 </Table.Cell>
                 <SsnCell contact={contact} environment={environment} />
                 <Table.Cell className={classes.tableCell}>

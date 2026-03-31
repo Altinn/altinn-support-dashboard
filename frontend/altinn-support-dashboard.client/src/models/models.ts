@@ -121,4 +121,5 @@ export interface PersonalContactAltinn3 {
   lastChanged?: string;
   displayedSocialSecurityNumber?: string;
   ssnToken?: string;
+  isHovedadministrator?: boolean;
 }

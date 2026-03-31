@@ -288,29 +288,4 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         return responseBody;
     }
 
-    public async Task<string> GetAuthorizedPartiesWithResourceFilter(
-        RolesAndRightsRequest dto, List<string> anyOfResourceIds, string environmentName)
-    {
-        var client = _clients[environmentName];
-
-        var resourceFilter = string.Join("&", anyOfResourceIds.Select(id => $"anyOfResourceIds={Uri.EscapeDataString(id)}"));
-        var requestUrl = $"accessmanagement/api/v1/resourceowner/authorizedparties?includeAltinn3=true&includeAccessPackages=true&{resourceFilter}";
-
-        string jsonPayload = JsonSerializer.Serialize(dto);
-        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-
-        var response = await client.PostAsync(requestUrl, content);
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        if(response.StatusCode == HttpStatusCode.NotFound)
-        {
-            return string.Empty;
-        }
-        if(!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
-        }
-
-        return responseBody;
-    }
 }

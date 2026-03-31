@@ -12,7 +12,6 @@ public interface IAltinn3ApiClient
     Task<string> GetOrganizationsPartyInfoByPartyId(List<int> partyIds, string environmentName);
     Task<string> GetResourceListFromResourceRegistry(string environmentName);
 
-    Task<string> GetAuthorizedPartiesWithResourceFilter(RolesAndRightsRequest dto, List<string> anyOfResourceIds, string environmentName);
 }
 
 

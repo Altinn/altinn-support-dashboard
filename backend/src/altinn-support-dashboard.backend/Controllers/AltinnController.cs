@@ -407,17 +407,5 @@ namespace AltinnSupportDashboard.Controllers
             var result = await _altinn3Service.GetResourceListFromResourceRegistry(environmentName);
             return Ok(result);
         }
-
-        [HttpGet("organizations/altinn3/{orgNumber}/hovedadministrator")]
-        public async Task<IActionResult> GetHovedadministrator([FromRoute] string orgNumber)
-        {
-            if (!ValidationService.IsValidOrgNumber(orgNumber))
-            {
-                return BadRequest("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
-            }
-
-            var result = await _altinn3Service.GetHovedadministrator(orgNumber, environmentName);
-            return Ok(result);
-        }
     }
 }
