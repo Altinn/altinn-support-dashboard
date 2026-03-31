@@ -287,4 +287,5 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
         return responseBody;
     }
+
 }

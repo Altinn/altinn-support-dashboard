@@ -11,6 +11,7 @@ import { useAppStore } from "../../../../stores/Appstore";
 import ContactInfoCell from "./ContactInfoCell";
 import { Button, Table, Paragraph, Card } from "@digdir/designsystemet-react";
 import SsnCell from "../../../SsnCell";
+import { StarIcon } from '@navikt/aksel-icons';
 
 interface ContactsTableProps {
   searchQuery: string;
@@ -28,10 +29,11 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
   >(null);
 
   const environment = useAppStore((state) => state.environment);
-  const { contactsQuery } = useOrgDetails(
+  const { contactsQuery} = useOrgDetails(
     environment,
     selectedOrg?.organizationNumber,
   );
+
 
   const filteredContacts = filterContacts(
     contactsQuery.data || [],
@@ -109,7 +111,9 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
             sortedContacts.map((contact, index) => (
               <Table.Row key={`${contact.nationalIdentityNumber}-${index}`}>
                 <Table.Cell className={classes.tableCell}>
-                  {contact.name}
+                  {contact.isHovedadministrator
+                    ? <> <StarIcon /> {contact.name}</>
+                    : contact.name}
                 </Table.Cell>
                 <SsnCell contact={contact} environment={environment} />
                 <Table.Cell className={classes.tableCell}>
