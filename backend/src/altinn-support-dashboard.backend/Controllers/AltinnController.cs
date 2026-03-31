@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Utils;
 using Security;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Compliance.Redaction;
 using Models.altinn3Dtos;
 
@@ -28,7 +27,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
     {
-        public AltinnTT02Controller(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService) : base(altinnApiService, altinn3Service, "TT02", ssnTokenService)
+        public AltinnTT02Controller(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration) : base(altinnApiService, altinn3Service, "TT02", ssnTokenService, telemetryService, configuration)
         {
         }
 
@@ -40,7 +39,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/Production/serviceowner")]
     public class AltinnProductionController : AltinnBaseController
     {
-        public AltinnProductionController(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService) : base(altinnApiService, altinn3Service, "Production", ssnTokenService)
+        public AltinnProductionController(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration) : base(altinnApiService, altinn3Service, "Production", ssnTokenService, telemetryService, configuration)
         {
         }
     }
@@ -56,13 +55,17 @@ namespace AltinnSupportDashboard.Controllers
         protected readonly IAltinn3Service _altinn3Service;
         protected string environmentName;
         protected readonly ISsnTokenService _ssnTokenService;
+        protected readonly ITelemetryService _telemetryService;
+        private readonly IConfiguration _configuration;
 
-        public AltinnBaseController(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, string environmentName, ISsnTokenService ssnTokenService)
+        public AltinnBaseController(IAltinnApiService altinnApiService, IAltinn3Service altinn3Service, string environmentName, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration)
         {
             _altinn3Service = altinn3Service;
             this.environmentName = environmentName;
             _altinnApiService = altinnApiService;
             _ssnTokenService = ssnTokenService;
+            _telemetryService = telemetryService;
+            _configuration = configuration;
         }
 
         [HttpGet("organizations/search")]
@@ -362,6 +365,17 @@ namespace AltinnSupportDashboard.Controllers
             {
                 throw new Exception("Invalid or expired SSN token.");
             }
+
+            var trackedEnvironments = _configuration.GetSection("LoggingConfiguration:TrackedEnvironments").Get<string[]>() ?? ["Production"];
+            if (trackedEnvironments.Contains(environmentName))
+            {
+                _telemetryService.TrackSsnUnmasked(
+                    User.Identity?.Name ?? "unknown",
+                    environmentName,
+                    ssn
+                );
+            }
+
             return Ok(new { socialSecurityNumber = ssn });
         }
 

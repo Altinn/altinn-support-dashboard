@@ -52,9 +52,16 @@ namespace AltinnSupportDashboard
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    if (!hostContext.HostingEnvironment.IsDevelopment())
+                    // In development, inject null so TelemetryService skips all tracking calls.
+                    // In production, use Application Insights with a real connection string.
+                    if (hostContext.HostingEnvironment.IsDevelopment())
+                    {
+                        services.AddSingleton<ITelemetryService>(_ => new TelemetryService(null));
+                    }
+                    else
                     {
                         services.AddApplicationInsightsTelemetry();
+                        services.AddSingleton<ITelemetryService, TelemetryService>();
                     }
 
                     // Bind Configuration section to the Configuration class and add to DI

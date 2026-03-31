@@ -48,7 +48,6 @@ export const SignInPage: React.FC = () => {
       >
         Logg inn med Ansattporten
       </Button>
-
       <div className={style.gifContainer}>
         <img src={selectedImage} alt="gif" className={style.catGif} />
       </div>

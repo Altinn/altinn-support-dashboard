@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Xunit;
-using System.Threading.Tasks;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using AltinnSupportDashboard.Controllers;
-using Microsoft.VisualBasic;
 using Models.altinn3Dtos;
 using Microsoft.Extensions.Compliance.Redaction;
+using Microsoft.IdentityModel.Abstractions;
+using Microsoft.Extensions.Configuration;
 
 namespace altinn_support_dashboard.backend.Tests.Controllers
 {
@@ -16,16 +15,21 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         private readonly AltinnTT02Controller _controller;
         private readonly Mock<IAltinnApiService> _mockServiceAltinn2;
         private readonly Mock<IAltinn3Service> _mockServiceAltinn3;
-        private readonly Mock<IRedactorProvider> _mockRedactorProvider;
         private readonly Mock<ISsnTokenService> _mockSsnTokenService;
+        private readonly Mock<ITelemetryService> _mockTelemetryService;
+        private readonly Mock<IConfiguration> _mockConfiguration;
 
         public AltinnApiControllerTests()
         {
             _mockServiceAltinn2 = new Mock<IAltinnApiService>();
             _mockServiceAltinn3 = new Mock<IAltinn3Service>();
-            _mockRedactorProvider = new Mock<IRedactorProvider>();
             _mockSsnTokenService = new Mock<ISsnTokenService>();
-            _controller = new AltinnTT02Controller(_mockServiceAltinn2.Object, _mockServiceAltinn3.Object, _mockSsnTokenService.Object);
+            _mockTelemetryService = new Mock<ITelemetryService>();
+            _mockConfiguration = new Mock<IConfiguration>();
+            var mockSection = new Mock<IConfigurationSection>();
+            mockSection.Setup(s => s.GetChildren()).Returns(new List<IConfigurationSection>());
+            _mockConfiguration.Setup(c => c.GetSection("LoggingConfiguration:TrackedEnvironments")).Returns(mockSection.Object);
+            _controller = new AltinnTT02Controller(_mockServiceAltinn2.Object, _mockServiceAltinn3.Object, _mockSsnTokenService.Object, _mockTelemetryService.Object, _mockConfiguration.Object);
         }
 
         [Fact]

@@ -1,15 +1,13 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuthDetails } from "../hooks/ansattportenHooks";
-import { Spinner } from "@digdir/designsystemet-react";
+import { Outlet } from "react-router-dom";
 
 const PrivateRoutes = () => {
-  const authDetails = useAuthDetails();
-
-  if (authDetails.isLoading) {
-    return <Spinner aria-label="authorizing" data-size="xl" />;
-  }
-
-  return authDetails?.data?.isLoggedIn ? <Outlet /> : <Navigate to="/signin" />;
+  // const authDetails = useAuthDetails();
+  //
+  // if (authDetails.isLoading) {
+  //   return <Spinner aria-label="authorizing" data-size="xl" />;
+  // }
+  //
+  return <Outlet />;
 };
 
 export default PrivateRoutes;
