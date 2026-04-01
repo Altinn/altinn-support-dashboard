@@ -1,4 +1,6 @@
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Models.notifications;
+using System.Text.Json;
 
 namespace altinn_support_dashboard.Server.Services;
 
@@ -6,6 +8,11 @@ public class NotificationsService : INotificationsService
 {
     private readonly INotificationsClient _client;
     private readonly ILogger<INotificationsService> _logger;
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true
+    };
 
     public NotificationsService(INotificationsClient client, ILogger<INotificationsService> logger)
     {
@@ -13,13 +20,15 @@ public class NotificationsService : INotificationsService
         _logger = logger;
     }
 
-    public async Task<string> GetEmailNotificationsByOrderId(string orderId)
+    public async Task<NotificationOrderResponseDto> GetEmailNotificationsByOrderId(string orderId)
     {
-        return await _client.GetEmailNotificationsByOrderId(orderId);
+        var result = await _client.GetEmailNotificationsByOrderId(orderId);
+        return JsonSerializer.Deserialize<NotificationOrderResponseDto>(result, _jsonOptions) ?? throw new Exception("Error deserializing email notifications response");
     }
 
-    public async Task<string> GetSmsNotificationsByOrderId(string orderId)
+    public async Task<NotificationOrderResponseDto> GetSmsNotificationsByOrderId(string orderId)
     {
-        return await _client.GetSmsNotificationsByOrderId(orderId);
+        var result = await _client.GetSmsNotificationsByOrderId(orderId);
+        return JsonSerializer.Deserialize<NotificationOrderResponseDto>(result, _jsonOptions) ?? throw new Exception("Error deserializing SMS notifications response");
     }
 }
