@@ -101,6 +101,7 @@ namespace AltinnSupportDashboard
                     services.AddScoped<IAltinn3Service, Altinn3Service>();
                     services.AddScoped<PartyApiClient>();
                     services.AddScoped<IPartyApiService, PartyApiService>();
+                    services.AddScoped<INotificationsClient, NotificationsClient>();
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
                     services.AddScoped<ICorrespondenceService, CorrespondenceService>();
                     services.AddScoped<ISsnTokenService, SsnTokenService>();
