@@ -20,11 +20,27 @@ public class NotificationsClient : INotificationsClient
 
     public async Task<string> GetEmailNotificationsByOrderId(string orderId)
     {
-        return "";
+        var response = await _client.GetAsync($"notifications/api/v1/orders/{orderId}/notifications/email");
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+
+        return responseBody;
     }
 
     public async Task<string> GetSmsNotificationsByOrderId(string orderId)
     {
-        return "";
+        var response = await _client.GetAsync($"notifications/api/v1/orders/{orderId}/notifications/sms");
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+
+        return responseBody;
     }
 }
