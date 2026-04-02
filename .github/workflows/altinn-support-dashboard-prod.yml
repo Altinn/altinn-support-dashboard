@@ -54,7 +54,7 @@ jobs:
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@84a80cfe7e9889f35148ed88c307e6e93bf02578 # v3
+        uses: azure/webapps-deploy@02a81bead70021f5284939794bcec79c271ab383 # v3
         with:
           app-name: 'altinn-support-dashboard-prod'
           slot-name: 'Production'
