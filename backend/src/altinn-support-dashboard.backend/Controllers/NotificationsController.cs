@@ -19,17 +19,24 @@ public class NotificationsController : ControllerBase
         _service = service;
     }
 
-    [HttpGet("email/{orderId}")]
+    [HttpGet("orderid/email/{orderId}")]
     public async Task<IActionResult> GetEmailNotificationsByOrderId(string orderId)
     {
         var response = await _service.GetEmailNotificationsByOrderId(orderId);
         return Ok(response);
     }
 
-    [HttpGet("sms/{orderId}")]
+    [HttpGet("orderid/sms/{orderId}")]
     public async Task<IActionResult> GetSmsNotificationsByOrderId(string orderId)
     {
         var response = await _service.GetSmsNotificationsByOrderId(orderId);
+        return Ok(response);
+    }
+
+    [HttpGet("orderid/{orderId}")]
+    public async Task<IActionResult> GetAllNotificationsByOrderId(string orderId)
+    {
+        var response = await _service.GetAllNotificationsByOrderId(orderId);
         return Ok(response);
     }
 }

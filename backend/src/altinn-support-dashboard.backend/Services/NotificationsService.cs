@@ -31,4 +31,30 @@ public class NotificationsService : INotificationsService
         var result = await _client.GetSmsNotificationsByOrderId(orderId);
         return JsonSerializer.Deserialize<NotificationOrderResponseDto>(result, _jsonOptions) ?? throw new Exception("Error deserializing SMS notifications response");
     }
+
+    public async Task<List<NotificationOrderResponseDto>> GetAllNotificationsByOrderId(string orderId)
+    {
+        var smsTask = GetSmsNotificationsByOrderId(orderId);
+        var emailTask = GetEmailNotificationsByOrderId(orderId);
+
+        // runs the tasks in parrallel
+        await Task.WhenAll(
+            smsTask.ContinueWith(_ => { }),
+            emailTask.ContinueWith(_ => { })
+        );
+
+        List<NotificationOrderResponseDto> results = [];
+
+        if (smsTask.IsCompletedSuccessfully)
+            results.Add(smsTask.Result);
+        else
+            _logger.LogError(smsTask.Exception, "Failed to get SMS notifications for order {OrderId}", orderId);
+
+        if (emailTask.IsCompletedSuccessfully)
+            results.Add(emailTask.Result);
+        else
+            _logger.LogError(emailTask.Exception, "Failed to get email notifications for order {OrderId}", orderId);
+
+        return results;
+    }
 }

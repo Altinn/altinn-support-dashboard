@@ -116,4 +116,50 @@ public class NotificationsServiceTests
 
         await Assert.ThrowsAsync<Exception>(() => _service.GetSmsNotificationsByOrderId("order-123"));
     }
+
+    // --- GetAllNotificationsByOrderId ---
+
+    [Fact]
+    public async Task GetAllNotificationsByOrderId_ReturnsBothResults_WhenBothCallsSucceed()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
+
+        var result = await _service.GetAllNotificationsByOrderId("order-123");
+
+        Assert.Equal(2, result.Count);
+    }
+
+    [Fact]
+    public async Task GetAllNotificationsByOrderId_ReturnsSingleResult_WhenEmailFails()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>())).ThrowsAsync(new Exception("Email API failure"));
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
+
+        var result = await _service.GetAllNotificationsByOrderId("order-123");
+
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public async Task GetAllNotificationsByOrderId_ReturnsSingleResult_WhenSmsFails()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>())).ThrowsAsync(new Exception("SMS API failure"));
+
+        var result = await _service.GetAllNotificationsByOrderId("order-123");
+
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public async Task GetAllNotificationsByOrderId_ReturnsEmptyList_WhenBothCallsFail()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>())).ThrowsAsync(new Exception("Email API failure"));
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>())).ThrowsAsync(new Exception("SMS API failure"));
+
+        var result = await _service.GetAllNotificationsByOrderId("order-123");
+
+        Assert.Empty(result);
+    }
 }
