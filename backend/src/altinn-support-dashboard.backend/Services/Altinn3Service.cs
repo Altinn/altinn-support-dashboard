@@ -222,7 +222,7 @@ public class Altinn3Service : IAltinn3Service
                 }]
             };
 
-            tasks.Add(( _client.GetRolesAndRightsAltinn3(request, environment), contact));
+            tasks.Add(( _client.GetHovedadministratorAltinn3(request, environment), contact));
         }
         await Task.WhenAll(tasks.Select(t => t.task));
 
