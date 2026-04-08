@@ -1,4 +1,5 @@
 using altinn_support_dashboard.Server.Services.Interfaces;
+using altinn_support_dashboard.Server.Utils;
 using Models.notifications;
 using System.Text.Json;
 
@@ -48,12 +49,12 @@ public class NotificationsService : INotificationsService
         if (smsTask.IsCompletedSuccessfully)
             results.Add(smsTask.Result);
         else
-            _logger.LogError(smsTask.Exception, "Failed to get SMS notifications for order {OrderId}", orderId);
+            _logger.LogError(smsTask.Exception, "Failed to get SMS notifications for order {OrderId}", ValidationService.SanitizeForLog(orderId));
 
         if (emailTask.IsCompletedSuccessfully)
             results.Add(emailTask.Result);
         else
-            _logger.LogError(emailTask.Exception, "Failed to get email notifications for order {OrderId}", orderId);
+            _logger.LogError(emailTask.Exception, "Failed to get email notifications for order {OrderId}", ValidationService.SanitizeForLog(orderId));
 
         return results;
     }
