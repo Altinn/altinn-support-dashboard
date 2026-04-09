@@ -88,5 +88,17 @@ namespace altinn_support_dashboard.Server.Utils
             return true;
 
         }
+
+
+        public static string SanitizeForLog(string value)
+        {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+            // Remove newline and other control characters to prevent log forging.
+            var chars = value.Where(c => !char.IsControl(c) || c == '\t').ToArray();
+            return new string(chars);
+        }
     }
 }
