@@ -288,7 +288,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         return responseBody;
     }
 
-    public async Task<string> GetHovedadministratorAltinn3(RolesAndRightsRequest dto, string environmentName)
+    public async Task<string> GetAccesPackagesAltinn3(RolesAndRightsRequest dto, string environmentName)
     {
         var client = _clients[environmentName];
 
