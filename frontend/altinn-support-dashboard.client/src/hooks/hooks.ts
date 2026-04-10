@@ -106,7 +106,7 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     contactsQuery,
     ERolesQuery,
     officialContactsQuery,
-    notificationAdressesQuery,
+    notificationAdressesQuery
   };
 }
 
