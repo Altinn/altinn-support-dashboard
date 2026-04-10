@@ -185,6 +185,9 @@ public class Altinn3Service : IAltinn3Service
             LastChanged = contact.LastChanged,
         }).ToList();
 
+        //Gjøre hovedadmin greier her :) Lage egen private funksjon så det ikke blir så clustered
+        await SetHovedadministrator(contacts, orgNumber, environment);
+
         foreach (var contact in contacts)
         {
             try
@@ -202,40 +205,6 @@ public class Altinn3Service : IAltinn3Service
                 Console.WriteLine($"Error redacting: {ex.Message}");
             }
         }
-
-        var tasks = new List<(Task<string> task, PersonalContactAltinn3 contact)>();
-        foreach(var contact in contacts)
-        {
-            if(string.IsNullOrEmpty(contact.SsnToken)) continue;
-
-            var ssn = _ssnTokenService.GetSsnFromToken(contact.SsnToken);
-            if (string.IsNullOrEmpty(ssn)) continue;
-
-            var request = new RolesAndRightsRequest
-            {
-                Value = ssn,
-                Type = getTypeFromValue(ssn),
-                PartyFilter = [new PartyFilter
-                {
-                    Value = orgNumber,
-                    Type = getTypeFromValue(orgNumber)
-                }]
-            };
-
-            tasks.Add(( _client.GetHovedadministratorAltinn3(request, environment), contact));
-        }
-        await Task.WhenAll(tasks.Select(t => t.task));
-
-        foreach(var (task, contact) in tasks)
-        {
-            var roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(task.Result, jsonOptions) ?? [];
-
-            if (roles.Count >= 1 && roles[0].AuthorizedAccessPackages?.Any(p =>
-            p.Equals("Hovedadministrator", StringComparison.OrdinalIgnoreCase)) == true)
-            {
-                contact.IsHovedadministrator = true;
-            }
-        };
 
         return contacts;
     }
@@ -440,6 +409,48 @@ public class Altinn3Service : IAltinn3Service
             return "urn:altinn:organization:identifier-no";
         }
         throw new Exception("Not a valid format, needs to be either a orgnumber or ssn");
+    }
+
+    //Ny private funksjon for hovedadmin greier 
+    private async Task SetHovedadministrator(List<PersonalContactAltinn3> contacts, string orgNumber, string environment)
+    {
+        var partyFilters = contacts
+            .Where(c => !string.IsNullOrEmpty(c.NationalIdentityNumber))
+            .Select(c => new PartyFilter
+            {
+                Value = c.NationalIdentityNumber!,
+                Type = getTypeFromValue(c.NationalIdentityNumber!)
+            }).ToList();
+
+        if (partyFilters.Count == 0) return;
+
+        var request = new RolesAndRightsRequest
+        {
+            Value = orgNumber,
+            Type = getTypeFromValue(orgNumber),
+            PartyFilter = partyFilters
+        };
+
+        var result = await _client.GetAccesPackagesAltinn3(request, environment);
+        if(string.IsNullOrEmpty(result)) return;
+
+        _logger.LogDebug("SetHovedadministrator response: {Result}", result);
+
+        var rolesList = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
+
+        foreach (var roles in rolesList)
+        {
+            if (roles.AuthorizedAccessPackages?.Any(p =>
+                p.Equals("Hovedadministrator", StringComparison.OrdinalIgnoreCase)) == true)
+            {
+                var match = contacts.FirstOrDefault(c => 
+                    c.NationalIdentityNumber == roles.PersonId);
+                if (match != null)
+                {
+                    match.IsHovedadministrator = true;
+                }
+            }
+        }
     }
 
 }
