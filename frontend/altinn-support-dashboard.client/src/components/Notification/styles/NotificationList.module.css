@@ -18,3 +18,14 @@
 .row{
     height: 3rem;
 }
+
+.searchField{
+    margin-bottom: 0.5rem;
+}
+
+.searchField :hover {
+    outline: none;
+}
+.searchField :focus {
+    outline: none;
+}

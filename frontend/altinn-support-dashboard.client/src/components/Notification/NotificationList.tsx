@@ -1,7 +1,8 @@
-import { Card, Table } from "@digdir/designsystemet-react";
+import { Card, Table, Textfield } from "@digdir/designsystemet-react";
 import NotificationStatusCode from "./NotificationStatusCode";
 import { NotificationItem } from "../../models/notificationModels";
 import style from "./styles/NotificationList.module.css";
+import { useState } from "react";
 
 
 
@@ -10,8 +11,18 @@ type NotificationListProps = {
 };
 
 const NotificationList: React.FC<NotificationListProps> = ({ notifications }) => {
+    const [searchId, setSearchId] = useState("");
+
+    const filteredNotifications = notifications.filter(n => n.id.includes(searchId));
     return (
         <Card data-color="neutral">
+            <Textfield
+                label=""
+                placeholder="Skriv inn notifikasjons id"
+                value={searchId}
+                onChange={(e) => setSearchId(e.target.value)}
+                className={style.searchField}
+            />
             <Table data-size="sm" data-color="neutral" border>
                 <Table.Head>
                     <Table.Row>
@@ -22,7 +33,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
                     </Table.Row>
                 </Table.Head>
                 <Table.Body>
-                    {notifications.map((n) => (
+                    {filteredNotifications.map((n) => (
                         <Table.Row key={n.id} className={style.row}>
                             <Table.Cell>
                                 {n.recipient?.emailAddress || n.recipient?.mobileNumber}
