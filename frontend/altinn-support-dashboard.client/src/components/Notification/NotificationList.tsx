@@ -18,6 +18,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
                         <Table.HeaderCell className={style.mottakerCell}>Mottaker</Table.HeaderCell>
                         <Table.HeaderCell className={style.typeCell}>Type</Table.HeaderCell>
                         <Table.HeaderCell className={style.statusCell}>Status</Table.HeaderCell>
+                        <Table.HeaderCell className={style.notifIdCell}>Notifikasjons id</Table.HeaderCell>
                     </Table.Row>
                 </Table.Head>
                 <Table.Body>
@@ -32,6 +33,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
                             <Table.Cell>
                                 <NotificationStatusCode notification={n} />
                             </Table.Cell>
+                            <Table.Cell>{n.id}</Table.Cell>
                         </Table.Row>
                     ))}
                 </Table.Body>

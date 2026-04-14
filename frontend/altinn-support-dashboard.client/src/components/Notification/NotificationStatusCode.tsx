@@ -8,10 +8,21 @@ type NotificationStatusCodeProps = {
 }
 
 const NotificationStatusCode: React.FC<NotificationStatusCodeProps> = ({ notification }) => {
-    const color = notification.succeeded ? "success" : "danger";
+    const getColor = (status: string) => {
+        switch (status?.toLowerCase()) {
+            case "delivered":
+                return "success";
+            case "failed":
+                return "danger";
+            case "new":
+                return "warning";
+            default:
+                return "info";
+        }
+    };
 
     return (
-        <Alert data-color={color} data-size="sm">
+        <Alert data-color={getColor(notification.sendStatus?.status)} data-size="sm">
             {notification.sendStatus?.status} - {notification.sendStatus?.description}
         </Alert>
     );

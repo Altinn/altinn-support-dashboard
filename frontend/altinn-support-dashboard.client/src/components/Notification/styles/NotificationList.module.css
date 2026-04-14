@@ -10,3 +10,7 @@
 .mottakerCell{
     width: 20rem;
 }
+
+.notifIdCell{
+    min-width: 25rem;
+}

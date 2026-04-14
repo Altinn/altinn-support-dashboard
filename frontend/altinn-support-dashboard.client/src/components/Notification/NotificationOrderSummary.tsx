@@ -8,10 +8,15 @@ type NotificationOrderSummaryProps = {
 }
 
 const NotificationOrderSummary: React.FC<NotificationOrderSummaryProps> = ({ order }) => {
+    const getType = () => {
+        const first = order.notifications?.[0];
+        if (!first) return "Ordredetaljer";
+        return first.recipient?.emailAddress ? "E-post" : "SMS";
+    }
     return (
         <Card data-color="neutral">
             <Heading level={2} data-size="xs">
-                Ordedetaljer
+                {getType()} 
             </Heading>
             <Paragraph>Order id: {order.orderId}</Paragraph>
             <Paragraph>Avsenders referanse: {order.sendersReference}</Paragraph>
