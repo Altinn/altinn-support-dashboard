@@ -135,9 +135,9 @@ export const fetchNotificationAddresses = async (
 
 export const fetchNotificationByOrderId = async (
   orderId: string,
-):Promise<NotificationOrderResponse | null> => {
+):Promise<NotificationOrderResponse[] | null> => {
   const res = await authorizedFetch(
-    `/api/notifications/orderId/${encodeURIComponent(orderId)}`,
+    `/api/notifications/orderid/${encodeURIComponent(orderId)}`,
   );
 
   if (res.status === 404) return null;

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, Search, Textfield } from '@digdir/designsystemet-react';
+import style from './styles/NotificationSearchBar.module.css';
 
 type NotificationSearchBarProps = {
     orderId: string;
@@ -18,7 +19,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
     }
 
     return (
-        <div>
+        <div className={style.container}>
             <Textfield
                 label="Order ID"
                 placeholder="Skriv inn ordre-id"
@@ -29,20 +30,23 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
                         handleSearch();
                     }
                 }}
+                className = {style.textfield}
             />
+            <Button
+                onClick={handleSearch}
+                variant="secondary"
+                className={style.searchButton}
+            >
+                <Search/>
+            </Button>
             <Button
                 onClick={() => {
                     setInputValue("")
                     setOrderId("")
                 }}
+                className={style.removeButton}
             >
                 x
-            </Button>
-            <Button
-                onClick={handleSearch}
-                variant="tertiary"
-            >
-                <Search/>
             </Button>
         </div>
     )

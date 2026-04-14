@@ -55,6 +55,8 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
         notificationChannel: notificationChannel,
       };
     }
+    console.log("Notification channel:", notificationChannel);
+    console.log("Full request:", JSON.stringify(correspondence, null, 2));
     const response = await post.mutateAsync(correspondence);
     setResponseMessage(response);
     sessionStorage.setItem("responseMessage", JSON.stringify(response));
