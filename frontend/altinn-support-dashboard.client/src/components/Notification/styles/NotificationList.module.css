@@ -1,0 +1,12 @@
+.typeCell{
+    width: 5rem;
+}
+
+.statusCell{
+    min-width: 20rem;
+    overflow-y: auto;
+}
+
+.mottakerCell{
+    width: 20rem;
+}

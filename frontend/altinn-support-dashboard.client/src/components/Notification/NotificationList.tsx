@@ -1,7 +1,7 @@
 import { Card, Table } from "@digdir/designsystemet-react";
 import NotificationStatusCode from "./NotificationStatusCode";
 import { NotificationItem } from "../../models/notificationModels";
-
+import style from "./styles/NotificationList.module.css";
 
 
 
@@ -15,9 +15,9 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
             <Table data-size="sm" data-color="neutral" border>
                 <Table.Head>
                     <Table.Row>
-                        <Table.HeaderCell>Mottaker</Table.HeaderCell>
-                        <Table.HeaderCell>Type</Table.HeaderCell>
-                        <Table.HeaderCell>Status</Table.HeaderCell>
+                        <Table.HeaderCell className={style.mottakerCell}>Mottaker</Table.HeaderCell>
+                        <Table.HeaderCell className={style.typeCell}>Type</Table.HeaderCell>
+                        <Table.HeaderCell className={style.statusCell}>Status</Table.HeaderCell>
                     </Table.Row>
                 </Table.Head>
                 <Table.Body>
