@@ -14,3 +14,7 @@
 .notifIdCell{
     min-width: 25rem;
 }
+
+.row{
+    height: 3rem;
+}

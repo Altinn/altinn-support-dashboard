@@ -1,6 +1,6 @@
 import { Alert } from "@digdir/designsystemet-react";
 import { NotificationItem } from "../../models/notificationModels";
-
+import style from "./styles/NotificationsStatusCode.module.css";
 
 
 type NotificationStatusCodeProps = {
@@ -22,7 +22,7 @@ const NotificationStatusCode: React.FC<NotificationStatusCodeProps> = ({ notific
     };
 
     return (
-        <Alert data-color={getColor(notification.sendStatus?.status)} data-size="sm">
+        <Alert data-color={getColor(notification.sendStatus?.status)} data-size="sm" className={style.alert}>
             {notification.sendStatus?.status} - {notification.sendStatus?.description}
         </Alert>
     );

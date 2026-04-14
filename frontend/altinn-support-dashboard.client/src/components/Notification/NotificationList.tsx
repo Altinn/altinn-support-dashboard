@@ -23,7 +23,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
                 </Table.Head>
                 <Table.Body>
                     {notifications.map((n) => (
-                        <Table.Row key={n.id}>
+                        <Table.Row key={n.id} className={style.row}>
                             <Table.Cell>
                                 {n.recipient?.emailAddress || n.recipient?.mobileNumber}
                             </Table.Cell>
