@@ -1,0 +1,24 @@
+.container{
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    padding-bottom: 1rem;
+}
+
+.textfield{
+    width: 50%;
+}
+
+.removeButton{
+    height: 2.5rem;
+    align-self: flex-end;
+}
+
+.searchButton{
+    height: 2.5rem;
+    align-self: flex-end;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}

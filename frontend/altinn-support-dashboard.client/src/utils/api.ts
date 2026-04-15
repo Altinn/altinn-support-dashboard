@@ -5,6 +5,7 @@ import {
   PersonalContactAltinn3,
 } from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
+import { NotificationOrderResponse } from "../models/notificationModels";
 
 //this file defines which which api endpoints we want to fetch data from
 
@@ -130,4 +131,20 @@ export const fetchNotificationAddresses = async (
 
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
+};
+
+export const fetchNotificationByOrderId = async (
+  orderId: string,
+):Promise<NotificationOrderResponse[] | null> => {
+  const res = await authorizedFetch(
+    `/api/notifications/orderid/${encodeURIComponent(orderId)}`,
+  );
+
+  if (res.status === 404) return null;
+  if(!res.ok)
+    throw new Error(
+      (await res.text()) || "Error fetching notification by orderId",
+    )
+
+  return await res.json();
 };

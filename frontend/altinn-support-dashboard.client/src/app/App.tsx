@@ -16,6 +16,7 @@ import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
 import NewOrganizationPage from "../pages/NewOrganizationPage";
 import SettingsPage from "../pages/SettingsPage";
 import { CorrespondencePage } from "../pages/CorrespondencePage";
+import { NotificationPage } from "../pages/NotificationPage";
 import { useAppStore } from "../stores/Appstore";
 import PrivateRoutes from "./PrivateRoutes";
 import { ToastContainer } from "react-toastify";
@@ -72,6 +73,10 @@ const App: React.FC = () => {
                 <Route
                   path="/correspondence"
                   element={<CorrespondencePage />}
+                />
+                <Route
+                  path="/notification"
+                  element={<NotificationPage />}
                 />
                 <Route path="/signout" element={<SignOutPage />} />
               </Route>
