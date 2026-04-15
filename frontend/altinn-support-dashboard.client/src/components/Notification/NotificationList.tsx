@@ -15,7 +15,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
 
     const filteredNotifications = notifications.filter(n => n.id.includes(searchId));
     return (
-        <Card data-color="neutral">
+        <Card data-color="neutral" className={style.card}>
             <Textfield
                 label=""
                 placeholder="Skriv inn notifikasjons id"

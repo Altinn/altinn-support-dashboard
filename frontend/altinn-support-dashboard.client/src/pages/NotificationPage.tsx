@@ -14,7 +14,7 @@ export const NotificationPage = () => {
     const notificationQuery  = useNotifications(orderId);
     
     return (
-        <div>
+        <div className={style.container}>
             <Heading level={1} data-size="sm" className={style.heading}>
                 Søk etter varsling
             </Heading>

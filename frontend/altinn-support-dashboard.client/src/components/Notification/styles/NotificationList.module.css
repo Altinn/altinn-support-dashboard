@@ -29,3 +29,8 @@
 .searchField :focus {
     outline: none;
 }
+
+.card{
+    height: 100%;
+    overflow-y: auto;
+}
