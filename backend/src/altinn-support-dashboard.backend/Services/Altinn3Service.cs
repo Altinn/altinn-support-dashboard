@@ -320,18 +320,27 @@ public class Altinn3Service : IAltinn3Service
             party.Type = getTypeFromValue(party.Value);
         }
 
-        var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
-
         List<RolesAndRightsDto> roles = [];
-        if (!string.IsNullOrWhiteSpace(result))
+        try
         {
-            roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
+            var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
+
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
+            }
         }
+        catch (Exception) { }
         //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
         var partyFilterValue = rolesAndRights.PartyFilter.Count > 0 ? rolesAndRights.PartyFilter[0].Value.Replace(" ", "") : null;
-        var altinn2Roles = partyFilterValue != null
-            ? await _altinn2Service.GetPersonRoles(rolesAndRights.Value.Replace(" ", ""), partyFilterValue, environment)
-            : null;
+        List<Role>? altinn2Roles = null;
+        try
+        {
+            altinn2Roles = partyFilterValue != null
+                ? await _altinn2Service.GetPersonRoles(rolesAndRights.Value.Replace(" ", ""), partyFilterValue, environment)
+                : null;
+        }
+        catch (Exception) { }
         if (altinn2Roles != null)
         {
             List<string> altinn2RolesList = [];
@@ -353,11 +362,15 @@ public class Altinn3Service : IAltinn3Service
             var authorizedResources = roles[0].AuthorizedResources;
             if (authorizedResources != null && authorizedResources.Count >= 1)
             {
-                var resourceNames = await GetResourceNamesFromCodes(authorizedResources, environment);
-                if (resourceNames != null)
+                try
                 {
-                    roles[0].AuthorizedResources = resourceNames;
+                    var resourceNames = await GetResourceNamesFromCodes(authorizedResources, environment);
+                    if (resourceNames != null)
+                    {
+                        roles[0].AuthorizedResources = resourceNames;
+                    }
                 }
+                catch (Exception) { }
             }
         }
         return roles;
