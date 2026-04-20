@@ -24,7 +24,7 @@ describe("NotificationStatusCode", () => {
         expect(screen.getByText("Delivered - Delivered successfully")).toBeInTheDocument();
     });
 
-    it("should use success color for delievred status", () => {
+    it("should use success color for delivered status", () => {
         const notification = makeNotifications("Delivered", "Delivered successfully", true);
         render(<NotificationStatusCode notification={notification} />);
 
@@ -38,18 +38,18 @@ describe("NotificationStatusCode", () => {
         expect(screen.getByText("Failed - Failed to deliver")).toHaveAttribute("data-color", "danger");
     });
 
-    it("should use warning color for new status", () => {
+    it("should use info color for new status", () => {
         const notification = makeNotifications("New", "Pending", false);
         render(<NotificationStatusCode notification={notification} />);
 
-        expect(screen.getByText("New - Pending")).toHaveAttribute("data-color", "warning");
+        expect(screen.getByText("New - Pending")).toHaveAttribute("data-color", "info");
     });
 
-    it("should use ifo color for unknown status", () => {
+    it("should use danger color for unknown status", () => {
         const notification = makeNotifications("Unknown", "Unknown status", false);
         render(<NotificationStatusCode notification={notification} />);
 
-        expect(screen.getByText("Unknown - Unknown status")).toHaveAttribute("data-color", "info");
+        expect(screen.getByText("Unknown - Unknown status")).toHaveAttribute("data-color", "danger");
     });
 
     it("should be case insensitive for status matching", () => {

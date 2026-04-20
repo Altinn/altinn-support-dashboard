@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { NotificationOrderResponse } from "../../src/models/notificationModels";
 import { render, screen } from "@testing-library/react";
-import NotificationOrderSummary from "../../src/components/Notification/NotificationOrderSummary";
+import NotificationCard from "../../src/components/Notification/NotificationCard";
 import "@testing-library/jest-dom/vitest";
 
 
@@ -16,7 +16,7 @@ describe("NotificationOrderSummary", () => {
     };
 
     it("should render order details", () => {
-        render(<NotificationOrderSummary order={baseOrder} />);
+        render(<NotificationCard order={baseOrder} />);
 
         expect(screen.getByText("Order id: abc-123")).toBeInTheDocument();
         expect(screen.getByText("Avsenders referanse: ref-456")).toBeInTheDocument();
@@ -25,7 +25,7 @@ describe("NotificationOrderSummary", () => {
     });
 
     it("should show 'Ordredetaljer' when there are no notifications", () => {
-        render(<NotificationOrderSummary order={baseOrder} />);
+        render(<NotificationCard order={baseOrder} />);
 
         expect(screen.getByText("Ordredetaljer")).toBeInTheDocument();
     });
@@ -43,9 +43,9 @@ describe("NotificationOrderSummary", () => {
             ],
         };
 
-        render(<NotificationOrderSummary order={emailOrder} />);
+        render(<NotificationCard order={emailOrder} />);
 
-        expect(screen.getByText("E-post")).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "E-post" })).toBeInTheDocument();
     });
 
     it("should show 'SMS' when the first notification is an SMS", () => {
@@ -61,8 +61,8 @@ describe("NotificationOrderSummary", () => {
             ],
         };
 
-        render(<NotificationOrderSummary order={smsOrder} />);
+        render(<NotificationCard order={smsOrder} />);
 
-        expect(screen.getByText("SMS")).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "SMS" })).toBeInTheDocument();
     });
 })
