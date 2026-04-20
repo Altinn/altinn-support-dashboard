@@ -2,8 +2,7 @@ import { Heading } from '@digdir/designsystemet-react';
 import { useState } from 'react';
 import NotificationSearchBar from '../components/Notification/NotificationSearchBar';
 import { useNotifications } from '../hooks/hooks';
-import NotificationOrderSummary from '../components/Notification/NotificationOrderSummary';
-import NotificationList from '../components/Notification/NotificationList';
+import NotificationCard from '../components/Notification/NotificationCard';
 import style from './styles/NotificationPage.module.css';
 
 
@@ -24,8 +23,7 @@ export const NotificationPage = () => {
             {/* Filters out the notifications with 0 (shows only email if sms was 0 f.ex.) */}
             {notificationQuery.data?.filter(o => o.notifications.length > 0).map((order, index) => (
                 <div key={index}>
-                    <NotificationOrderSummary order={order} />
-                    <NotificationList notifications={order.notifications || []} />
+                    <NotificationCard key={index} order={order}/>
                 </div>
             ))}
         </div>

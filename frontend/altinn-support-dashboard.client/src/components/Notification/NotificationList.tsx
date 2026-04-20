@@ -1,4 +1,4 @@
-import { Card, Table, Textfield } from "@digdir/designsystemet-react";
+import {Table, Textfield } from "@digdir/designsystemet-react";
 import NotificationStatusCode from "./NotificationStatusCode";
 import { NotificationItem } from "../../models/notificationModels";
 import style from "./styles/NotificationList.module.css";
@@ -15,7 +15,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
 
     const filteredNotifications = notifications.filter(n => n.id.includes(searchId));
     return (
-        <Card data-color="neutral" className={style.card}>
+        <>
             <Textfield
                 label=""
                 placeholder="Skriv inn notifikasjons id"
@@ -49,7 +49,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
                     ))}
                 </Table.Body>
             </Table>
-        </Card>
+        </>
     );
 };
 
