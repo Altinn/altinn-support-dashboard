@@ -330,7 +330,7 @@ public class Altinn3Service : IAltinn3Service
                 roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
             }
         }
-        catch (Exception) { }
+        catch (Exception ex) { _logger.LogError(ex, "Failed to fetch altinn3 roles"); }
         //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
         var partyFilterValue = rolesAndRights.PartyFilter.Count > 0 ? rolesAndRights.PartyFilter[0].Value.Replace(" ", "") : null;
         List<Role>? altinn2Roles = null;
