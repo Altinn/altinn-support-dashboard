@@ -1,9 +1,15 @@
+export interface AuthorizedInstanceDto {
+  resourceId?: string;
+  instanceId?: string;
+  instanceRef?: string;
+}
+
 export interface RolesAndRights {
   name: string;
   authorizedAccessPackages?: string[];
   authorizedResources?: string[];
   authorizedRoles?: string[];
-  authorizedInstances?: string[];
+  authorizedInstances?: AuthorizedInstanceDto[];
 }
 
 export interface RolesAndRightsRequest {
