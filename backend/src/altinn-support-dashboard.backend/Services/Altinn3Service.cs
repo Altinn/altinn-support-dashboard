@@ -321,8 +321,12 @@ public class Altinn3Service : IAltinn3Service
         }
 
         var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
-        List<RolesAndRightsDto> roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
 
+        List<RolesAndRightsDto> roles = [];
+        if (!string.IsNullOrWhiteSpace(result))
+        {
+            roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
+        }
         //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
         var partyFilterValue = rolesAndRights.PartyFilter.Count > 0 ? rolesAndRights.PartyFilter[0].Value.Replace(" ", "") : null;
         var altinn2Roles = partyFilterValue != null
