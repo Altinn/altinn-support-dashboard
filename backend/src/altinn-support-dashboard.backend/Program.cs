@@ -5,6 +5,7 @@ using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Security;
 
 namespace AltinnSupportDashboard
 {
@@ -91,6 +92,9 @@ namespace AltinnSupportDashboard
                     services.AddAnsattPortenAuthenticationAndAuthorization(hostContext.Configuration);
                     services.AddSingleton<IAuthorizationHandler, AltinnResourceHandler>();
                     services.AddScoped<IAnsattportenService, AnsattportenService>();
+
+                    // Azure Entra ID
+                    services.AddAzureEntraAuthenticationAndAuthorization(hostContext.Configuration);
 
                     // Register application services
                     services.AddScoped<DataBrregClient>();
