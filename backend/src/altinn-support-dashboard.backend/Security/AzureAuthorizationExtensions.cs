@@ -1,44 +1,52 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using System.Security.Claims;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Security;
 
-public static class AzureRoles
+internal class EasyAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    public const string Authenticated = "AzureAuthenticated";
-    public const string TT02 = "Dashboard.TT02";
-    public const string Production = "Dashboard.PROD";
+    public EasyAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder)
+        : base(options, logger, encoder) { }
+
+    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+    {
+        if (!Request.Headers.TryGetValue("X-MS-CLIENT-PRINCIPAL", out var header))
+            return Task.FromResult(AuthenticateResult.NoResult());
+
+        var decoded = Convert.FromBase64String(header!);
+        var principal = JsonSerializer.Deserialize<AppServicePrincipal>(decoded);
+
+        if (principal?.Claims == null)
+            return Task.FromResult(AuthenticateResult.NoResult());
+
+        var claims = principal.Claims.Select(c => new Claim(c.Typ, c.Val));
+        var identity = new ClaimsIdentity(claims, Scheme.Name, principal.NameTyp, principal.RoleTyp);
+        var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name);
+
+        return Task.FromResult(AuthenticateResult.Success(ticket));
+    }
 }
 
 public static class AzureAuthorizationExtensions
 {
+    private const string Scheme = "EasyAuth";
+
     public static IServiceCollection AddAzureEntraAuthenticationAndAuthorization(
         this IServiceCollection services, IConfiguration configuration)
     {
         bool enabled = configuration.GetValue<bool>("FeatureManagement:AzureEntra");
 
         if (enabled)
-        {
-            services
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie()
-                .AddOpenIdConnect(options =>
-                {
-                    options.Authority = $"https://login.microsoftonline.com/{configuration["AzureAd:TenantId"]}/v2.0";
-                    options.ClientId = configuration["AzureAd:ClientId"];
-                    options.ClientSecret = configuration["AzureAd:ClientSecret"];
-                    options.ResponseType = OpenIdConnectResponseType.Code;
-                    options.SaveTokens = true;
-                    options.MapInboundClaims = true; // maps Azure 'roles' claim to ClaimTypes.Role
-                    options.Scope.Add("openid");
-                    options.Scope.Add("profile");
-                });
-        }
+            services.AddAuthentication(Scheme)
+                .AddScheme<AuthenticationSchemeOptions, EasyAuthHandler>(Scheme, null);
 
-        //the name of the policy is the same as the azure role
+        // the policy name matches the Azure role name
         services.AddAuthorizationBuilder()
             .AddPolicy(AzureRoles.Authenticated, p =>
             {
@@ -52,7 +60,7 @@ public static class AzureAuthorizationExtensions
             })
             .AddPolicy(AzureRoles.Production, p =>
             {
-                //Production is always required
+                // Production is always required
                 p.RequireRole(AzureRoles.Production);
             });
 
