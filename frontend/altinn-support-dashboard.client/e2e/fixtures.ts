@@ -10,7 +10,6 @@ export const test = base.extend({
                     isLoggedIn: true,
                     name: "Test User",
                     orgName: "Test Org",
-                    ansattportenActive: false,
                     userPolicies: []
                 }),
             });

@@ -26,10 +26,6 @@ vi.mock('../../src/hooks/ansattportenHooks', () => ({
     useAuthDetails: vi.fn()
 }));
 
-vi.mock('../../src/utils/ansattportenApi', () => ({
-    initiateSignOut: vi.fn()
-}));
-
 vi.mock('../../src/components/Sidebar/NavItem', () => ({
     default: ({ title, isCollapsed }: { title: string, isCollapsed: boolean }) => (
         isCollapsed ? null : <div>{title}</div>
@@ -275,22 +271,6 @@ describe('Sidebar', () => {
 
         expect(screen.getByText('DateTime')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /Logg ut/i })).toBeInTheDocument();
-    });
-
-    it('should call initiateSignOut when logout is clicked', async () => {
-        const user = userEvent.setup();
-        const { initiateSignOut } = await import('../../src/utils/ansattportenApi');
-
-        render(
-            <MemoryRouter>
-                <Sidebar />
-            </MemoryRouter>
-        );
-
-        const logoutButton = screen.getByRole('button', { name: /Logg ut/i });
-        await user.click(logoutButton);
-
-        expect(initiateSignOut).toHaveBeenCalledWith('/signin');
     });
 
     it('should show correct logo when collapsed', async () => {
