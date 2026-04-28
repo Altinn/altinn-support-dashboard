@@ -3,7 +3,9 @@ import { authorizedFetch, getBaseUrl } from "./utils";
 
 export const fetchAuthDetails = async (): Promise<authDetails> => {
   try {
-    const res = await authorizedFetch(`${getBaseUrl()}/auth/auth-status`);
+    const res = await authorizedFetch(
+      `${getBaseUrl()}/api/azure-auth/auth-status`,
+    );
 
     if (!res.ok) {
       return {
@@ -14,7 +16,8 @@ export const fetchAuthDetails = async (): Promise<authDetails> => {
         orgName: "",
       };
     }
-    const data = (await res.json()) as authDetails;
+    const data = await res.json();
+    console.log(data);
 
     return data;
   } catch (err) {
