@@ -33,7 +33,7 @@ const Sidebar: React.FC = () => {
   const newUsername = authDetails?.data?.name;
 
   const handleLogout = () => {
-    initiateSignOut("/signin");
+    initiateSignOut();
   };
 
   if (authDetails.isLoading || !authDetails?.data?.isLoggedIn) {

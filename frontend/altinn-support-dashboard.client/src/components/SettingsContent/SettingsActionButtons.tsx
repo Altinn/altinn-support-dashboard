@@ -8,7 +8,7 @@ const SettingsActionButtons: React.FC = () => {
   };
 
   const handleLogout = () => {
-    initiateSignOut("/signin");
+    initiateSignOut();
   };
   return (
     <Card data-color="neutral" className={classes.container}>
