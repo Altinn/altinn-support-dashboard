@@ -88,11 +88,6 @@ namespace AltinnSupportDashboard
 
                     services.AddMemoryCache();
 
-                    //Ansattporten
-                    services.AddAnsattPortenAuthenticationAndAuthorization(hostContext.Configuration);
-                    services.AddSingleton<IAuthorizationHandler, AltinnResourceHandler>();
-                    services.AddScoped<IAnsattportenService, AnsattportenService>();
-
                     // Azure Entra ID
                     services.AddAzureEntraAuthenticationAndAuthorization(hostContext.Configuration);
 
