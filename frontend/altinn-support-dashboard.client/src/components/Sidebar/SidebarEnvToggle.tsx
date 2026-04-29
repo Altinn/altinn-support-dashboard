@@ -47,11 +47,11 @@ const SidebarEnvToggle: React.FC = () => {
         onChange={(e) => handleEnvironmentChange(e.target.value)}
       >
         {(!authDetails.data?.azureAuthActive ||
-          userPolicies?.includes("Dashboard.TT02")) && (
+          userPolicies?.includes("Dashboard.PROD")) && (
           <SelectOption value="PROD">PROD</SelectOption>
         )}
         {(!authDetails.data?.azureAuthActive ||
-          userPolicies?.includes("Dashboard.PROD")) && (
+          userPolicies?.includes("Dashboard.TT02")) && (
           <SelectOption value="TT02">TT02</SelectOption>
         )}
       </Select>
