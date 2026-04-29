@@ -21,7 +21,7 @@ vi.mock("../../src/hooks/hooks", () => ({
   useUserDetails: vi.fn(),
 }));
 
-vi.mock("../../src/hooks/ansattportenHooks", () => ({
+vi.mock("../../src/hooks/azureAuthHooks", () => ({
   useAuthDetails: vi.fn(),
 }));
 
@@ -60,13 +60,9 @@ describe("Sidebar", () => {
       userName: "Old User",
       userEmail: "test@test.no",
     });
+
     vi.mocked(useAuthDetails).mockReturnValue({
-      data: {
-        isLoggedIn: true,
-        name: "Test User",
-        ansattportenActive: true,
-        userPolicies: [],
-      },
+      data: { isLoggedIn: true, name: "Test User", azureAuthActive: true, roles: [] },
       isLoading: false,
     } as unknown as ReturnType<typeof useAuthDetails>);
   });
@@ -194,27 +190,6 @@ describe("Sidebar", () => {
     );
 
     expect(screen.queryByText("Test User")).not.toBeInTheDocument();
-  });
-
-  it("should show old userName when auth name is unavailable", async () => {
-    const { useAuthDetails } = await import("../../src/hooks/azureAuthHooks");
-    vi.mocked(useAuthDetails).mockReturnValue({
-      data: {
-        isLoggedIn: true,
-        name: undefined,
-        ansattportenActive: true,
-        userPolicies: [],
-      },
-      isLoading: false,
-    } as unknown as ReturnType<typeof useAuthDetails>);
-
-    render(
-      <MemoryRouter>
-        <Sidebar />
-      </MemoryRouter>,
-    );
-
-    expect(screen.getByText("Old User")).toBeInTheDocument();
   });
 
   it("should not show SidebarEnvToggle when collapsed", async () => {

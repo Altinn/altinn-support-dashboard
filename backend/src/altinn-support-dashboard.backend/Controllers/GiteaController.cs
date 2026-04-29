@@ -2,9 +2,11 @@ using System;
 using System.Threading.Tasks;
 using altinn_support_dashboard.Server.Models.Gitea;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Security;
 
 namespace AltinnSupportDashboard.Controllers
 {
@@ -12,6 +14,7 @@ namespace AltinnSupportDashboard.Controllers
     /// API-kontroller for integrasjon mot Gitea (Altinn Studio)
     /// </summary>
     [ApiController]
+    [Authorize(AzureRoles.Authenticated)]
     [Route("api/gitea")]
     public class GiteaController : ControllerBase
     {

@@ -8,8 +8,8 @@ namespace AltinnSupportDashboard.Controllers;
 [ApiController]
 [Route("api/notifications")]
 //added authorization temporary
-[Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
-[Authorize(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy)]
+[Authorize(AzureRoles.Authenticated)]
+[Authorize(AzureRoles.CoreClosed)]
 public class NotificationsController : ControllerBase
 {
     private readonly INotificationsService _service;
