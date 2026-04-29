@@ -19,6 +19,7 @@ public class AzureAuthController : ControllerBase
         {
             isLoggedIn = User.Identity?.IsAuthenticated ?? false,
             name = User.Identity?.Name,
+            azureAuthActive = true,
             roles
         });
     }
