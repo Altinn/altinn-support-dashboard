@@ -6,7 +6,7 @@ import coloredLogo from "../assets/log-in-blue.png";
 import { useAppStore } from "../stores/Appstore";
 import cat from "../assets/fun/sleeping cat.gif";
 import dog from "../assets/fun/sleeping dog.gif";
-import { initiateSignIn } from "../utils/ansattportenApi";
+import { initiateTemporarySignIn } from "../utils/ansattportenApi";
 import { useLocation } from "react-router-dom";
 import { showPopup } from "../components/Popup";
 
@@ -30,7 +30,7 @@ export const SignInPage: React.FC = () => {
   }, [location.search]);
 
   const handleSignInAnsattporten = () => {
-    initiateSignIn("/dashboard");
+    initiateTemporarySignIn();
   };
 
   return (
