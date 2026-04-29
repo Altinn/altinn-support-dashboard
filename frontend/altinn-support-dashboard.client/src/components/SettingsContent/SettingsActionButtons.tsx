@@ -1,6 +1,6 @@
 import { Card, Button } from "@digdir/designsystemet-react";
 import classes from "./styles/SettingsActionsButtons.module.css";
-import { initiateSignOut } from "../../utils/ansattportenApi";
+import { initiateSignOut } from "../../utils/azureAuthApi";
 
 const SettingsActionButtons: React.FC = () => {
   const handleReload = () => {

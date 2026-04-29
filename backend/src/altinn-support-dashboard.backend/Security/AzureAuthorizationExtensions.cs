@@ -34,6 +34,7 @@ public static class AzureAuthorizationExtensions
             })
             .AddPolicy(AzureRoles.Production, p =>
             {
+                //always require production roles
                 p.RequireRole(AzureRoles.Production);
             });
 

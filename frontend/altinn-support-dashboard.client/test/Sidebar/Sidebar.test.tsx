@@ -48,8 +48,7 @@ describe("Sidebar", () => {
     const { useSidebarDrag } =
       await import("../../src/components/Sidebar/hooks/useSidebarDrag");
     const { useUserDetails } = await import("../../src/hooks/hooks");
-    const { useAuthDetails } =
-      await import("../../src/hooks/ansattportenHooks");
+    const { useAuthDetails } = await import("../../src/hooks/azureAuthHooks");
 
     vi.mocked(useSidebarDrag).mockReturnValue({
       isCollapsed: false,
@@ -73,8 +72,7 @@ describe("Sidebar", () => {
   });
 
   it("should not render when not logged in", async () => {
-    const { useAuthDetails } =
-      await import("../../src/hooks/ansattportenHooks");
+    const { useAuthDetails } = await import("../../src/hooks/azureAuthHooks");
     vi.mocked(useAuthDetails).mockReturnValue({
       data: {
         isLoggedIn: false,
@@ -92,8 +90,7 @@ describe("Sidebar", () => {
   });
 
   it("should not render when loading", async () => {
-    const { useAuthDetails } =
-      await import("../../src/hooks/ansattportenHooks");
+    const { useAuthDetails } = await import("../../src/hooks/azureAuthHooks");
     vi.mocked(useAuthDetails).mockReturnValue({
       data: {
         isLoggedIn: true,
@@ -200,8 +197,7 @@ describe("Sidebar", () => {
   });
 
   it("should show old userName when auth name is unavailable", async () => {
-    const { useAuthDetails } =
-      await import("../../src/hooks/ansattportenHooks");
+    const { useAuthDetails } = await import("../../src/hooks/azureAuthHooks");
     vi.mocked(useAuthDetails).mockReturnValue({
       data: {
         isLoggedIn: true,

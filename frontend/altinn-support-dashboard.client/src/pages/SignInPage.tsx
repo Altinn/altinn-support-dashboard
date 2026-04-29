@@ -8,7 +8,7 @@ import cat from "../assets/fun/sleeping cat.gif";
 import dog from "../assets/fun/sleeping dog.gif";
 import { useLocation } from "react-router-dom";
 import { showPopup } from "../components/Popup";
-import { initiateSignIn } from "../utils/ansattportenApi";
+import { initiateSignIn } from "../utils/azureAuthApi";
 
 export const SignInPage: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
@@ -29,7 +29,7 @@ export const SignInPage: React.FC = () => {
     }
   }, [location.search]);
 
-  const handleSignInAnsattporten = () => {
+  const handleSignIn = () => {
     initiateSignIn();
   };
 
@@ -41,12 +41,8 @@ export const SignInPage: React.FC = () => {
         className={style.logo}
       />
 
-      <Button
-        variant="primary"
-        className={style.ansattPortenButton}
-        onClick={handleSignInAnsattporten}
-      >
-        Logg inn med Ansattporten
+      <Button variant="primary" onClick={handleSignIn}>
+        Logg inn
       </Button>
       <div className={style.gifContainer}>
         <img src={selectedImage} alt="gif" className={style.catGif} />

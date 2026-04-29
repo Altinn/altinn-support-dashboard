@@ -2,7 +2,7 @@ import classes from "./styles/SideBarEnvToggle.module.css";
 import { useAppStore } from "../../stores/Appstore";
 import { Select, SelectOption } from "@digdir/designsystemet-react";
 import { useEffect } from "react";
-import { useAuthDetails } from "../../hooks/ansattportenHooks";
+import { useAuthDetails } from "../../hooks/azureAuthHooks";
 
 const SidebarEnvToggle: React.FC = () => {
   const environment = useAppStore((state) => state.environment);

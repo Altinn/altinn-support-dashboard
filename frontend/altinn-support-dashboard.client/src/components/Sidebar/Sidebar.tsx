@@ -5,7 +5,7 @@ import NavItem from "./NavItem";
 import SideBarDateTime from "./SidebarDateTime";
 import SidebarEnvToggle from "./SidebarEnvToggle";
 import { useUserDetails } from "../../hooks/hooks";
-import { initiateSignOut } from "../../utils/ansattportenApi";
+import { initiateSignOut } from "../../utils/azureAuthApi";
 import {
   Buildings3Icon,
   ChevronLeftIcon,
@@ -20,7 +20,7 @@ import {
 import { Button, Divider, Label } from "@digdir/designsystemet-react";
 
 import classes from "./styles/SideBarComponent.module.css";
-import { useAuthDetails } from "../../hooks/ansattportenHooks";
+import { useAuthDetails } from "../../hooks/azureAuthHooks";
 
 const Sidebar: React.FC = () => {
   const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();

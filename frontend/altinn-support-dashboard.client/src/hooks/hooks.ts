@@ -156,13 +156,13 @@ export const useCorrespondencePost = () => {
 };
 
 export function useNotifications(orderId: string) {
-    const notificationQuery = useQuery({
-        queryKey: ["notifications", orderId],
-        queryFn: () => fetchNotificationByOrderId(orderId),
-        enabled: !!orderId,
-        retry: false,
-        staleTime: 2 * 60 * 1000,
-        refetchOnWindowFocus: false,
-    });
-    return notificationQuery;
+  const notificationQuery = useQuery({
+    queryKey: ["notifications", orderId],
+    queryFn: () => fetchNotificationByOrderId(orderId),
+    enabled: !!orderId,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+  return notificationQuery;
 }
