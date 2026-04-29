@@ -8,7 +8,7 @@ const SidebarEnvToggle: React.FC = () => {
   const environment = useAppStore((state) => state.environment);
   const setEnvironment = useAppStore((state) => state.setEnvironment);
   const authDetails = useAuthDetails();
-  const userPolicies = authDetails?.data?.userPolicies;
+  const userPolicies = authDetails?.data?.roles;
 
   const handleEnvironmentChange = (env: string) => {
     setEnvironment(env);
@@ -21,14 +21,14 @@ const SidebarEnvToggle: React.FC = () => {
 
     if (
       environment == "TT02" &&
-      !userPolicies.includes("TT02Authenticated") &&
-      userPolicies.includes("ProductionAuthenticated")
+      !userPolicies.includes("Dashboard.TT02") &&
+      userPolicies.includes("Dashboard.PROD")
     ) {
       setEnvironment("PROD");
     } else if (
       environment == "PROD" &&
-      !userPolicies.includes("ProductionAuthenticated") &&
-      userPolicies.includes("TT02Authenticated")
+      !userPolicies.includes("Dashboard.TT02") &&
+      userPolicies.includes("Dashboard.PROD")
     ) {
       setEnvironment("TT02");
     }
@@ -46,12 +46,12 @@ const SidebarEnvToggle: React.FC = () => {
         value={environment}
         onChange={(e) => handleEnvironmentChange(e.target.value)}
       >
-        {(!authDetails.data?.ansattportenActive ||
-          userPolicies?.includes("ProductionAuthenticated")) && (
+        {(!authDetails.data?.azureAuthActive ||
+          userPolicies?.includes("Dashboard.TT02")) && (
           <SelectOption value="PROD">PROD</SelectOption>
         )}
-        {(!authDetails.data?.ansattportenActive ||
-          userPolicies?.includes("TT02Authenticated")) && (
+        {(!authDetails.data?.azureAuthActive ||
+          userPolicies?.includes("Dashboard.PROD")) && (
           <SelectOption value="TT02">TT02</SelectOption>
         )}
       </Select>

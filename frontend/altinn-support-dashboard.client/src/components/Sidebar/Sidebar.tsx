@@ -102,7 +102,7 @@ const Sidebar: React.FC = () => {
             <NavItem
               to="/notification"
               title="Varsling"
-              icon ={<DatabaseIcon className={classes.icons} />}
+              icon={<DatabaseIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
             <NavItem
@@ -133,9 +133,6 @@ const Sidebar: React.FC = () => {
               <div className={classes.userInfo}>
                 <Label>
                   {authDetails?.data?.name ? newUsername : userName}
-                </Label>
-                <Label className={classes.loggedInOrgName}>
-                  {authDetails?.data?.orgName}
                 </Label>
               </div>
             </>
