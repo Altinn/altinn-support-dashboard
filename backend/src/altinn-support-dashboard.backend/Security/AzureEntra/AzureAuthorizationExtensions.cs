@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 
@@ -14,11 +15,6 @@ public static class AzureAuthorizationExtensions
         {
             services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApp(configuration.GetSection("AzureAd"));
-
-            services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
-            {
-                options.TokenValidationParameters.RoleClaimType = "roles";
-            });
         }
 
         services.AddAuthorizationBuilder()
@@ -29,19 +25,22 @@ public static class AzureAuthorizationExtensions
             })
             .AddPolicy(AzureRoles.TT02, p =>
             {
-                if (enabled) p.RequireRole(AzureRoles.TT02);
+                if (enabled) p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.TT02));
                 else p.RequireAssertion(_ => true);
-            }).AddPolicy(AzureRoles.CoreClosed, p =>
+            })
+            .AddPolicy(AzureRoles.CoreClosed, p =>
             {
-                if (enabled) p.RequireRole(AzureRoles.CoreClosed);
+                if (enabled) p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.CoreClosed));
                 else p.RequireAssertion(_ => true);
             })
             .AddPolicy(AzureRoles.Production, p =>
             {
-                //always require production roles
-                p.RequireRole(AzureRoles.Production);
+                p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.Production));
             });
 
         return services;
     }
+
+    private static bool HasRole(ClaimsPrincipal user, string role) =>
+        user.Claims.Any(c => (c.Type == "roles" || c.Type == ClaimTypes.Role) && c.Value == role);
 }

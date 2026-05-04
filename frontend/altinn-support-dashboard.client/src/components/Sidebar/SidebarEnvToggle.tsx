@@ -27,8 +27,8 @@ const SidebarEnvToggle: React.FC = () => {
       setEnvironment("PROD");
     } else if (
       environment == "PROD" &&
-      !userPolicies.includes("Dashboard.TT02") &&
-      userPolicies.includes("Dashboard.PROD")
+      !userPolicies.includes("Dashboard.PROD") &&
+      userPolicies.includes("Dashboard.TT02")
     ) {
       setEnvironment("TT02");
     }

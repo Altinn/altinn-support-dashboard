@@ -34,7 +34,6 @@ namespace AltinnSupportDashboard.Controllers
     }
 
     [ApiController]
-
     [Authorize(AzureRoles.Production)]
     [Route("api/Production/serviceowner")]
     public class AltinnProductionController : AltinnBaseController
