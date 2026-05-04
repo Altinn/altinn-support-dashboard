@@ -16,13 +16,27 @@ public static class AzureAuthorizationExtensions
         {
             services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApp(configuration.GetSection("AzureAd"));
+
+            services.Configure<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.None;
+                //how long before new login is needed, automaticly resets timer on each request
+                options.ExpireTimeSpan = TimeSpan.FromHours(4);
+                options.SlidingExpiration = true;
+            });
         }
         else
         {
-            //fallback to be able to still authenticate roles which has to be enforced like prod
+            // Fallback scheme so enforced policies (e.g. Production) can return
+            // proper 401/403 instead of crashing with no DefaultChallengeScheme.
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.SameSite = SameSiteMode.Strict;
                     options.Events.OnRedirectToLogin = ctx =>
                     {
                         ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
