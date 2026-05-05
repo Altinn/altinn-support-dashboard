@@ -61,13 +61,19 @@ public static class AzureAuthorizationExtensions
                 if (enabled) p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.TT02));
                 else p.RequireAssertion(_ => true);
             })
-            .AddPolicy(AzureRoles.CoreClosed, p =>
+            .AddPolicy(AzureRoles.CoreInternal, p =>
             {
-                if (enabled) p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.CoreClosed));
+                if (enabled) p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.CoreInternal));
+                else p.RequireAssertion(_ => true);
+            })
+            .AddPolicy(AzureRoles.CoreExternal, p =>
+            {
+                if (enabled) p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.CoreExternal));
                 else p.RequireAssertion(_ => true);
             })
             .AddPolicy(AzureRoles.Production, p =>
             {
+                //Always required
                 p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.Production));
             });
 

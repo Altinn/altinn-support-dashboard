@@ -9,7 +9,7 @@ namespace AltinnSupportDashboard.Controllers;
 [Route("api/notifications")]
 //added authorization temporary
 [Authorize(AzureRoles.Authenticated)]
-[Authorize(AzureRoles.CoreClosed)]
+[Authorize(AzureRoles.CoreInternal)]
 public class NotificationsController : ControllerBase
 {
     private readonly INotificationsService _service;

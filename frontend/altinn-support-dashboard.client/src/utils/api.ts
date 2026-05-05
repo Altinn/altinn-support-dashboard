@@ -135,16 +135,16 @@ export const fetchNotificationAddresses = async (
 
 export const fetchNotificationByOrderId = async (
   orderId: string,
-):Promise<NotificationOrderResponse[] | null> => {
+): Promise<NotificationOrderResponse[] | null> => {
   const res = await authorizedFetch(
     `/api/notifications/orderid/${encodeURIComponent(orderId)}`,
   );
 
   if (res.status === 404) return null;
-  if(!res.ok)
+  if (!res.ok)
     throw new Error(
       (await res.text()) || "Error fetching notification by orderId",
-    )
+    );
 
   return await res.json();
 };
