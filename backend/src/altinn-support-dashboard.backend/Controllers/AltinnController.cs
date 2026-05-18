@@ -9,7 +9,7 @@ using Models.altinn3Dtos;
 namespace AltinnSupportDashboard.Controllers
 {
 
-    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
+    [Authorize(AzureRoles.Authenticated)]
     [ApiController]
     [Route("api/{environmentName}")]
     public class HealthController : ControllerBase
@@ -23,7 +23,7 @@ namespace AltinnSupportDashboard.Controllers
 
 
     [ApiController]
-    [Authorize(AnsattportenConstants.AnsattportenTT02AuthorizationPolicy)]
+    [Authorize(AzureRoles.TT02)]
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
     {
@@ -34,8 +34,7 @@ namespace AltinnSupportDashboard.Controllers
     }
 
     [ApiController]
-
-    [Authorize(AnsattportenConstants.AnsattportenProductionAuthorizationPolicy)]
+    [Authorize(AzureRoles.Production)]
     [Route("api/Production/serviceowner")]
     public class AltinnProductionController : AltinnBaseController
     {
@@ -47,7 +46,7 @@ namespace AltinnSupportDashboard.Controllers
 
 
     //Made controller abstract to be able to authorize on different environments
-    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
+    [Authorize(AzureRoles.Authenticated)]
     [ApiController]
     public abstract class AltinnBaseController : ControllerBase
     {

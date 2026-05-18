@@ -13,7 +13,8 @@ namespace altinn_support_dashboard.Server.Controllers
     /// </summary>
     [ApiController]
     [Route("api/tt02/platform")]
-    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
+    [Authorize(AzureRoles.TT02)]
+    [Authorize(AzureRoles.Authenticated)]
     public class Altinn_party_APIController : ControllerBase
     {
         private readonly IPartyApiService _service;

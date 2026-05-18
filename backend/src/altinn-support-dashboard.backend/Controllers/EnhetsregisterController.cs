@@ -7,7 +7,7 @@ using Security;
 namespace altinn_support_dashboard.Server.Controllers
 {
 
-    [Authorize(AnsattportenConstants.AnsattportenAuthorizationPolicy)]
+    [Authorize(AzureRoles.Authenticated)]
     [ApiController]
     [Route("api/{environmentName}/brreg/enhet/{orgNumber}")]
     public class EnhetsregisterController : ControllerBase

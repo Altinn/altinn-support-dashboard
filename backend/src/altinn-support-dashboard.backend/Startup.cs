@@ -53,43 +53,22 @@ namespace AltinnSupportDashboard
             });
 
 
-            // Enable wide-open CORS policy
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", builder =>
-                {
-                    builder.AllowAnyOrigin()   // Allow all origins
-                           .AllowAnyMethod()   // Allow all methods (GET, POST, PUT, DELETE, etc.)
-                           .AllowAnyHeader();   // Allow all headers (Authorization, Content-Type, etc.)
-
-                });
-            });
-
             services.AddRedaction(redaction =>
             {
                 redaction.SetRedactor<SsnRedactor>(CustomDataClassifications.SSN);
             });
 
-
-            //enables only from frontend
             string[] baseUrl = Configuration.GetSection("RedirectConfiguration:AllowedUrls").Get<string[]>() ?? throw new Exception("Redirecrt url not set");
-            if (baseUrl != null && baseUrl.Length != 0)
+            services.AddCors(options =>
             {
-                services.AddCors(options =>
+                options.AddPolicy("AllowFrontend", builder =>
                 {
-
-                    options.AddPolicy("AllowFrontend", builder =>
-                    {
-                        builder.WithOrigins(baseUrl)   // Allow only frontend origin
-                               .AllowAnyMethod()
-                               .AllowAnyHeader()
-                               .AllowCredentials();
-
-                    });
-
+                    builder.WithOrigins(baseUrl)
+                           .WithMethods("GET", "POST")
+                           .AllowAnyHeader()
+                           .AllowCredentials();
                 });
-
-            }
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
