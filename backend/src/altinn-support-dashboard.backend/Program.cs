@@ -105,6 +105,8 @@ namespace AltinnSupportDashboard
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
                     services.AddScoped<ICorrespondenceService, CorrespondenceService>();
                     services.AddScoped<ISsnTokenService, SsnTokenService>();
+                    services.AddScoped<IResourceRegistryClient, ResourceRegistryClient>();
+                    services.AddScoped<IResourceRegistryService, ResourceRegistryService>();
                 });
     }
 }
