@@ -41,4 +41,12 @@ public class ResourceRegistryClient : IResourceRegistryClient
 
         return responseBody;
     }
+
+    public async Task<string> GetAltinnAppResources(string environmentName, string query)
+    {
+        var client = _clients[environmentName];
+        var requestUrl = $"/resourceregistry/api/v1/resource/Search?ResourceType=AltinnApp";
+        var response = await client.GetAsync(requestUrl);
+        return await response.Content.ReadAsStringAsync();
+    }
 }
