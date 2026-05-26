@@ -9,6 +9,9 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 {
     public class NotificationsControllerTests
     {
+        private const string ValidOrderId = "dec90ca7-4f8d-410f-96ed-666fe019c946";
+        private const string OtherValidOrderId = "11111111-2222-3333-4444-555555555555";
+
         private readonly NotificationsController _controller;
         private readonly Mock<INotificationsService> _serviceMock;
 
@@ -23,11 +26,11 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             var response = new NotificationOrderResponseDto
             {
-                OrderId = "order-123", SendersReference = "ref", Generated = 1, Succeeded = 1, Notifications = []
+                OrderId = ValidOrderId, SendersReference = "ref", Generated = 1, Succeeded = 1, Notifications = []
             };
-            _serviceMock.Setup(s => s.GetEmailNotificationsByOrderId("order-123")).ReturnsAsync(response);
+            _serviceMock.Setup(s => s.GetEmailNotificationsByOrderId(ValidOrderId)).ReturnsAsync(response);
 
-            var result = await _controller.GetEmailNotificationsByOrderId("order-123");
+            var result = await _controller.GetEmailNotificationsByOrderId(ValidOrderId);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(response, okResult.Value);
@@ -36,15 +39,15 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [Fact]
         public async Task GetEmailNotificationsByOrderId_CallsService_WithCorrectOrderId()
         {
-            _serviceMock.Setup(s => s.GetEmailNotificationsByOrderId("order-123"))
+            _serviceMock.Setup(s => s.GetEmailNotificationsByOrderId(ValidOrderId))
                 .ReturnsAsync(new NotificationOrderResponseDto
                 {
-                    OrderId = "order-123", SendersReference = "ref", Generated = 1, Succeeded = 1, Notifications = []
+                    OrderId = ValidOrderId, SendersReference = "ref", Generated = 1, Succeeded = 1, Notifications = []
                 });
 
-            await _controller.GetEmailNotificationsByOrderId("order-123");
+            await _controller.GetEmailNotificationsByOrderId(ValidOrderId);
 
-            _serviceMock.Verify(s => s.GetEmailNotificationsByOrderId("order-123"), Times.Once);
+            _serviceMock.Verify(s => s.GetEmailNotificationsByOrderId(ValidOrderId), Times.Once);
         }
 
         [Fact]
@@ -53,7 +56,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             _serviceMock.Setup(s => s.GetEmailNotificationsByOrderId(It.IsAny<string>()))
                 .ThrowsAsync(new Exception("Service failure"));
 
-            await Assert.ThrowsAsync<Exception>(() => _controller.GetEmailNotificationsByOrderId("order-123"));
+            await Assert.ThrowsAsync<Exception>(() => _controller.GetEmailNotificationsByOrderId(ValidOrderId));
         }
 
         [Fact]
@@ -61,11 +64,11 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             var response = new NotificationOrderResponseDto
             {
-                OrderId = "order-456", SendersReference = "ref", Generated = 1, Succeeded = 1, Notifications = []
+                OrderId = OtherValidOrderId, SendersReference = "ref", Generated = 1, Succeeded = 1, Notifications = []
             };
-            _serviceMock.Setup(s => s.GetSmsNotificationsByOrderId("order-456")).ReturnsAsync(response);
+            _serviceMock.Setup(s => s.GetSmsNotificationsByOrderId(OtherValidOrderId)).ReturnsAsync(response);
 
-            var result = await _controller.GetSmsNotificationsByOrderId("order-456");
+            var result = await _controller.GetSmsNotificationsByOrderId(OtherValidOrderId);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(response, okResult.Value);
@@ -74,15 +77,15 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [Fact]
         public async Task GetSmsNotificationsByOrderId_CallsService_WithCorrectOrderId()
         {
-            _serviceMock.Setup(s => s.GetSmsNotificationsByOrderId("order-456"))
+            _serviceMock.Setup(s => s.GetSmsNotificationsByOrderId(OtherValidOrderId))
                 .ReturnsAsync(new NotificationOrderResponseDto
                 {
-                    OrderId = "order-456", SendersReference = "ref", Generated = 1, Succeeded = 1, Notifications = []
+                    OrderId = OtherValidOrderId, SendersReference = "ref", Generated = 1, Succeeded = 1, Notifications = []
                 });
 
-            await _controller.GetSmsNotificationsByOrderId("order-456");
+            await _controller.GetSmsNotificationsByOrderId(OtherValidOrderId);
 
-            _serviceMock.Verify(s => s.GetSmsNotificationsByOrderId("order-456"), Times.Once);
+            _serviceMock.Verify(s => s.GetSmsNotificationsByOrderId(OtherValidOrderId), Times.Once);
         }
 
         [Fact]
@@ -91,7 +94,46 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             _serviceMock.Setup(s => s.GetSmsNotificationsByOrderId(It.IsAny<string>()))
                 .ThrowsAsync(new Exception("Service failure"));
 
-            await Assert.ThrowsAsync<Exception>(() => _controller.GetSmsNotificationsByOrderId("order-456"));
+            await Assert.ThrowsAsync<Exception>(() => _controller.GetSmsNotificationsByOrderId(OtherValidOrderId));
+        }
+
+        [Theory]
+        [InlineData("order-123")]
+        [InlineData("not-a-guid")]
+        [InlineData("dec90ca74f8d410f96ed666fe019c946")]
+        [InlineData("{dec90ca7-4f8d-410f-96ed-666fe019c946}")]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task GetEmailNotificationsByOrderId_ReturnsBadRequest_WhenOrderIdIsNotGuid(string orderId)
+        {
+            var result = await _controller.GetEmailNotificationsByOrderId(orderId);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+            _serviceMock.Verify(s => s.GetEmailNotificationsByOrderId(It.IsAny<string>()), Times.Never);
+        }
+
+        [Theory]
+        [InlineData("order-123")]
+        [InlineData("not-a-guid")]
+        [InlineData("")]
+        public async Task GetSmsNotificationsByOrderId_ReturnsBadRequest_WhenOrderIdIsNotGuid(string orderId)
+        {
+            var result = await _controller.GetSmsNotificationsByOrderId(orderId);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+            _serviceMock.Verify(s => s.GetSmsNotificationsByOrderId(It.IsAny<string>()), Times.Never);
+        }
+
+        [Theory]
+        [InlineData("order-123")]
+        [InlineData("not-a-guid")]
+        [InlineData("")]
+        public async Task GetAllNotificationsByOrderId_ReturnsBadRequest_WhenOrderIdIsNotGuid(string orderId)
+        {
+            var result = await _controller.GetAllNotificationsByOrderId(orderId);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+            _serviceMock.Verify(s => s.GetAllNotificationsByOrderId(It.IsAny<string>()), Times.Never);
         }
     }
 }
