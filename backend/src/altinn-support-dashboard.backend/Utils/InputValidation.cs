@@ -101,8 +101,8 @@ namespace altinn_support_dashboard.Server.Utils
             {
                 return string.Empty;
             }
-            // Remove newline and other control characters to prevent log forging.
-            var chars = value.Where(c => !char.IsControl(c) || c == '\t').ToArray();
+            // Remove all control characters to prevent log forging and log confusion.
+            var chars = value.Where(c => !char.IsControl(c)).ToArray();
             return new string(chars);
         }
     }
