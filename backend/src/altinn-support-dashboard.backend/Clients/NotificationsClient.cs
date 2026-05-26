@@ -25,7 +25,10 @@ public class NotificationsClient : INotificationsClient
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            throw new HttpRequestException(
+                $"Api request failed with status code {response.StatusCode}: {responseBody}",
+                inner: null,
+                statusCode: response.StatusCode);
         }
 
         return responseBody;
@@ -38,7 +41,10 @@ public class NotificationsClient : INotificationsClient
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            throw new HttpRequestException(
+                $"Api request failed with status code {response.StatusCode}: {responseBody}",
+                inner: null,
+                statusCode: response.StatusCode);
         }
 
         return responseBody;
