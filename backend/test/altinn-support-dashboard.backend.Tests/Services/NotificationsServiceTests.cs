@@ -158,8 +158,6 @@ public class NotificationsServiceTests
         _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>())).ThrowsAsync(new Exception("Email API failure"));
         _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>())).ThrowsAsync(new Exception("SMS API failure"));
 
-        var result = await _service.GetAllNotificationsByOrderId("order-123");
-
-        Assert.Throws<HttpRequestException>(() => result);
+        await Assert.ThrowsAsync<HttpRequestException>(() => _service.GetAllNotificationsByOrderId("order-123"));
     }
 }
