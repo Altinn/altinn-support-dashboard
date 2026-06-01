@@ -1,6 +1,7 @@
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Utils;
 using Models.notifications;
+using System.Net;
 using System.Text.Json;
 
 namespace altinn_support_dashboard.Server.Services;
@@ -54,8 +55,16 @@ public class NotificationsService : INotificationsService
         if (emailTask.IsCompletedSuccessfully)
             results.Add(emailTask.Result);
         else
-            _logger.LogError(emailTask.Exception, "Failed to get email notifications for order {OrderId}", ValidationService.SanitizeForLog(orderId));
+            _logger.LogError(emailTask.Exception, "Failed to get email notifications for order: {OrderId}", ValidationService.SanitizeForLog(orderId));
 
+        if (results.Count == 0)
+        {
+            throw new HttpRequestException(
+                $"No notifications found for order {orderId}.",
+                inner: null,
+                statusCode: HttpStatusCode.NotFound);
+        }
         return results;
     }
+
 }
