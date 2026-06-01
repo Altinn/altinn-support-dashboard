@@ -38,7 +38,11 @@ public class ResourceRegistryService : IResourceRegistryService
             r.ResourceType == "AltinnApp" &&
             r.CompetentAuthority?.Name?.Values.Any(v => v == "Testdepartementet") != true &&
             r.Title?.Values.Any(v => v.Contains(query, StringComparison.OrdinalIgnoreCase)) == true
-        ).ToList();
-   
+        ).ToList();   
+    }
+
+    public async Task<string> GetResourceByIdentifier(string environmentName, string identifier)
+    {
+        return await _resourceRegistryClient.GetResourceByIdentifier(environmentName, identifier);
     }
 }

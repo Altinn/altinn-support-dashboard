@@ -29,4 +29,15 @@ public class ResourceRegistryController : ControllerBase
         var result = await _resourceRegistryService.SearchResources(environmentName, query);
         return Ok(result);
     }
+
+    [HttpGet("{identifier}")]
+    public async Task<IActionResult> GetResourceByIdentifier(string environmentName, string identifier)
+    {
+        var result = await _resourceRegistryService.GetResourceByIdentifier(environmentName, identifier);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Content(result, "application/json");
+    }
 }

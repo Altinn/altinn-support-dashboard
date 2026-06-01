@@ -41,4 +41,14 @@ public class ResourceRegistryClient : IResourceRegistryClient
 
         return responseBody;
     }
+
+    public async Task<string> GetResourceByIdentifier(string environmentName, string identifier)
+    {
+        var client = _clients[environmentName];
+        var requestUrl = $"/resourceregistry/api/v1/resource/{Uri.EscapeDataString(identifier)}";
+
+        var response = await client.GetAsync(requestUrl);
+        var responseBody = await response.Content.ReadAsStringAsync();
+        return responseBody;
+    }
 }
