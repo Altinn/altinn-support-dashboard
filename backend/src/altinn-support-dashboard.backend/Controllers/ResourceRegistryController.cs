@@ -40,4 +40,26 @@ public class ResourceRegistryController : ControllerBase
         }
         return Content(result, "application/json");
     }
+
+    [HttpGet("{identifier}/policy/rules")]
+    public async Task<IActionResult> GetResourcePolicyRules(string environmentName, string identifier)
+    {
+        var result = await _resourceRegistryService.GetResourcePolicyRules(environmentName, identifier);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Content(result, "application/json");
+    }
+
+    [HttpGet("{identifier}/policy/rights")]
+    public async Task<IActionResult> GetResourcePolicyRights(string environmentName, string identifier)
+    {
+        var result = await _resourceRegistryService.GetResourcePolicyRights(environmentName, identifier);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Content(result, "application/json");
+    }
 }

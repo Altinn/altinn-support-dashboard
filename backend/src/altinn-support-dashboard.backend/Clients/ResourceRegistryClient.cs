@@ -51,4 +51,20 @@ public class ResourceRegistryClient : IResourceRegistryClient
         var responseBody = await response.Content.ReadAsStringAsync();
         return responseBody;
     }
+
+    public async Task<string> GetResourcePolicyRules(string environmentName, string identifier)
+    {
+        var client = _clients[environmentName];
+        var response = await client.GetAsync($"/resourceregistry/api/v1/resource/{Uri.EscapeDataString(identifier)}/policy/rules");
+        var responseBody = await response.Content.ReadAsStringAsync();
+        return responseBody;
+    }
+
+    public async Task<string> GetResourcePolicyRights(string environmentName, string identifier)
+    {
+        var client = _clients[environmentName];
+        var response = await client.GetAsync($"/resourceregistry/api/v1/resource/{Uri.EscapeDataString(identifier)}/policy/rights");
+        var responseBody = await response.Content.ReadAsStringAsync();
+        return responseBody;
+    }
 }

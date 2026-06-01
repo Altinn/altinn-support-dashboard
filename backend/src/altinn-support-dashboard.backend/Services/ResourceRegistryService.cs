@@ -45,4 +45,15 @@ public class ResourceRegistryService : IResourceRegistryService
     {
         return await _resourceRegistryClient.GetResourceByIdentifier(environmentName, identifier);
     }
+
+    public async Task<string> GetResourcePolicyRules(string environmentName, string identifier)
+    {
+        return await _resourceRegistryClient.GetResourcePolicyRules(environmentName, identifier);
+    }
+
+    public async Task<string> GetResourcePolicyRights(string environmentName, string identifier)
+    {
+        return await _resourceRegistryClient.GetResourcePolicyRights(environmentName, identifier);
+    }
+
 }
