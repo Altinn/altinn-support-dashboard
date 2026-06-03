@@ -51,4 +51,45 @@ public class ResourceRegistryServiceTest
         // Assert
         Assert.All(results, r => Assert.Equal("AltinnApp", r.ResourceType));
     }
+
+    [Fact]
+    public async Task SearchResources_ExcludesTestDepartementet()
+    {
+        // Arrange
+        _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceListJson);
+
+        //Act
+        var results = await _service.SearchResources("TT02", "skatt");
+
+        //Assert
+        Assert.DoesNotContain(results, r =>
+            r.CompetentAuthority?.Name?.Values.Any(v => v == "Testdepartementet") == true);
+    }
+
+    [Fact]
+    public async Task SearchResources_FiltersByTitleCaseInsensitive()
+    {
+        // Arrange
+        _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceListJson);
+
+        // Act
+        var results = await _service.SearchResources("TT02", "SKATT");
+
+        // Assert
+        Assert.All(results, r =>
+            Assert.True(r.Title?.Values.Any(v => v.Contains("skatt", StringComparison.OrdinalIgnoreCase))));
+    }
+
+    [Fact]
+    public async Task SearchResources_ReturnsEmpty_WhenNoTitleMatches()
+    {
+        // Arrange
+        _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceListJson);
+
+        // Act
+        var results = await _service.SearchResources("TT02", "ingen treff");
+
+        //Assert
+        Assert.Empty(results);
+    }
 }
