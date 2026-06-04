@@ -1,6 +1,8 @@
+using System.Text.Json;
 using altinn_support_dashboard.Server.Services;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
+using Models.altinn3Dtos;
 using Moq;
 
 namespace altinn_support_dashboard.backend.Tests.Services;
@@ -19,6 +21,13 @@ public class ResourceRegistryServiceTest
             {"identifier": "app4", "title": {"nb": "Inntektsskatt"}, "resourceType": "AltinnApp", "hasCompetentAuthority": {"name": {"nb": "Skatteetaten"}}}
         ]
         """;
+    private const string ResourceDettailListJson = """
+        [
+            {"identifier": "app1", "title": {"nb": "Skattemelding", "nn" : null, "en": null}},
+            {"identifier": "app2", "title": {"nb": "Årsregnskap", "nn" : null, "en": null}}
+        ]
+        """;
+
     public ResourceRegistryServiceTest()
     {
         _mockClient = new Mock<IResourceRegistryClient>();
@@ -91,5 +100,167 @@ public class ResourceRegistryServiceTest
 
         //Assert
         Assert.Empty(results);
+    }
+
+    [Fact]
+    public async Task SearchResources_DelegatesToClient()
+    {
+        // Arrange
+        _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceListJson);
+
+        // Act
+        await _service.SearchResources("TT02", "skatt");
+
+        // Assert
+        _mockClient.Verify(c => c.GetResourceList("TT02"), Times.Once);
+    }
+
+    [Fact]
+    public async Task SearchResources_ThrowsException_WhenClientThrows()
+    {
+        // Arrange
+        _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ThrowsAsync(new Exception("API error"));
+
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(() => _service.SearchResources("TT02", "skatt"));
+    }
+
+    [Fact]
+    public async Task GetResourceByIdentifier_ReturnsClientResponse()
+    {
+        // Arrange
+        var expected = """{"identifier":"app1","title":{"nb":"Skattemelding"}}""";
+        _mockClient.Setup(c => c.GetResourceByIdentifier(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(expected);
+
+        // Act
+        var result = await _service.GetResourceByIdentifier("TT02", "app1");
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public async Task GetResourceByIdentifier_DelegatesToClient()
+    {
+        // Arrange
+        _mockClient.Setup(c => c.GetResourceByIdentifier(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("{}");
+
+        // Act
+        await _service.GetResourceByIdentifier("TT02", "app1");
+
+        // Assert
+        _mockClient.Verify(c => c.GetResourceByIdentifier("TT02", "app1"), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetResourcePolicyRules_ReturnsClientResponse()
+    {
+        // Arrange
+        var expected = """[{"rule":"test"}]""";
+        _mockClient.Setup(c => c.GetResourcePolicyRules(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(expected);
+
+        // Act
+        var result = await _service.GetResourcePolicyRules("TT02", "app1");
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public async Task GetResourcePolicyRules_DelegatesToClient()
+    {
+        // Arrange
+        _mockClient.Setup(c => c.GetResourcePolicyRules(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("[]");
+
+        // Act
+        await _service.GetResourcePolicyRules("TT02", "app1");
+
+        // Assert
+        _mockClient.Verify(c => c.GetResourcePolicyRules("TT02", "app1"), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetResourcePolicyRights_ReturnsClientResponse()
+    {
+        // Arrange
+        var expected = """[{"action":"read"}]""";
+        _mockClient.Setup(c => c.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(expected);
+
+        // Act
+        var result = await _service.GetResourcePolicyRights("TT02", "app1");
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public async Task GetResourcePolicyRights_DelegatesToClient()
+    {
+        // Arrange
+        _mockClient.Setup(c => c.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("[]");
+
+        // Act
+        await _service.GetResourcePolicyRights("TT02", "app1");
+
+        // Assert
+        _mockClient.Verify(c => c.GetResourcePolicyRights("TT02", "app1"), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetResourceList_CallsClient_WhenCacheMiss()
+    {
+        // Arrange
+        SetupCacheMiss();
+        _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceDettailListJson);
+
+        // Act
+        await _service.GetResourceList("TT02");
+
+        // Assert
+        _mockClient.Verify(c => c.GetResourceList("TT02"), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetResourceList_ReturnsDeserializedList_WhenCacheMiss()
+    {
+        // Arrange
+        SetupCacheMiss();
+        _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceDettailListJson);
+
+        // Act
+        var result = await _service.GetResourceList("TT02");
+
+        // Assert
+        Assert.Equal(2, result.Count);
+        Assert.Equal("app1", result[0].Identifier);
+    }
+
+    [Fact]
+    public async Task GetResourceList_DoesNotCallClient_WhenCacheHit()
+    {
+        // Arrange
+        var cached = new List<ResourceDetailsDto>
+        {
+            new() { Identifier = "app1", Title = new ResourceTitle { NB = "Skattemelding" } }
+        };
+        object? cachedValue = cached;
+        _mockCache.Setup(x => x.TryGetValue(It.IsAny<object>(), out cachedValue)).Returns(true);
+
+        // Act
+        await _service.GetResourceList("TT02");
+
+        // Assert
+        _mockClient.Verify(c => c.GetResourceList(It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetResourceList_ThrowsJsonException_WhenInvalidJson()
+    {
+        // Arrange
+        SetupCacheMiss();
+        _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync("invalid json");
+
+        // Act & Assert
+        await Assert.ThrowsAsync<JsonException>(() => _service.GetResourceList("TT02"));
     }
 }
