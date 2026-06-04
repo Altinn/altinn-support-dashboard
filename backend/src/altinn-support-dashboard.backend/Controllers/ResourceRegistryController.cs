@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Security;
@@ -38,7 +39,7 @@ public class ResourceRegistryController : ControllerBase
         {
             return NotFound();
         }
-        return Content(result, "application/json");
+        return Ok(JsonSerializer.Deserialize<JsonElement>(result));
     }
 
     [HttpGet("{identifier}/policy/rules")]
@@ -49,7 +50,7 @@ public class ResourceRegistryController : ControllerBase
         {
             return NotFound();
         }
-        return Content(result, "application/json");
+        return Ok(JsonSerializer.Deserialize<JsonElement>(result));
     }
 
     [HttpGet("{identifier}/policy/rights")]
@@ -60,6 +61,6 @@ public class ResourceRegistryController : ControllerBase
         {
             return NotFound();
         }
-        return Content(result, "application/json");
+        return Ok(JsonSerializer.Deserialize<JsonElement>(result));
     }
 }
