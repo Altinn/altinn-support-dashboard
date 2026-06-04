@@ -36,6 +36,7 @@ public class ResourceRegistryClient : IResourceRegistryClient
         var client = _clients[environmentName];
         var requestUrl = "/resourceregistry/api/v1/resource/resourcelist";
         var response = await client.GetAsync(requestUrl);
+        response.EnsureSuccessStatusCode();
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -48,6 +49,7 @@ public class ResourceRegistryClient : IResourceRegistryClient
         var requestUrl = $"/resourceregistry/api/v1/resource/{Uri.EscapeDataString(identifier)}";
 
         var response = await client.GetAsync(requestUrl);
+        response.EnsureSuccessStatusCode();
         var responseBody = await response.Content.ReadAsStringAsync();
         return responseBody;
     }
@@ -56,6 +58,7 @@ public class ResourceRegistryClient : IResourceRegistryClient
     {
         var client = _clients[environmentName];
         var response = await client.GetAsync($"/resourceregistry/api/v1/resource/{Uri.EscapeDataString(identifier)}/policy/rules");
+        response.EnsureSuccessStatusCode();
         var responseBody = await response.Content.ReadAsStringAsync();
         return responseBody;
     }
@@ -64,6 +67,7 @@ public class ResourceRegistryClient : IResourceRegistryClient
     {
         var client = _clients[environmentName];
         var response = await client.GetAsync($"/resourceregistry/api/v1/resource/{Uri.EscapeDataString(identifier)}/policy/rights");
+        response.EnsureSuccessStatusCode();
         var responseBody = await response.Content.ReadAsStringAsync();
         return responseBody;
     }
