@@ -21,7 +21,7 @@ public class ResourceRegistryClient : IResourceRegistryClient
         InitClient(nameof(configuration.Value.TT02), configuration.Value.TT02);
     }
 
-    public void InitClient(string environmentName, EnvironmentConfiguration config)
+    private void InitClient(string environmentName, EnvironmentConfiguration config)
     {
         var client = _clientFactory.CreateClient(environmentName);
         client.BaseAddress = new Uri(config.BaseAddressAltinn3);

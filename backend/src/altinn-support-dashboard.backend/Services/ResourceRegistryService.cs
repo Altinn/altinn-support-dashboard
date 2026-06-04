@@ -20,18 +20,14 @@ public class ResourceRegistryService : IResourceRegistryService
 
     public async Task<List<ResourceDetailsDto>> GetResourceList(string environmentName)
     {
-         return await _cache.GetOrCreateAsync($"resourceList_{environmentName}", async entry =>
-    {
-        entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-        var response = await _resourceRegistryClient.GetResourceList(environmentName);
-        return JsonSerializer.Deserialize<List<ResourceDetailsDto>>(response) 
-            ?? throw new Exception("Error deserializing resource list");
-    }) ?? throw new Exception("Cache returned null");
+        var response = await GetCachedResourceListJson(environmentName);
+        return JsonSerializer.Deserialize<List<ResourceDetailsDto>>(response)
+            ?? throw new Exception("Failed to deserialize resource list");
     }
 
     public async Task<List<ResourceSearchResult>> SearchResources(string environmentName, string query)
     {
-        var response = await _resourceRegistryClient.GetResourceList(environmentName);
+        var response = await GetCachedResourceListJson(environmentName);
         var resources = JsonSerializer.Deserialize<List<ResourceSearchResult>>(response) ?? [];
 
         return resources.Where(r =>
@@ -54,6 +50,15 @@ public class ResourceRegistryService : IResourceRegistryService
     public async Task<string> GetResourcePolicyRights(string environmentName, string identifier)
     {
         return await _resourceRegistryClient.GetResourcePolicyRights(environmentName, identifier);
+    }
+
+    private async Task<string> GetCachedResourceListJson(string environmentName)
+    {
+        return await _cache.GetOrCreateAsync($"resourceListJson_{environmentName}", async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+            return await _resourceRegistryClient.GetResourceList(environmentName);
+        }) ?? throw new Exception("Cache returned null");
     }
 
 }
