@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+namespace Models.altinn3Dtos;
+
 public class ResourceSearchResult
 {
     [JsonPropertyName("identifier")]

@@ -1,5 +1,4 @@
-
-
+namespace altinn_support_dashboard.Server.Clients;
 
 public interface IResourceRegistryClient
 {

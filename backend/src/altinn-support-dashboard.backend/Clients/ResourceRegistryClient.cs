@@ -1,10 +1,8 @@
-
-
-
-
 using altinn_support_dashboard.Server.Models;
 using Microsoft.Extensions.Options;
 using Models.altinn3Dtos;
+
+namespace altinn_support_dashboard.Server.Clients;
 
 public class ResourceRegistryClient : IResourceRegistryClient
 {

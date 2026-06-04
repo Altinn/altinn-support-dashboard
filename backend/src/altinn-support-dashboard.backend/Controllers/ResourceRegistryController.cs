@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Security;
 
-
+namespace altinn_support_dashboard.Server.Controllers;
 
 [Authorize(AzureRoles.Authenticated)]
 [ApiController]

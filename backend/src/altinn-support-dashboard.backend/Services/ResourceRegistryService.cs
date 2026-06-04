@@ -1,6 +1,5 @@
-
-
 using System.Text.Json;
+using altinn_support_dashboard.Server.Clients;
 using Microsoft.Extensions.Caching.Memory;
 using Models.altinn3Dtos;
 
