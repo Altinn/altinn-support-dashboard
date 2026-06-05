@@ -19,7 +19,7 @@ public class ResourceRegistryControllerTests
     }
 
     [Fact]
-    public async Task GetResourceList_RetursnOk_WithList()
+    public async Task GetResourceList_ReturnsOk_WithList()
     {
         // Arrange
         var expected = new List<ResourceDetailsDto>
@@ -163,5 +163,45 @@ public class ResourceRegistryControllerTests
 
         // Assert
         _mockService.Verify(s => s.GetResourcePolicyRights("TT02", "app1"), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetResourceByIdentifier_ReturnsNotFound_WhenServiceReturnsNull()
+    {
+        // Arrange
+        _mockService.Setup(s => s.GetResourceByIdentifier(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<string>(null!));
+
+        // Act
+        var result = await _controller.GetResourceByIdentifier("TT02", "nonexistent");
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public async Task GetResourcePolicyRules_ReturnsNotFound_WhenServiceReturnsNull()
+    {
+        // Arrange
+        _mockService.Setup(s => s.GetResourcePolicyRules(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<string>(null!));
+
+        // Act
+        var result = await _controller.GetResourcePolicyRules("TT02", "nonexistent");
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public async Task GetResourcePolicyRights_ReturnsNotFound_WhenServiceReturnsNull()
+    {
+        // Arrange
+        _mockService.Setup(s => s.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<string>(null!));
+;
+
+        // Act
+        var result = await _controller.GetResourcePolicyRights("TT02", "nonexistent");
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result);
     }
 }
