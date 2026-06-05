@@ -1,7 +1,6 @@
-
-
-
 using Models.altinn3Dtos;
+
+namespace altinn_support_dashboard.Server.Services;
 
 public interface IResourceRegistryService
 {

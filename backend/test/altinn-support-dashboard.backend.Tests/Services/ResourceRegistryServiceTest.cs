@@ -22,7 +22,7 @@ public class ResourceRegistryServiceTest
             {"identifier": "app4", "title": {"nb": "Inntektsskatt"}, "resourceType": "AltinnApp", "hasCompetentAuthority": {"name": {"nb": "Skatteetaten"}}}
         ]
         """;
-    private const string ResourceDettailListJson = """
+    private const string ResourceDetailListJson = """
         [
             {"identifier": "app1", "title": {"nb": "Skattemelding", "nn" : null, "en": null}},
             {"identifier": "app2", "title": {"nb": "Årsregnskap", "nn" : null, "en": null}}
@@ -53,6 +53,7 @@ public class ResourceRegistryServiceTest
     public async Task SearchResources_ReturnsOnlyAltinnAppResources()
     {
         // Arrange
+        SetupCacheMiss();
         _mockClient.Setup(x => x.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceListJson);
 
         // Act
@@ -66,6 +67,7 @@ public class ResourceRegistryServiceTest
     public async Task SearchResources_ExcludesTestDepartementet()
     {
         // Arrange
+        SetupCacheMiss();
         _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceListJson);
 
         //Act
@@ -80,6 +82,7 @@ public class ResourceRegistryServiceTest
     public async Task SearchResources_FiltersByTitleCaseInsensitive()
     {
         // Arrange
+        SetupCacheMiss();
         _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceListJson);
 
         // Act
@@ -94,6 +97,7 @@ public class ResourceRegistryServiceTest
     public async Task SearchResources_ReturnsEmpty_WhenNoTitleMatches()
     {
         // Arrange
+        SetupCacheMiss();
         _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceListJson);
 
         // Act
@@ -107,6 +111,7 @@ public class ResourceRegistryServiceTest
     public async Task SearchResources_DelegatesToClient()
     {
         // Arrange
+        SetupCacheMiss();
         _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceListJson);
 
         // Act
@@ -120,6 +125,7 @@ public class ResourceRegistryServiceTest
     public async Task SearchResources_ThrowsException_WhenClientThrows()
     {
         // Arrange
+        SetupCacheMiss();
         _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ThrowsAsync(new Exception("API error"));
 
         // Act & Assert
@@ -212,7 +218,7 @@ public class ResourceRegistryServiceTest
     {
         // Arrange
         SetupCacheMiss();
-        _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceDettailListJson);
+        _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceDetailListJson);
 
         // Act
         await _service.GetResourceList("TT02");
@@ -226,7 +232,7 @@ public class ResourceRegistryServiceTest
     {
         // Arrange
         SetupCacheMiss();
-        _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceDettailListJson);
+        _mockClient.Setup(c => c.GetResourceList(It.IsAny<string>())).ReturnsAsync(ResourceDetailListJson);
 
         // Act
         var result = await _service.GetResourceList("TT02");
@@ -240,11 +246,7 @@ public class ResourceRegistryServiceTest
     public async Task GetResourceList_DoesNotCallClient_WhenCacheHit()
     {
         // Arrange
-        var cached = new List<ResourceDetailsDto>
-        {
-            new() { Identifier = "app1", Title = new ResourceTitle { NB = "Skattemelding" } }
-        };
-        object? cachedValue = cached;
+        object? cachedValue = ResourceDetailListJson;
         _mockCache.Setup(x => x.TryGetValue(It.IsAny<object>(), out cachedValue)).Returns(true);
 
         // Act
