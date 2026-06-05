@@ -196,7 +196,6 @@ public class ResourceRegistryControllerTests
     {
         // Arrange
         _mockService.Setup(s => s.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<string>(null!));
-;
 
         // Act
         var result = await _controller.GetResourcePolicyRights("TT02", "nonexistent");
