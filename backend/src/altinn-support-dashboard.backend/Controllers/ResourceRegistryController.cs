@@ -1,4 +1,3 @@
-using System.Text.Json;
 using altinn_support_dashboard.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,9 +25,9 @@ public class ResourceRegistryController : ControllerBase
     }
 
     [HttpGet("search")]
-    public async Task<IActionResult> SearchResources(string environmentName, [FromQuery] string query)
+    public async Task<IActionResult> SearchResources(string environmentName, [FromQuery] string resourceTitle)
     {
-        var result = await _resourceRegistryService.SearchResources(environmentName, query);
+        var result = await _resourceRegistryService.SearchResources(environmentName, resourceTitle);
         return Ok(result);
     }
 
@@ -40,7 +39,7 @@ public class ResourceRegistryController : ControllerBase
         {
             return NotFound();
         }
-        return Ok(JsonSerializer.Deserialize<JsonElement>(result));
+        return Ok(result);
     }
 
     [HttpGet("{identifier}/policy/rules")]
@@ -51,7 +50,7 @@ public class ResourceRegistryController : ControllerBase
         {
             return NotFound();
         }
-        return Ok(JsonSerializer.Deserialize<JsonElement>(result));
+        return Ok(result);
     }
 
     [HttpGet("{identifier}/policy/rights")]
@@ -62,6 +61,6 @@ public class ResourceRegistryController : ControllerBase
         {
             return NotFound();
         }
-        return Ok(JsonSerializer.Deserialize<JsonElement>(result));
+        return Ok(result);
     }
 }

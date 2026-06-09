@@ -1,5 +1,6 @@
 using System.Text.Json;
 using altinn_support_dashboard.Server.Clients;
+using altinn_support_dashboard.Server.Models;
 using Microsoft.Extensions.Caching.Memory;
 using Models.altinn3Dtos;
 
@@ -19,44 +20,69 @@ public class ResourceRegistryService : IResourceRegistryService
 
     public async Task<List<ResourceDetailsDto>> GetResourceList(string environmentName)
     {
-        var response = await GetCachedResourceListJson(environmentName);
-        return JsonSerializer.Deserialize<List<ResourceDetailsDto>>(response)
-            ?? throw new Exception("Failed to deserialize resource list");
+        var response = await GetCachedResourceList(environmentName);
+        return response.Select(r => new ResourceDetailsDto
+        {
+            Identifier = r.Identifier ?? "",
+            Title = new ResourceTitle
+            {
+                NB = r.Title?.GetValueOrDefault("nb"),
+                NN = r.Title?.GetValueOrDefault("nn"),
+                EN = r.Title?.GetValueOrDefault("en"),
+            }
+        }).ToList();
     }
 
     public async Task<List<ResourceSearchResult>> SearchResources(string environmentName, string query)
     {
-        var response = await GetCachedResourceListJson(environmentName);
-        var resources = JsonSerializer.Deserialize<List<ResourceSearchResult>>(response) ?? [];
+        var response = await GetCachedResourceList(environmentName);
 
-        return resources.Where(r =>
+        return response.Where(r =>
             r.ResourceType == "AltinnApp" &&
             r.CompetentAuthority?.Name?.Values.Any(v => v == "Testdepartementet") != true &&
             r.Title?.Values.Any(v => v.Contains(query, StringComparison.OrdinalIgnoreCase)) == true
         ).ToList();   
     }
 
-    public async Task<string> GetResourceByIdentifier(string environmentName, string identifier)
+    public async Task<Resource?> GetResourceByIdentifier(string environmentName, string identifier)
     {
-        return await _resourceRegistryClient.GetResourceByIdentifier(environmentName, identifier);
-    }
-
-    public async Task<string> GetResourcePolicyRules(string environmentName, string identifier)
-    {
-        return await _resourceRegistryClient.GetResourcePolicyRules(environmentName, identifier);
-    }
-
-    public async Task<string> GetResourcePolicyRights(string environmentName, string identifier)
-    {
-        return await _resourceRegistryClient.GetResourcePolicyRights(environmentName, identifier);
-    }
-
-    private async Task<string> GetCachedResourceListJson(string environmentName)
-    {
-        return await _cache.GetOrCreateAsync($"resourceListJson_{environmentName}", async entry =>
+        var json = await _resourceRegistryClient.GetResourceByIdentifier(environmentName, identifier);
+        if (json == null)
         {
+            return null;
+        }
+        return JsonSerializer.Deserialize<Resource>(json);
+    }
+
+    public async Task<List<PolicyRule>?> GetResourcePolicyRules(string environmentName, string identifier)
+    {
+        var json = await _resourceRegistryClient.GetResourcePolicyRules(environmentName, identifier);
+        if (json == null)
+        {
+            return null;
+        }
+        return JsonSerializer.Deserialize<List<PolicyRule>>(json);
+    }
+
+    public async Task<List<PolicyRight>?> GetResourcePolicyRights(string environmentName, string identifier)
+    {
+        var json = await _resourceRegistryClient.GetResourcePolicyRights(environmentName, identifier);
+        if (json == null)
+        {
+            return null;
+        }
+        return JsonSerializer.Deserialize<List<PolicyRight>>(json);
+    }
+
+    private async Task<List<ResourceSearchResult>> GetCachedResourceList(string environmentName)
+    {
+        return await _cache.GetOrCreateAsync<List<ResourceSearchResult>>($"resourceList_{environmentName}", async entry =>
+        {
+            var json = await _resourceRegistryClient.GetResourceList(environmentName);
+            var result = JsonSerializer.Deserialize<List<ResourceSearchResult>>(json)
+                ?? throw new Exception("Failed to deserialize resource list for caching");
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-            return await _resourceRegistryClient.GetResourceList(environmentName);
+            return result;
         }) ?? throw new Exception("Cache returned null");
     }
 

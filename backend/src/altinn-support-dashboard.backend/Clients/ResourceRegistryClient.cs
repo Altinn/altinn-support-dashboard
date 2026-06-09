@@ -44,7 +44,7 @@ public class ResourceRegistryClient : IResourceRegistryClient
     public async Task<string> GetResourceByIdentifier(string environmentName, string identifier)
     {
         var client = _clients[environmentName];
-        var requestUrl = $"/resourceregistry/api/v1/resource/{Uri.EscapeDataString(identifier)}";
+        var requestUrl = $"/resourceregistry/api/v1/resource/{identifier}";
 
         var response = await client.GetAsync(requestUrl);
         response.EnsureSuccessStatusCode();
@@ -55,7 +55,7 @@ public class ResourceRegistryClient : IResourceRegistryClient
     public async Task<string> GetResourcePolicyRules(string environmentName, string identifier)
     {
         var client = _clients[environmentName];
-        var response = await client.GetAsync($"/resourceregistry/api/v1/resource/{Uri.EscapeDataString(identifier)}/policy/rules");
+        var response = await client.GetAsync($"/resourceregistry/api/v1/resource/{identifier}/policy/rules");
         response.EnsureSuccessStatusCode();
         var responseBody = await response.Content.ReadAsStringAsync();
         return responseBody;
@@ -64,7 +64,7 @@ public class ResourceRegistryClient : IResourceRegistryClient
     public async Task<string> GetResourcePolicyRights(string environmentName, string identifier)
     {
         var client = _clients[environmentName];
-        var response = await client.GetAsync($"/resourceregistry/api/v1/resource/{Uri.EscapeDataString(identifier)}/policy/rights");
+        var response = await client.GetAsync($"/resourceregistry/api/v1/resource/{identifier}/policy/rights");
         response.EnsureSuccessStatusCode();
         var responseBody = await response.Content.ReadAsStringAsync();
         return responseBody;
