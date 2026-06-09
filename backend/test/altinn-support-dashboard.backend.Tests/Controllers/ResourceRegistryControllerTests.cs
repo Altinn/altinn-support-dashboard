@@ -1,5 +1,5 @@
-using System.Text.Json;
 using altinn_support_dashboard.Server.Controllers;
+using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using Models.altinn3Dtos;
@@ -82,25 +82,25 @@ public class ResourceRegistryControllerTests
     }
 
     [Fact]
-    public async Task GetResourceByIdentifier_ReturnsOk_WithJsonElement()
+    public async Task GetResourceByIdentifier_ReturnsOk_WithResource()
     {
         // Arrange
-        var json = """{"identifier":"app1","title":{"nb":"Skattemelding"}}""";
-        _mockService.Setup(s => s.GetResourceByIdentifier("TT02", "app1")).ReturnsAsync(json);
+        var expected = new Resource { Identifier = "app1", Title = new Dictionary<string, string> { { "nb", "Skattemelding" } } };
+        _mockService.Setup(s => s.GetResourceByIdentifier("TT02", "app1")).ReturnsAsync(expected);
 
         // Act
         var result = await _controller.GetResourceByIdentifier("TT02", "app1");
 
         // Assert
         var ok = Assert.IsType<OkObjectResult>(result);
-        Assert.IsType<JsonElement>(ok.Value);
+        Assert.IsType<Resource>(ok.Value);
     }
 
     [Fact]
     public async Task GetResourceByIdentifier_DelegatesToService()
     {
         // Arrange
-        _mockService.Setup(s => s.GetResourceByIdentifier(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("{}");
+        _mockService.Setup(s => s.GetResourceByIdentifier(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Resource());
 
         // Act
         await _controller.GetResourceByIdentifier("TT02", "app1");
@@ -110,25 +110,25 @@ public class ResourceRegistryControllerTests
     }
 
     [Fact]
-    public async Task GetResourcePolicyRules_ReturnsOk_WithJsonElement()
+    public async Task GetResourcePolicyRules_ReturnsOk_WithList()
     {
         // Arrange
-        var json = """[{"rule":"test"}]""";
-        _mockService.Setup(s => s.GetResourcePolicyRules("TT02", "app1")).ReturnsAsync(json);
+        var expected = new List<PolicyRule> { new PolicyRule { Action = new XacmlAttribute { Value = "test" } } };
+        _mockService.Setup(s => s.GetResourcePolicyRules("TT02", "app1")).ReturnsAsync(expected);
 
         // Act
         var result = await _controller.GetResourcePolicyRules("TT02", "app1");
 
         // Assert
         var ok = Assert.IsType<OkObjectResult>(result);
-        Assert.IsType<JsonElement>(ok.Value);
+        Assert.IsType<List<PolicyRule>>(ok.Value);
     }
 
     [Fact]
     public async Task GetResourcePolicyRules_DelegatesToService()
     {
         // Arrange
-        _mockService.Setup(s => s.GetResourcePolicyRules(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("[]");
+        _mockService.Setup(s => s.GetResourcePolicyRules(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new List<PolicyRule>());
 
         // Act
         await _controller.GetResourcePolicyRules("TT02", "app1");
@@ -138,25 +138,25 @@ public class ResourceRegistryControllerTests
     }
 
     [Fact]
-    public async Task GetResourcePolicyRights_ReturnsOk_WithJsonElement()
+    public async Task GetResourcePolicyRights_ReturnsOk_WithList()
     {
         // Arrange
-        var json = """[{"right":"test"}]""";
-        _mockService.Setup(s => s.GetResourcePolicyRights("TT02", "app1")).ReturnsAsync(json);
+        var expected = new List<PolicyRight> { new PolicyRight { RightKey = "read:app1" } };
+        _mockService.Setup(s => s.GetResourcePolicyRights("TT02", "app1")).ReturnsAsync(expected);
 
         // Act
         var result = await _controller.GetResourcePolicyRights("TT02", "app1");
 
         // Assert
         var ok = Assert.IsType<OkObjectResult>(result);
-        Assert.IsType<JsonElement>(ok.Value);
+        Assert.IsType<List<PolicyRight>>(ok.Value);
     }
 
     [Fact]
     public async Task GetResourcePolicyRights_DelegatesToService()
     {
         // Arrange
-        _mockService.Setup(s => s.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("[]");
+        _mockService.Setup(s => s.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new List<PolicyRight>());
 
         // Act
         await _controller.GetResourcePolicyRights("TT02", "app1");
@@ -169,7 +169,7 @@ public class ResourceRegistryControllerTests
     public async Task GetResourceByIdentifier_ReturnsNotFound_WhenServiceReturnsNull()
     {
         // Arrange
-        _mockService.Setup(s => s.GetResourceByIdentifier(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<string>(null!));
+        _mockService.Setup(s => s.GetResourceByIdentifier(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<Resource?>(null));
 
         // Act
         var result = await _controller.GetResourceByIdentifier("TT02", "nonexistent");
@@ -182,7 +182,7 @@ public class ResourceRegistryControllerTests
     public async Task GetResourcePolicyRules_ReturnsNotFound_WhenServiceReturnsNull()
     {
         // Arrange
-        _mockService.Setup(s => s.GetResourcePolicyRules(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<string>(null!));
+        _mockService.Setup(s => s.GetResourcePolicyRules(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<List<PolicyRule>?>(null));
 
         // Act
         var result = await _controller.GetResourcePolicyRules("TT02", "nonexistent");
@@ -195,7 +195,7 @@ public class ResourceRegistryControllerTests
     public async Task GetResourcePolicyRights_ReturnsNotFound_WhenServiceReturnsNull()
     {
         // Arrange
-        _mockService.Setup(s => s.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<string>(null!));
+        _mockService.Setup(s => s.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<List<PolicyRight>?>(null));
 
         // Act
         var result = await _controller.GetResourcePolicyRights("TT02", "nonexistent");
