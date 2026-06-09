@@ -24,7 +24,4 @@ public class CompetentAuthorityDto
 {
     [JsonPropertyName("name")]
     public Dictionary<string, string>? Name { get; set; }
-
-    [JsonPropertyName("organizationNumber")]
-    public string? OrganizationNumber { get; set; }
 }

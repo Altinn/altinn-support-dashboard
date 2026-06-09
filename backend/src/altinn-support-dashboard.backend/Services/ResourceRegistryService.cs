@@ -39,7 +39,6 @@ public class ResourceRegistryService : IResourceRegistryService
 
         return response.Where(r =>
             r.ResourceType == "AltinnApp" &&
-            r.CompetentAuthority?.Name?.Values.Any(v => v == "Testdepartementet") != true &&
             r.Title?.Values.Any(v => v.Contains(query, StringComparison.OrdinalIgnoreCase)) == true
         ).ToList();   
     }
