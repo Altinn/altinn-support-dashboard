@@ -7,35 +7,41 @@ using Security;
 
 namespace altinn_support_dashboard.Server.Controllers
 {
-    /// <summary>
-    /// Controller responsible for handling requests to the Altinn Party API.
-    /// Provides endpoints to look up party information and roles by organization number, SSN, or UUID.
-    /// </summary>
     [ApiController]
-    [Route("api/tt02/platform")]
     [Authorize(AzureRoles.TT02)]
+    [Route("api/TT02")]
+    public class AltinnPartyTT02Controller : AltinnPartyBaseController
+    {
+        public AltinnPartyTT02Controller(IPartyApiService service) : base(service, "TT02") { }
+    }
+
+    [ApiController]
+    [Authorize(AzureRoles.Production)]
+    [Route("api/Production")]
+    public class AltinnPartyProductionController : AltinnPartyBaseController
+    {
+        public AltinnPartyProductionController(IPartyApiService service) : base(service, "Production") { }
+    }
+
     [Authorize(AzureRoles.Authenticated)]
-    public class Altinn_party_APIController : ControllerBase
+    [ApiController]
+    public abstract class AltinnPartyBaseController : ControllerBase
     {
         private readonly IPartyApiService _service;
+        private readonly string _environmentName;
 
-        public Altinn_party_APIController(IPartyApiService service)
+        protected AltinnPartyBaseController(IPartyApiService service, string environmentName)
         {
             _service = service;
+            _environmentName = environmentName;
         }
 
-        /// <summary>
-        /// Retrieves a party based on the provided organization number.
-        /// </summary>
-        /// <param name="orgNumber">The organization number used to look up the party.</param>
-        /// <returns>A <see cref="PartyModel"/> object representing the organization party.</returns>
         [HttpGet("parties/lookup/org/{orgNumber}")]
         public async Task<IActionResult> GetPartyOrg([FromRoute] string orgNumber)
         {
             try
             {
-
-                var result = await _service.GetPartyFromOrgAsync(orgNumber);
+                var result = await _service.GetPartyFromOrgAsync(orgNumber, _environmentName);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -44,18 +50,12 @@ namespace altinn_support_dashboard.Server.Controllers
             }
         }
 
-        /// <summary>
-        /// Retrieves a party based on the provided SSN.
-        /// </summary>
-        /// <param name="ssn">The SSN used to look up the party.</param>
-        /// <returns>A <see cref="PartyModel"/> object representing the person party.</returns>
         [HttpGet("parties/lookup/ssn/{ssn}")]
         public async Task<IActionResult> GetPartySsn([FromRoute] string ssn)
         {
             try
             {
-
-                var result = await _service.GetPartyFromSsnAsync(ssn);
+                var result = await _service.GetPartyFromSsnAsync(ssn, _environmentName);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -64,17 +64,12 @@ namespace altinn_support_dashboard.Server.Controllers
             }
         }
 
-        /// <summary>
-        /// Retrieves the roles associated with a specific party based on its UUID.
-        /// </summary>
-        /// <param name="Uuid">The UUID of the party.</param>
-        /// <returns>A JSON string containing role information for the specified party.</returns>
         [HttpGet("parties/roles/uuid/{Uuid}")]
         public async Task<IActionResult> GetPartyRoles([FromRoute] string Uuid)
         {
             try
             {
-                var result = await _service.GetRolesFromPartyAsync(Uuid);
+                var result = await _service.GetRolesFromPartyAsync(Uuid, _environmentName);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -83,19 +78,12 @@ namespace altinn_support_dashboard.Server.Controllers
             }
         }
 
-        /// <summary>
-        /// Retrieves all external roles associated with an organization based on its organization number.
-        /// </summary>
-        /// <param name="orgNumber">The organization number used to look up associated roles.</param>
-        /// <returns>
-        /// An <see cref="ErRollerModel"/> object containing the roles linked to the specified organization.
-        /// </returns>
         [HttpGet("parties/roles/org/{orgNumber}")]
         public async Task<IActionResult> GetRolesFromOrg([FromRoute] string orgNumber)
         {
             try
             {
-                var result = await _service.GetRolesFromOrgAsync(orgNumber);
+                var result = await _service.GetRolesFromOrgAsync(orgNumber, _environmentName);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -104,18 +92,12 @@ namespace altinn_support_dashboard.Server.Controllers
             }
         }
 
-        /// <summary>
-        /// Retrieves detailed party information based on the provided UUID.
-        /// </summary>
-        /// <param name="Uuid">The UUID of the party.</param>
-        /// <returns>A <see cref="PartyModel"/> object representing the party.</returns>
         [HttpGet("parties/lookup/uuid/{Uuid}")]
         public async Task<IActionResult> GetPartyUuid([FromRoute] string Uuid)
         {
             try
             {
-
-                var result = await _service.GetPartyFromUuidAsync(Uuid);
+                var result = await _service.GetPartyFromUuidAsync(Uuid, _environmentName);
                 return Ok(result);
             }
             catch (Exception ex)

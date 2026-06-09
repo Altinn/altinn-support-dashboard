@@ -7,6 +7,7 @@ import SidebarEnvToggle from "./SidebarEnvToggle";
 import { useUserDetails } from "../../hooks/hooks";
 import { initiateSignOut } from "../../utils/azureAuthApi";
 import {
+  ArrowRightLeftIcon,
   Buildings3Icon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -103,6 +104,12 @@ const Sidebar: React.FC = () => {
               to="/notification"
               title="Varsling"
               icon={<DatabaseIcon className={classes.icons} />}
+              isCollapsed={isCollapsed}
+            />
+            <NavItem
+              to="/identifier-conversion"
+              title="ID-konvertering"
+              icon={<ArrowRightLeftIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
             <NavItem
