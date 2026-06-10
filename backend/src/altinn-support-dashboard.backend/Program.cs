@@ -4,6 +4,7 @@ using Altinn.Studio.Designer.Infrastructure.AnsattPorten;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using altinn_support_dashboard.Server.Clients;
 using Microsoft.AspNetCore.Authorization;
 using Security;
 
@@ -105,6 +106,8 @@ namespace AltinnSupportDashboard
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
                     services.AddScoped<ICorrespondenceService, CorrespondenceService>();
                     services.AddScoped<ISsnTokenService, SsnTokenService>();
+                    services.AddScoped<IResourceRegistryClient, ResourceRegistryClient>();
+                    services.AddScoped<IResourceRegistryService, ResourceRegistryService>();
                 });
     }
 }

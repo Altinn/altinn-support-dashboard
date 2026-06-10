@@ -276,15 +276,4 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         return responseBody;
     }
-
-    public async Task<string> GetResourceListFromResourceRegistry(string environmentName)
-    {
-        var client = _clients[environmentName];
-        var requestUrl = "/resourceregistry/api/v1/resource/resourcelist";
-        var response = await client.GetAsync(requestUrl);
-
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        return responseBody;
-    }
 }
