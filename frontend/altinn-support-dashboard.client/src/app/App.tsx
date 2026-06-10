@@ -20,6 +20,7 @@ import { NotificationPage } from "../pages/NotificationPage";
 import { useAppStore } from "../stores/Appstore";
 import PrivateRoutes from "./PrivateRoutes";
 import { ToastContainer } from "react-toastify";
+import { ResourceSearchPage } from "../pages/ResourceSearchPage";
 
 const App: React.FC = () => {
   // Sjekk etter nye versjoner
@@ -77,6 +78,10 @@ const App: React.FC = () => {
                 <Route
                   path="/notification"
                   element={<NotificationPage />}
+                />
+                <Route 
+                  path="/resourcesearch"
+                  element={<ResourceSearchPage/>}
                 />
                 <Route path="/signout" element={<SignOutPage />} />
               </Route>
