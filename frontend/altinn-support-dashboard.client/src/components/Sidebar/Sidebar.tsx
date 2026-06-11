@@ -41,6 +41,12 @@ const Sidebar: React.FC = () => {
     return;
   }
 
+  const authData = authDetails.data;
+  const hasInternalOrExternalCoreRoles =
+    !authData.azureAuthActive ||
+    authData.roles.includes("Dashboard.Core.Internal") ||
+    authData.roles.includes("Dashboard.Core.External");
+
   return (
     <div className={classes.sidebarWrapper}>
       <div className={classes.dragHandle} onMouseDown={handleDragStart} />
@@ -100,18 +106,22 @@ const Sidebar: React.FC = () => {
               icon={<EnvelopeOpenIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
-            <NavItem
-              to="/notification"
-              title="Varsling"
-              icon={<DatabaseIcon className={classes.icons} />}
-              isCollapsed={isCollapsed}
-            />
-            <NavItem
-              to="/identifier-conversion"
-              title="ID-konvertering"
-              icon={<ArrowRightLeftIcon className={classes.icons} />}
-              isCollapsed={isCollapsed}
-            />
+            {hasInternalOrExternalCoreRoles && (
+              <div>
+                <NavItem
+                  to="/notification"
+                  title="Varsling"
+                  icon={<DatabaseIcon className={classes.icons} />}
+                  isCollapsed={isCollapsed}
+                />
+                <NavItem
+                  to="/identifier-conversion"
+                  title="ID-konvertering"
+                  icon={<ArrowRightLeftIcon className={classes.icons} />}
+                  isCollapsed={isCollapsed}
+                />
+              </div>
+            )}
             <NavItem
               to="/settings"
               title="Innstillinger"

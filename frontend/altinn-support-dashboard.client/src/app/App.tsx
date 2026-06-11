@@ -69,16 +69,12 @@ const App: React.FC = () => {
                   path="/manualrolesearch"
                   element={<ManualRoleSearchPage />}
                 />
-                <Route path="/new-org" element={<NewOrganizationPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route
                   path="/correspondence"
                   element={<CorrespondencePage />}
                 />
-                <Route
-                  path="/notification"
-                  element={<NotificationPage />}
-                />
+                <Route path="/notification" element={<NotificationPage />} />
                 <Route
                   path="/identifier-conversion"
                   element={<IdentifierConversionPage />}
