@@ -274,6 +274,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         {
             throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
         }
+        _logger.LogInformation(responseBody);
         return responseBody;
     }
 

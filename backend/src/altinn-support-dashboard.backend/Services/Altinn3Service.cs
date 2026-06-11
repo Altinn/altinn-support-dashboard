@@ -301,43 +301,66 @@ public class Altinn3Service : IAltinn3Service
         return notificationAddresses;
     }
 
-    public async Task<List<RolesAndRightsDto>> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment)
+    public async Task<RolesAndRightsDto> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRightsRequest, string environment)
     {
-        var ssn = _ssnTokenService.GetSsnFromToken(rolesAndRights.Value);
+        var ssn = _ssnTokenService.GetSsnFromToken(rolesAndRightsRequest.Value);
 
 
         if (string.IsNullOrWhiteSpace(ssn))
         {
-            ssn = rolesAndRights.Value.Replace(" ", ""); //If the subject isn't a token, use it as is
+            ssn = rolesAndRightsRequest.Value.Replace(" ", ""); //If the subject isn't a token, use it as is
         }
 
-        rolesAndRights.Value = ssn;
-        rolesAndRights.Type = getTypeFromValue(ssn);
+        rolesAndRightsRequest.Value = ssn;
+        rolesAndRightsRequest.Type = getTypeFromValue(ssn);
 
-        foreach (PartyFilter party in rolesAndRights.PartyFilter)
+        foreach (PartyFilter party in rolesAndRightsRequest.PartyFilter)
         {
             party.Value = party.Value.Replace(" ", "");
             party.Type = getTypeFromValue(party.Value);
         }
 
-        List<RolesAndRightsDto> roles = [];
+        //the client response
+        List<AuthorizedPartyDto> rolesAndRightsResponse = [];
         try
         {
-            var result = await _client.GetRolesAndRightsAltinn3(rolesAndRights, environment);
+            var result = await _client.GetRolesAndRightsAltinn3(rolesAndRightsRequest, environment);
 
             if (!string.IsNullOrWhiteSpace(result))
             {
-                roles = JsonSerializer.Deserialize<List<RolesAndRightsDto>>(result, jsonOptions) ?? [];
+                rolesAndRightsResponse = JsonSerializer.Deserialize<List<AuthorizedPartyDto>>(result, jsonOptions) ?? [];
             }
         }
         catch (Exception ex) { _logger.LogError(ex, "Failed to fetch altinn3 roles"); }
+
+
+
+
+        var partyFilterValue = rolesAndRightsRequest.PartyFilter.Count > 0 ? rolesAndRightsRequest.PartyFilter[0].Value.Replace(" ", "") : null;
+        //finds the accessrights of the correct unit, searching subunits if the requested org is not a top-level party
+        var allParties = rolesAndRightsResponse
+            .Concat(rolesAndRightsResponse.SelectMany(r => r.Subunits ?? []))
+            .ToList();
+        var match = allParties.FirstOrDefault(r => r.OrganizationNumber == partyFilterValue);
+        RolesAndRightsDto roles = match != null
+            ? new RolesAndRightsDto
+            {
+                Name = match.Name,
+                OrganizationNumber = match.OrganizationNumber ?? "",
+                AuthorizedAccessPackages = match.AuthorizedAccessPackages,
+                AuthorizedResources = match.AuthorizedResources,
+                AuthorizedRoles = match.AuthorizedRoles,
+                AuthorizedInstances = match.AuthorizedInstances,
+            }
+            : new RolesAndRightsDto { OrganizationNumber = partyFilterValue ?? "" };
+
+
         //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
-        var partyFilterValue = rolesAndRights.PartyFilter.Count > 0 ? rolesAndRights.PartyFilter[0].Value.Replace(" ", "") : null;
         List<Role>? altinn2Roles = null;
         try
         {
             altinn2Roles = partyFilterValue != null
-                ? await _altinn2Service.GetPersonRoles(rolesAndRights.Value.Replace(" ", ""), partyFilterValue, environment)
+                ? await _altinn2Service.GetPersonRoles(rolesAndRightsRequest.Value.Replace(" ", ""), partyFilterValue, environment)
                 : null;
         }
         catch (Exception) { }
@@ -351,15 +374,13 @@ public class Altinn3Service : IAltinn3Service
                     altinn2RolesList.Add($"{role.RoleName}");
                 }
             }
-            if (roles.Count == 0)
-                roles.Add(new RolesAndRightsDto { });
-            roles[0].AuthorizedRoles = altinn2RolesList;
+            roles.AuthorizedRoles = altinn2RolesList;
         }
 
-        if (roles.Count >= 1)
+        if (roles.AuthorizedResources != null && roles.AuthorizedResources.Count >= 1)
         {
             //Sets resources to name to be more readable
-            var authorizedResources = roles[0].AuthorizedResources;
+            var authorizedResources = roles.AuthorizedResources;
             if (authorizedResources != null && authorizedResources.Count >= 1)
             {
                 try
@@ -367,12 +388,17 @@ public class Altinn3Service : IAltinn3Service
                     var resourceNames = await GetResourceNamesFromCodes(authorizedResources, environment);
                     if (resourceNames != null)
                     {
-                        roles[0].AuthorizedResources = resourceNames;
+                        roles.AuthorizedResources = resourceNames;
                     }
                 }
                 catch (Exception) { }
             }
         }
+        _logger.LogInformation("Roles for {OrgNo}: AccessPackages={AccessPackages}, Resources={Resources}, Roles={Roles}",
+            roles.OrganizationNumber,
+            roles.AuthorizedAccessPackages,
+            roles.AuthorizedResources,
+            roles.AuthorizedRoles);
         return roles;
     }
 

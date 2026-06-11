@@ -27,6 +27,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
   });
 
   const roleInfo = roleQuery.data;
+  console.log(roleInfo);
 
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
 
@@ -95,12 +96,12 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {roleInfo && roleInfo.length >= 1 ? (
+          {roleInfo ? (
             <>
               {(activeFilters.size == 0 ||
                 activeFilters.has(RoleType.AuthorizedAccessPackages)) && (
                 <RoleList
-                  roles={filterRoles(roleInfo[0].authorizedAccessPackages)}
+                  roles={filterRoles(roleInfo.authorizedAccessPackages)}
                   type="Tilgangspakke"
                 />
               )}
@@ -108,7 +109,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
               {(activeFilters.size == 0 ||
                 activeFilters.has(RoleType.AuthorizedResources)) && (
                 <RoleList
-                  roles={filterRoles(roleInfo[0].authorizedResources)}
+                  roles={filterRoles(roleInfo.authorizedResources)}
                   type="Enkelrettighet"
                 />
               )}
@@ -116,7 +117,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
               {(activeFilters.size == 0 ||
                 activeFilters.has(RoleType.AuthorizedRoles)) && (
                 <RoleList
-                  roles={filterRoles(roleInfo[0].authorizedRoles)}
+                  roles={filterRoles(roleInfo.authorizedRoles)}
                   type="Altinn2 rolle"
                 />
               )}
@@ -125,7 +126,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
                 activeFilters.has(RoleType.AuthorizedInstances)) && (
                 <RoleList
                   roles={filterRoles(
-                    roleInfo[0].authorizedInstances?.map(
+                    roleInfo.authorizedInstances?.map(
                       (inst) => inst.instanceId ?? "",
                     ),
                   )}

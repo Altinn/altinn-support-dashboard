@@ -33,7 +33,7 @@ export const fetchOrganizations = async (
 export const fetchRolesForOrg = async (
   environment: string,
   request: RolesAndRightsRequest,
-): Promise<RolesAndRights[]> => {
+): Promise<RolesAndRights> => {
   const res = await authorizedPost(
     `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/roles`,
     request,
@@ -41,7 +41,8 @@ export const fetchRolesForOrg = async (
   if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
 
   const data = await res.json();
-  return Array.isArray(data) ? data : [data];
+  console.log(data);
+  return data;
 };
 
 export const fetchPersonalContacts = async (
