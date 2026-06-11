@@ -127,7 +127,6 @@ export const useRoles = (
     refetchOnWindowFocus: false,
   });
 
-  console.log(rolesQuery);
   return rolesQuery;
 };
 
