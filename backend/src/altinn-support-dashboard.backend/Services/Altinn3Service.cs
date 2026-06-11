@@ -20,11 +20,12 @@ public class Altinn3Service : IAltinn3Service
     private readonly IRedactorProvider _redactorProvider;
     private readonly ILogger<IAltinn3Service> _logger;
     private readonly IMemoryCache _cache;
+    private readonly IResourceRegistryService _resourceRegistryService;
 
     //temporary for altinn2 roles
     private readonly IAltinnApiService _altinn2Service;
 
-    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IAltinnApiService altinnApiService, IMemoryCache cache)
+    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IAltinnApiService altinnApiService, IMemoryCache cache, IResourceRegistryService resourceRegistryService)
     {
         _altinn2Service = altinnApiService;
         _logger = logger;
@@ -33,6 +34,7 @@ public class Altinn3Service : IAltinn3Service
         _ssnTokenService = ssnTokenService;
         _redactorProvider = redactorProvider;
         _cache = cache;
+        _resourceRegistryService = resourceRegistryService;
         jsonOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -402,23 +404,9 @@ public class Altinn3Service : IAltinn3Service
         return roles;
     }
 
-    public async Task<List<ResourceDetailsDto>> GetResourceListFromResourceRegistry(string environmentName)
-    {
-        //Cache so we dont have to fetch list from resourceRegistry every call
-        return await _cache.GetOrCreateAsync($"resourceList_{environmentName}", async entry =>
-        {
-            //How long between each refresh call 
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-            var response = await _client.GetResourceListFromResourceRegistry(environmentName);
-            var resources = JsonSerializer.Deserialize<List<ResourceDetailsDto>>(response, jsonOptions) ?? throw new Exception("Error deserializing");
-            return resources;
-
-        }) ?? throw new Exception("Cache returned null");
-    }
-
     public async Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName)
     {
-        List<ResourceDetailsDto> resourceList = await GetResourceListFromResourceRegistry(environmentName);
+        List<ResourceDetailsDto> resourceList = await _resourceRegistryService.GetResourceList(environmentName);
         List<string> resourceNames = [];
         foreach (string resourceCode in resourceCodes)
         {
