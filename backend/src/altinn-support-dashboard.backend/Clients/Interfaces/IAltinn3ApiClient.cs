@@ -10,7 +10,6 @@ public interface IAltinn3ApiClient
     Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, string environmentName);
     Task<string> GetOrganizationIdentifiers(List<string> orgNumbers, string environmentName);
     Task<string> GetOrganizationsPartyInfoByPartyId(List<int> partyIds, string environmentName);
-    Task<string> GetResourceListFromResourceRegistry(string environmentName);
 }
 
 
