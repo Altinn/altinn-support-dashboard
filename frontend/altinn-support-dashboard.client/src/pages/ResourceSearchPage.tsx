@@ -1,5 +1,8 @@
 import { Heading } from "@digdir/designsystemet-react"
-import { FilesIcon } from "@navikt/aksel-icons"
+import { useState } from "react"
+import { ResourceSearchResult } from "../models/resourceModels";
+import {ResourceSearchSearchBar} from "../components/ResourceSearch/ResourceSearchSearchBar";
+import { ResourceSearchList } from "../components/ResourceSearch/ResourceSearchList";
 
 
 
@@ -8,12 +11,20 @@ import { FilesIcon } from "@navikt/aksel-icons"
 
 
 export const ResourceSearchPage = () => {
+    const [query, setQuery] = useState("");
+    const [selectedResource, setSelectedResource] =
+        useState<ResourceSearchResult | null>(null)
     return (
         <div>
             <Heading level={1} data-size="sm">
                 Søk etter ressurser
-                <FilesIcon title="Beta" />
             </Heading>
+            <ResourceSearchSearchBar query={query} setQuery={(setQuery)} setSelectedResource={setSelectedResource} />
+            <ResourceSearchList
+                query={query}
+                selectedResource={selectedResource}
+                setSelectedResource={setSelectedResource}
+            />
         </div>
     )
 }

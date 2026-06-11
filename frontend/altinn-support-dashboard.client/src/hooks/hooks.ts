@@ -14,6 +14,7 @@ import {
   fetchOfficialContacts,
   fetchOrganizations,
   fetchPersonalContacts,
+  fetchResources,
   fetchRolesForOrg,
   fetchSsnFromToken,
 } from "../utils/api";
@@ -165,4 +166,16 @@ export function useNotifications(orderId: string) {
     refetchOnWindowFocus: false,
   });
   return notificationQuery;
+}
+
+export function useResourceSearch(environment: string, query: string) {
+  const resourceQuery = useQuery({
+    queryKey: ["resources", environment, query],
+    queryFn: () => fetchResources(environment, query),
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    enabled: !!query,
+  });
+  return { resourceQuery };
 }

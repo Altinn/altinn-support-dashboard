@@ -6,6 +6,7 @@ import {
 } from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 import { NotificationOrderResponse } from "../models/notificationModels";
+import { ResourceSearchResult } from "../models/resourceModels";
 
 //this file defines which which api endpoints we want to fetch data from
 
@@ -148,3 +149,18 @@ export const fetchNotificationByOrderId = async (
 
   return await res.json();
 };
+
+export const fetchResources = async (
+  environment: string,
+  query: string
+): Promise<ResourceSearchResult[]> => {
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/resource/search?resourceTitle=${encodeURIComponent(query)}`,
+  );
+
+  if (res.status === 404) return [];
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching resources");
+
+  const data = await res.json();
+  return Array.isArray(data) ? data : [data];
+}
