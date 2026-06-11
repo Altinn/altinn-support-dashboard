@@ -47,7 +47,14 @@ public class PartyApiClient : IPartyApiClient
                 return await response.Content.ReadAsStringAsync();
 
             var responseBody = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                throw new BadRequestException($"Invalid lookup request: {responseBody}");
+
             throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        catch (BadRequestException)
+        {
+            throw;
         }
         catch (Exception ex)
         {

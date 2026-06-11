@@ -39,71 +39,36 @@ namespace altinn_support_dashboard.Server.Controllers
         [HttpGet("parties/lookup/org/{orgNumber}")]
         public async Task<IActionResult> GetPartyOrg([FromRoute] string orgNumber)
         {
-            try
-            {
-                var result = await _service.GetPartyFromOrgAsync(orgNumber, _environmentName);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error retrieving party from org number: {ex.Message}");
-            }
+            var result = await _service.GetPartyFromOrgAsync(orgNumber, _environmentName);
+            return Ok(result);
         }
 
         [HttpGet("parties/lookup/ssn/{ssn}")]
         public async Task<IActionResult> GetPartySsn([FromRoute] string ssn)
         {
-            try
-            {
-                var result = await _service.GetPartyFromSsnAsync(ssn, _environmentName);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error retrieving party from SSN: {ex.Message}");
-            }
+            var result = await _service.GetPartyFromSsnAsync(ssn, _environmentName);
+            return Ok(result);
         }
 
         [HttpGet("parties/roles/uuid/{Uuid}")]
         public async Task<IActionResult> GetPartyRoles([FromRoute] string Uuid)
         {
-            try
-            {
-                var result = await _service.GetRolesFromPartyAsync(Uuid, _environmentName);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error retrieving roles from UUID: {ex.Message}");
-            }
+            var result = await _service.GetRolesFromPartyAsync(Uuid, _environmentName);
+            return Ok(result);
         }
 
         [HttpGet("parties/roles/org/{orgNumber}")]
         public async Task<IActionResult> GetRolesFromOrg([FromRoute] string orgNumber)
         {
-            try
-            {
-                var result = await _service.GetRolesFromOrgAsync(orgNumber, _environmentName);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error retrieving roles from org number: {ex.Message}");
-            }
+            var result = await _service.GetRolesFromOrgAsync(orgNumber, _environmentName);
+            return Ok(result);
         }
 
         [HttpGet("parties/lookup/uuid/{Uuid}")]
         public async Task<IActionResult> GetPartyUuid([FromRoute] string Uuid)
         {
-            try
-            {
-                var result = await _service.GetPartyFromUuidAsync(Uuid, _environmentName);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error retrieving party from UUID: {ex.Message}");
-            }
+            var result = await _service.GetPartyFromUuidAsync(Uuid, _environmentName);
+            return Ok(result);
         }
     }
 }

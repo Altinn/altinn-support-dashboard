@@ -38,20 +38,6 @@ public class AltinnPartyControllerTests
     }
 
     [Fact]
-    public async Task GetPartyOrg_Returns500_WhenServiceThrowsException()
-    {
-        _mockPartyApiService
-        .Setup(x => x.GetPartyFromOrgAsync(It.IsAny<string>()))
-        .ThrowsAsync(new Exception("Service error"));
-
-        var result = await _controller.GetPartyOrg("invalid-org");
-
-        Assert.IsType<ObjectResult>(result);
-        var objectResult = result as ObjectResult;
-        Assert.Equal(500, objectResult?.StatusCode);
-    }
-
-    [Fact]
     public async Task GetPartyOrg_CallsServiceExactlyOnce()
     {
         var validOrgNumber = "123456789";
@@ -91,20 +77,6 @@ public class AltinnPartyControllerTests
     }
 
     [Fact]
-    public async Task GetPartySsn_Returns500_WhenServiceThrowsException()
-    {
-        _mockPartyApiService
-        .Setup(x => x.GetPartyFromSsnAsync(It.IsAny<string>()))
-        .ThrowsAsync(new Exception("Service error"));
-
-        var result = await _controller.GetPartySsn("");
-
-        Assert.IsType<ObjectResult>(result);
-        var objectResult = result as ObjectResult;
-        Assert.Equal(500, objectResult?.StatusCode);
-    }
-
-    [Fact]
     public async Task GetPartySsn_CallsServiceExactlyOnce()
     {
         var validSsn = "11111111111";
@@ -139,20 +111,6 @@ public class AltinnPartyControllerTests
     }
 
     [Fact]
-    public async Task GetPartyRoles_Returns500_WhenServiceThrowsException()
-    {
-        _mockPartyApiService
-        .Setup(x => x.GetRolesFromPartyAsync(It.IsAny<string>()))
-        .ThrowsAsync(new Exception("Service error"));
-
-        var result = await _controller.GetPartyRoles("invalid-uuid");
-
-        Assert.IsType<ObjectResult>(result);
-        var objectResult = result as ObjectResult;
-        Assert.Equal(500, objectResult?.StatusCode);
-    }
-
-    [Fact]
     public async Task GetPartyRoles_CallsServiceExactlyOnce()
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
@@ -184,20 +142,6 @@ public class AltinnPartyControllerTests
         var result = await _controller.GetRolesFromOrg(validOrgNumber);
 
         Assert.IsType<OkObjectResult>(result);
-    }
-
-    [Fact]
-    public async Task GetRolesFromOrg_Returns500_WhenServiceThrowsException()
-    {
-        _mockPartyApiService
-        .Setup(x => x.GetRolesFromOrgAsync(It.IsAny<string>()))
-        .ThrowsAsync(new Exception("Service error"));
-
-        var result = await _controller.GetRolesFromOrg("invalid-org");
-
-        Assert.IsType<ObjectResult>(result);
-        var objectResult = result as ObjectResult;
-        Assert.Equal(500, objectResult?.StatusCode);
     }
 
     [Fact]
@@ -260,20 +204,6 @@ public class AltinnPartyControllerTests
         var result = await _controller.GetPartyUuid(validUuid);
 
         Assert.IsType<OkObjectResult>(result);
-    }
-
-    [Fact]
-    public async Task GetPartyUuid_Returns500_WhenServiceThrowsException()
-    {
-        _mockPartyApiService
-        .Setup(x => x.GetPartyFromUuidAsync(It.IsAny<string>()))
-        .ThrowsAsync(new Exception("Service error"));
-
-        var result = await _controller.GetPartyUuid("invalid-uuid");
-
-        Assert.IsType<ObjectResult>(result);
-        var objectResult = result as ObjectResult;
-        Assert.Equal(500, objectResult?.StatusCode);
     }
 
     [Fact]

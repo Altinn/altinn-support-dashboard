@@ -167,11 +167,8 @@ export const fetchInternalIdsFromOrg = async (
   const res = await authorizedFetch(
     `/api/${environment}/parties/lookup/org/${orgNumber}`,
   );
-  if (!res.ok)
-    throw new Error(
-      (await res.text()) || "Error fetching notification by orderId",
-    );
-  console.log(res);
+  if (res.status === 400) throw new Error("Ugyldig organisasjonsnummer");
+  if (!res.ok) throw new Error("Feil ved henting av intern ID");
 
   return await res.json();
 };
@@ -183,10 +180,8 @@ export const fetchInternalIdsFromSsn = async (
   const res = await authorizedFetch(
     `/api/${environment}/parties/lookup/ssn/${ssn}`,
   );
-  if (!res.ok)
-    throw new Error(
-      (await res.text()) || "Error fetching notification by orderId",
-    );
+  if (res.status === 400) throw new Error("Ugyldig fødselsnummer");
+  if (!res.ok) throw new Error("Feil ved henting av intern ID");
 
   return await res.json();
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -23,7 +23,9 @@ const IdentifierConversionPage: React.FC = () => {
     environment,
   );
 
-  if (isError) showPopup((error as Error)?.message, "error");
+  useEffect(() => {
+    if (isError) showPopup((error as Error)?.message, "error");
+  }, [isError, error]);
 
   const handleSearch = () => {
     setSubmittedQuery(input.trim());
