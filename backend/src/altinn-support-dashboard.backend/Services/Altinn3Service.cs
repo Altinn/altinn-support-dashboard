@@ -396,11 +396,6 @@ public class Altinn3Service : IAltinn3Service
                 catch (Exception) { }
             }
         }
-        _logger.LogInformation("Roles for {OrgNo}: AccessPackages={AccessPackages}, Resources={Resources}, Roles={Roles}",
-            roles.OrganizationNumber,
-            roles.AuthorizedAccessPackages,
-            roles.AuthorizedResources,
-            roles.AuthorizedRoles);
         return roles;
     }
 
