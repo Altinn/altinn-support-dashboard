@@ -27,7 +27,6 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
   });
 
   const roleInfo = roleQuery.data;
-  console.log(roleInfo);
 
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
 

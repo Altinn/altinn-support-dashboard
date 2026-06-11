@@ -41,7 +41,6 @@ export const fetchRolesForOrg = async (
   if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
 
   const data = await res.json();
-  console.log(data);
   return data;
 };
 
