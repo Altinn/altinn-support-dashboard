@@ -7,6 +7,7 @@ import {
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 import { NotificationOrderResponse } from "../models/notificationModels";
 import { PolicyRight, PolicyRule, Resource, ResourceSearchResult } from "../models/resourceModels";
+import { PartyModel } from "../models/PartyModel";
 
 //this file defines which which api endpoints we want to fetch data from
 
@@ -34,7 +35,7 @@ export const fetchOrganizations = async (
 export const fetchRolesForOrg = async (
   environment: string,
   request: RolesAndRightsRequest,
-): Promise<RolesAndRights[]> => {
+): Promise<RolesAndRights> => {
   const res = await authorizedPost(
     `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/roles`,
     request,
@@ -42,7 +43,7 @@ export const fetchRolesForOrg = async (
   if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
 
   const data = await res.json();
-  return Array.isArray(data) ? data : [data];
+  return data;
 };
 
 export const fetchPersonalContacts = async (
@@ -204,3 +205,38 @@ export const fetchResourcePolicyRights = async (
   const data = await res.json();
   return Array.isArray(data) ? data : [];
 }
+export const fetchInternalIds = async (
+  query: string,
+  environment: string,
+): Promise<PartyModel> => {
+  const digits = query.replace(/\s/g, "");
+  if (digits.length === 11) return fetchInternalIdsFromSsn(digits, environment);
+  if (digits.length === 9) return fetchInternalIdsFromOrg(digits, environment);
+  throw new Error("Identifikatoren må være 9 siffer (org.nr.) eller 11 siffer (fødselsnummer)");
+};
+
+export const fetchInternalIdsFromOrg = async (
+  orgNumber: string,
+  environment: string,
+): Promise<PartyModel> => {
+  const res = await authorizedFetch(
+    `/api/${environment}/parties/lookup/org/${orgNumber}`,
+  );
+  if (res.status === 400) throw new Error("Ugyldig organisasjonsnummer");
+  if (!res.ok) throw new Error("Feil ved henting av intern ID");
+
+  return await res.json();
+};
+
+export const fetchInternalIdsFromSsn = async (
+  ssn: string,
+  environment: string,
+): Promise<PartyModel> => {
+  const res = await authorizedFetch(
+    `/api/${environment}/parties/lookup/ssn/${ssn}`,
+  );
+  if (res.status === 400) throw new Error("Ugyldig fødselsnummer");
+  if (!res.ok) throw new Error("Feil ved henting av intern ID");
+
+  return await res.json();
+};

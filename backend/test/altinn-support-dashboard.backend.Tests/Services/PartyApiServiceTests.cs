@@ -9,6 +9,8 @@ public class PartyApiServiceTests
 {
     private readonly PartyApiService _service;
     private readonly Mock<IPartyApiClient> _mockClient;
+    private const string Env = "TT02";
+
     public PartyApiServiceTests()
     {
         _mockClient = new Mock<IPartyApiClient>();
@@ -21,15 +23,16 @@ public class PartyApiServiceTests
         var validOrgNumber = "123456789";
         var mockResponse = @"{
             ""PartyUuid"": ""1"",
+            ""PartyId"": 1,
             ""OrgNumber"":""123456789"",
             ""Name"":""Test Org""
         }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        var result = await _service.GetPartyFromOrgAsync(validOrgNumber);
+        var result = await _service.GetPartyFromOrgAsync(validOrgNumber, Env);
 
         Assert.NotNull(result);
         Assert.IsType<PartyModel>(result);
@@ -42,10 +45,10 @@ public class PartyApiServiceTests
         var mockResponse = "null";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        await Assert.ThrowsAsync<Exception>(async () => await _service.GetPartyFromOrgAsync(validOrgNumber));
+        await Assert.ThrowsAsync<Exception>(async () => await _service.GetPartyFromOrgAsync(validOrgNumber, Env));
     }
 
     [Fact]
@@ -55,10 +58,10 @@ public class PartyApiServiceTests
         var mockResponse = @"{ invalid json }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromOrgAsync(validOrgNumber));
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromOrgAsync(validOrgNumber, Env));
     }
 
     [Fact]
@@ -71,10 +74,10 @@ public class PartyApiServiceTests
         }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromOrgAsync(validOrgNumber));
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromOrgAsync(validOrgNumber, Env));
     }
 
     [Fact]
@@ -83,15 +86,16 @@ public class PartyApiServiceTests
         var validSsn = "12345678901";
         var mockResponse = @"{
             ""PartyUuid"": ""2"",
+            ""PartyId"": 2,
             ""Ssn"":""12345678901"",
             ""Name"":""Test Person""
         }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), false))
+        .Setup(x => x.GetParty(It.IsAny<string>(), false, It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        var result = await _service.GetPartyFromSsnAsync(validSsn);
+        var result = await _service.GetPartyFromSsnAsync(validSsn, Env);
 
         Assert.NotNull(result);
         Assert.IsType<PartyModel>(result);
@@ -104,10 +108,10 @@ public class PartyApiServiceTests
         var mockResponse = "null";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), false))
+        .Setup(x => x.GetParty(It.IsAny<string>(), false, It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        await Assert.ThrowsAsync<Exception>(async () => await _service.GetPartyFromSsnAsync(validSsn));
+        await Assert.ThrowsAsync<Exception>(async () => await _service.GetPartyFromSsnAsync(validSsn, Env));
     }
 
     [Fact]
@@ -117,10 +121,10 @@ public class PartyApiServiceTests
         var mockResponse = @"{ invalid json }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), false))
+        .Setup(x => x.GetParty(It.IsAny<string>(), false, It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromSsnAsync(validSsn));
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromSsnAsync(validSsn, Env));
     }
 
     [Fact]
@@ -133,10 +137,10 @@ public class PartyApiServiceTests
         }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), false))
+        .Setup(x => x.GetParty(It.IsAny<string>(), false, It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromSsnAsync(validSsn));
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromSsnAsync(validSsn, Env));
     }
 
     [Fact]
@@ -145,15 +149,16 @@ public class PartyApiServiceTests
         var validUuid = "11111111-1111-1111-1111-111111111111";
         var mockResponse = @"{
             ""PartyUuid"": ""1"",
+            ""PartyId"": 1,
             ""OrgNumber"":""123456789"",
             ""Name"":""Test Org""
         }";
 
         _mockClient
-        .Setup(x => x.GetPartyByUuid(It.IsAny<string>()))
+        .Setup(x => x.GetPartyByUuid(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        var result = await _service.GetPartyFromUuidAsync(validUuid);
+        var result = await _service.GetPartyFromUuidAsync(validUuid, Env);
 
         Assert.NotNull(result);
         Assert.IsType<PartyModel>(result);
@@ -166,10 +171,10 @@ public class PartyApiServiceTests
         var mockResponse = "null";
 
         _mockClient
-        .Setup(x => x.GetPartyByUuid(It.IsAny<string>()))
+        .Setup(x => x.GetPartyByUuid(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        await Assert.ThrowsAsync<Exception>(async () => await _service.GetPartyFromUuidAsync(validUuid));
+        await Assert.ThrowsAsync<Exception>(async () => await _service.GetPartyFromUuidAsync(validUuid, Env));
     }
 
     [Fact]
@@ -179,10 +184,10 @@ public class PartyApiServiceTests
         var mockResponse = @"{ invalid json }";
 
         _mockClient
-        .Setup(x => x.GetPartyByUuid(It.IsAny<string>()))
+        .Setup(x => x.GetPartyByUuid(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromUuidAsync(validUuid));
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromUuidAsync(validUuid, Env));
     }
 
     [Fact]
@@ -195,10 +200,10 @@ public class PartyApiServiceTests
         }";
 
         _mockClient
-        .Setup(x => x.GetPartyByUuid(It.IsAny<string>()))
+        .Setup(x => x.GetPartyByUuid(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromUuidAsync(validUuid));
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromUuidAsync(validUuid, Env));
     }
 
     [Fact]
@@ -208,10 +213,10 @@ public class PartyApiServiceTests
         var mockResponse = @"[""Role1"", ""Role2""]";
 
         _mockClient
-        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        var result = await _service.GetRolesFromPartyAsync(validUuid);
+        var result = await _service.GetRolesFromPartyAsync(validUuid, Env);
 
         Assert.NotNull(result);
         Assert.IsType<string>(result);
@@ -224,6 +229,7 @@ public class PartyApiServiceTests
 
         var mockPartyResponse = @"{
             ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
+            ""partyId"": 1,
             ""OrgNumber"":""123456789"",
             ""Name"":""Test Org""
         }";
@@ -235,28 +241,29 @@ public class PartyApiServiceTests
                             ""identifier"": ""DAGL""
                     },
                     ""to"" : {
-                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""}                 
+                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""}
                 }
             ]
         }";
 
         var mockSubPartyResponse = @"{
             ""partyUuid"": ""22222222-2222-2222-2222-222222222222"",
+            ""partyId"": 2,
             ""Ssn"":""12345678901"",
             ""Name"":""Test Person""
         }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockPartyResponse);
         _mockClient
-        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockRolesResponse);
         _mockClient
-        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222"))
+        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222", It.IsAny<string>()))
         .ReturnsAsync(mockSubPartyResponse);
 
-        var result = await _service.GetRolesFromOrgAsync(validOrgNumber);
+        var result = await _service.GetRolesFromOrgAsync(validOrgNumber, Env);
 
         Assert.NotNull(result);
         Assert.IsType<ErRollerModel>(result);
@@ -269,10 +276,10 @@ public class PartyApiServiceTests
         var mockPartyResponse = "null";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockPartyResponse);
 
-        await Assert.ThrowsAsync<Exception>(async () => await _service.GetRolesFromOrgAsync(validOrgNumber));
+        await Assert.ThrowsAsync<Exception>(async () => await _service.GetRolesFromOrgAsync(validOrgNumber, Env));
     }
 
     [Fact]
@@ -282,6 +289,7 @@ public class PartyApiServiceTests
 
         var mockPartyResponse = @"{
             ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
+            ""partyId"": 1,
             ""OrgNumber"":""123456789"",
             ""Name"":""Test Org""
         }";
@@ -293,27 +301,28 @@ public class PartyApiServiceTests
                             ""identifier"": ""DAGL""
                     },
                     ""to"" : {
-                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""}                 
+                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""}
                 }
             ]
         }";
 
         var mockSubPartyResponse = @"{
             ""partyUuid"": ""22222222-2222-2222-2222-222222222222"",
+            ""partyId"": 2,
             ""Name"":""Test Org Unit""
         }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockPartyResponse);
         _mockClient
-        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockRolesResponse);
         _mockClient
-        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222"))
+        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222", It.IsAny<string>()))
         .ReturnsAsync(mockSubPartyResponse);
 
-        var result = await _service.GetRolesFromOrgAsync(validOrgNumber);
+        var result = await _service.GetRolesFromOrgAsync(validOrgNumber, Env);
 
         Assert.NotNull(result);
         Assert.IsType<ErRollerModel>(result);
@@ -329,6 +338,7 @@ public class PartyApiServiceTests
         var validOrgNumber = "123456789";
         var mockPartyResponse = @"{
             ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
+            ""partyId"": 1,
             ""OrgNumber"":""123456789"",
             ""Name"":""Test Org""
         }";
@@ -340,51 +350,53 @@ public class PartyApiServiceTests
                             ""identifier"": ""DAGL""
                     },
                     ""to"" : {
-                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""}                 
+                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""}
                 },
                 {
                     ""role"": {
                             ""identifier"": ""ADMIN""
                     },
                     ""to"" : {
-                        ""partyUuid"": ""33333333-3333-3333-3333-333333333333""}                 
+                        ""partyUuid"": ""33333333-3333-3333-3333-333333333333""}
                 }
             ]
         }";
 
         var mockSubPartyResponse1 = @"{
             ""partyUuid"": ""22222222-2222-2222-2222-222222222222"",
+            ""partyId"": 2,
             ""Ssn"":""12345678901"",
             ""Name"":""Test Person1"",
-            ""person"": { 
+            ""person"": {
                 ""FirstName"": ""Test"",
                 ""LastName"": ""Person1""
             }
         }";
         var mockSubPartyResponse2 = @"{
             ""partyUuid"": ""33333333-3333-3333-3333-333333333333"",
+            ""partyId"": 3,
             ""Ssn"":""10987654321"",
             ""Name"":""Test Person2"",
-            ""person"": { 
+            ""person"": {
                 ""FirstName"": ""Test"",
                 ""LastName"": ""Person2""
             }
         }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockPartyResponse);
         _mockClient
-        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockRolesResponse);
         _mockClient
-        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222"))
+        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222", It.IsAny<string>()))
         .ReturnsAsync(mockSubPartyResponse1);
         _mockClient
-        .Setup(x => x.GetPartyByUuid("33333333-3333-3333-3333-333333333333"))
+        .Setup(x => x.GetPartyByUuid("33333333-3333-3333-3333-333333333333", It.IsAny<string>()))
         .ReturnsAsync(mockSubPartyResponse2);
 
-        var result = await _service.GetRolesFromOrgAsync(validOrgNumber);
+        var result = await _service.GetRolesFromOrgAsync(validOrgNumber, Env);
 
         Assert.NotNull(result);
         Assert.IsType<ErRollerModel>(result);
@@ -403,6 +415,7 @@ public class PartyApiServiceTests
         var validOrgNumber = "123456789";
         var mockPartyResponse = @"{
             ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
+            ""partyId"": 1,
             ""OrgNumber"":""123456789"",
             ""Name"":""Test Org""
         }";
@@ -414,22 +427,22 @@ public class PartyApiServiceTests
                             ""identifier"": ""DAGL""
                     },
                     ""to"" : {
-                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""}                 
+                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""}
                 }
             ]
         }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockPartyResponse);
         _mockClient
-        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockRolesResponse);
         _mockClient
-        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222"))
+        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222", It.IsAny<string>()))
         .ReturnsAsync("null");
 
-        var result = await _service.GetRolesFromOrgAsync(validOrgNumber);
+        var result = await _service.GetRolesFromOrgAsync(validOrgNumber, Env);
 
         Assert.NotNull(result);
         Assert.IsType<ErRollerModel>(result);
@@ -445,6 +458,7 @@ public class PartyApiServiceTests
         var validOrgNumber = "123456789";
         var mockPartyResponse = @"{
             ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
+            ""partyId"": 1,
             ""OrgNumber"":""123456789"",
             ""Name"":""Test Org""
         }";
@@ -454,13 +468,13 @@ public class PartyApiServiceTests
         }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockPartyResponse);
         _mockClient
-        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockRolesResponse);
 
-        var result = await _service.GetRolesFromOrgAsync(validOrgNumber);
+        var result = await _service.GetRolesFromOrgAsync(validOrgNumber, Env);
 
         Assert.NotNull(result);
         Assert.IsType<ErRollerModel>(result);
@@ -476,6 +490,7 @@ public class PartyApiServiceTests
         var validOrgNumber = "123456789";
         var mockPartyResponse = @"{
             ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
+            ""partyId"": 1,
             ""OrgNumber"":""123456789"",
             ""Name"":""Test Org""
         }";
@@ -487,32 +502,33 @@ public class PartyApiServiceTests
                             ""identifier"": """"
                     },
                     ""to"" : {
-                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""}                 
+                        ""partyUuid"": ""22222222-2222-2222-2222-222222222222""}
                 }
             ]
         }";
 
         var mockSubPartyResponse = @"{
             ""partyUuid"": ""22222222-2222-2222-2222-222222222222"",
+            ""partyId"": 2,
             ""Ssn"":""12345678901"",
             ""Name"":""Test Person1"",
-            ""person"": { 
+            ""person"": {
                 ""FirstName"": ""Test"",
                 ""LastName"": ""Person1""
             }
         }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockPartyResponse);
         _mockClient
-        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockRolesResponse);
         _mockClient
-        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222"))
+        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222", It.IsAny<string>()))
         .ReturnsAsync(mockSubPartyResponse);
 
-        var result = await _service.GetRolesFromOrgAsync(validOrgNumber);
+        var result = await _service.GetRolesFromOrgAsync(validOrgNumber, Env);
 
         Assert.NotNull(result);
         Assert.IsType<ErRollerModel>(result);
@@ -529,6 +545,7 @@ public class PartyApiServiceTests
 
         var mockPartyResponse = @"{
             ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
+            ""partyId"": 1,
             ""orgNumber"":""123456789"",
             ""name"":""Test Org""
         }";
@@ -541,7 +558,7 @@ public class PartyApiServiceTests
                     },
                     ""to"" : {
                         ""partyUuid"": ""22222222-2222-2222-2222-222222222222""
-                    }                 
+                    }
                 },
                 {
                     ""role"": {
@@ -549,7 +566,7 @@ public class PartyApiServiceTests
                     },
                     ""to"" : {
                         ""partyUuid"": ""33333333-3333-3333-3333-333333333333""
-                    }                 
+                    }
                 },
                 {
                     ""role"": {
@@ -557,12 +574,13 @@ public class PartyApiServiceTests
                     },
                     ""to"" : {
                         ""partyUuid"": ""44444444-4444-4444-4444-444444444444""
-                    }                 
+                    }
                 }
             ]
         }";
         var mockSubPartyResponse1 = @"{
             ""partyUuid"": ""22222222-2222-2222-2222-222222222222"",
+            ""partyId"": 2,
             ""ssn"":""12345678901"",
             ""name"":""Test Person"",
             ""person"": {
@@ -573,6 +591,7 @@ public class PartyApiServiceTests
 
         var mockSubPartyResponse2 = @"{
             ""partyUuid"": ""33333333-3333-3333-3333-333333333333"",
+            ""partyId"": 3,
             ""ssn"":""98765432109"",
             ""name"":""Test Person"",
             ""person"": {
@@ -583,27 +602,28 @@ public class PartyApiServiceTests
 
         var mockSubPartyResponse3 = @"{
             ""partyUuid"": ""44444444-4444-4444-4444-444444444444"",
+            ""partyId"": 4,
             ""orgNumber"":""999888777"",
             ""name"":""Test Org""
         }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockPartyResponse);
         _mockClient
-        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockRolesResponse);
         _mockClient
-        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222"))
+        .Setup(x => x.GetPartyByUuid("22222222-2222-2222-2222-222222222222", It.IsAny<string>()))
         .ReturnsAsync(mockSubPartyResponse1);
         _mockClient
-        .Setup(x => x.GetPartyByUuid("33333333-3333-3333-3333-333333333333"))
+        .Setup(x => x.GetPartyByUuid("33333333-3333-3333-3333-333333333333", It.IsAny<string>()))
         .ReturnsAsync(mockSubPartyResponse2);
         _mockClient
-        .Setup(x => x.GetPartyByUuid("44444444-4444-4444-4444-444444444444"))
+        .Setup(x => x.GetPartyByUuid("44444444-4444-4444-4444-444444444444", It.IsAny<string>()))
         .ReturnsAsync(mockSubPartyResponse3);
 
-        var result = await _service.GetRolesFromOrgAsync(validOrgNumber);
+        var result = await _service.GetRolesFromOrgAsync(validOrgNumber, Env);
 
         Assert.NotNull(result);
         Assert.IsType<ErRollerModel>(result);
@@ -617,6 +637,7 @@ public class PartyApiServiceTests
         var validOrgNumber = "123456789";
         var mockPartyResponse = @"{
             ""partyUuid"": ""11111111-1111-1111-1111-111111111111"",
+            ""partyId"": 1,
             ""OrgNumber"":""123456789"",
             ""Name"":""Test Org""
         }";
@@ -624,12 +645,12 @@ public class PartyApiServiceTests
         var mockRolesResponse = @"{ invalid json }";
 
         _mockClient
-        .Setup(x => x.GetParty(It.IsAny<string>(), true))
+        .Setup(x => x.GetParty(It.IsAny<string>(), true, It.IsAny<string>()))
         .ReturnsAsync(mockPartyResponse);
         _mockClient
-        .Setup(x => x.GetPartyRoles(It.IsAny<string>()))
+        .Setup(x => x.GetPartyRoles(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockRolesResponse);
 
-        await Assert.ThrowsAnyAsync<Exception>(async () => await _service.GetRolesFromOrgAsync(validOrgNumber));
+        await Assert.ThrowsAnyAsync<Exception>(async () => await _service.GetRolesFromOrgAsync(validOrgNumber, Env));
     }
 }

@@ -1,13 +1,13 @@
 {
-  "version": "4.2.6",
-  "releaseDate": "2026-03-05",
+  "version": "4.3",
+  "releaseDate": "2026-06-12",
   "changes": [
     {
-      "title": "småfiksing av diverse problemer",
-      "description": "Har fikset diverse småproblemer og lagt til muligheten til å se roller en person har i under/overenheten i rolledetalj vinduet",
+      "title": "Tilgangspakker itl underenheter vises nå rett",
+      "description": "Har fikset problem medvisningsfiel som oppstod ved tilgangspakker for underenheter.",
       "details": [
-        "fikset rolleproblem",
-        "lagt til funksjonalitet for å se roller en person har til under/overenheter"
+        "fikset Problem for underenheter",
+        "lagt til funksjonalitet for å å konverte fra ekstern til intern id (For utviklere)"
       ]
     }
   ]

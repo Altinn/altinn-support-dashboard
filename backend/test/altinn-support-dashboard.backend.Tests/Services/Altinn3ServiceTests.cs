@@ -226,7 +226,6 @@ public class Altinn3ServiceTests
         var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
 
         Assert.NotNull(result);
-        Assert.Single(result);
         Assert.Equal("urn:altinn:person:identifier-no", request.Type);
         Assert.Equal("urn:altinn:organization:identifier-no", request.PartyFilter[0].Type);
     }
@@ -248,7 +247,7 @@ public class Altinn3ServiceTests
         Assert.Equal("urn:altinn:organization:identifier-no", request.Type);
     }
     [Fact]
-    public async Task GetRolesAndRightsAltinn3_ReturnsEmptyList_WhenResponseIsNull()
+    public async Task GetRolesAndRightsAltinn3_ReturnsEmptyDto_WhenResponseIsNull()
     {
         var request = new RolesAndRightsRequest
         {
@@ -261,7 +260,140 @@ public class Altinn3ServiceTests
             .ReturnsAsync("null");
 
         var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
-        Assert.Empty(result);
+
+        Assert.NotNull(result);
+        Assert.Null(result.AuthorizedAccessPackages);
+        Assert.Null(result.AuthorizedResources);
+        Assert.Null(result.AuthorizedRoles);
+    }
+
+    [Fact]
+    public async Task GetRolesAndRightsAltinn3_ReturnsSubunitAccessPackages_WhenReporteeIsSubunit()
+    {
+        var request = new RolesAndRightsRequest
+        {
+            Value = "01010112345",
+            PartyFilter = new List<PartyFilter>
+            {
+                new PartyFilter { Value = "314782860" }
+            }
+        };
+
+        var jsonResponse = @"[
+            {
+                ""organizationNumber"": ""313062090"",
+                ""name"": ""Parent AS"",
+                ""authorizedAccessPackages"": [],
+                ""authorizedResources"": [],
+                ""authorizedRoles"": [],
+                ""authorizedInstances"": [],
+                ""subunits"": [
+                    {
+                        ""organizationNumber"": ""314782860"",
+                        ""name"": ""Parent AS avd"",
+                        ""authorizedAccessPackages"": [""maskinporten-scopes"", ""motta-nabo-og-planvarsel""],
+                        ""authorizedResources"": [],
+                        ""authorizedRoles"": [],
+                        ""authorizedInstances"": [],
+                        ""subunits"": []
+                    }
+                ]
+            }
+        ]";
+
+        _mockAltinn3Client
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .ReturnsAsync(jsonResponse);
+
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+
+        Assert.NotNull(result);
+        Assert.Equal("314782860", result.OrganizationNumber);
+        Assert.NotNull(result.AuthorizedAccessPackages);
+        Assert.Contains("maskinporten-scopes", result.AuthorizedAccessPackages);
+        Assert.Contains("motta-nabo-og-planvarsel", result.AuthorizedAccessPackages);
+    }
+
+    [Fact]
+    public async Task GetRolesAndRightsAltinn3_ReturnsTopLevelAccessPackages_WhenReporteeIsMainUnit()
+    {
+        var request = new RolesAndRightsRequest
+        {
+            Value = "01010112345",
+            PartyFilter = new List<PartyFilter>
+            {
+                new PartyFilter { Value = "313062090" }
+            }
+        };
+
+        var jsonResponse = @"[
+            {
+                ""organizationNumber"": ""313062090"",
+                ""name"": ""Main AS"",
+                ""authorizedAccessPackages"": [""regnskapsfoerer-rettigheter""],
+                ""authorizedResources"": [],
+                ""authorizedRoles"": [],
+                ""authorizedInstances"": [],
+                ""subunits"": []
+            }
+        ]";
+
+        _mockAltinn3Client
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .ReturnsAsync(jsonResponse);
+
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+
+        Assert.NotNull(result);
+        Assert.Equal("313062090", result.OrganizationNumber);
+        Assert.NotNull(result.AuthorizedAccessPackages);
+        Assert.Contains("regnskapsfoerer-rettigheter", result.AuthorizedAccessPackages);
+    }
+
+    [Fact]
+    public async Task GetRolesAndRightsAltinn3_DoesNotReturnParentAccessPackages_WhenReporteeIsSubunit()
+    {
+        var request = new RolesAndRightsRequest
+        {
+            Value = "01010112345",
+            PartyFilter = new List<PartyFilter>
+            {
+                new PartyFilter { Value = "314782860" }
+            }
+        };
+
+        var jsonResponse = @"[
+            {
+                ""organizationNumber"": ""313062090"",
+                ""name"": ""Parent AS"",
+                ""authorizedAccessPackages"": [""parent-only-package""],
+                ""authorizedResources"": [],
+                ""authorizedRoles"": [],
+                ""authorizedInstances"": [],
+                ""subunits"": [
+                    {
+                        ""organizationNumber"": ""314782860"",
+                        ""name"": ""Parent AS avd"",
+                        ""authorizedAccessPackages"": [""subunit-package""],
+                        ""authorizedResources"": [],
+                        ""authorizedRoles"": [],
+                        ""authorizedInstances"": [],
+                        ""subunits"": []
+                    }
+                ]
+            }
+        ]";
+
+        _mockAltinn3Client
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .ReturnsAsync(jsonResponse);
+
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.AuthorizedAccessPackages);
+        Assert.Contains("subunit-package", result.AuthorizedAccessPackages);
+        Assert.DoesNotContain("parent-only-package", result.AuthorizedAccessPackages);
     }
 
 }
