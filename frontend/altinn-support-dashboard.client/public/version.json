@@ -3,7 +3,7 @@
   "releaseDate": "2026-06-12",
   "changes": [
     {
-      "title": "Tilgangspakker itl underenheter vises nå rett",
+      "title": "Tilgangspakker til underenheter vises nå rett",
       "description": "Har fikset problem medvisningsfiel som oppstod ved tilgangspakker for underenheter.",
       "details": [
         "fikset Problem for underenheter",

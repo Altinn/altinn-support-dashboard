@@ -8,7 +8,7 @@ using Security;
 namespace altinn_support_dashboard.Server.Controllers
 {
     [ApiController]
-    [Authorize(AzureRoles.TT02)]
+    [Authorize(AzureRoles.CoreExternal)]
     [Route("api/TT02")]
     public class AltinnPartyTT02Controller : AltinnPartyBaseController
     {
@@ -16,7 +16,7 @@ namespace altinn_support_dashboard.Server.Controllers
     }
 
     [ApiController]
-    [Authorize(AzureRoles.Production)]
+    [Authorize(AzureRoles.CoreExternal)]
     [Route("api/Production")]
     public class AltinnPartyProductionController : AltinnPartyBaseController
     {
