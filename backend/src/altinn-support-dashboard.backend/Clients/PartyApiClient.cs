@@ -5,142 +5,100 @@ using Microsoft.Extensions.Options;
 
 public class PartyApiClient : IPartyApiClient
 {
-    private readonly HttpClient _client;
+    private readonly Dictionary<string, HttpClient> _clients = new();
 
-    public PartyApiClient(IHttpClientFactory clientFactory, IConfiguration settingsConfiguration)
-    {
-        _client = clientFactory.CreateClient("TT02");
-
-        string registerSubscriptionKey = settingsConfiguration.GetSection("Configuration:TT02:Ocp_Apim_Subscription_Key").Get<string>() ?? "";
-        _client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", registerSubscriptionKey);
-
-        _client.BaseAddress = new Uri("https://platform.tt02.altinn.no/register/api/v1/");
-    }
-
-    //request of party
     public class LookupRequest
     {
         public string? OrgNo { get; set; }
         public string? Ssn { get; set; }
     }
 
-    public async Task<string> GetParty(string orgNumber, bool isOrg)
+    public PartyApiClient(IOptions<Configuration> configuration, IHttpClientFactory clientFactory)
+    {
+        InitClient(nameof(configuration.Value.TT02), configuration.Value.TT02, clientFactory);
+        InitClient(nameof(configuration.Value.Production), configuration.Value.Production, clientFactory);
+    }
+
+    private void InitClient(string environmentName, EnvironmentConfiguration config, IHttpClientFactory clientFactory)
+    {
+        var client = clientFactory.CreateClient(environmentName);
+        client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", config.Ocp_Apim_Subscription_Key);
+        client.BaseAddress = new Uri(config.BaseAddressAltinn3 + "register/api/v1/");
+        _clients.Add(environmentName, client);
+    }
+
+    public async Task<string> GetParty(string orgNumber, bool isOrg, string environmentName)
     {
         try
         {
-            string requestUrl = "parties/lookup";
+            var client = _clients[environmentName];
             var requestBody = new LookupRequest();
 
-
             if (isOrg)
-            {
                 requestBody.OrgNo = orgNumber;
-            }
             else
-            {
                 requestBody.Ssn = orgNumber;
 
-            }
-
-            var jsonBody = JsonSerializer.Serialize(requestBody);
-
-            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-
-            var request = new HttpRequestMessage(HttpMethod.Post, requestUrl)
-            {
-                Content = content
-            };
-
-
-            var response = await _client.SendAsync(request);
+            var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(HttpMethod.Post, "parties/lookup") { Content = content };
+            var response = await client.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
-            {
                 return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
 
-            }
+            var responseBody = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                throw new BadRequestException($"Invalid lookup request: {responseBody}");
 
+            throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        catch (BadRequestException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
-            throw new Exception($"An error occurred while calling the APILLL: {ex.Message}", ex);
-
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
-
     }
 
-    public async Task<string> GetPartyRoles(string partyUuid)
+    public async Task<string> GetPartyRoles(string partyUuid, string environmentName)
     {
-
         try
         {
-
-            var requestUrl = $"correspondence/parties/{partyUuid}/roles/correspondence-roles";
-
-
-
-
-            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-
-            var response = await _client.SendAsync(request);
+            var client = _clients[environmentName];
+            var request = new HttpRequestMessage(HttpMethod.Get, $"correspondence/parties/{partyUuid}/roles/correspondence-roles");
+            var response = await client.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
-            {
                 return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
 
-            }
-
+            var responseBody = await response.Content.ReadAsStringAsync();
+            throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"An error occurred while calling the APILLL: {ex.Message}", ex);
-
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
-
     }
-    public async Task<string> GetPartyByUuid(string partyUuid)
-    {
 
+    public async Task<string> GetPartyByUuid(string partyUuid, string environmentName)
+    {
         try
         {
-
-            var requestUrl = $"parties/byuuid/{partyUuid}";
-
-
-            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-
-            var response = await _client.SendAsync(request);
+            var client = _clients[environmentName];
+            var request = new HttpRequestMessage(HttpMethod.Get, $"parties/byuuid/{partyUuid}");
+            var response = await client.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
-            {
                 return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
 
-            }
-
+            var responseBody = await response.Content.ReadAsStringAsync();
+            throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
         }
         catch (Exception ex)
         {
-            throw new Exception($"An error occurred while calling the APILLL: {ex.Message}", ex);
-
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
-
     }
-
-
-
 }

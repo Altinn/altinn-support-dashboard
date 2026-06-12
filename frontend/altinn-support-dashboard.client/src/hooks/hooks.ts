@@ -9,6 +9,7 @@ import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   fetchERoles,
+  fetchInternalIds,
   fetchNotificationAddresses,
   fetchNotificationByOrderId,
   fetchOfficialContacts,
@@ -154,6 +155,17 @@ export const useCorrespondencePost = () => {
     },
   });
 };
+
+export function useInternalIdLookup(query: string, environment: string) {
+  return useQuery({
+    queryKey: ["internalIdLookup", environment, query],
+    queryFn: () => fetchInternalIds(query, environment),
+    enabled: !!query && !!environment,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
 
 export function useNotifications(orderId: string) {
   const notificationQuery = useQuery({
