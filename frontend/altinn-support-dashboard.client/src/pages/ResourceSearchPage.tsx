@@ -4,6 +4,7 @@ import { ResourceSearchResult } from "../models/resourceModels";
 import {ResourceSearchSearchBar} from "../components/ResourceSearch/ResourceSearchSearchBar";
 import { ResourceSearchList } from "../components/ResourceSearch/ResourceSearchList";
 import styles from "./styles/ResourceSearchPage.module.css"
+import ResourceSearchDetailedView from "../components/ResourceSearch/ResourceSearchDetailedView";
 
 
 export const ResourceSearchPage = () => {
@@ -30,6 +31,7 @@ export const ResourceSearchPage = () => {
           />
         </div>
         <div className={styles.detailedContainer}>
+            <ResourceSearchDetailedView selectedResource={selectedResource} />
         </div>
       </div>
     </div>

@@ -15,6 +15,9 @@ import {
   fetchOfficialContacts,
   fetchOrganizations,
   fetchPersonalContacts,
+  fetchResourceByIdentifier,
+  fetchResourcePolicyRights,
+  fetchResourcePolicyRules,
   fetchResources,
   fetchRolesForOrg,
   fetchSsnFromToken,
@@ -26,6 +29,7 @@ import {
 import { sendCorrespondence } from "../utils/correspondenceApi";
 import { toast } from "react-toastify";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
+import { PolicyRight, PolicyRule, Resource } from "../models/resourceModels";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -190,4 +194,35 @@ export function useResourceSearch(environment: string, query: string) {
     enabled: !!query,
   });
   return { resourceQuery };
+}
+
+export function useResourceDetails(environment: string, identifier?: string) {
+  const resourceQuery = useQuery<Resource | null, Error>({
+    queryKey: ["resource", environment, identifier],
+    queryFn: () => fetchResourceByIdentifier(environment, identifier!),
+    enabled: !!identifier,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+    const policyRulesQuery = useQuery<PolicyRule[], Error>({
+    queryKey: ["policyRules", environment, identifier],
+    queryFn: () => fetchResourcePolicyRules(environment, identifier!),
+    enabled: !!identifier,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+    const policyRightsQuery = useQuery<PolicyRight[], Error>({
+    queryKey: ["policyRights", environment, identifier],
+    queryFn: () => fetchResourcePolicyRights(environment, identifier!),
+    enabled: !!identifier,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  return { resourceQuery, policyRulesQuery, policyRightsQuery };
 }
