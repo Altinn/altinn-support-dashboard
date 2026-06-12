@@ -21,7 +21,7 @@ public interface IAltinn3Service
     Task<List<NotificationAddressDto>> GetNotificationAddressesByPhoneAltinn3(string phoneNumber, string environment);
     Task<List<NotificationAddressDto>> GetNotificationAddressesByEmailAltinn3(string email, string environment);
 
-    Task<List<RolesAndRightsDto>> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment);
+    Task<RolesAndRightsDto> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment);
     Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName);
 
 }

@@ -97,22 +97,6 @@ describe("api", () => {
       );
     });
 
-    it("should wrap single object in array", async () => {
-      const mockData = { role: "Admin" };
-      vi.mocked(utils.authorizedPost).mockResolvedValue({
-        ok: true,
-        status: 200,
-        json: vi.fn().mockResolvedValue(mockData),
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const request = { partyFilter: [{ value: "123" }], value: "test" } as any;
-      const result = await fetchRolesForOrg("TEST", request);
-
-      expect(result).toEqual([mockData]);
-    });
-
     it("should throw error on failure", async () => {
       vi.mocked(utils.authorizedPost).mockResolvedValue({
         ok: false,
@@ -363,4 +347,3 @@ describe("api", () => {
     });
   });
 });
-
