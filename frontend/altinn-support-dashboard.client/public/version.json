@@ -4,7 +4,7 @@
   "changes": [
     {
       "title": "Tilgangspakker til underenheter vises nå rett",
-      "description": "Har fikset problem medvisningsfiel som oppstod ved tilgangspakker for underenheter.",
+      "description": "Har fikset problem med visningsfeil som oppstod ved tilgangspakker for underenheter.",
       "details": [
         "fikset Problem for underenheter",
         "lagt til funksjonalitet for å å konverte fra ekstern til intern id (For utviklere)"
