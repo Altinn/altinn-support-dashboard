@@ -11,12 +11,18 @@ import {
 import { useAppStore } from "../stores/Appstore";
 import { useInternalIdLookup } from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
+import {
+  getLocalStorageValue,
+  setLocalStorageValue,
+} from "../components/ManualRoleSearch/utils/storageUtils";
 import styles from "./styles/IdentifierConversionPage.module.css";
 
 const IdentifierConversionPage: React.FC = () => {
   const environment = useAppStore((state) => state.environment);
-  const [input, setInput] = useState("");
-  const [submittedQuery, setSubmittedQuery] = useState("");
+  const [input, setInput] = useState(getLocalStorageValue("identifierInput"));
+  const [submittedQuery, setSubmittedQuery] = useState(
+    getLocalStorageValue("identifierQuery"),
+  );
 
   const { data, isLoading, isError, error } = useInternalIdLookup(
     submittedQuery,
@@ -28,7 +34,9 @@ const IdentifierConversionPage: React.FC = () => {
   }, [isError, error]);
 
   const handleSearch = () => {
-    setSubmittedQuery(input.trim());
+    const query = input.trim();
+    setLocalStorageValue("identifierQuery", query);
+    setSubmittedQuery(query);
   };
 
   return (
@@ -41,7 +49,10 @@ const IdentifierConversionPage: React.FC = () => {
           className={styles.input}
           label="Organisasjonsnummer (9 siffer) eller fødselsnummer (11 siffer)"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            setInput(e.target.value);
+            setLocalStorageValue("identifierInput", e.target.value);
+          }}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
         <Button
