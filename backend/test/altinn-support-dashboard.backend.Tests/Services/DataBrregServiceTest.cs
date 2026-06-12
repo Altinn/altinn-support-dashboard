@@ -109,14 +109,14 @@ public class DataBrregServiceTest
         .ReturnsAsync("");
 
         _mockPartyApiService
-        .Setup(x => x.GetRolesFromOrgAsync(It.IsAny<string>()))
+        .Setup(x => x.GetRolesFromOrgAsync(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(expectedRoles);
 
         var result = await _dataBrregService.GetRolesAsync(validOrgNumber, "TT02");
 
         Assert.NotNull(result);
         Assert.IsType<ErRollerModel>(result);
-        _mockPartyApiService.Verify(x => x.GetRolesFromOrgAsync(validOrgNumber), Times.Once);
+        _mockPartyApiService.Verify(x => x.GetRolesFromOrgAsync(validOrgNumber, "TT02"), Times.Once);
     }
 
     [Fact]
@@ -129,7 +129,7 @@ public class DataBrregServiceTest
         .ReturnsAsync("");
 
         _mockPartyApiService
-        .Setup(x => x.GetRolesFromOrgAsync(It.IsAny<string>()))
+        .Setup(x => x.GetRolesFromOrgAsync(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync((ErRollerModel)null!);
 
         var result = await _dataBrregService.GetRolesAsync(validOrgNumber, "TT02");

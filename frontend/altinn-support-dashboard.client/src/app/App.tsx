@@ -13,7 +13,6 @@ import { useVersionCheck } from "../hooks/useVersionCheck";
 import { DashboardPage } from "../pages/DashboardPage";
 import SignOutPage from "../pages/SignOutPage";
 import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
-import NewOrganizationPage from "../pages/NewOrganizationPage";
 import SettingsPage from "../pages/SettingsPage";
 import { CorrespondencePage } from "../pages/CorrespondencePage";
 import { NotificationPage } from "../pages/NotificationPage";
