@@ -18,6 +18,9 @@ public class ResourceSearchResult
 
     [JsonPropertyName("hasCompetentAuthority")]
     public CompetentAuthorityDto? CompetentAuthority { get; set; }
+
+    [JsonPropertyName("visible")]
+    public bool? Visible { get; set; }
 }
 
 public class CompetentAuthorityDto

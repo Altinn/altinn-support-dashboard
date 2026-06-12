@@ -39,6 +39,7 @@ public class ResourceRegistryService : IResourceRegistryService
 
         return response.Where(r =>
             r.ResourceType == "AltinnApp" &&
+            r.Visible != false &&
             r.Title?.Values.Any(v => v.Contains(query, StringComparison.OrdinalIgnoreCase)) == true
         ).ToList();   
     }
