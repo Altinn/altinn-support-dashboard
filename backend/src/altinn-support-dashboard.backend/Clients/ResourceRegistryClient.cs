@@ -60,13 +60,4 @@ public class ResourceRegistryClient : IResourceRegistryClient
         var responseBody = await response.Content.ReadAsStringAsync();
         return responseBody;
     }
-
-    public async Task<string> GetResourcePolicyRights(string environmentName, string identifier)
-    {
-        var client = _clients[environmentName];
-        var response = await client.GetAsync($"/resourceregistry/api/v1/resource/{identifier}/policy/rights");
-        response.EnsureSuccessStatusCode();
-        var responseBody = await response.Content.ReadAsStringAsync();
-        return responseBody;
-    }
 }

@@ -52,15 +52,3 @@ export interface XacmlAttribute {
     type?: string;
     value?: string;
 }
-
-export interface PolicyRight {
-    action?: XacmlAttribute;
-    resource?: XacmlAttribute[];
-    subjects?: PolicyRightSubject[];
-    rightKey?: string;
-    subjectTypes?: string[];
-}
-
-export interface PolicyRightSubject {
-    subjectAttributes?: XacmlAttribute[];
-}

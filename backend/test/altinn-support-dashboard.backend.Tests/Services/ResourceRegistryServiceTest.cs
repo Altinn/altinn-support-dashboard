@@ -170,39 +170,6 @@ public class ResourceRegistryServiceTest
     }
 
     [Fact]
-    public async Task GetResourcePolicyRights_ReturnsDeserializedList()
-    {
-        var json = """[{"action":{"type":"urn:oasis:names:tc:xacml:1.0:action:action-id","value":"read"},"resource":[{"type":"urn:altinn:org","value":"brg"}],"subjects":[{"subjectAttributes":[{"type":"urn:altinn:rolecode","value":"dagl"}]}],"rightKey":"read;app1;brg;abc123","subjectTypes":["urn:altinn:rolecode"]}]""";
-        _mockClient.Setup(c => c.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(json);
-
-        var result = await _service.GetResourcePolicyRights("TT02", "app1");
-
-        Assert.NotNull(result);
-        Assert.Single(result);
-        Assert.Equal("read;app1;brg;abc123", result[0].RightKey);
-    }
-
-    [Fact]
-    public async Task GetResourcePolicyRights_ReturnsNull_WhenClientReturnsNull()
-    {
-        _mockClient.Setup(c => c.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((string)null!);
-
-        var result = await _service.GetResourcePolicyRights("TT02", "app1");
-
-        Assert.Null(result);
-    }
-
-    [Fact]
-    public async Task GetResourcePolicyRights_DelegatesToClient()
-    {
-        _mockClient.Setup(c => c.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("[]");
-
-        await _service.GetResourcePolicyRights("TT02", "app1");
-
-        _mockClient.Verify(c => c.GetResourcePolicyRights("TT02", "app1"), Times.Once);
-    }
-
-    [Fact]
     public async Task GetResourceList_CallsClient_WhenCacheMiss()
     {
         SetupCacheMiss();

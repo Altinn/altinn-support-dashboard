@@ -6,7 +6,7 @@ import {
 } from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 import { NotificationOrderResponse } from "../models/notificationModels";
-import { PolicyRight, PolicyRule, Resource, ResourceSearchResult } from "../models/resourceModels";
+import { PolicyRule, Resource, ResourceSearchResult } from "../models/resourceModels";
 import { PartyModel } from "../models/PartyModel";
 
 //this file defines which which api endpoints we want to fetch data from
@@ -188,20 +188,6 @@ export const fetchResourcePolicyRules = async (
   );
   if (res.status === 404) return [];
   if (!res.ok) throw new Error((await res.text()) || "Error fetching policy rules");
-  const data = await res.json();
-  return Array.isArray(data) ? data : [];
-}
-
-export const fetchResourcePolicyRights = async (
-  environment: string,
-  identifier: string
-): Promise<PolicyRight[]> => {
-  const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/resource/${encodeURIComponent(identifier)}/policy/rights`,
-  );
-
-  if (res.status === 404) return [];
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching policy rights");
   const data = await res.json();
   return Array.isArray(data) ? data : [];
 }
