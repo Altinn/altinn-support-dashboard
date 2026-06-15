@@ -17,7 +17,7 @@ export const ResourceSearchCard: React.FC<ResourceSearchCardProps> = ({
     const isSelected = resource.identifier === selectedResource?.identifier;
     const title =
         resource.title?.["nb"] ??
-        resource.title?.["nn"]
+        resource.title?.["nn"] ??
         resource.title?.["en"] ??
         resource.identifier;
     const authorityName = 

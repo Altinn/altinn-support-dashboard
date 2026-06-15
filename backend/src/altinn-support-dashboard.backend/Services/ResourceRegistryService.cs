@@ -33,14 +33,12 @@ public class ResourceRegistryService : IResourceRegistryService
         }).ToList();
     }
 
-    public async Task<List<ResourceSearchResult>> SearchResources(string environmentName, string query, bool? delegable, bool? visible)
+    public async Task<List<ResourceSearchResult>> SearchResources(string environmentName, string query)
     {
         var response = await GetCachedResourceList(environmentName);
 
         return response.Where(r =>
             r.ResourceType == "AltinnApp" &&
-            (visible == null || r.Visible == visible) &&
-            (delegable == null || r.Delegable == delegable) &&
             r.Title?.Values.Any(v => v.Contains(query, StringComparison.OrdinalIgnoreCase)) == true
         ).ToList();   
     }

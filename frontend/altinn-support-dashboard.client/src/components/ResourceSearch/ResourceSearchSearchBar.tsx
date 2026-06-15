@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Textfield, Button, Search, Checkbox } from "@digdir/designsystemet-react";
-import { Resource } from "../../models/resourceModels";
+import { ResourceSearchResult } from "../../models/resourceModels";
 import classes from "./styles/ResourceSearchSearchBar.module.css"
 
 type ResourceSearchSearchBarProps = {
   query: string;
   setQuery: (query: string) => void;
-  setSelectedResource: (resource: Resource | null) => void;
+  setSelectedResource: (resource: ResourceSearchResult | null) => void;
   onlyDelegable: boolean;
   setOnlyDelegable: (value: boolean) => void;
   onlyVisible: boolean;
@@ -49,6 +49,7 @@ export const ResourceSearchSearchBar: React.FC<ResourceSearchSearchBarProps> = (
           onClick={() => {
             setTextFieldValue("");
             setQuery("");
+            setSelectedResource(null);
           }}
           className={classes.emptySearchButton}
         >
@@ -64,14 +65,12 @@ export const ResourceSearchSearchBar: React.FC<ResourceSearchSearchBarProps> = (
       <div className={classes.filters}>
         <Checkbox
           label = "Kun delegerbare"
-          className={classes.checkbox}
           value="delegable"
           checked={onlyDelegable}
           onChange={(e) => setOnlyDelegable(e.target.checked)}
         />
         <Checkbox
           label="Kun synlige"
-          className={classes.checkbox}
           value="visible"
           checked={onlyVisible}
           onChange={(e) => setOnlyVisible(e.target.checked)}

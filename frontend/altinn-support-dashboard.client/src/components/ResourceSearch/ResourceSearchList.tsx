@@ -27,7 +27,7 @@ export const ResourceSearchList: React.FC<ResourceSearchListProps> = ({
     const environment = useAppStore((state) => state.environment);
     const { resourceQuery } = useResourceSearch(environment, query);
     const resources = (resourceQuery.data ?? []).filter(
-        (r) => (!onlyDelegable || r.delegable === true) && (!onlyVisible || r.visible == true)
+        (r) => (!onlyDelegable || r.delegable === true) && (!onlyVisible || r.visible === true)
     );
 
     useEffect(() => {
