@@ -212,15 +212,18 @@ export const fetchInternalIds = async (
   const digits = query.replace(/\s/g, "");
   if (digits.length === 11) return fetchInternalIdsFromSsn(digits, environment);
   if (digits.length === 9) return fetchInternalIdsFromOrg(digits, environment);
-  throw new Error("Identifikatoren må være 9 siffer (org.nr.) eller 11 siffer (fødselsnummer)");
+  throw new Error(
+    "Identifikatoren må være 9 siffer (org.nr.) eller 11 siffer (fødselsnummer)",
+  );
 };
 
 export const fetchInternalIdsFromOrg = async (
   orgNumber: string,
   environment: string,
 ): Promise<PartyModel> => {
+  console.log(environment);
   const res = await authorizedFetch(
-    `/api/${environment}/parties/lookup/org/${orgNumber}`,
+    `${getBaseUrl(environment)}/parties/lookup/org/${orgNumber}`,
   );
   if (res.status === 400) throw new Error("Ugyldig organisasjonsnummer");
   if (!res.ok) throw new Error("Feil ved henting av intern ID");
@@ -233,7 +236,7 @@ export const fetchInternalIdsFromSsn = async (
   environment: string,
 ): Promise<PartyModel> => {
   const res = await authorizedFetch(
-    `/api/${environment}/parties/lookup/ssn/${ssn}`,
+    `${getBaseUrl(environment)}/parties/lookup/ssn/${ssn}`,
   );
   if (res.status === 400) throw new Error("Ugyldig fødselsnummer");
   if (!res.ok) throw new Error("Feil ved henting av intern ID");
