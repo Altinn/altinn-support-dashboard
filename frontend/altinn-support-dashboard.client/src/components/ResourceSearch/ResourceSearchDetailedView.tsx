@@ -93,22 +93,22 @@ const ResourceSearchDetailedView: React.FC<ResourceSearchDetailedViewProps> = ({
             ) : (
                 <>
                     <section className={styles.section}>
-                        <Heading level={4} data-size="xs">Roller</Heading>
-                        {Object.entries(groupedRoleRules).length === 0 ? (
-                            <p>Ingen roller</p>
+                        <Heading level={4} data-size="xs">Tilgangspakker</Heading>
+                        {Object.entries(groupedPackageRules).length === 0 ? (
+                            <p>Ingen tilgangspakker</p>
                         ) : (
-                            Object.entries(groupedRoleRules).map(([subject, actions]) => (
+                            Object.entries(groupedPackageRules).map(([subject, actions]) => (
                                 <PolicySubjectCard key={subject} subject={subject} actions={[...actions]} />
                             ))
                         )}
                     </section>
 
                     <section className={styles.section}>
-                        <Heading level={4} data-size="xs">Tilgangspakker</Heading>
-                        {Object.entries(groupedPackageRules).length === 0 ? (
-                            <p>Ingen tilgangspakker</p>
+                        <Heading level={4} data-size="xs">Roller</Heading>
+                        {Object.entries(groupedRoleRules).length === 0 ? (
+                            <p>Ingen roller</p>
                         ) : (
-                            Object.entries(groupedPackageRules).map(([subject, actions]) => (
+                            Object.entries(groupedRoleRules).map(([subject, actions]) => (
                                 <PolicySubjectCard key={subject} subject={subject} actions={[...actions]} />
                             ))
                         )}
