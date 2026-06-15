@@ -399,5 +399,12 @@ namespace AltinnSupportDashboard.Controllers
             var result = await _altinn3Service.GetOrganizationspartyInfo(partyIds.PartyIds, environmentName);
             return Ok(result);
         }
+
+        [HttpGet("rolesList")]
+        public async Task<IActionResult> GetAltinn2RolesList()
+        {
+            var result = await _altinn3Service.GetAltinn2RolesList(environmentName);
+            return Ok(result);
+        }
     }
 }

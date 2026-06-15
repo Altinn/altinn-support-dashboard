@@ -234,7 +234,6 @@ public class Altinn3Service : IAltinn3Service
         if (string.IsNullOrEmpty(result)) return [];
         var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
-
         return contactsAltinn3;
 
     }
@@ -357,28 +356,7 @@ public class Altinn3Service : IAltinn3Service
             : new RolesAndRightsDto { OrganizationNumber = partyFilterValue ?? "" };
 
 
-        //Temporary for altinn2 roles, will be removed when altinn2 roles are deprecated
-        List<Role>? altinn2Roles = null;
-        try
-        {
-            altinn2Roles = partyFilterValue != null
-                ? await _altinn2Service.GetPersonRoles(rolesAndRightsRequest.Value.Replace(" ", ""), partyFilterValue, environment)
-                : null;
-        }
-        catch (Exception) { }
-        if (altinn2Roles != null)
-        {
-            List<string> altinn2RolesList = [];
-            foreach (Role role in altinn2Roles)
-            {
-                if (!string.IsNullOrEmpty(role.RoleName))
-                {
-                    altinn2RolesList.Add($"{role.RoleName}");
-                }
-            }
-            roles.AuthorizedRoles = altinn2RolesList;
-        }
-
+        //TODO: add new roles mapping to get rolesname from meta endpoinup
         if (roles.AuthorizedResources != null && roles.AuthorizedResources.Count >= 1)
         {
             //Sets resources to name to be more readable
@@ -418,6 +396,15 @@ public class Altinn3Service : IAltinn3Service
             }
         }
         return resourceNames;
+    }
+
+    public async Task<List<string>> GetAltinn2RolesList(string environmentName)
+    {
+        string result = await _client.GetAltinn2RolesList(environmentName);
+
+        List<string> rolesList = JsonSerializer.Deserialize<List<string>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+
+        return rolesList;
     }
 
     private string getTypeFromValue(string value)
