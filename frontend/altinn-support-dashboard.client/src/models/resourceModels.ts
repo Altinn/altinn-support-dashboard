@@ -6,6 +6,8 @@ export interface ResourceSearchResult {
     description?: Record<string, string>;
     resourceType?: string;
     hasCompetentAuthority?: CompetentAuthority;
+    delegable?: boolean;
+    visible?: boolean;
 }
 export interface CompetentAuthority{
     name?: Record<string, string>;

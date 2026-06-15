@@ -13,16 +13,22 @@ interface ResourceSearchListProps {
     selectedResource: ResourceSearchResult | null;
     setSelectedResource: (resource: ResourceSearchResult) => void;
     query: string;
+    onlyDelegable: boolean;
+    onlyVisible: boolean;
 }
 
 export const ResourceSearchList: React.FC<ResourceSearchListProps> = ({
     selectedResource,
     setSelectedResource,
     query,
+    onlyDelegable,
+    onlyVisible
 }) => {
     const environment = useAppStore((state) => state.environment);
     const { resourceQuery } = useResourceSearch(environment, query);
-    const resources = resourceQuery.data ?? [];
+    const resources = (resourceQuery.data ?? []).filter(
+        (r) => (!onlyDelegable || r.delegable === true) && (!onlyVisible || r.visible == true)
+    );
 
     useEffect(() => {
         if (resourceQuery.isError) {

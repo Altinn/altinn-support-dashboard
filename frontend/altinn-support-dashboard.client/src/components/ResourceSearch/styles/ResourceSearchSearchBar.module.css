@@ -1,18 +1,21 @@
 .container {
-    position: relative;
     width: 100%;
     margin-top: 0.5rem;
 }
 
-.container input {
+.searchRowinput {
     width: 95%;
     padding-right: 6rem;
     box-shadow: none;
 }
 
-.container input:focus {
+.searchRow input:focus {
     outline: none;
     box-shadow: none;
+}
+
+.searchRow {
+    position: relative;
 }
 
 .searchButton {
@@ -23,6 +26,7 @@
     height: 2.5rem;
     max-width: 2.5rem;
     background: none;
+    color: grey;
 }
 
 .emptySearchButton {
@@ -36,3 +40,13 @@
     color: grey;
     font-size: larger;
 }
+
+.filters {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0;
+}
+

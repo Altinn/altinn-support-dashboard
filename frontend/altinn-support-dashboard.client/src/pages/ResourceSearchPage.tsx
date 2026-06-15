@@ -11,6 +11,9 @@ export const ResourceSearchPage = () => {
   const [query, setQuery] = useState("");
   const [selectedResource, setSelectedResource] =
     useState<ResourceSearchResult | null>(null);
+  
+  const [onlyDelegable, setOnlyDelegable] = useState(false);
+  const [onlyVisible, setOnlyVisible] = useState(false);
 
   return (
     <div className={styles.pageContainer}>
@@ -21,6 +24,10 @@ export const ResourceSearchPage = () => {
         query={query}
         setQuery={setQuery}
         setSelectedResource={setSelectedResource}
+        onlyDelegable={onlyDelegable}
+        setOnlyDelegable={setOnlyDelegable}
+        onlyVisible={onlyVisible}
+        setOnlyVisible={setOnlyVisible}
       />
       <div className={styles.mainContainer}>
         <div className={styles.listContainer}>
@@ -28,6 +35,8 @@ export const ResourceSearchPage = () => {
             query={query}
             selectedResource={selectedResource}
             setSelectedResource={setSelectedResource}
+            onlyDelegable={onlyDelegable}
+            onlyVisible={onlyVisible}
           />
         </div>
         <div className={styles.detailedContainer}>

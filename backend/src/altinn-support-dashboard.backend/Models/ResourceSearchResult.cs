@@ -21,6 +21,9 @@ public class ResourceSearchResult
 
     [JsonPropertyName("visible")]
     public bool? Visible { get; set; }
+
+    [JsonPropertyName("delegable")]
+    public bool? Delegable { get; set; }
 }
 
 public class CompetentAuthorityDto

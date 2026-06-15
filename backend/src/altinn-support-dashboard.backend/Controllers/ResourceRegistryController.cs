@@ -25,9 +25,9 @@ public class ResourceRegistryController : ControllerBase
     }
 
     [HttpGet("search")]
-    public async Task<IActionResult> SearchResources(string environmentName, [FromQuery] string resourceTitle)
+    public async Task<IActionResult> SearchResources(string environmentName, [FromQuery] string resourceTitle, [FromQuery] bool? delegable, [FromQuery] bool? visible)
     {
-        var result = await _resourceRegistryService.SearchResources(environmentName, resourceTitle);
+        var result = await _resourceRegistryService.SearchResources(environmentName, resourceTitle, delegable, visible);
         return Ok(result);
     }
 
