@@ -15,7 +15,7 @@ const ResourceSearchDetailedView: React.FC<ResourceSearchDetailedViewProps> = ({
     const environment = useAppStore((state) => state.environment);
     const { resourceQuery, policyRulesQuery } = useResourceDetails(
         environment,
-        selectedResource?.identifier ?? undefined,
+        selectedResource?.identifier,
     );
 
     if (!selectedResource) return null;

@@ -22,9 +22,7 @@ export const ResourceSearchSearchBar: React.FC<ResourceSearchSearchBarProps> = (
   onlyVisible,
   setOnlyVisible
 }) => {
-  const [textFieldValue, setTextFieldValue] = useState(() =>
-    query != null && query !== "" ? query : ""
-  );
+  const [textFieldValue, setTextFieldValue] = useState(query)
 
   const handleSearch = () => {
     if (textFieldValue !== query) {

@@ -3,11 +3,6 @@
   overflow-y: auto;
 }
 
-.metaRow {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 0.5rem;
-}
 
 .title {
   margin-bottom: 1.5rem;
