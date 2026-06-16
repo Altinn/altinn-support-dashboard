@@ -392,4 +392,156 @@ public class Altinn3ServiceTests
         Assert.DoesNotContain("parent-only-package", result.AuthorizedAccessPackages);
     }
 
+    private void SetupCacheMiss()
+    {
+        object? cachedValue = null;
+        _mockCache
+            .Setup(m => m.TryGetValue(It.IsAny<object>(), out cachedValue!))
+            .Returns(false);
+
+        var mockEntry = new Mock<ICacheEntry>();
+        mockEntry.SetupAllProperties();
+        _mockCache
+            .Setup(m => m.CreateEntry(It.IsAny<object>()))
+            .Returns(mockEntry.Object);
+    }
+
+    [Fact]
+    public async Task GetAltinn2RolesList_ReturnsList_WhenCacheIsEmpty()
+    {
+        var rolesJson = @"[
+            {""id"": ""1"", ""name"": ""Daglig leder"", ""code"": ""DAGL""},
+            {""id"": ""2"", ""name"": ""Styreleder"", ""code"": ""STYR""}
+        ]";
+
+        SetupCacheMiss();
+        _mockAltinn3Client
+            .Setup(x => x.GetAltinn2RolesList(It.IsAny<string>()))
+            .ReturnsAsync(rolesJson);
+
+        var result = await _altinnApiService.GetAltinn2RolesList("TT02");
+
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count);
+        Assert.Equal("DAGL", result[0].code);
+        Assert.Equal("Daglig leder", result[0].name);
+    }
+
+    [Fact]
+    public async Task GetAltinn2RolesList_ReturnsCachedList_WhenCacheIsPopulated()
+    {
+        var cachedRoles = new List<Altinn2RoleDto>
+        {
+            new Altinn2RoleDto { id = "1", name = "Cached Role", code = "CACH" }
+        };
+
+        object? cachedValue = cachedRoles;
+        _mockCache
+            .Setup(m => m.TryGetValue(It.IsAny<object>(), out cachedValue!))
+            .Returns(true);
+
+        var result = await _altinnApiService.GetAltinn2RolesList("TT02");
+
+        Assert.NotNull(result);
+        Assert.Single(result);
+        Assert.Equal("CACH", result[0].code);
+        _mockAltinn3Client.Verify(x => x.GetAltinn2RolesList(It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetAltinn2RolesList_ThrowsException_WhenClientReturnsNull()
+    {
+        SetupCacheMiss();
+        _mockAltinn3Client
+            .Setup(x => x.GetAltinn2RolesList(It.IsAny<string>()))
+            .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(async () => await _altinnApiService.GetAltinn2RolesList("TT02"));
+    }
+
+    [Fact]
+    public async Task GetRolesAndRightsAltinn3_MapsRoleCodesToNames_WhenCodesExistInRolesList()
+    {
+        var request = new RolesAndRightsRequest
+        {
+            Value = "01010112345",
+            PartyFilter = new List<PartyFilter>
+            {
+                new PartyFilter { Value = "123456789" }
+            }
+        };
+
+        var rolesAndRightsJson = @"[
+            {
+                ""organizationNumber"": ""123456789"",
+                ""name"": ""Test AS"",
+                ""authorizedAccessPackages"": [],
+                ""authorizedResources"": [],
+                ""authorizedRoles"": [""DAGL""],
+                ""authorizedInstances"": [],
+                ""subunits"": []
+            }
+        ]";
+
+        var altinn2RolesJson = @"[{""id"": ""1"", ""name"": ""Daglig leder"", ""code"": ""DAGL""}]";
+
+        _mockAltinn3Client
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .ReturnsAsync(rolesAndRightsJson);
+
+        SetupCacheMiss();
+        _mockAltinn3Client
+            .Setup(x => x.GetAltinn2RolesList("TT02"))
+            .ReturnsAsync(altinn2RolesJson);
+
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.AuthorizedRoles);
+        Assert.Contains("Daglig leder", result.AuthorizedRoles);
+        Assert.DoesNotContain("DAGL", result.AuthorizedRoles);
+    }
+
+    [Fact]
+    public async Task GetRolesAndRightsAltinn3_FallsBackToCode_WhenCodeNotInRolesList()
+    {
+        var request = new RolesAndRightsRequest
+        {
+            Value = "01010112345",
+            PartyFilter = new List<PartyFilter>
+            {
+                new PartyFilter { Value = "123456789" }
+            }
+        };
+
+        var rolesAndRightsJson = @"[
+            {
+                ""organizationNumber"": ""123456789"",
+                ""name"": ""Test AS"",
+                ""authorizedAccessPackages"": [],
+                ""authorizedResources"": [],
+                ""authorizedRoles"": [""UNKN""],
+                ""authorizedInstances"": [],
+                ""subunits"": []
+            }
+        ]";
+
+        var altinn2RolesJson = @"[{""id"": ""1"", ""name"": ""Daglig leder"", ""code"": ""DAGL""}]";
+
+        _mockAltinn3Client
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .ReturnsAsync(rolesAndRightsJson);
+
+        SetupCacheMiss();
+        _mockAltinn3Client
+            .Setup(x => x.GetAltinn2RolesList("TT02"))
+            .ReturnsAsync(altinn2RolesJson);
+
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.AuthorizedRoles);
+        Assert.Contains("UNKN", result.AuthorizedRoles);
+    }
+
 }
