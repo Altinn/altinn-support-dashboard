@@ -36,7 +36,6 @@ public class Altinn3ServiceTests
             {
                 Name = "TT02",
                 ThemeName = "test-theme",
-                BaseAddressAltinn2 = "https://tt02.altinn.no",
                 BaseAddressAltinn3 = "https://platform.tt02.altinn.no",
                 Timeout = 30,
                 ApiKey = "test-api-key",
@@ -48,7 +47,6 @@ public class Altinn3ServiceTests
             {
                 Name = "Production",
                 ThemeName = "test-theme",
-                BaseAddressAltinn2 = "https://altinn.no",
                 BaseAddressAltinn3 = "https://platform.altinn.no",
                 Timeout = 30,
                 Ocp_Apim_Subscription_Key = "test",
