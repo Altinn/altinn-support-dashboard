@@ -22,12 +22,9 @@ public class Altinn3Service : IAltinn3Service
     private readonly IMemoryCache _cache;
     private readonly IResourceRegistryService _resourceRegistryService;
 
-    //temporary for altinn2 roles
-    private readonly IAltinnApiService _altinn2Service;
 
-    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IAltinnApiService altinnApiService, IMemoryCache cache, IResourceRegistryService resourceRegistryService)
+    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IMemoryCache cache, IResourceRegistryService resourceRegistryService)
     {
-        _altinn2Service = altinnApiService;
         _logger = logger;
         _breggService = dataBrregService;
         _client = altinn3Client;
@@ -357,6 +354,23 @@ public class Altinn3Service : IAltinn3Service
 
 
         //TODO: add new roles mapping to get rolesname from meta endpoinup
+        var authorizedRoles = roles.AuthorizedRoles;
+        if (authorizedRoles != null && authorizedRoles.Count >= 1)
+        {
+            try
+            {
+                var roleNames = await GetAltinn2RoleNamesFromCodes(authorizedRoles, environment);
+                if (roleNames != null)
+                {
+                    roles.AuthorizedRoles = roleNames;
+                }
+            }
+            catch (Exception e) { _logger.LogError($"Error converting roleNames: {e}"); }
+
+        }
+
+
+
         if (roles.AuthorizedResources != null && roles.AuthorizedResources.Count >= 1)
         {
             //Sets resources to name to be more readable
@@ -371,7 +385,7 @@ public class Altinn3Service : IAltinn3Service
                         roles.AuthorizedResources = resourceNames;
                     }
                 }
-                catch (Exception) { }
+                catch (Exception e) { _logger.LogError($"Error converting roleNames: {e}"); }
             }
         }
         return roles;
@@ -398,13 +412,19 @@ public class Altinn3Service : IAltinn3Service
         return resourceNames;
     }
 
-    public async Task<List<string>> GetAltinn2RolesList(string environmentName)
+    public async Task<List<Altinn2RoleDto>> GetAltinn2RolesList(string environmentName)
     {
-        string result = await _client.GetAltinn2RolesList(environmentName);
 
-        List<string> rolesList = JsonSerializer.Deserialize<List<string>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
-
-        return rolesList;
+        //This list will be rarely updated so we cache it for a day
+        return await _cache.GetOrCreateAsync<List<Altinn2RoleDto>>($"altinn2RolesList_{environmentName}", async entry =>
+        {
+            var result = await _client.GetAltinn2RolesList(environmentName);
+            var rolesList = JsonSerializer.Deserialize<List<Altinn2RoleDto>>(result)
+                ?? throw new Exception("Failed to deserialize resource list for caching");
+            //how often the cache will be updated
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1);
+            return rolesList;
+        }) ?? throw new Exception("Cache returned null");
     }
 
     private string getTypeFromValue(string value)
@@ -419,6 +439,27 @@ public class Altinn3Service : IAltinn3Service
             return "urn:altinn:organization:identifier-no";
         }
         throw new Exception("Not a valid format, needs to be either a orgnumber or ssn");
+    }
+
+    private async Task<List<string>> GetAltinn2RoleNamesFromCodes(List<string> roleCodes, string environmentName)
+    {
+        var rolesList = await GetAltinn2RolesList(environmentName);
+        List<string> roleNames = [];
+
+        foreach (string code in roleCodes)
+        {
+            var altinn2role = rolesList?.FirstOrDefault(r => r.code == code);
+            if (altinn2role != null)
+            {
+                roleNames.Add(altinn2role.name);
+            }
+            else
+            {
+                //failsafe so all codes get added
+                roleNames.Add(code);
+            }
+        }
+        return roleNames;
     }
 
 }
