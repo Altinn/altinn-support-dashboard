@@ -1,7 +1,6 @@
 import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
 import {
   NotificationAdresses,
-  OfficialContact,
   PersonalContactAltinn3,
 } from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
@@ -80,23 +79,6 @@ export const fetchERoles = async (environment: string, orgNumber: string) => {
   return data.rollegrupper;
 };
 
-export const fetchOfficialContacts = async (
-  environment: string,
-  orgNumber: string,
-): Promise<OfficialContact[]> => {
-  const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/organizations/${orgNumber}/officialcontacts`,
-  );
-  if (res.status === 404) {
-    return [];
-  }
-
-  if (!res.ok)
-    throw new Error((await res.text()) || "Error fetching Official contacts");
-
-  const data = await res.json();
-  return Array.isArray(data) ? data : [data];
-};
 
 export const fetchSsnFromToken = async (
   environment: string,

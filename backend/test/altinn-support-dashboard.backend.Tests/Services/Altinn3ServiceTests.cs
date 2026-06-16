@@ -20,7 +20,6 @@ public class Altinn3ServiceTests
     private readonly Mock<ISsnTokenService> _mockSsnTokenService;
     private readonly Mock<IRedactorProvider> _mockRedactorProvider;
     private readonly Mock<ILogger<IAltinn3Service>> _mockLogger;
-    private readonly Mock<IAltinnApiService> _mockAltinn2Service;
     private readonly Mock<IMemoryCache> _mockCache;
     private readonly Mock<IResourceRegistryService> _mockResourceRegistryService;
 
@@ -66,9 +65,8 @@ public class Altinn3ServiceTests
         _mockSsnTokenService = new Mock<ISsnTokenService>();
         _mockRedactorProvider = new Mock<IRedactorProvider>();
         _mockLogger = new Mock<ILogger<IAltinn3Service>>();
-        _mockAltinn2Service = new Mock<IAltinnApiService>();
         _mockResourceRegistryService = new Mock<IResourceRegistryService>();
-        _altinnApiService = new Altinn3Service(_mockAltinn3Client.Object, _mockBreggService.Object, _mockSsnTokenService.Object, _mockRedactorProvider.Object, _mockLogger.Object, _mockAltinn2Service.Object, _mockCache.Object, _mockResourceRegistryService.Object);
+        _altinnApiService = new Altinn3Service(_mockAltinn3Client.Object, _mockBreggService.Object, _mockSsnTokenService.Object, _mockRedactorProvider.Object, _mockLogger.Object, _mockCache.Object, _mockResourceRegistryService.Object);
     }
     [Fact]
     public async Task GetPersonalContactsAltinn3_ReturnsContacts_WhenOrgNumberIsValid()
