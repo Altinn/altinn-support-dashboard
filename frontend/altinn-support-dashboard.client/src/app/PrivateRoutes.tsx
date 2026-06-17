@@ -1,7 +1,7 @@
-import { Outlet } from 'react-router-dom';
-import { Spinner } from '@digdir/designsystemet-react';
-import { useAuthDetails } from '../hooks/azureAuthHooks';
-import { initiateSignIn } from '../utils/azureAuthApi';
+import { Outlet } from "react-router-dom";
+import { Spinner } from "@digdir/designsystemet-react";
+import { useAuthDetails } from "../hooks/azureAuthHooks";
+import { initiateSignIn } from "../utils/azureAuthApi";
 
 const PrivateRoutes = () => {
   const authDetails = useAuthDetails();

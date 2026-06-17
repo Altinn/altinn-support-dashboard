@@ -18,13 +18,13 @@ export interface VersionData {
 export const fetchVersionData = async (): Promise<VersionData> => {
   try {
     // Sjekk om dataen allerede er cachet
-    const cachedData = sessionStorage.getItem('versionData');
+    const cachedData = sessionStorage.getItem("versionData");
     if (cachedData) {
       return JSON.parse(cachedData) as VersionData;
     }
 
     // Hvis ikke cachet, hent fra filen
-    const response = await fetch('/version.json');
+    const response = await fetch("/version.json");
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -32,15 +32,15 @@ export const fetchVersionData = async (): Promise<VersionData> => {
     const data = (await response.json()) as VersionData;
 
     // Lagre i sessionStorage for senere bruk
-    sessionStorage.setItem('versionData', JSON.stringify(data));
+    sessionStorage.setItem("versionData", JSON.stringify(data));
 
     return data;
   } catch (error) {
-    console.error('Feil ved henting av versjonsinformasjon:', error);
+    console.error("Feil ved henting av versjonsinformasjon:", error);
     // Returner standardverdier ved feil
     return {
-      version: '0.0.0',
-      releaseDate: '',
+      version: "0.0.0",
+      releaseDate: "",
       changes: [],
     };
   }
@@ -52,31 +52,31 @@ export const fetchVersionData = async (): Promise<VersionData> => {
  */
 export const getVersionInfo = () => {
   // Standard verdier som fallback
-  let versionNumber = '0.0.0';
-  let releaseDate = '';
-  let changes: VersionData['changes'] = [];
+  let versionNumber = "0.0.0";
+  let releaseDate = "";
+  let changes: VersionData["changes"] = [];
 
   // Hent miljøinformasjon for visning
   const envName =
-    (typeof process !== 'undefined' &&
+    (typeof process !== "undefined" &&
       process.env &&
       process.env.REACT_APP_ENV_NAME) ||
-    '';
+    "";
   let versionName: string;
   switch (envName) {
-    case 'production':
-      versionName = 'Produksjonsmiljø';
+    case "production":
+      versionName = "Produksjonsmiljø";
       break;
-    case 'test':
-      versionName = 'Testmiljø';
+    case "test":
+      versionName = "Testmiljø";
       break;
     default:
-      versionName = 'Miljø';
+      versionName = "Miljø";
   }
 
   // Hent versjonsinformasjon fra sessionStorage
   try {
-    const cachedData = sessionStorage.getItem('versionData');
+    const cachedData = sessionStorage.getItem("versionData");
     if (cachedData) {
       const parsedData = JSON.parse(cachedData) as VersionData;
       versionNumber = parsedData.version;
@@ -84,7 +84,7 @@ export const getVersionInfo = () => {
       changes = parsedData.changes;
     }
   } catch (error) {
-    console.error('Feil ved henting av cachet versjonsinformasjon:', error);
+    console.error("Feil ved henting av cachet versjonsinformasjon:", error);
   }
 
   return { versionNumber, versionName, releaseDate, changes };

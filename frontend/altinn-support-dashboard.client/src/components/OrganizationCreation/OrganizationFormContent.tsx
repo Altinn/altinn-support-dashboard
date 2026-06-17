@@ -1,17 +1,17 @@
-import React, { useCallback } from 'react';
-import { Heading, Paragraph, Divider } from '@digdir/designsystemet-react';
+import React, { useCallback } from "react";
+import { Heading, Paragraph, Divider } from "@digdir/designsystemet-react";
 import {
   OrganizationFormData,
   OrganizationFormErrors,
   BrregEnhetsdetaljer,
-} from './models/organizationTypes';
-import { ShortNameField } from './form-fields/ShortNameField';
-import { FullNameField } from './form-fields/FullNameField';
-import { WebsiteUrlField } from './form-fields/WebsiteUrlField';
-import { OrgNumberField } from './form-fields/OrgNumberField';
-import { DescriptionField } from './form-fields/DescriptionField';
-import { EnvironmentInfoField } from './form-fields/EnvironmentInfoField';
-import { useOrganizationCreation } from './hooks/useOrganizationCreation';
+} from "./models/organizationTypes";
+import { ShortNameField } from "./form-fields/ShortNameField";
+import { FullNameField } from "./form-fields/FullNameField";
+import { WebsiteUrlField } from "./form-fields/WebsiteUrlField";
+import { OrgNumberField } from "./form-fields/OrgNumberField";
+import { DescriptionField } from "./form-fields/DescriptionField";
+import { EnvironmentInfoField } from "./form-fields/EnvironmentInfoField";
+import { useOrganizationCreation } from "./hooks/useOrganizationCreation";
 
 interface OrganizationFormContentProps {
   formData: OrganizationFormData;
@@ -55,20 +55,20 @@ export const OrganizationFormContent: React.FC<
   const handleResetOrgData = () => {
     setFormData((prev: OrganizationFormData) => ({
       ...prev,
-      fullName: '',
-      websiteUrl: '',
-      description: '',
-      orgNumber: '',
+      fullName: "",
+      websiteUrl: "",
+      description: "",
+      orgNumber: "",
     }));
   };
 
   return (
     <div>
-      <Heading level={3} data-size="xs" style={{ marginBottom: '16px' }}>
+      <Heading level={3} data-size="xs" style={{ marginBottom: "16px" }}>
         Slå opp organisasjon
       </Heading>
 
-      <Paragraph data-size="sm" style={{ marginBottom: '24px' }}>
+      <Paragraph data-size="sm" style={{ marginBottom: "24px" }}>
         Fyll inn organisasjonsnummer for å automatisk hente informasjon fra
         Brønnøysundregistrene. Dette vil forenkle utfyllingen av skjemaet ved å
         automatisk fylle ut organisasjonens navn, nettside og beskrivelse hvis
@@ -77,15 +77,15 @@ export const OrganizationFormContent: React.FC<
 
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-          marginBottom: '32px',
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+          marginBottom: "32px",
         }}
       >
         <OrgNumberField
           value={formData.orgNumber}
-          onChange={(value: string) => handleInputChange('orgNumber', value)}
+          onChange={(value: string) => handleInputChange("orgNumber", value)}
           error={errors.orgNumber}
           onReset={handleResetOrgData}
           onFetchOrgDetails={useCallback(
@@ -94,46 +94,46 @@ export const OrganizationFormContent: React.FC<
 
               // Hjelpefunksjon for å konvertere tekst til 'Proper Case' (første bokstav stor, resten små)
               const toProperCase = (text: string): string => {
-                if (!text) return '';
-                const words = text.toLowerCase().split(' ');
+                if (!text) return "";
+                const words = text.toLowerCase().split(" ");
                 const properWords = words.map((word) =>
                   word.length > 0
                     ? word.charAt(0).toUpperCase() + word.slice(1)
-                    : ''
+                    : ""
                 );
-                return properWords.join(' ');
+                return properWords.join(" ");
               };
 
               // Auto-fill navn (fullName) - konverter til Proper Case for å unngå STORE BOKSTAVER
-              if (orgDetails.navn && orgDetails.navn !== 'null') {
+              if (orgDetails.navn && orgDetails.navn !== "null") {
                 updates.fullName = toProperCase(orgDetails.navn);
                 console.log(
-                  'Converted name from:',
+                  "Converted name from:",
                   orgDetails.navn,
-                  'to:',
+                  "to:",
                   updates.fullName
                 );
               }
 
               // Auto-fill hjemmeside (websiteUrl)
               // Ensure it has the correct protocol prefix
-              if (orgDetails.hjemmeside && orgDetails.hjemmeside !== 'null') {
+              if (orgDetails.hjemmeside && orgDetails.hjemmeside !== "null") {
                 let website = orgDetails.hjemmeside;
                 if (
-                  !website.startsWith('http://') &&
-                  !website.startsWith('https://')
+                  !website.startsWith("http://") &&
+                  !website.startsWith("https://")
                 ) {
-                  website = 'https://' + website;
+                  website = "https://" + website;
                 }
                 updates.websiteUrl = website;
               }
 
               // Auto-fill description with aktivitet from Brreg
-              let description = '';
+              let description = "";
 
               // Legg til aktivitetsbeskrivelse hvis tilgjengelig
               if (orgDetails.aktivitet && orgDetails.aktivitet.length > 0) {
-                description = orgDetails.aktivitet.join(' ').trim();
+                description = orgDetails.aktivitet.join(" ").trim();
               }
 
               updates.description = description;
@@ -144,7 +144,7 @@ export const OrganizationFormContent: React.FC<
                 ...updates,
               }));
 
-              console.log('Auto-filled form data from Brreg API:', updates);
+              console.log("Auto-filled form data from Brreg API:", updates);
             },
             [setFormData]
           )}
@@ -156,20 +156,20 @@ export const OrganizationFormContent: React.FC<
       <Heading
         level={3}
         data-size="xs"
-        style={{ marginTop: '32px', marginBottom: '16px' }}
+        style={{ marginTop: "32px", marginBottom: "16px" }}
       >
         Informasjon om organisasjonen
       </Heading>
 
-      <Paragraph data-size="sm" style={{ marginBottom: '24px' }}>
+      <Paragraph data-size="sm" style={{ marginBottom: "24px" }}>
         Fyll ut informasjonen nedenfor for å opprette en ny organisasjon i
         Altinn Studio. Felt merket med * er obligatoriske.
       </Paragraph>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <ShortNameField
           value={formData.shortName}
-          onChange={(value: string) => handleInputChange('shortName', value)}
+          onChange={(value: string) => handleInputChange("shortName", value)}
           error={errors.shortName}
           isCheckingName={isCheckingName}
           nameExists={nameExists}
@@ -178,19 +178,19 @@ export const OrganizationFormContent: React.FC<
 
         <FullNameField
           value={formData.fullName}
-          onChange={(value: string) => handleInputChange('fullName', value)}
+          onChange={(value: string) => handleInputChange("fullName", value)}
           error={errors.fullName}
         />
 
         <DescriptionField
           value={formData.description}
-          onChange={(value: string) => handleInputChange('description', value)}
+          onChange={(value: string) => handleInputChange("description", value)}
           error={errors.description}
         />
 
         <WebsiteUrlField
           value={formData.websiteUrl}
-          onChange={(value: string) => handleInputChange('websiteUrl', value)}
+          onChange={(value: string) => handleInputChange("websiteUrl", value)}
           error={errors.websiteUrl}
         />
 

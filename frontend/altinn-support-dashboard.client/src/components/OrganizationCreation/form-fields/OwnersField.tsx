@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Textfield,
   Paragraph,
   Tooltip,
   Button,
-} from '@digdir/designsystemet-react';
-import { PlusIcon } from '@navikt/aksel-icons';
+} from "@digdir/designsystemet-react";
+import { PlusIcon } from "@navikt/aksel-icons";
 
 interface OwnersFieldProps {
   value: string[];
@@ -18,12 +18,12 @@ export const OwnersField: React.FC<OwnersFieldProps> = ({
   onChange,
   error,
 }) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
 
   const addOwner = () => {
     if (inputValue && !value.includes(inputValue)) {
       onChange([...value, inputValue]);
-      setInputValue('');
+      setInputValue("");
     }
   };
 
@@ -32,7 +32,7 @@ export const OwnersField: React.FC<OwnersFieldProps> = ({
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       addOwner();
     }
@@ -41,22 +41,22 @@ export const OwnersField: React.FC<OwnersFieldProps> = ({
   return (
     <div>
       <div
-        style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}
+        style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
       >
-        <Paragraph data-size="sm" style={{ fontWeight: 'bold' }}>
+        <Paragraph data-size="sm" style={{ fontWeight: "bold" }}>
           Eiere (Gitea-brukernavn)
         </Paragraph>
         <Tooltip
           content="Legg til Gitea-brukernavn for personer som skal ha administratortilgang til organisasjonen."
           placement="top"
         >
-          <span style={{ marginLeft: '8px', cursor: 'help', fontSize: '14px' }}>
+          <span style={{ marginLeft: "8px", cursor: "help", fontSize: "14px" }}>
             ℹ️
           </span>
         </Tooltip>
       </div>
 
-      <div style={{ display: 'flex', gap: '8px' }}>
+      <div style={{ display: "flex", gap: "8px" }}>
         <Textfield
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
@@ -66,7 +66,7 @@ export const OwnersField: React.FC<OwnersFieldProps> = ({
           error={error}
           aria-labelledby="owners-input-label"
         />
-        <span id="owners-input-label" style={{ display: 'none' }}>
+        <span id="owners-input-label" style={{ display: "none" }}>
           Eiere (Gitea-brukernavn)
         </span>
 
@@ -82,35 +82,35 @@ export const OwnersField: React.FC<OwnersFieldProps> = ({
       {value.length > 0 && (
         <div
           style={{
-            marginTop: '8px',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '8px',
+            marginTop: "8px",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px",
           }}
         >
           {value.map((owner) => (
             <div
               key={owner}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px 8px',
-                borderRadius: '4px',
-                backgroundColor: '#e6f0ff',
-                border: '1px solid #b3d1ff',
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                padding: "4px 8px",
+                borderRadius: "4px",
+                backgroundColor: "#e6f0ff",
+                border: "1px solid #b3d1ff",
               }}
             >
               <span>{owner}</span>
               <button
                 onClick={() => removeOwner(owner)}
                 style={{
-                  border: 'none',
-                  background: 'transparent',
-                  cursor: 'pointer',
-                  padding: '0',
-                  fontSize: '14px',
-                  color: '#0062ba',
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                  padding: "0",
+                  fontSize: "14px",
+                  color: "#0062ba",
                 }}
                 aria-label={`Fjern ${owner}`}
               >

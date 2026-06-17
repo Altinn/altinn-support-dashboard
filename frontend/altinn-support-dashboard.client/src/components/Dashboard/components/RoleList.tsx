@@ -1,4 +1,4 @@
-import { Table } from '@digdir/designsystemet-react';
+import { Table } from "@digdir/designsystemet-react";
 
 interface RoleListProps {
   roles?: string[];

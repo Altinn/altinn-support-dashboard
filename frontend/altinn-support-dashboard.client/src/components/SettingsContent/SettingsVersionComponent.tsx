@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import classes from './styles/SettingsVersionComponent.module.css';
+import React, { useState, useEffect } from "react";
+import classes from "./styles/SettingsVersionComponent.module.css";
 
-import { FaSlack, FaBookOpen } from 'react-icons/fa';
+import { FaSlack, FaBookOpen } from "react-icons/fa";
 import {
   getVersionInfo,
   fetchVersionData,
   VersionData,
-} from './utils/versionUtils';
-import { useAppStore } from '../../stores/Appstore';
-import { Paragraph, Link } from '@digdir/designsystemet-react';
+} from "./utils/versionUtils";
+import { useAppStore } from "../../stores/Appstore";
+import { Paragraph, Link } from "@digdir/designsystemet-react";
 
 const SettingsVersionComponent: React.FC = () => {
   const { versionNumber, versionName, releaseDate } = getVersionInfo();
@@ -27,12 +27,12 @@ const SettingsVersionComponent: React.FC = () => {
   return (
     <div>
       <Paragraph>
-        Applikasjonsinformasjon: {versionName} - Versjon{' '}
+        Applikasjonsinformasjon: {versionName} - Versjon{" "}
         {versionInfo?.version || versionNumber}
       </Paragraph>
       <Paragraph>
-        Utgivelsesdato:{' '}
-        {versionInfo?.releaseDate || releaseDate || 'Ikke tilgjengelig'}
+        Utgivelsesdato:{" "}
+        {versionInfo?.releaseDate || releaseDate || "Ikke tilgjengelig"}
       </Paragraph>
       <Paragraph>Valgt miljø: {environment}</Paragraph>
       <div>

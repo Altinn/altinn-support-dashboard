@@ -1,10 +1,10 @@
-import { Button } from '@digdir/designsystemet-react';
-import { useCorrespondencePost } from '../../hooks/hooks';
+import { Button } from "@digdir/designsystemet-react";
+import { useCorrespondencePost } from "../../hooks/hooks";
 import {
   CorrespondenceResponse,
   CorrespondenceUploadRequest,
   NotificationChannel,
-} from '../../models/correspondenceModels';
+} from "../../models/correspondenceModels";
 
 type CorrespondenceButtonProps = {
   resourceType: string;
@@ -51,13 +51,13 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
     if (correspondence.correspondence) {
       console.log(notificationChannel);
       correspondence.correspondence.notification = {
-        notificationTemplate: 'GenericAltinnMessage',
+        notificationTemplate: "GenericAltinnMessage",
         notificationChannel: notificationChannel,
       };
     }
     const response = await post.mutateAsync(correspondence);
     setResponseMessage(response);
-    sessionStorage.setItem('responseMessage', JSON.stringify(response));
+    sessionStorage.setItem("responseMessage", JSON.stringify(response));
   };
 
   return (

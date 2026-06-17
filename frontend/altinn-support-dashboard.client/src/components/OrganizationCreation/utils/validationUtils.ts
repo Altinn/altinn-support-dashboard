@@ -1,7 +1,7 @@
 import {
   OrganizationFormData,
   OrganizationFormErrors,
-} from '../models/organizationTypes';
+} from "../models/organizationTypes";
 
 /**
  * Validerer shortName-feltet
@@ -10,26 +10,26 @@ import {
  */
 export const validateShortName = (shortName: string): string | undefined => {
   if (!shortName) {
-    return 'Kortnavn er påkrevd';
+    return "Kortnavn er påkrevd";
   }
 
   if (shortName.length < 2 || shortName.length > 5) {
-    return 'Kortnavn må være mellom 2 og 5 tegn';
+    return "Kortnavn må være mellom 2 og 5 tegn";
   }
 
   // Må starte med en bokstav
   if (!/^[a-z]/.test(shortName)) {
-    return 'Kortnavn må starte med en liten bokstav';
+    return "Kortnavn må starte med en liten bokstav";
   }
 
   // Må slutte med en bokstav eller et tall
   if (!/[a-z0-9]$/.test(shortName)) {
-    return 'Kortnavn må slutte med en liten bokstav eller et tall';
+    return "Kortnavn må slutte med en liten bokstav eller et tall";
   }
 
   // Kan kun inneholde små bokstaver, tall og bindestrek
   if (!/^[a-z0-9-]+$/.test(shortName)) {
-    return 'Kortnavn kan kun inneholde små bokstaver, tall og bindestrek (-)';
+    return "Kortnavn kan kun inneholde små bokstaver, tall og bindestrek (-)";
   }
 
   return undefined;
@@ -42,12 +42,12 @@ export const validateShortName = (shortName: string): string | undefined => {
  */
 export const validateFullName = (fullName: string): string | undefined => {
   if (!fullName) {
-    return 'Fullt navn er påkrevd';
+    return "Fullt navn er påkrevd";
   }
 
   // Kan ikke være kun store bokstaver
   if (fullName === fullName.toUpperCase() && fullName.match(/[A-Z]/)) {
-    return 'Fullt navn kan ikke være kun store bokstaver';
+    return "Fullt navn kan ikke være kun store bokstaver";
   }
 
   return undefined;
@@ -65,19 +65,19 @@ export const validateWebsiteUrl = (websiteUrl: string): string | undefined => {
 
   // Tillatte tegn: a-zA-Z0-9-._/:
   if (!/^[a-zA-Z0-9-._/:]+$/.test(websiteUrl)) {
-    return 'Nettside kan kun inneholde tegn a-z, A-Z, 0-9, -, ., _, / og :';
+    return "Nettside kan kun inneholde tegn a-z, A-Z, 0-9, -, ., _, / og :";
   }
 
   try {
     // Legg til https:// prefix hvis det mangler
     const url =
-      websiteUrl.startsWith('http://') || websiteUrl.startsWith('https://')
+      websiteUrl.startsWith("http://") || websiteUrl.startsWith("https://")
         ? websiteUrl
         : `https://${websiteUrl}`;
     new URL(url);
     return undefined;
   } catch {
-    return 'Ugyldig URL-format';
+    return "Ugyldig URL-format";
   }
 };
 
@@ -99,7 +99,7 @@ export const validateEmailDomain = (
       emailDomain
     )
   ) {
-    return 'Ugyldig e-postdomene';
+    return "Ugyldig e-postdomene";
   }
 
   return undefined;
@@ -116,8 +116,8 @@ export const validateOrgNumber = (orgNumber: string): string | undefined => {
   }
 
   // Norsk organisasjonsnummer: 9 siffer
-  if (orgNumber.trim() !== '' && !/^\d{9}$/.test(orgNumber)) {
-    return 'Organisasjonsnummer må bestå av 9 siffer';
+  if (orgNumber.trim() !== "" && !/^\d{9}$/.test(orgNumber)) {
+    return "Organisasjonsnummer må bestå av 9 siffer";
   }
 
   return undefined;
@@ -136,7 +136,7 @@ export const validateOwners = (owners: string[]): string | undefined => {
   // Sjekk om alle brukernavn er gyldige
   for (const owner of owners) {
     if (!/^[a-zA-Z0-9-]+$/.test(owner)) {
-      return 'Brukernavn kan kun inneholde bokstaver, tall og bindestrek';
+      return "Brukernavn kan kun inneholde bokstaver, tall og bindestrek";
     }
   }
 
@@ -153,14 +153,14 @@ export const validateLogoFile = (file: File | null): string | undefined => {
     return undefined; // Ikke påkrevd
   }
 
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml'];
+  const allowedTypes = ["image/jpeg", "image/png", "image/svg+xml"];
   if (!allowedTypes.includes(file.type)) {
-    return 'Logo må være i format JPG, PNG eller SVG';
+    return "Logo må være i format JPG, PNG eller SVG";
   }
 
   // Maks filstørrelse: 1MB
   if (file.size > 1024 * 1024) {
-    return 'Logo kan ikke være større enn 1MB';
+    return "Logo kan ikke være større enn 1MB";
   }
 
   return undefined;

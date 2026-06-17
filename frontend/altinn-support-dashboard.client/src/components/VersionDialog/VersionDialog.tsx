@@ -1,6 +1,6 @@
-import React from 'react';
-import type { VersionInfo } from '../../hooks/useVersionCheck';
-import VersionDialogBox from './VersionDialogBox';
+import React from "react";
+import type { VersionInfo } from "../../hooks/useVersionCheck";
+import VersionDialogBox from "./VersionDialogBox";
 
 interface VersionDialogProps {
   versionInfo: VersionInfo | null;

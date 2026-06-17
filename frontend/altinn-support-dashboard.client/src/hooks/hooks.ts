@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   ERRoles,
   NotificationAdresses,
   PersonalContactAltinn3,
-} from '../models/models';
-import { getFormattedDateTime, fetchUserDetails } from '../utils/utils';
-import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
+} from "../models/models";
+import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
+import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   fetchERoles,
   fetchInternalIds,
@@ -15,18 +15,18 @@ import {
   fetchPersonalContacts,
   fetchRolesForOrg,
   fetchSsnFromToken,
-} from '../utils/api';
+} from "../utils/api";
 import {
   CorrespondenceResponse,
   CorrespondenceUploadRequest,
-} from '../models/correspondenceModels';
-import { sendCorrespondence } from '../utils/correspondenceApi';
-import { toast } from 'react-toastify';
-import { RolesAndRights, RolesAndRightsRequest } from '../models/rolesModels';
+} from "../models/correspondenceModels";
+import { sendCorrespondence } from "../utils/correspondenceApi";
+import { toast } from "react-toastify";
+import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 
 export function useUserDetails() {
-  const [userName, setUserName] = useState('Du er ikke innlogget');
-  const [userEmail, setUserEmail] = useState('');
+  const [userName, setUserName] = useState("Du er ikke innlogget");
+  const [userEmail, setUserEmail] = useState("");
   useEffect(() => {
     fetchUserDetails().then(({ name, email }) => {
       setUserName(name);
@@ -51,7 +51,7 @@ export function useCurrentDateTime() {
 
 export function useOrgSearch(environment: string, query: string) {
   const orgQuery = useQuery({
-    queryKey: ['organizations', environment, query],
+    queryKey: ["organizations", environment, query],
     queryFn: () => fetchOrganizations(environment, query),
     retry: false,
     staleTime: 2 * 60 * 1000, // fresh for 2 minutes
@@ -67,7 +67,7 @@ export function useOrgSearch(environment: string, query: string) {
 export function useOrgDetails(environment: string, orgNumber?: string) {
   const contactsQuery: UseQueryResult<PersonalContactAltinn3[], Error> =
     useQuery({
-      queryKey: ['contacts', environment, orgNumber],
+      queryKey: ["contacts", environment, orgNumber],
       queryFn: () => fetchPersonalContacts(environment, orgNumber!),
       enabled: !!orgNumber,
       retry: false,
@@ -76,7 +76,7 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     });
 
   const ERolesQuery: UseQueryResult<ERRoles[], Error> = useQuery({
-    queryKey: ['erroles', environment, orgNumber],
+    queryKey: ["erroles", environment, orgNumber],
     queryFn: () => fetchERoles(environment, orgNumber!),
     enabled: !!orgNumber,
     staleTime: 2 * 60 * 1000, // fresh for 2 minutes
@@ -87,7 +87,7 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     NotificationAdresses[],
     Error
   > = useQuery({
-    queryKey: ['notificationAdresses', environment, orgNumber],
+    queryKey: ["notificationAdresses", environment, orgNumber],
     queryFn: () => fetchNotificationAddresses(environment, orgNumber!),
     enabled: !!orgNumber,
     staleTime: 2 * 60 * 1000, // fresh for 2 minutes
@@ -107,7 +107,7 @@ export const useRoles = (
   request: RolesAndRightsRequest
 ) => {
   const rolesQuery: UseQueryResult<RolesAndRights, Error> = useQuery({
-    queryKey: ['roles', environment, request],
+    queryKey: ["roles", environment, request],
     queryFn: () => fetchRolesForOrg(environment, request),
     enabled:
       !!request.partyFilter &&
@@ -123,7 +123,7 @@ export const useRoles = (
 
 export const useSsnFromToken = (environment: string, ssnToken?: string) => {
   return useQuery({
-    queryKey: ['ssn', environment, ssnToken],
+    queryKey: ["ssn", environment, ssnToken],
     queryFn: () => fetchSsnFromToken(environment, ssnToken!),
     enabled: false && !!ssnToken, // only run if ssnToken exists and manuallyenabled
     staleTime: 0, // always refetch to ensure ssn is fresh
@@ -138,7 +138,7 @@ export const useCorrespondencePost = () => {
   >({
     mutationFn: sendCorrespondence,
     onSuccess: () => {
-      toast.info('Melding sendt');
+      toast.info("Melding sendt");
     },
     onError: (err) => {
       toast.error(`Feil under sending av melding ${err.message}`);
@@ -148,7 +148,7 @@ export const useCorrespondencePost = () => {
 
 export function useInternalIdLookup(query: string, environment: string) {
   return useQuery({
-    queryKey: ['internalIdLookup', environment, query],
+    queryKey: ["internalIdLookup", environment, query],
     queryFn: () => fetchInternalIds(query, environment),
     enabled: !!query && !!environment,
     retry: false,
@@ -159,7 +159,7 @@ export function useInternalIdLookup(query: string, environment: string) {
 
 export function useNotifications(orderId: string) {
   const notificationQuery = useQuery({
-    queryKey: ['notifications', orderId],
+    queryKey: ["notifications", orderId],
     queryFn: () => fetchNotificationByOrderId(orderId),
     enabled: !!orderId,
     retry: false,

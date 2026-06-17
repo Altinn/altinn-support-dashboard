@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { getLocalStorageValue } from '../components/ManualRoleSearch/utils/storageUtils';
-import InputComponent from '../components/ManualRoleSearch/ManualRoleSearchInput';
-import { Heading, Button } from '@digdir/designsystemet-react';
-import InformationDialogBox from '../components/InformationDialog/InformationDialogBox';
-import { InformationIcon } from '@navikt/aksel-icons';
-import styles from './styles/ManualRoleSearchPage.module.css';
-import RoleTable from '../components/ManualRoleSearch/RoleTable';
+import React, { useState } from "react";
+import { getLocalStorageValue } from "../components/ManualRoleSearch/utils/storageUtils";
+import InputComponent from "../components/ManualRoleSearch/ManualRoleSearchInput";
+import { Heading, Button } from "@digdir/designsystemet-react";
+import InformationDialogBox from "../components/InformationDialog/InformationDialogBox";
+import { InformationIcon } from "@navikt/aksel-icons";
+import styles from "./styles/ManualRoleSearchPage.module.css";
+import RoleTable from "../components/ManualRoleSearch/RoleTable";
 
 export const ManualRoleSearchPage: React.FC = () => {
   const [rollehaver, setRollehaver] = useState<string>(
-    getLocalStorageValue('rollehaver')
+    getLocalStorageValue("rollehaver")
   );
   const [rollegiver, setRollegiver] = useState<string>(
-    getLocalStorageValue('rollegiver')
+    getLocalStorageValue("rollegiver")
   );
   const dialogRef = React.useRef<HTMLDialogElement>(null);
 

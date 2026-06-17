@@ -1,5 +1,5 @@
-import { Button } from '@digdir/designsystemet-react';
-import styles from './styles/VersionDialogButton.module.css';
+import { Button } from "@digdir/designsystemet-react";
+import styles from "./styles/VersionDialogButton.module.css";
 
 type VersionDialogButtonProps = {
   onClose: () => void;

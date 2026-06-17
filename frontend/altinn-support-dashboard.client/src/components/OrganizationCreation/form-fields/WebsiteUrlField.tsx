@@ -1,5 +1,5 @@
-import React from 'react';
-import { Textfield, Paragraph, Tooltip } from '@digdir/designsystemet-react';
+import React from "react";
+import { Textfield, Paragraph, Tooltip } from "@digdir/designsystemet-react";
 
 interface WebsiteUrlFieldProps {
   value: string;
@@ -15,38 +15,38 @@ export const WebsiteUrlField: React.FC<WebsiteUrlFieldProps> = ({
   return (
     <div>
       <div
-        style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}
+        style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
       >
-        <Paragraph data-size="sm" style={{ fontWeight: 'bold' }}>
+        <Paragraph data-size="sm" style={{ fontWeight: "bold" }}>
           Nettside
         </Paragraph>
         <Tooltip
           content="Organisasjonens nettside. Dette er valgfritt, men anbefales."
           placement="top"
         >
-          <span style={{ marginLeft: '8px', cursor: 'help', fontSize: '14px' }}>
+          <span style={{ marginLeft: "8px", cursor: "help", fontSize: "14px" }}>
             ℹ️
           </span>
         </Tooltip>
       </div>
 
       <Textfield
-        value={value.replace(/^https?:\/\//, '')}
+        value={value.replace(/^https?:\/\//, "")}
         onChange={(e) => {
           // Store the value without prefix in the form state
           // The validation will handle adding the prefix when needed
           const inputValue = e.target.value;
           onChange(inputValue);
-          console.log('WebsiteUrl changed:', inputValue);
+          console.log("WebsiteUrl changed:", inputValue);
         }}
         prefix="https://"
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
         error={error}
-        description={!error ? 'F.eks. eksempel.no' : undefined}
+        description={!error ? "F.eks. eksempel.no" : undefined}
         placeholder="www.domene.no"
         aria-labelledby="website-url-label"
       />
-      <span id="website-url-label" style={{ display: 'none' }}>
+      <span id="website-url-label" style={{ display: "none" }}>
         Nettside
       </span>
     </div>

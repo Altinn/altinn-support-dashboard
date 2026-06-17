@@ -1,7 +1,7 @@
-import { Tabs } from '@digdir/designsystemet-react';
-import { CorrespondenceResponse } from '../../models/correspondenceModels';
-import classes from './styles/CorrespondenceResponse.module.css';
-import ResponseTabContent from './ResponseTabContent';
+import { Tabs } from "@digdir/designsystemet-react";
+import { CorrespondenceResponse } from "../../models/correspondenceModels";
+import classes from "./styles/CorrespondenceResponse.module.css";
+import ResponseTabContent from "./ResponseTabContent";
 
 interface CorrespondenceResponseFieldProps {
   responseData?: CorrespondenceResponse;

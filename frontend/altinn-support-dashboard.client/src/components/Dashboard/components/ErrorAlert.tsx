@@ -1,4 +1,4 @@
-import { Alert, Heading } from '@digdir/designsystemet-react';
+import { Alert, Heading } from "@digdir/designsystemet-react";
 
 interface ErrorAlertProps {
   error: {

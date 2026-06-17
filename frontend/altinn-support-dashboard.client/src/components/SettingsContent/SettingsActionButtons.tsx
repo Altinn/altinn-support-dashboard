@@ -1,6 +1,6 @@
-import { Card, Button } from '@digdir/designsystemet-react';
-import classes from './styles/SettingsActionsButtons.module.css';
-import { initiateSignOut } from '../../utils/azureAuthApi';
+import { Card, Button } from "@digdir/designsystemet-react";
+import classes from "./styles/SettingsActionsButtons.module.css";
+import { initiateSignOut } from "../../utils/azureAuthApi";
 
 const SettingsActionButtons: React.FC = () => {
   const handleReload = () => {
@@ -16,7 +16,7 @@ const SettingsActionButtons: React.FC = () => {
         data-color="accent"
         variant="primary"
         onClick={handleReload}
-        style={{ marginRight: '12px' }}
+        style={{ marginRight: "12px" }}
       >
         Last inn på nytt
       </Button>

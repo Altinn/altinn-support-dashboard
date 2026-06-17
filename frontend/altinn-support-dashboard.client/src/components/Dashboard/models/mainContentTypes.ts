@@ -1,3 +1,3 @@
-export type SortDirection = 'ascending' | 'descending' | 'none' | undefined;
+export type SortDirection = "ascending" | "descending" | "none" | undefined;
 
-export type ERRolesSortField = 'type' | 'person' | 'sistEndret' | null;
+export type ERRolesSortField = "type" | "person" | "sistEndret" | null;

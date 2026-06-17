@@ -1,8 +1,8 @@
-import classes from './styles/SettingsDarkModeComponent.module.css';
+import classes from "./styles/SettingsDarkModeComponent.module.css";
 
-import { Card, Switch, Heading } from '@digdir/designsystemet-react';
+import { Card, Switch, Heading } from "@digdir/designsystemet-react";
 
-import { useAppStore } from '../../stores/Appstore';
+import { useAppStore } from "../../stores/Appstore";
 
 const SettingsDarkModeComponent: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);

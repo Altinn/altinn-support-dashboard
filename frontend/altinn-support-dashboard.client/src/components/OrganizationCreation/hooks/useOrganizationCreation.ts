@@ -1,17 +1,17 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   OrganizationFormData,
   OrganizationCreationResponse,
   BrregSearchResponse,
   BrregEnhetsdetaljer,
-} from '../models/organizationTypes';
+} from "../models/organizationTypes";
 
 // Hjelpefunksjon for å få riktig base URL uten dobbel "api" i path
 const getCorrectBaseUrl = (): string => {
   const apiHost = window.location.hostname;
-  const protocol = 'http';
-  const localDev = apiHost === 'localhost';
-  const portSegment = localDev ? ':5237' : '';
+  const protocol = "http";
+  const localDev = apiHost === "localhost";
+  const portSegment = localDev ? ":5237" : "";
 
   return `${protocol}//${apiHost}${portSegment}`;
 };
@@ -26,7 +26,7 @@ export const useOrganizationCreation = (environment: string) => {
 
   useEffect(() => {
     const storedEnvironment = sessionStorage.getItem(
-      'selected_gitea_environment'
+      "selected_gitea_environment"
     );
     if (storedEnvironment) {
       console.log(
@@ -55,8 +55,8 @@ export const useOrganizationCreation = (environment: string) => {
   );
 
   // Refs for å holde styr på forrige organisasjonsnavn som ble sjekket og forrige orgnummer
-  const lastCheckedName = useRef<string>('');
-  const lastCheckedOrgNumber = useRef<string>('');
+  const lastCheckedName = useRef<string>("");
+  const lastCheckedOrgNumber = useRef<string>("");
 
   /**
    * Sjekker om et kortnavn allerede eksisterer, med debounce-funksjonalitet
@@ -85,7 +85,7 @@ export const useOrganizationCreation = (environment: string) => {
           `Sjekker organisasjonsnavn "${shortName}" med token for miljø: ${activeEnvironment}`
         );
         if (!token) {
-          throw new Error('PAT-token mangler');
+          throw new Error("PAT-token mangler");
         }
 
         const response = await fetch(
@@ -125,7 +125,7 @@ export const useOrganizationCreation = (environment: string) => {
         } catch (jsonError) {
           // Hvis vi ikke kan parse JSON, anta at organisasjonen ikke eksisterer
           console.warn(
-            'Kunne ikke parse JSON-svar ved sjekk av organisasjonsnavn',
+            "Kunne ikke parse JSON-svar ved sjekk av organisasjonsnavn",
             jsonError
           );
           setNameExists(false);
@@ -133,7 +133,7 @@ export const useOrganizationCreation = (environment: string) => {
           return false;
         }
       } catch (error) {
-        console.error('Feil ved sjekk av organisasjonsnavn:', error);
+        console.error("Feil ved sjekk av organisasjonsnavn:", error);
         setShortNameError(null);
         return false;
       } finally {
@@ -159,15 +159,15 @@ export const useOrganizationCreation = (environment: string) => {
         const token = sessionStorage.getItem(`pat_token_${activeEnvironment}`);
         console.log(`Søker i Brreg med token for miljø: ${activeEnvironment}`);
         if (!token) {
-          throw new Error('PAT-token mangler');
+          throw new Error("PAT-token mangler");
         }
 
         const response = await fetch(
           `${getCorrectBaseUrl()}/api/brreg/search?name=${encodeURIComponent(searchTerm)}`,
           {
-            method: 'GET',
+            method: "GET",
             headers: {
-              Accept: 'application/json',
+              Accept: "application/json",
               Authorization: `Bearer ${token}`,
             },
           }
@@ -181,7 +181,7 @@ export const useOrganizationCreation = (environment: string) => {
         setBrregResults(data);
         return data;
       } catch (error) {
-        console.error('Feil ved søk i Brønnøysundregistrene:', error);
+        console.error("Feil ved søk i Brønnøysundregistrene:", error);
         return null;
       } finally {
         setIsSearchingBrreg(false);
@@ -204,15 +204,15 @@ export const useOrganizationCreation = (environment: string) => {
       try {
         const token = sessionStorage.getItem(`pat_token_${activeEnvironment}`);
         if (!token) {
-          throw new Error('PAT-token mangler');
+          throw new Error("PAT-token mangler");
         }
 
         const response = await fetch(
           `${getCorrectBaseUrl()}/api/brreg/validate/${orgNumber}`,
           {
-            method: 'GET',
+            method: "GET",
             headers: {
-              Accept: 'application/json',
+              Accept: "application/json",
               Authorization: `Bearer ${token}`,
             },
           }
@@ -225,7 +225,7 @@ export const useOrganizationCreation = (environment: string) => {
         const data = await response.json();
         return data.valid === true;
       } catch (error) {
-        console.error('Feil ved validering av organisasjonsnummer:', error);
+        console.error("Feil ved validering av organisasjonsnummer:", error);
         return false;
       }
     },
@@ -248,25 +248,25 @@ export const useOrganizationCreation = (environment: string) => {
           `Oppretter organisasjon med token for miljø: ${activeEnvironment}`
         );
         if (!token) {
-          throw new Error('PAT-token mangler');
+          throw new Error("PAT-token mangler");
         }
 
         const response = await fetch(
           `${getCorrectBaseUrl()}/api/gitea/${activeEnvironment}/organizations`,
           {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
               shortName: formData.shortName,
               fullName: formData.fullName,
-              websiteUrl: formData.websiteUrl.startsWith('https://')
+              websiteUrl: formData.websiteUrl.startsWith("https://")
                 ? formData.websiteUrl
                 : formData.websiteUrl
                   ? `https://${formData.websiteUrl}`
-                  : '',
+                  : "",
               description: formData.description,
               orgNumber: formData.orgNumber,
               owners: formData.owners,
@@ -277,17 +277,17 @@ export const useOrganizationCreation = (environment: string) => {
         if (!response.ok) {
           const errorData = await response.json().catch(() => null);
           throw new Error(
-            `Serverfeil: ${response.status} ${errorData ? JSON.stringify(errorData) : ''}`
+            `Serverfeil: ${response.status} ${errorData ? JSON.stringify(errorData) : ""}`
           );
         }
 
         const data = await response.json().catch((err) => {
-          console.error('Feil ved parsing av JSON-svar:', err);
-          return { success: false, message: 'Kunne ikke lese svar fra server' };
+          console.error("Feil ved parsing av JSON-svar:", err);
+          return { success: false, message: "Kunne ikke lese svar fra server" };
         });
         return data;
       } catch (error) {
-        console.error('Feil ved opprettelse av organisasjon:', error);
+        console.error("Feil ved opprettelse av organisasjon:", error);
         throw error;
       } finally {
         setIsCreating(false);
@@ -303,7 +303,7 @@ export const useOrganizationCreation = (environment: string) => {
   const hasValidPatToken = useCallback((): boolean => {
     const token = sessionStorage.getItem(`pat_token_${activeEnvironment}`);
     console.log(
-      `Sjekker PAT-token for miljø ${activeEnvironment}: ${token ? 'Funnet' : 'Ikke funnet'}`
+      `Sjekker PAT-token for miljø ${activeEnvironment}: ${token ? "Funnet" : "Ikke funnet"}`
     );
     return token !== null;
   }, [activeEnvironment]);
@@ -311,7 +311,7 @@ export const useOrganizationCreation = (environment: string) => {
   // Refs for å håndtere caching og låsing av organisasjonsnummer
   const hasSuccessfullyFetchedDetails = useRef<boolean>(false);
   const cachedOrgDetails = useRef<BrregEnhetsdetaljer | null>(null);
-  const cachedOrgNumber = useRef<string>('');
+  const cachedOrgNumber = useRef<string>("");
   // Ref for å spore orgnumre som har feilet ved oppslag
   const failedOrgNumbers = useRef<{ [orgNumber: string]: boolean }>({});
 
@@ -322,12 +322,12 @@ export const useOrganizationCreation = (environment: string) => {
   const resetOrgFetchState = useCallback(() => {
     hasSuccessfullyFetchedDetails.current = false;
     cachedOrgDetails.current = null;
-    cachedOrgNumber.current = '';
-    lastCheckedOrgNumber.current = '';
+    cachedOrgNumber.current = "";
+    lastCheckedOrgNumber.current = "";
     failedOrgNumbers.current = {}; // Nullstiller registeret over feilede orgnumre
     setOrgDetails(null);
     console.log(
-      'Cache, låsestatus og feilliste for organisasjonssøk nullstilt'
+      "Cache, låsestatus og feilliste for organisasjonssøk nullstilt"
     );
   }, []);
 
@@ -343,7 +343,7 @@ export const useOrganizationCreation = (environment: string) => {
       }
 
       if (cachedOrgNumber.current === orgNumber && cachedOrgDetails.current) {
-        console.log('Bruker cachet data for orgnr:', orgNumber);
+        console.log("Bruker cachet data for orgnr:", orgNumber);
         return cachedOrgDetails.current;
       }
 
@@ -360,14 +360,14 @@ export const useOrganizationCreation = (environment: string) => {
         cachedOrgNumber.current !== orgNumber
       ) {
         console.log(
-          'Hopper over API-kall - allerede låst på orgnr:',
+          "Hopper over API-kall - allerede låst på orgnr:",
           cachedOrgNumber.current
         );
         return cachedOrgDetails.current;
       }
 
       if (isFetchingOrgDetails) {
-        console.log('API-kall allerede pågår, hopper over');
+        console.log("API-kall allerede pågår, hopper over");
         return null;
       }
 
@@ -386,11 +386,11 @@ export const useOrganizationCreation = (environment: string) => {
         cachedOrgNumber.current = orgNumber;
         hasSuccessfullyFetchedDetails.current = true;
         console.log(
-          'Organisasjonsdata hentet og låst - organisasjonsnummerfelt vil nå låses'
+          "Organisasjonsdata hentet og låst - organisasjonsnummerfelt vil nå låses"
         );
         return data;
       } catch (error) {
-        console.error('Feil ved henting av organisasjonsdetaljer:', error);
+        console.error("Feil ved henting av organisasjonsdetaljer:", error);
         // Marker dette orgnummeret som feilet for å unngå gjentatte kall
         failedOrgNumbers.current[orgNumber] = true;
         return null;

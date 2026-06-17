@@ -1,6 +1,6 @@
-import { Card, Heading } from '@digdir/designsystemet-react';
-import { isSuccess } from '../../utils/httpUtils';
-import classes from './styles/ResponseStatusCode.module.css';
+import { Card, Heading } from "@digdir/designsystemet-react";
+import { isSuccess } from "../../utils/httpUtils";
+import classes from "./styles/ResponseStatusCode.module.css";
 
 interface ResponseStatusCodeProps {
   statuscode?: number;

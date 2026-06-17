@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   getLocalStorageValue,
   setLocalStorageValue,
-} from './utils/storageUtils';
-import ManualRoleSearchTextField from './ManualRoleSearchTextfield';
-import { Button, Tooltip } from '@digdir/designsystemet-react';
-import style from './styles/InputComponent.module.css';
-import SearchButton from './ManualRoleSearchButton';
+} from "./utils/storageUtils";
+import ManualRoleSearchTextField from "./ManualRoleSearchTextfield";
+import { Button, Tooltip } from "@digdir/designsystemet-react";
+import style from "./styles/InputComponent.module.css";
+import SearchButton from "./ManualRoleSearchButton";
 
 type InputComponentProps = {
   setRollehaver: (value: string) => void;
@@ -18,10 +18,10 @@ const InputComponent: React.FC<InputComponentProps> = ({
   setRollegiver,
 }) => {
   const [localRollehaver, setLocalRollehaver] = useState<string>(
-    getLocalStorageValue('rollehaver') || ''
+    getLocalStorageValue("rollehaver") || ""
   );
   const [localRollegiver, setLocalRollegiver] = useState<string>(
-    getLocalStorageValue('rollegiver') || ''
+    getLocalStorageValue("rollegiver") || ""
   );
 
   const handleSearch = () => {
@@ -30,14 +30,14 @@ const InputComponent: React.FC<InputComponentProps> = ({
   };
 
   const clearSearch = () => {
-    setLocalRollegiver('');
-    setLocalRollehaver('');
-    setLocalStorageValue('rollegiver', '');
-    setLocalStorageValue('rollehaver', '');
+    setLocalRollegiver("");
+    setLocalRollehaver("");
+    setLocalStorageValue("rollegiver", "");
+    setLocalStorageValue("rollehaver", "");
   };
 
   return (
-    <div className={style['input-fields']}>
+    <div className={style["input-fields"]}>
       <Tooltip
         content="Organisasjonsnummeret til virksomheten som gir rollen"
         placement="bottom"
@@ -45,10 +45,10 @@ const InputComponent: React.FC<InputComponentProps> = ({
         <span>
           <ManualRoleSearchTextField
             label="Tilganger fra"
-            value={localRollegiver || ''}
+            value={localRollegiver || ""}
             onChange={(value) => {
               setLocalRollegiver?.(value);
-              setLocalStorageValue('rollegiver', value);
+              setLocalStorageValue("rollegiver", value);
             }}
           />
         </span>
@@ -60,17 +60,17 @@ const InputComponent: React.FC<InputComponentProps> = ({
         <span>
           <ManualRoleSearchTextField
             label="Tilganger til"
-            value={localRollehaver || ''}
+            value={localRollehaver || ""}
             onChange={(value) => {
               setLocalRollehaver?.(value);
-              setLocalStorageValue('rollehaver', value);
+              setLocalStorageValue("rollehaver", value);
             }}
           />
         </span>
       </Tooltip>
-      <div className={style['button-group']}>
+      <div className={style["button-group"]}>
         <SearchButton handleSearch={handleSearch} />
-        {(localRollehaver.trim() !== '' || localRollegiver.trim() !== '') && (
+        {(localRollehaver.trim() !== "" || localRollegiver.trim() !== "") && (
           <Button variant="secondary" onClick={clearSearch}>
             Tøm søk
           </Button>

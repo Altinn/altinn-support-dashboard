@@ -1,6 +1,6 @@
-import React from 'react';
-import { Textfield } from '@digdir/designsystemet-react';
-import style from './styles/ManualRoleSearchTextField.module.css';
+import React from "react";
+import { Textfield } from "@digdir/designsystemet-react";
+import style from "./styles/ManualRoleSearchTextField.module.css";
 
 type ManualRoleSearchTextFieldProps = {
   label: string;
@@ -14,7 +14,7 @@ const ManualRoleSearchTextField: React.FC<ManualRoleSearchTextFieldProps> = ({
   onChange,
 }) => {
   return (
-    <div className={style['textfield-div']}>
+    <div className={style["textfield-div"]}>
       <Textfield
         label={label}
         value={value}

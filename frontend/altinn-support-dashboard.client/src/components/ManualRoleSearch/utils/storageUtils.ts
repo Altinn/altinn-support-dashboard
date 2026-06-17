@@ -1,7 +1,7 @@
 // ManualRoleSearch/utils/storageUtils.ts
 export const getLocalStorageValue = (
   key: string,
-  defaultValue = ''
+  defaultValue = ""
 ): string => {
   return localStorage.getItem(key) || defaultValue;
 };

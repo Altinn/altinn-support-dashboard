@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { formatDate } from '../utils/dateUtils';
-import { ERRolesSortField, SortDirection } from '../models/mainContentTypes';
-import { sortERRoles } from '../utils/contactUtils';
-import { useOrgDetails } from '../../../hooks/hooks';
-import { ERRoles, ErRoleTableItem, Organization } from '../../../models/models';
-import { useAppStore } from '../../../stores/Appstore';
-import { Table, Heading, Paragraph, Card } from '@digdir/designsystemet-react';
-import styles from '../styles/ERRolesTable.module.css';
+import React, { useState } from "react";
+import { formatDate } from "../utils/dateUtils";
+import { ERRolesSortField, SortDirection } from "../models/mainContentTypes";
+import { sortERRoles } from "../utils/contactUtils";
+import { useOrgDetails } from "../../../hooks/hooks";
+import { ERRoles, ErRoleTableItem, Organization } from "../../../models/models";
+import { useAppStore } from "../../../stores/Appstore";
+import { Table, Heading, Paragraph, Card } from "@digdir/designsystemet-react";
+import styles from "../styles/ERRolesTable.module.css";
 
 interface ERRolesTableProps {
   selectedOrg: Organization;
@@ -27,17 +27,17 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
 
   const handleERRoleSort = (field: ERRolesSortField) => {
     if (field === erRoleSortField) {
-      if (erRoleSortDirection === 'ascending') {
-        setERRoleSortDirection('descending');
-      } else if (erRoleSortDirection === 'descending') {
+      if (erRoleSortDirection === "ascending") {
+        setERRoleSortDirection("descending");
+      } else if (erRoleSortDirection === "descending") {
         setERRoleSortField(null);
         setERRoleSortDirection(undefined);
       } else {
-        setERRoleSortDirection('ascending');
+        setERRoleSortDirection("ascending");
       }
     } else {
       setERRoleSortField(field);
-      setERRoleSortDirection('ascending');
+      setERRoleSortDirection("ascending");
     }
   };
 
@@ -79,29 +79,29 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
         <Table.Head>
           <Table.Row>
             <Table.HeaderCell
-              sort={erRoleSortField === 'type' ? erRoleSortDirection : 'none'}
-              onClick={() => handleERRoleSort('type')}
-              className={styles['header-font']}
+              sort={erRoleSortField === "type" ? erRoleSortDirection : "none"}
+              onClick={() => handleERRoleSort("type")}
+              className={styles["header-font"]}
             >
               Rolletype
             </Table.HeaderCell>
             <Table.HeaderCell
-              sort={erRoleSortField === 'person' ? erRoleSortDirection : 'none'}
-              onClick={() => handleERRoleSort('person')}
-              className={styles['header-font']}
+              sort={erRoleSortField === "person" ? erRoleSortDirection : "none"}
+              onClick={() => handleERRoleSort("person")}
+              className={styles["header-font"]}
             >
               Person/Virksomhet
             </Table.HeaderCell>
             <Table.HeaderCell
               sort={
-                erRoleSortField === 'sistEndret' ? erRoleSortDirection : 'none'
+                erRoleSortField === "sistEndret" ? erRoleSortDirection : "none"
               }
-              onClick={() => handleERRoleSort('sistEndret')}
-              className={styles['header-font']}
+              onClick={() => handleERRoleSort("sistEndret")}
+              className={styles["header-font"]}
             >
               Dato Endret
             </Table.HeaderCell>
-            <Table.HeaderCell className={styles['header-font']}>
+            <Table.HeaderCell className={styles["header-font"]}>
               Status
             </Table.HeaderCell>
           </Table.Row>
@@ -110,26 +110,26 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
           {sortedERRoles && sortedERRoles.length > 0 ? (
             sortedERRoles.map((role, index) => (
               <Table.Row key={index}>
-                <Table.Cell className={styles['cell-font']}>
-                  {role.type?.beskrivelse || ''}
+                <Table.Cell className={styles["cell-font"]}>
+                  {role.type?.beskrivelse || ""}
                 </Table.Cell>
-                <Table.Cell className={styles['cell-font']}>
+                <Table.Cell className={styles["cell-font"]}>
                   {role.person
-                    ? `${role.person?.navn?.fornavn || ''} ${role.person?.navn?.etternavn || ''}`.trim()
+                    ? `${role.person?.navn?.fornavn || ""} ${role.person?.navn?.etternavn || ""}`.trim()
                     : role.enhet
-                      ? `${role.enhet.navn?.[0] || ''} (${role.enhet.organisasjonsnummer})`
-                      : ''}
+                      ? `${role.enhet.navn?.[0] || ""} (${role.enhet.organisasjonsnummer})`
+                      : ""}
                 </Table.Cell>
-                <Table.Cell className={styles['cell-font']}>
+                <Table.Cell className={styles["cell-font"]}>
                   {/* Added fodselsdato here temporarily to display data from altinn.register, this only appears from TT02 data */}
                   {role.sistEndret
                     ? formatDate(role.sistEndret)
                     : role?.person?.fodselsdato}
                 </Table.Cell>
-                <Table.Cell className={styles['cell-font']}>
-                  {role.fratraadt ? 'Fratrådt' : 'Aktiv'}
-                  {role.person?.erDoed ? ' (Død)' : ''}
-                  {role.enhet?.erSlettet ? ' (Slettet)' : ''}
+                <Table.Cell className={styles["cell-font"]}>
+                  {role.fratraadt ? "Fratrådt" : "Aktiv"}
+                  {role.person?.erDoed ? " (Død)" : ""}
+                  {role.enhet?.erSlettet ? " (Slettet)" : ""}
                 </Table.Cell>
               </Table.Row>
             ))

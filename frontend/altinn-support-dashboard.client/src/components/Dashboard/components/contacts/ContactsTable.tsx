@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import classes from '../../styles/ContactsTable.module.css';
-import { SortDirection } from '../../models/mainContentTypes';
-import { filterContacts, sortContacts } from '../../utils/contactUtils';
-import { useOrgDetails } from '../../../../hooks/hooks';
+import React, { useState } from "react";
+import classes from "../../styles/ContactsTable.module.css";
+import { SortDirection } from "../../models/mainContentTypes";
+import { filterContacts, sortContacts } from "../../utils/contactUtils";
+import { useOrgDetails } from "../../../../hooks/hooks";
 import {
   Organization,
   PersonalContactAltinn3,
-} from '../../../../models/models';
-import { useAppStore } from '../../../../stores/Appstore';
-import ContactInfoCell from './ContactInfoCell';
-import { Button, Table, Paragraph, Card } from '@digdir/designsystemet-react';
-import SsnCell from '../../../SsnCell';
+} from "../../../../models/models";
+import { useAppStore } from "../../../../stores/Appstore";
+import ContactInfoCell from "./ContactInfoCell";
+import { Button, Table, Paragraph, Card } from "@digdir/designsystemet-react";
+import SsnCell from "../../../SsnCell";
 
 interface ContactsTableProps {
   searchQuery: string;
@@ -46,17 +46,17 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
 
   const handleSort = (field: keyof PersonalContactAltinn3) => {
     if (field === sortField) {
-      if (sortDirection === 'ascending') {
-        setSortDirection('descending');
-      } else if (sortDirection === 'descending') {
+      if (sortDirection === "ascending") {
+        setSortDirection("descending");
+      } else if (sortDirection === "descending") {
         setSortField(null);
         setSortDirection(undefined);
       } else {
-        setSortDirection('ascending');
+        setSortDirection("ascending");
       }
     } else {
       setSortField(field);
-      setSortDirection('ascending');
+      setSortDirection("ascending");
     }
   };
 
@@ -73,31 +73,31 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
           <Table.Row>
             <Table.HeaderCell
               className={classes.tableHeaderCell}
-              sort={sortField === 'name' ? sortDirection : 'none'}
-              onClick={() => handleSort('name')}
+              sort={sortField === "name" ? sortDirection : "none"}
+              onClick={() => handleSort("name")}
             >
               Navn
             </Table.HeaderCell>
             <Table.HeaderCell
               className={classes.tableHeaderCell}
               sort={
-                sortField === 'nationalIdentityNumber' ? sortDirection : 'none'
+                sortField === "nationalIdentityNumber" ? sortDirection : "none"
               }
-              onClick={() => handleSort('nationalIdentityNumber')}
+              onClick={() => handleSort("nationalIdentityNumber")}
             >
               Fødselsnummer
             </Table.HeaderCell>
             <Table.HeaderCell
               className={classes.tableHeaderCell}
-              sort={sortField === 'phone' ? sortDirection : 'none'}
-              onClick={() => handleSort('phone')}
+              sort={sortField === "phone" ? sortDirection : "none"}
+              onClick={() => handleSort("phone")}
             >
               Mobilnummer
             </Table.HeaderCell>
             <Table.HeaderCell
               className={classes.tableHeaderCell}
-              sort={sortField === 'email' ? sortDirection : 'none'}
-              onClick={() => handleSort('email')}
+              sort={sortField === "email" ? sortDirection : "none"}
+              onClick={() => handleSort("email")}
             >
               E-post
             </Table.HeaderCell>
@@ -146,7 +146,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
                 <Paragraph>
                   {searchQuery.trim().length >= 3
                     ? `Fant ingen resultater for '${searchQuery}'`
-                    : 'Her var det tomt'}
+                    : "Her var det tomt"}
                 </Paragraph>
               </Table.Cell>
             </Table.Row>

@@ -1,9 +1,9 @@
-import React from 'react';
-import { Dialog } from '@digdir/designsystemet-react';
-import type { VersionInfo } from '../../hooks/useVersionCheck';
-import VersionDialogTitle from './VersionDialogTitle';
-import VersionDialogContent from './VersionDialogContent';
-import VersionDialogButton from './VersionDialogButton';
+import React from "react";
+import { Dialog } from "@digdir/designsystemet-react";
+import type { VersionInfo } from "../../hooks/useVersionCheck";
+import VersionDialogTitle from "./VersionDialogTitle";
+import VersionDialogContent from "./VersionDialogContent";
+import VersionDialogButton from "./VersionDialogButton";
 
 interface VersionDialogBoxProps {
   versionInfo: VersionInfo | null;

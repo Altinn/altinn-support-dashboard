@@ -1,8 +1,8 @@
-import React from 'react';
-import { Card, Heading, Paragraph } from '@digdir/designsystemet-react';
-import { NotificationOrderResponse } from '../../models/notificationModels';
-import NotificationList from './NotificationList';
-import style from './styles/NotificationCard.module.css';
+import React from "react";
+import { Card, Heading, Paragraph } from "@digdir/designsystemet-react";
+import { NotificationOrderResponse } from "../../models/notificationModels";
+import NotificationList from "./NotificationList";
+import style from "./styles/NotificationCard.module.css";
 
 type NotificationCardProps = {
   order: NotificationOrderResponse;
@@ -11,8 +11,8 @@ type NotificationCardProps = {
 const NotificationCard: React.FC<NotificationCardProps> = ({ order }) => {
   const getType = () => {
     const first = order.notifications?.[0];
-    if (!first) return 'Ordredetaljer';
-    return first.recipient?.emailAddress ? 'E-post' : 'SMS';
+    if (!first) return "Ordredetaljer";
+    return first.recipient?.emailAddress ? "E-post" : "SMS";
   };
 
   return (

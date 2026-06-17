@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Button, Search, Textfield } from '@digdir/designsystemet-react';
-import style from './styles/NotificationSearchBar.module.css';
+import { useState } from "react";
+import { Button, Search, Textfield } from "@digdir/designsystemet-react";
+import style from "./styles/NotificationSearchBar.module.css";
 
 type NotificationSearchBarProps = {
   orderId: string;
@@ -11,7 +11,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
   orderId,
   setOrderId,
 }) => {
-  const [inputValue, setInputValue] = useState(orderId ?? '');
+  const [inputValue, setInputValue] = useState(orderId ?? "");
 
   const handleSearch = () => {
     setOrderId(inputValue);
@@ -25,7 +25,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === 'Enter') {
+          if (e.key === "Enter") {
             handleSearch();
           }
         }}
@@ -40,8 +40,8 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
       </Button>
       <Button
         onClick={() => {
-          setInputValue('');
-          setOrderId('');
+          setInputValue("");
+          setOrderId("");
         }}
         className={style.removeButton}
       >

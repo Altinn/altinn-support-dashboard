@@ -1,18 +1,18 @@
-import { Heading } from '@digdir/designsystemet-react';
-import { useEffect, useState } from 'react';
-import NotificationSearchBar from '../components/Notification/NotificationSearchBar';
-import { useNotifications } from '../hooks/hooks';
-import NotificationCard from '../components/Notification/NotificationCard';
-import style from './styles/NotificationPage.module.css';
-import { showPopup } from '../components/Popup';
+import { Heading } from "@digdir/designsystemet-react";
+import { useEffect, useState } from "react";
+import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
+import { useNotifications } from "../hooks/hooks";
+import NotificationCard from "../components/Notification/NotificationCard";
+import style from "./styles/NotificationPage.module.css";
+import { showPopup } from "../components/Popup";
 
 export const NotificationPage = () => {
-  const [orderId, setOrderId] = useState('');
+  const [orderId, setOrderId] = useState("");
   const notificationQuery = useNotifications(orderId);
 
   useEffect(() => {
     if (notificationQuery.isError) {
-      showPopup(notificationQuery.error.message, 'error');
+      showPopup(notificationQuery.error.message, "error");
     }
   }, [notificationQuery]);
   return (

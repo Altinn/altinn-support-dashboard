@@ -1,4 +1,4 @@
-import { Checkbox, Fieldset } from '@digdir/designsystemet-react';
+import { Checkbox, Fieldset } from "@digdir/designsystemet-react";
 
 const CorrespondenceCheckbox = () => {
   return (

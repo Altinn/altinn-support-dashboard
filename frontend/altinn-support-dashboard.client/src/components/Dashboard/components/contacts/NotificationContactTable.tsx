@@ -1,9 +1,9 @@
-import React from 'react';
-import { formatDate } from '../../utils/dateUtils';
-import NotificationContactCell from './NotificationContactCell';
-import { Table, Paragraph } from '@digdir/designsystemet-react';
-import styles from '../../styles/NotificationContactTable.module.css';
-import { NotificationAdresses } from '../../../../models/models';
+import React from "react";
+import { formatDate } from "../../utils/dateUtils";
+import NotificationContactCell from "./NotificationContactCell";
+import { Table, Paragraph } from "@digdir/designsystemet-react";
+import styles from "../../styles/NotificationContactTable.module.css";
+import { NotificationAdresses } from "../../../../models/models";
 
 interface ContactFieldTableProps {
   title: string;
@@ -21,15 +21,15 @@ const NotificationContactTable: React.FC<ContactFieldTableProps> = ({
   const filteredContacts =
     contacts?.filter((contacts) => contacts[field]) || [];
   return (
-    <div className={styles['container']}>
-      <Table border className={styles['table']}>
+    <div className={styles["container"]}>
+      <Table border className={styles["table"]}>
         <Table.Head>
           <Table.Row>
             <Table.HeaderCell className={styles.tableCell}>
               {title}
             </Table.HeaderCell>
             <Table.HeaderCell className={styles.tableCell}>
-              {'Endret ' + title}
+              {"Endret " + title}
             </Table.HeaderCell>
           </Table.Row>
         </Table.Head>
@@ -38,7 +38,7 @@ const NotificationContactTable: React.FC<ContactFieldTableProps> = ({
             filteredContacts.map((contact, index) => (
               <Table.Row key={index}>
                 <NotificationContactCell contact={contact} field={field} />
-                <Table.Cell className={styles['cellText']}>
+                <Table.Cell className={styles["cellText"]}>
                   {formatDate(contact[changedField] as string)}
                 </Table.Cell>
               </Table.Row>
@@ -46,7 +46,7 @@ const NotificationContactTable: React.FC<ContactFieldTableProps> = ({
           ) : (
             <Table.Row>
               <Table.Cell colSpan={2}>
-                <Paragraph className={styles['cellText']}>
+                <Paragraph className={styles["cellText"]}>
                   Her var det tomt
                 </Paragraph>
               </Table.Cell>

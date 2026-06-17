@@ -1,4 +1,4 @@
-import { Label, Textarea } from '@digdir/designsystemet-react';
+import { Label, Textarea } from "@digdir/designsystemet-react";
 
 type InputFieldProps = {
   value?: string;
@@ -14,7 +14,7 @@ const MessageInputField: React.FC<InputFieldProps> = ({
   className,
 }) => {
   return (
-    <div className={`${className ?? ''}`}>
+    <div className={`${className ?? ""}`}>
       <Label>{labelText}</Label>
       <Textarea value={value} onChange={(e) => onChange(e.target.value)} />
     </div>

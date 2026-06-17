@@ -1,6 +1,6 @@
-import { Dialog, Paragraph, List } from '@digdir/designsystemet-react';
-import { CheckmarkIcon, XMarkIcon } from '@navikt/aksel-icons';
-import styles from './styles/InformationDialogContent.module.css';
+import { Dialog, Paragraph, List } from "@digdir/designsystemet-react";
+import { CheckmarkIcon, XMarkIcon } from "@navikt/aksel-icons";
+import styles from "./styles/InformationDialogContent.module.css";
 
 const InformationDialogContent: React.FC = () => {
   return (

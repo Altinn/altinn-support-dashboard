@@ -1,8 +1,8 @@
-import { Table, Textfield } from '@digdir/designsystemet-react';
-import NotificationStatusCode from './NotificationStatusCode';
-import { NotificationItem } from '../../models/notificationModels';
-import style from './styles/NotificationList.module.css';
-import { useState } from 'react';
+import { Table, Textfield } from "@digdir/designsystemet-react";
+import NotificationStatusCode from "./NotificationStatusCode";
+import { NotificationItem } from "../../models/notificationModels";
+import style from "./styles/NotificationList.module.css";
+import { useState } from "react";
 
 type NotificationListProps = {
   notifications: NotificationItem[];
@@ -11,7 +11,7 @@ type NotificationListProps = {
 const NotificationList: React.FC<NotificationListProps> = ({
   notifications,
 }) => {
-  const [searchId, setSearchId] = useState('');
+  const [searchId, setSearchId] = useState("");
 
   const filteredNotifications = notifications.filter((n) =>
     n.id.includes(searchId)
@@ -47,7 +47,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
                 {n.recipient?.emailAddress || n.recipient?.mobileNumber}
               </Table.Cell>
               <Table.Cell>
-                {n.recipient?.emailAddress ? 'E-post' : 'SMS'}
+                {n.recipient?.emailAddress ? "E-post" : "SMS"}
               </Table.Cell>
               <Table.Cell>
                 <NotificationStatusCode notification={n} />

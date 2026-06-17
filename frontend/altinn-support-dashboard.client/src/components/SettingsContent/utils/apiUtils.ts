@@ -3,11 +3,11 @@ export const authorizedFetch = async (
   options: RequestInit = {}
 ) => {
   const token =
-    localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+    localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
   const headers = {
     ...options.headers,
     Authorization: `Basic ${token}`,
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
   const response = await fetch(url, { ...options, headers });
   if (!response.ok) {

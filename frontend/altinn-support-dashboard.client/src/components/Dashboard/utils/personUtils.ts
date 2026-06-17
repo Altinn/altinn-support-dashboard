@@ -1,4 +1,4 @@
-import { ERRoles } from '../../../models/models';
+import { ERRoles } from "../../../models/models";
 
 interface PersonName {
   fornavn?: string;
@@ -13,18 +13,18 @@ interface PersonInfo {
 }
 
 export const formatFullName = (person?: PersonInfo): string => {
-  if (!person?.navn) return '';
-  const { fornavn = '', mellomnavn = '', etternavn = '' } = person.navn;
-  return `${fornavn} ${mellomnavn ? mellomnavn + ' ' : ''}${etternavn}`.trim();
+  if (!person?.navn) return "";
+  const { fornavn = "", mellomnavn = "", etternavn = "" } = person.navn;
+  return `${fornavn} ${mellomnavn ? mellomnavn + " " : ""}${etternavn}`.trim();
 };
 
 export const formatPersonStatus = (person?: PersonInfo): string => {
-  if (!person) return '';
-  return person.erDoed ? ' (Død)' : '';
+  if (!person) return "";
+  return person.erDoed ? " (Død)" : "";
 };
 
 export const formatRolePersonInfo = (role: ERRoles): string => {
-  if (!role.roller?.[0]?.person) return '';
+  if (!role.roller?.[0]?.person) return "";
   const person = role.roller[0].person;
   const name = formatFullName(person);
   const status = formatPersonStatus(person);
@@ -32,7 +32,7 @@ export const formatRolePersonInfo = (role: ERRoles): string => {
 };
 
 export const formatRoleTypeInfo = (role: ERRoles): string => {
-  if (!role.type?.beskrivelse) return '';
+  if (!role.type?.beskrivelse) return "";
   return role.type.beskrivelse;
 };
 

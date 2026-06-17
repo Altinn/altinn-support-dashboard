@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
-import { Button } from '@digdir/designsystemet-react';
-import style from './styles/SignInPage.module.css';
-import logo from '../assets/log-in-white.png';
-import coloredLogo from '../assets/log-in-blue.png';
-import { useAppStore } from '../stores/Appstore';
-import cat from '../assets/fun/sleeping cat.gif';
-import dog from '../assets/fun/sleeping dog.gif';
-import { useLocation } from 'react-router-dom';
-import { showPopup } from '../components/Popup';
-import { initiateSignIn } from '../utils/azureAuthApi';
+import React, { useEffect } from "react";
+import { Button } from "@digdir/designsystemet-react";
+import style from "./styles/SignInPage.module.css";
+import logo from "../assets/log-in-white.png";
+import coloredLogo from "../assets/log-in-blue.png";
+import { useAppStore } from "../stores/Appstore";
+import cat from "../assets/fun/sleeping cat.gif";
+import dog from "../assets/fun/sleeping dog.gif";
+import { useLocation } from "react-router-dom";
+import { showPopup } from "../components/Popup";
+import { initiateSignIn } from "../utils/azureAuthApi";
 
 export const SignInPage: React.FC = () => {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
@@ -21,11 +21,11 @@ export const SignInPage: React.FC = () => {
   });
 
   useEffect(() => {
-    const errorParam = new URLSearchParams(location.search).get('error');
+    const errorParam = new URLSearchParams(location.search).get("error");
     console.log(errorParam);
 
-    if (errorParam === 'loginFailed') {
-      showPopup('Innlogging feilet, prøv igjen', 'error');
+    if (errorParam === "loginFailed") {
+      showPopup("Innlogging feilet, prøv igjen", "error");
     }
   }, [location.search]);
 

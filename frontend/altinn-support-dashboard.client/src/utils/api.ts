@@ -1,8 +1,8 @@
-import { authorizedFetch, authorizedPost, getBaseUrl } from './utils';
-import { NotificationAdresses, PersonalContactAltinn3 } from '../models/models';
-import { RolesAndRights, RolesAndRightsRequest } from '../models/rolesModels';
-import { NotificationOrderResponse } from '../models/notificationModels';
-import { PartyModel } from '../models/PartyModel';
+import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
+import { NotificationAdresses, PersonalContactAltinn3 } from "../models/models";
+import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
+import { NotificationOrderResponse } from "../models/notificationModels";
+import { PartyModel } from "../models/PartyModel";
 
 //this file defines which which api endpoints we want to fetch data from
 
@@ -10,7 +10,7 @@ export const fetchOrganizations = async (
   environment: string,
   query: string
 ) => {
-  const trimmedQuery = query.replace(/\s/g, '');
+  const trimmedQuery = query.replace(/\s/g, "");
 
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search?query=${encodeURIComponent(trimmedQuery)}`
@@ -21,7 +21,7 @@ export const fetchOrganizations = async (
   }
 
   if (!res.ok)
-    throw new Error((await res.text()) || 'Error fetching organizations');
+    throw new Error((await res.text()) || "Error fetching organizations");
 
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
@@ -35,7 +35,7 @@ export const fetchRolesForOrg = async (
     `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/roles`,
     request
   );
-  if (!res.ok) throw new Error((await res.text()) || 'Error fetching roles');
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching roles");
 
   const data = await res.json();
   return data;
@@ -54,7 +54,7 @@ export const fetchPersonalContacts = async (
   }
 
   if (!res.ok)
-    throw new Error((await res.text()) || 'Error fetching PersonalContacts');
+    throw new Error((await res.text()) || "Error fetching PersonalContacts");
 
   const data = await res.json();
 
@@ -70,7 +70,7 @@ export const fetchERoles = async (environment: string, orgNumber: string) => {
     return [];
   }
 
-  if (!res.ok) throw new Error((await res.text()) || 'Error fetching ERoles');
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching ERoles");
 
   const data = await res.json();
   return data.rollegrupper;
@@ -85,7 +85,7 @@ export const fetchSsnFromToken = async (
   );
 
   if (!res.ok)
-    throw new Error((await res.text()) || 'Error fetching SSN from token');
+    throw new Error((await res.text()) || "Error fetching SSN from token");
 
   const data = await res.json();
   return data.socialSecurityNumber;
@@ -105,7 +105,7 @@ export const fetchNotificationAddresses = async (
 
   if (!res.ok)
     throw new Error(
-      (await res.text()) || 'Error fetching Notification addresses'
+      (await res.text()) || "Error fetching Notification addresses"
     );
 
   const data = await res.json();
@@ -122,7 +122,7 @@ export const fetchNotificationByOrderId = async (
   if (res.status === 404) return null;
   if (!res.ok)
     throw new Error(
-      (await res.text()) || 'Error fetching notification by orderId'
+      (await res.text()) || "Error fetching notification by orderId"
     );
 
   return await res.json();
@@ -132,11 +132,11 @@ export const fetchInternalIds = async (
   query: string,
   environment: string
 ): Promise<PartyModel> => {
-  const digits = query.replace(/\s/g, '');
+  const digits = query.replace(/\s/g, "");
   if (digits.length === 11) return fetchInternalIdsFromSsn(digits, environment);
   if (digits.length === 9) return fetchInternalIdsFromOrg(digits, environment);
   throw new Error(
-    'Identifikatoren må være 9 siffer (org.nr.) eller 11 siffer (fødselsnummer)'
+    "Identifikatoren må være 9 siffer (org.nr.) eller 11 siffer (fødselsnummer)"
   );
 };
 
@@ -148,8 +148,8 @@ export const fetchInternalIdsFromOrg = async (
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/parties/lookup/org/${orgNumber}`
   );
-  if (res.status === 400) throw new Error('Ugyldig organisasjonsnummer');
-  if (!res.ok) throw new Error('Feil ved henting av intern ID');
+  if (res.status === 400) throw new Error("Ugyldig organisasjonsnummer");
+  if (!res.ok) throw new Error("Feil ved henting av intern ID");
 
   return await res.json();
 };
@@ -161,8 +161,8 @@ export const fetchInternalIdsFromSsn = async (
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/parties/lookup/ssn/${ssn}`
   );
-  if (res.status === 400) throw new Error('Ugyldig fødselsnummer');
-  if (!res.ok) throw new Error('Feil ved henting av intern ID');
+  if (res.status === 400) throw new Error("Ugyldig fødselsnummer");
+  if (!res.ok) throw new Error("Feil ved henting av intern ID");
 
   return await res.json();
 };

@@ -2,10 +2,10 @@ import {
   EyeIcon,
   EyeSlashIcon,
   InformationSquareIcon,
-} from '@navikt/aksel-icons';
-import classes from './styles/SettingsPatComponent.module.css';
-import { useEffect, useState } from 'react';
-import { usePatTokenValidation } from './hooks/usePatTokenValidation';
+} from "@navikt/aksel-icons";
+import classes from "./styles/SettingsPatComponent.module.css";
+import { useEffect, useState } from "react";
+import { usePatTokenValidation } from "./hooks/usePatTokenValidation";
 import {
   Card,
   Heading,
@@ -16,14 +16,14 @@ import {
   Button,
   Tooltip,
   Alert,
-} from '@digdir/designsystemet-react';
+} from "@digdir/designsystemet-react";
 
 const SettingsPATComponent: React.FC = () => {
-  const [giteaEnv, setGiteaEnv] = useState<string>('development');
+  const [giteaEnv, setGiteaEnv] = useState<string>("development");
   const { patState, validateToken, clearToken } =
     usePatTokenValidation(giteaEnv);
 
-  const [patInput, setPatInput] = useState<string>('');
+  const [patInput, setPatInput] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   useEffect(() => {
@@ -42,18 +42,18 @@ const SettingsPATComponent: React.FC = () => {
 
   const handleGeneratePatToken = () => {
     const baseUrl =
-      giteaEnv === 'development'
-        ? 'https://dev.altinn.studio'
-        : 'https://altinn.studio';
+      giteaEnv === "development"
+        ? "https://dev.altinn.studio"
+        : "https://altinn.studio";
     window.open(
       `${baseUrl}/repos/user/settings/applications`,
-      '_blank',
-      'noopener,noreferrer'
+      "_blank",
+      "noopener,noreferrer"
     );
   };
 
   const handleClearToken = () => {
-    setPatInput('');
+    setPatInput("");
     clearToken();
   };
 
@@ -98,14 +98,14 @@ const SettingsPATComponent: React.FC = () => {
             className={classes.patInputField}
             value={patInput}
             onChange={handlePatInputChange}
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             disabled={patState.isValidating}
             aria-label="Personal Access Token"
           />
           <Button
             variant="secondary"
             onClick={() => setShowPassword(!showPassword)}
-            aria-label={showPassword ? 'Skjul passord' : 'Vis passord'}
+            aria-label={showPassword ? "Skjul passord" : "Vis passord"}
             icon
           >
             {showPassword ? <EyeIcon /> : <EyeSlashIcon />}
@@ -144,7 +144,7 @@ const SettingsPATComponent: React.FC = () => {
             onClick={handleValidateToken}
             disabled={patState.isValidating || !patInput}
           >
-            {patState.isValidating ? 'Validerer...' : 'Valider token'}
+            {patState.isValidating ? "Validerer..." : "Valider token"}
           </Button>
           <Button
             data-color="accent"

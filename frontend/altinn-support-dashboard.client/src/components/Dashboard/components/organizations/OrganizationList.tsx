@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
-import { OrganizationCard } from './OrganizationCard';
-import { useOrgSearch } from '../../../../hooks/hooks';
-import { Organization } from '../../../../models/models';
-import { useAppStore } from '../../../../stores/Appstore';
-import classes from '../../styles/OrganizationList.module.css';
-import { showPopup } from '../../../Popup';
+import React, { useEffect } from "react";
+import { OrganizationCard } from "./OrganizationCard";
+import { useOrgSearch } from "../../../../hooks/hooks";
+import { Organization } from "../../../../models/models";
+import { useAppStore } from "../../../../stores/Appstore";
+import classes from "../../styles/OrganizationList.module.css";
+import { showPopup } from "../../../Popup";
 
-import { Skeleton, Alert, Heading } from '@digdir/designsystemet-react';
+import { Skeleton, Alert, Heading } from "@digdir/designsystemet-react";
 
 interface OrganizationListProps {
   setSelectedOrg: (SelectedOrg: Organization) => void;
@@ -26,8 +26,8 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
   useEffect(() => {
     if (orgQuery.isError) {
       const errorMessage =
-        orgQuery.error?.message.toString() ?? 'Ukjent feil oppstod';
-      showPopup(errorMessage, 'error');
+        orgQuery.error?.message.toString() ?? "Ukjent feil oppstod";
+      showPopup(errorMessage, "error");
     }
   }, [orgQuery.isError, orgQuery.error]);
 
