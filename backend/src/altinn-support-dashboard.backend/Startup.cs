@@ -34,8 +34,8 @@ namespace AltinnSupportDashboard
             services.AddSingleton<GiteaApiClient>();
             services.AddScoped<IGiteaService, GiteaService>();
             services.AddScoped<IPartyApiClient, PartyApiClient>();
-            services.AddScoped<IAltinnApiClient, AltinnApiClient>();
             services.AddScoped<IAltinn3ApiClient, Altinn3ApiClient>();
+            services.AddScoped<IAltinn3Service, Altinn3Service>();
             services.AddScoped<IDataBrregClient, DataBrregClient>();
 
             // Add controllers for the API
@@ -148,10 +148,10 @@ namespace AltinnSupportDashboard
                 endpoints.MapFallbackToFile("index.html");
             });
 
-              // This will print to the console when the app is ready
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Backend is now running!");
-        Console.ResetColor();
+            // This will print to the console when the app is ready
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Backend is now running!");
+            Console.ResetColor();
         }
     }
 }
