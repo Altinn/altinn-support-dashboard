@@ -14,7 +14,7 @@ using Security;
 
 
 
-//The configuration for Ansattporten has been taken from altinn studio, with a few tweeks to make it work well for ASD
+//This configuration is depricated and no longer in use
 namespace Altinn.Studio.Designer.Infrastructure.AnsattPorten;
 
 public static class AnsattportenExtensions
