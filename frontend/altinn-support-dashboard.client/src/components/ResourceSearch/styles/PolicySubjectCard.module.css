@@ -26,3 +26,12 @@
   font-size: 0.78rem;
   font-weight: 500;
 }
+
+
+.read { color: var(--ds-color-info-text-subtle); }
+.write { color: var(--ds-color-success-text-subtle); }
+.delete { color: var(--ds-color-danger-text-subtle); }
+.instantiate { color: var(--ds-color-accent-text-subtle); }
+.confirm { color: var(--ds-color-success-text-subtle); }
+.reject { color: var(--ds-color-danger-text-subtle); }
+.sign { color: var(--ds-color-warning-text-subtle); }

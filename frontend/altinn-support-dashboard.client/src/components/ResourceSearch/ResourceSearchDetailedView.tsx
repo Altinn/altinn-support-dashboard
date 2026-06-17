@@ -1,6 +1,6 @@
 import { Card, Heading, Spinner } from "@digdir/designsystemet-react";
 import { useAppStore } from "../../stores/Appstore";
-import { useResourceDetails } from "../../hooks/hooks";
+import { useResourceWithPolicies } from "../../hooks/hooks";
 import { ResourceSearchResult } from "../../models/resourceModels";
 import styles from "./styles/ResourceSearchDetailedView.module.css";
 import PolicySubjectCard from "./PolicySubjectCard";
@@ -13,7 +13,7 @@ const ResourceSearchDetailedView: React.FC<ResourceSearchDetailedViewProps> = ({
     selectedResource,
 }) => {
     const environment = useAppStore((state) => state.environment);
-    const { resourceQuery, policyRulesQuery } = useResourceDetails(
+    const { resourceQuery, policyRulesQuery } = useResourceWithPolicies(
         environment,
         selectedResource?.identifier,
     );
@@ -26,7 +26,7 @@ const ResourceSearchDetailedView: React.FC<ResourceSearchDetailedViewProps> = ({
     const groupedRoleRules = (policyRulesQuery.data ?? [])
         .filter((rule) => rule.subject?.some((s) => s.type === "urn:altinn:rolecode"))
         .reduce<Record<string, Set<string>>>((acc, rule) => {
-            const subject = rule.subject?.map((s) => s.value).join(", ") ?? "—";
+            const subject = rule.subject?.find((s) => s.type === "urn:altinn:rolecode")?.value ?? "—";
             const action = rule.action?.value ?? "—";
             if (!acc[subject]) acc[subject] = new Set<string>();
             acc[subject].add(action);
@@ -36,7 +36,7 @@ const ResourceSearchDetailedView: React.FC<ResourceSearchDetailedViewProps> = ({
     const groupedPackageRules = (policyRulesQuery.data ?? [])
         .filter((rule) => rule.subject?.some((s) => s.type === "urn:altinn:accesspackage"))
         .reduce<Record<string, Set<string>>>((acc, rule) => {
-            const subject = rule.subject?.map((s) => s.value).join(", ") ?? "—";
+            const subject = rule.subject?.find((s) => s.type === "urn:altinn:accesspackage")?.value ?? "—";
             const action = rule.action?.value ?? "—";
             if (!acc[subject]) acc[subject] = new Set<string>();
             acc[subject].add(action);
@@ -52,7 +52,7 @@ const ResourceSearchDetailedView: React.FC<ResourceSearchDetailedViewProps> = ({
             {resourceQuery.isLoading ? (
                 <Spinner aria-label="Laster..." />
             ) : resource ? (
-                <>
+                <div>
                     <Card data-color="neutral" className={styles.propertiesCard}>
                         <Heading level={4} data-size="sm">Egenskaper</Heading>
                         <dl className={styles.definitionList}>
@@ -85,15 +85,15 @@ const ResourceSearchDetailedView: React.FC<ResourceSearchDetailedViewProps> = ({
                             </table>
                         </section>
                     )}
-                </>
+                </div>
             ) : null}
 
             {policyRulesQuery.isLoading ? (
                 <Spinner aria-label="Laster..." />
             ) : (
                 <>
-                    <section className={styles.section}>
-                        <Heading level={4} data-size="xs">Tilgangspakker</Heading>
+                    <Card data-color="neutral" className={styles.rulesCard}>
+                        <Heading level={4} data-size="xs" className={styles.rulesCardHeading}>Tilgangspakker</Heading>
                         {Object.entries(groupedPackageRules).length === 0 ? (
                             <p>Ingen tilgangspakker</p>
                         ) : (
@@ -101,10 +101,10 @@ const ResourceSearchDetailedView: React.FC<ResourceSearchDetailedViewProps> = ({
                                 <PolicySubjectCard key={subject} subject={subject} actions={[...actions]} />
                             ))
                         )}
-                    </section>
+                    </Card>
 
-                    <section className={styles.section}>
-                        <Heading level={4} data-size="xs">Roller</Heading>
+                    <Card data-color="neutral" className={styles.rulesCard}>
+                        <Heading level={4} data-size="xs" className={styles.rulesCardHeading}>Roller</Heading>
                         {Object.entries(groupedRoleRules).length === 0 ? (
                             <p>Ingen roller</p>
                         ) : (
@@ -112,7 +112,7 @@ const ResourceSearchDetailedView: React.FC<ResourceSearchDetailedViewProps> = ({
                                 <PolicySubjectCard key={subject} subject={subject} actions={[...actions]} />
                             ))
                         )}
-                    </section>
+                    </Card>
                 </>
             )}
         </div>

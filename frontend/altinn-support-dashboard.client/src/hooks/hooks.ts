@@ -195,7 +195,7 @@ export function useResourceSearch(environment: string, query: string) {
   return { resourceQuery };
 }
 
-export function useResourceDetails(environment: string, identifier?: string) {
+export function useResourceWithPolicies(environment: string, identifier?: string) {
   const resourceQuery = useQuery<Resource | null, Error>({
     queryKey: ["resource", environment, identifier],
     queryFn: () => fetchResourceByIdentifier(environment, identifier!),
