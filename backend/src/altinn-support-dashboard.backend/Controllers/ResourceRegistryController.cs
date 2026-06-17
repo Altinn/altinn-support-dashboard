@@ -52,15 +52,4 @@ public class ResourceRegistryController : ControllerBase
         }
         return Ok(result);
     }
-
-    [HttpGet("{identifier}/policy/rights")]
-    public async Task<IActionResult> GetResourcePolicyRights(string environmentName, string identifier)
-    {
-        var result = await _resourceRegistryService.GetResourcePolicyRights(environmentName, identifier);
-        if (result == null)
-        {
-            return NotFound();
-        }
-        return Ok(result);
-    }
 }

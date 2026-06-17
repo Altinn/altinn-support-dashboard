@@ -1,0 +1,22 @@
+.pageContainer {
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 2rem;
+}
+
+.mainContainer {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.listContainer {
+  flex: 2;
+  min-width: 25%;
+  max-width: 40%;
+}
+
+.detailedContainer {
+  flex: 8;
+  min-width: 30%;
+}
