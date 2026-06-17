@@ -5,13 +5,13 @@ import {
   Table,
   Checkbox,
   Textfield,
-} from "@digdir/designsystemet-react";
-import RoleList from "../Dashboard/components/RoleList";
-import { useAppStore } from "../../stores/Appstore";
-import { useRoles } from "../../hooks/hooks";
-import { useState } from "react";
-import RoleType from "../../models/roleType";
-import style from "./styles/RoleTable.module.css";
+} from '@digdir/designsystemet-react';
+import RoleList from '../Dashboard/components/RoleList';
+import { useAppStore } from '../../stores/Appstore';
+import { useRoles } from '../../hooks/hooks';
+import { useState } from 'react';
+import RoleType from '../../models/roleType';
+import style from './styles/RoleTable.module.css';
 
 interface RoleTableProps {
   subject?: string;
@@ -22,8 +22,8 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
   const environment = useAppStore((state) => state.environment);
 
   const roleQuery = useRoles(environment, {
-    value: subject ?? "",
-    partyFilter: [{ value: reportee ?? "" }],
+    value: subject ?? '',
+    partyFilter: [{ value: reportee ?? '' }],
   });
 
   const roleInfo = roleQuery.data;
@@ -39,12 +39,12 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
     });
   };
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   const filterRoles = (roles?: string[]) => {
     if (!roles || !searchTerm) return roles;
     return roles.filter((role) =>
-      role.toLowerCase().includes(searchTerm.toLowerCase()),
+      role.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
 
@@ -126,8 +126,8 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
                 <RoleList
                   roles={filterRoles(
                     roleInfo.authorizedInstances?.map(
-                      (inst) => inst.instanceId ?? "",
-                    ),
+                      (inst) => inst.instanceId ?? ''
+                    )
                   )}
                   type="Altinn3 instanse"
                 />
@@ -136,7 +136,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
           ) : (
             <Table.Row>
               <Table.Cell colSpan={2}>
-                <Paragraph style={{ textAlign: "center" }}>
+                <Paragraph style={{ textAlign: 'center' }}>
                   Ingen roller funnet
                 </Paragraph>
               </Table.Cell>

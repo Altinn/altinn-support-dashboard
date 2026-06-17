@@ -1,13 +1,13 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { AppState } from "./Appstate";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { AppState } from './Appstate';
 
 //sets all global variables
 export const useAppStore = create<AppState>()(
   //handles persistence
   persist(
     (set) => ({
-      environment: "PROD",
+      environment: 'PROD',
       isDarkMode: false,
 
       setEnvironment: (env: string) => set({ environment: env }),
@@ -15,7 +15,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       //local storage key for global data
-      name: "app-storage",
-    },
-  ),
+      name: 'app-storage',
+    }
+  )
 );

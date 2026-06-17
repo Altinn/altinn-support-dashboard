@@ -3,7 +3,7 @@ import {
   useEffect,
   MouseEvent as ReactMouseEvent,
   useCallback,
-} from "react";
+} from 'react';
 
 export const useSidebarDrag = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -30,7 +30,7 @@ export const useSidebarDrag = () => {
         setIsDragging(false);
       }
     },
-    [isDragging, dragStartX],
+    [isDragging, dragStartX]
   );
 
   const handleDragEnd = () => {
@@ -39,12 +39,12 @@ export const useSidebarDrag = () => {
 
   useEffect(() => {
     if (isDragging) {
-      window.addEventListener("mousemove", handleDragMove);
-      window.addEventListener("mouseup", handleDragEnd);
+      window.addEventListener('mousemove', handleDragMove);
+      window.addEventListener('mouseup', handleDragEnd);
     }
     return () => {
-      window.removeEventListener("mousemove", handleDragMove);
-      window.removeEventListener("mouseup", handleDragEnd);
+      window.removeEventListener('mousemove', handleDragMove);
+      window.removeEventListener('mouseup', handleDragEnd);
     };
   }, [isDragging, dragStartX, handleDragMove]);
 

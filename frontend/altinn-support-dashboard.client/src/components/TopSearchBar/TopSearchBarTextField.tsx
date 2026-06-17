@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Textfield, Button, Search } from "@digdir/designsystemet-react";
-import styles from "./styles/TopSearchBarTextfield.module.css";
-import { Organization } from "../../models/models";
+import { useState } from 'react';
+import { Textfield, Button, Search } from '@digdir/designsystemet-react';
+import styles from './styles/TopSearchBarTextfield.module.css';
+import { Organization } from '../../models/models';
 
 type Props = {
   query: string;
@@ -15,8 +15,8 @@ export const TopSearchBarTextField: React.FC<Props> = ({
   setSelectedOrg,
 }) => {
   const [textFieldValue, setTextFieldValue] = useState(() => {
-    if (query != null && query !== "") return query;
-    return "";
+    if (query != null && query !== '') return query;
+    return '';
   });
   const handleSearch = () => {
     if (textFieldValue != query) {
@@ -26,22 +26,22 @@ export const TopSearchBarTextField: React.FC<Props> = ({
   };
 
   return (
-    <div className={styles["Container"]}>
+    <div className={styles['Container']}>
       <Textfield
         label=""
         placeholder="Mobilnummer / E-post / Organisasjonsnummer"
         value={textFieldValue}
         onChange={(e) => setTextFieldValue(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
+          if (e.key === 'Enter') {
             handleSearch();
           }
         }}
       />
       <Button
         onClick={() => {
-          setTextFieldValue("");
-          setQuery("");
+          setTextFieldValue('');
+          setQuery('');
         }}
         className={styles.emptySearchButton}
       >

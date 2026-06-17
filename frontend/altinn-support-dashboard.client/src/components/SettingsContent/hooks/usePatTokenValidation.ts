@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   PatTokenState,
   PatTokenValidationResponse,
-} from "../models/settingsTypes";
-import { getBaseUrl } from "../../../utils/utils";
+} from '../models/settingsTypes';
+import { getBaseUrl } from '../../../utils/utils';
 
 /**
  * Hook for håndtering av PAT-token validering og lagring
@@ -13,7 +13,7 @@ export const usePatTokenValidation = (environment: string) => {
   const [patState, setPatState] = useState<PatTokenState>(() => {
     const savedToken = sessionStorage.getItem(`pat_token_${environment}`);
     return {
-      token: savedToken || "",
+      token: savedToken || '',
       isValid: !!savedToken, // Antar at en lagret token er gyldig
       isValidating: false,
       username: undefined,
@@ -35,7 +35,7 @@ export const usePatTokenValidation = (environment: string) => {
     } else {
       // Reset state hvis ingen token funnet for dette miljøet
       setPatState({
-        token: "",
+        token: '',
         isValid: false,
         isValidating: false,
         username: undefined,
@@ -48,13 +48,13 @@ export const usePatTokenValidation = (environment: string) => {
    * Validerer PAT-token mot API
    */
   const validateToken = async (token: string): Promise<boolean> => {
-    if (!token || token.trim() === "") {
+    if (!token || token.trim() === '') {
       setPatState({
         ...patState,
         token,
         isValid: false,
         isValidating: false,
-        errorMessage: "PAT-token kan ikke være tom",
+        errorMessage: 'PAT-token kan ikke være tom',
       });
       return false;
     }
@@ -67,23 +67,23 @@ export const usePatTokenValidation = (environment: string) => {
 
       // Kall API-endepunkt for å validere token med riktig port
       const response = await fetch(
-        `${baseUrl.replace(`/${environment === "TT02" ? "TT02" : "Production"}`, "")}/gitea/${environment}/validate-token`,
+        `${baseUrl.replace(`/${environment === 'TT02' ? 'TT02' : 'Production'}`, '')}/gitea/${environment}/validate-token`,
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({ token }),
-        },
+        }
       );
 
       // Håndter HTTP-feil
       if (!response.ok) {
-        let errorMsg = "Feil ved validering av token";
+        let errorMsg = 'Feil ved validering av token';
         if (response.status === 404) {
           errorMsg = `API-endepunkt ikke funnet (${response.status}). Sjekk miljøinnstillingene.`;
         } else if (response.status === 500) {
-          errorMsg = "Intern serverfeil. Vennligst prøv igjen senere.";
+          errorMsg = 'Intern serverfeil. Vennligst prøv igjen senere.';
         }
 
         setPatState({
@@ -102,7 +102,7 @@ export const usePatTokenValidation = (environment: string) => {
           token,
           isValid: true,
           isValidating: false,
-          username: "Admin", // Hardcoded since backend doesn't return username
+          username: 'Admin', // Hardcoded since backend doesn't return username
           errorMessage: undefined,
         });
 
@@ -111,14 +111,14 @@ export const usePatTokenValidation = (environment: string) => {
         sessionStorage.setItem(`pat_token_${environment}`, token);
 
         // Lagre det valgte miljøet i session storage for bruk i organisasjonsopprettelse
-        sessionStorage.setItem("selected_gitea_environment", environment);
+        sessionStorage.setItem('selected_gitea_environment', environment);
         return true;
       } else {
         setPatState({
           token,
           isValid: false,
           isValidating: false,
-          errorMessage: data.message || "Ugyldig PAT-token",
+          errorMessage: data.message || 'Ugyldig PAT-token',
         });
         return false;
       }
@@ -128,9 +128,9 @@ export const usePatTokenValidation = (environment: string) => {
         token,
         isValid: false,
         isValidating: false,
-        errorMessage: "Feil ved validering av PAT-token",
+        errorMessage: 'Feil ved validering av PAT-token',
       });
-      console.error("Token validation error:", error);
+      console.error('Token validation error:', error);
       return false;
     }
   };
@@ -141,7 +141,7 @@ export const usePatTokenValidation = (environment: string) => {
   const clearToken = () => {
     sessionStorage.removeItem(`pat_token_${environment}`);
     setPatState({
-      token: "",
+      token: '',
       isValid: false,
       isValidating: false,
       username: undefined,

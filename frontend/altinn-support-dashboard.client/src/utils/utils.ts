@@ -1,25 +1,25 @@
 /* eslint-disable */
 export function getBaseUrl(environment?: string): string {
-  if (environment === "TT02" || environment === "PROD") {
-    return `/api/${environment === "TT02" ? "TT02" : "Production"}`;
+  if (environment === 'TT02' || environment === 'PROD') {
+    return `/api/${environment === 'TT02' ? 'TT02' : 'Production'}`;
   }
-  return "/api";
+  return '/api';
 }
 export async function authorizedFetch(
   url: string,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ): Promise<Response> {
   const token =
-    localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
   const headers = {
     ...options.headers,
     Authorization: `Basic ${token}`,
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   };
   const response = await fetch(url, {
     ...options,
     headers,
-    credentials: "include",
+    credentials: 'include',
   });
   return response;
 }
@@ -28,22 +28,22 @@ export async function authorizedFetch(
 export async function authorizedPost<T>(
   url: string,
   body: T,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ): Promise<Response> {
   const token =
-    localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 
   const headers = {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     Authorization: `Basic ${token}`,
     ...options.headers,
   };
 
   const response = await fetch(url, {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify(body),
     headers,
-    credentials: "include",
+    credentials: 'include',
     ...options,
   });
 
@@ -52,14 +52,14 @@ export async function authorizedPost<T>(
 
 export const getFormattedDateTime = (date: Date) => {
   const optionsTime: Intl.DateTimeFormatOptions = {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
   };
-  const formattedTime = date.toLocaleTimeString("no-NO", optionsTime);
-  const weekday = date.toLocaleDateString("no-NO", { weekday: "long" });
+  const formattedTime = date.toLocaleTimeString('no-NO', optionsTime);
+  const weekday = date.toLocaleDateString('no-NO', { weekday: 'long' });
   const day = date.getDate();
-  const month = date.toLocaleDateString("no-NO", { month: "long" });
+  const month = date.toLocaleDateString('no-NO', { month: 'long' });
   const year = date.getFullYear();
   const capitalizedWeekday = capitalizeFirstCharacter(weekday);
   const capitalizedMonth = capitalizeFirstCharacter(month);
@@ -73,7 +73,7 @@ export function capitalizeFirstCharacter(word: string) {
 
 export function filterUserClaims(user: any, claimType: string) {
   return user.user_claims.find(
-    (claim: { typ: string; val: string }) => claim.typ === claimType,
+    (claim: { typ: string; val: string }) => claim.typ === claimType
   );
 }
 
@@ -82,20 +82,20 @@ export async function fetchUserDetails(): Promise<{
   email: string;
 }> {
   try {
-    const response = await fetch("/.auth/me");
+    const response = await fetch('/.auth/me');
     const data = await response.json();
     if (Array.isArray(data) && data.length > 0) {
       const user = data[0];
-      const nameClaim = filterUserClaims(user, "name");
-      const emailClaim = filterUserClaims(user, "preferred_username");
+      const nameClaim = filterUserClaims(user, 'name');
+      const emailClaim = filterUserClaims(user, 'preferred_username');
       return {
-        name: nameClaim ? nameClaim.val : "Ukjent Bruker",
-        email: emailClaim ? emailClaim.val : "Ingen e-post funnet",
+        name: nameClaim ? nameClaim.val : 'Ukjent Bruker',
+        email: emailClaim ? emailClaim.val : 'Ingen e-post funnet',
       };
     }
-    return { name: "Ukjent Bruker", email: "Ingen e-post funnet" };
+    return { name: 'Ukjent Bruker', email: 'Ingen e-post funnet' };
   } catch (error) {
-    console.error("Error fetching user info:", error);
-    return { name: "Ukjent Bruker", email: "Ingen e-post funnet" };
+    console.error('Error fetching user info:', error);
+    return { name: 'Ukjent Bruker', email: 'Ingen e-post funnet' };
   }
 }

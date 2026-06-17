@@ -12,17 +12,14 @@ interface VersionDialogProps {
  * Komponent for å vise dialogboks med versjonsinformasjon
  * Brukes når en ny versjon av applikasjonen er tilgjengelig
  */
-export const VersionDialog: React.FC<VersionDialogProps> = ({ 
-  versionInfo, 
-  open, 
-  onClose 
+export const VersionDialog: React.FC<VersionDialogProps> = ({
+  versionInfo,
+  open,
+  onClose,
 }) => {
   if (!versionInfo || !open) return null;
-  
+
   return (
-    <VersionDialogBox
-      versionInfo={versionInfo}
-      open={open}
-      onClose={onClose}/>
+    <VersionDialogBox versionInfo={versionInfo} open={open} onClose={onClose} />
   );
 };

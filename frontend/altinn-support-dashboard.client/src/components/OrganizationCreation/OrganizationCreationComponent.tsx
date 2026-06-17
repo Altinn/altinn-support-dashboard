@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Heading,
   Button,
   Alert,
   ErrorSummary,
   Paragraph,
-} from "@digdir/designsystemet-react";
+} from '@digdir/designsystemet-react';
 import {
   OrganizationFormData,
   OrganizationFormErrors,
-} from "./models/organizationTypes";
-import { useOrganizationCreation } from "./hooks/useOrganizationCreation";
+} from './models/organizationTypes';
+import { useOrganizationCreation } from './hooks/useOrganizationCreation';
 import {
   validateForm,
   hasErrors,
   requiredFieldsPresent,
-} from "./utils/validationUtils";
-import { OrganizationFormContent } from "./OrganizationFormContent";
+} from './utils/validationUtils';
+import { OrganizationFormContent } from './OrganizationFormContent';
 
 interface OrganizationCreationProps {
   environment: string;
@@ -35,7 +35,7 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
 
   useEffect(() => {
     const storedEnvironment = sessionStorage.getItem(
-      "selected_gitea_environment",
+      'selected_gitea_environment'
     );
     if (storedEnvironment) {
       setActiveEnvironment(storedEnvironment);
@@ -46,20 +46,20 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
     useOrganizationCreation(activeEnvironment);
 
   const [formData, setFormData] = useState<OrganizationFormData>({
-    shortName: "",
-    fullName: "",
-    websiteUrl: "",
+    shortName: '',
+    fullName: '',
+    websiteUrl: '',
     owners: [],
-    description: "",
-    orgNumber: "",
-    emailDomain: "",
+    description: '',
+    orgNumber: '',
+    emailDomain: '',
   });
 
   const [errors, setErrors] = useState<OrganizationFormErrors>({});
   // Submit state for tracking form submission attempts
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
   const [creationSuccess, setCreationSuccess] = useState<boolean | null>(null);
-  const [creationMessage, setCreationMessage] = useState<string>("");
+  const [creationMessage, setCreationMessage] = useState<string>('');
   const [validationFailed, setValidationFailed] = useState<boolean>(false);
 
   // Sjekk om PAT-token er gyldig ved lasting
@@ -79,19 +79,19 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
 
     // Legg til debuggingsfunksjon på window-objektet
     win.debugFormState = () => {
-      console.group("Organisasjon Form Debug");
-      console.log("FormData:", formData);
-      console.log("Errors:", errors);
+      console.group('Organisasjon Form Debug');
+      console.log('FormData:', formData);
+      console.log('Errors:', errors);
       const validationErrors = validateForm(formData, true);
-      console.log("Current validation errors:", validationErrors);
-      console.log("Is form submitted:", formSubmitted);
-      console.log("Has errors:", hasErrors(validationErrors));
-      console.log("Required fields present:", requiredFieldsPresent(formData));
+      console.log('Current validation errors:', validationErrors);
+      console.log('Is form submitted:', formSubmitted);
+      console.log('Has errors:', hasErrors(validationErrors));
+      console.log('Required fields present:', requiredFieldsPresent(formData));
       console.log(
-        "Can submit:",
-        !hasErrors(validationErrors) && requiredFieldsPresent(formData),
+        'Can submit:',
+        !hasErrors(validationErrors) && requiredFieldsPresent(formData)
       );
-      console.log("Is creating:", isCreating);
+      console.log('Is creating:', isCreating);
       console.groupEnd();
     };
 
@@ -100,14 +100,14 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
     debugFn();
 
     // Logg når component mountes - hjelper med debugging
-    console.log("OrganizationCreationComponent mounted/updated");
+    console.log('OrganizationCreationComponent mounted/updated');
   }, [formData, errors, formSubmitted, isCreating]);
 
   // Håndter form-innsending
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("Form submit attempt");
+    console.log('Form submit attempt');
     // Bruk type-safe metode for å hente debuggingsfunksjon
     const win = window as unknown as Record<string, unknown>;
     const debugFn = win.debugFormState as (() => void) | undefined;
@@ -119,7 +119,7 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
     setFormSubmitted(true);
 
     if (hasErrors(validationErrors) || !requiredFieldsPresent(formData)) {
-      console.warn("Form submission blocked:", {
+      console.warn('Form submission blocked:', {
         hasErrors: hasErrors(validationErrors),
         requiredFieldsPresent: requiredFieldsPresent(formData),
         validationErrors,
@@ -134,7 +134,7 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
       setTimeout(() => {
         window.scrollTo({
           top: document.body.scrollHeight,
-          behavior: "smooth",
+          behavior: 'smooth',
         });
       }, 100);
 
@@ -144,23 +144,23 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
     // Reset validation error state when validation passes
     setValidationFailed(false);
 
-    console.log("Attempting to create organization with:", formData);
+    console.log('Attempting to create organization with:', formData);
 
     // Kall på createOrganization fra useOrganizationCreation hook
     // Denne håndterer isCreating state internt
     try {
       const result = await createOrganization(formData);
-      console.log("Organization creation result:", result);
+      console.log('Organization creation result:', result);
       setCreationSuccess(result.success);
       setCreationMessage(result.message);
 
       // Scroll til toppen ved resultat
       window.scrollTo(0, 0);
     } catch (error) {
-      console.error("Failed to create organization:", error);
+      console.error('Failed to create organization:', error);
       setCreationSuccess(false);
       setCreationMessage(
-        "En feil oppstod under opprettelsen av organisasjonen",
+        'En feil oppstod under opprettelsen av organisasjonen'
       );
     }
 
@@ -170,22 +170,22 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
 
   // Naviger til innstillinger hvis PAT-token mangler
   const goToSettings = () => {
-    navigate("/settings");
+    navigate('/settings');
   };
 
   // Reset form for å opprette en ny organisasjon
   const resetForm = () => {
     setFormData({
-      shortName: "",
-      fullName: "",
-      websiteUrl: "",
+      shortName: '',
+      fullName: '',
+      websiteUrl: '',
       owners: [],
-      description: "",
-      orgNumber: "",
-      emailDomain: "",
+      description: '',
+      orgNumber: '',
+      emailDomain: '',
     });
     setCreationSuccess(null);
-    setCreationMessage("");
+    setCreationMessage('');
     setFormSubmitted(false);
     setErrors({});
   };
@@ -193,10 +193,10 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
   return (
     <div
       style={{
-        padding: "24px",
-        maxHeight: "calc(100vh - 80px)",
-        overflowY: "auto",
-        overflowX: "hidden",
+        padding: '24px',
+        maxHeight: 'calc(100vh - 80px)',
+        overflowY: 'auto',
+        overflowX: 'hidden',
       }}
     >
       <Heading level={2} data-size="md">
@@ -206,38 +206,38 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
       {creationSuccess === true && (
         <Alert
           data-color="success"
-          style={{ marginTop: "16px", marginBottom: "16px" }}
+          style={{ marginTop: '16px', marginBottom: '16px' }}
         >
-          {creationMessage || "Organisasjonen ble opprettet!"}
+          {creationMessage || 'Organisasjonen ble opprettet!'}
         </Alert>
       )}
 
       {creationSuccess === false && (
         <Alert
           data-color="danger"
-          style={{ marginTop: "16px", marginBottom: "16px" }}
+          style={{ marginTop: '16px', marginBottom: '16px' }}
         >
           {creationMessage ||
-            "Det oppstod en feil under opprettelse av organisasjonen."}
+            'Det oppstod en feil under opprettelse av organisasjonen.'}
         </Alert>
       )}
 
       {!hasValidToken && (
         <div
           style={{
-            padding: "24px",
-            marginTop: "24px",
-            marginBottom: "24px",
-            background: "#fff",
-            borderRadius: "4px",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            padding: '24px',
+            marginTop: '24px',
+            marginBottom: '24px',
+            background: '#fff',
+            borderRadius: '4px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           }}
         >
-          <Alert data-color="danger" style={{ marginBottom: "16px" }}>
+          <Alert data-color="danger" style={{ marginBottom: '16px' }}>
             <Heading
               level={2}
               data-size="xs"
-              style={{ marginBottom: "var(--ds-size-2)" }}
+              style={{ marginBottom: 'var(--ds-size-2)' }}
             >
               Du må ha en gyldig PAT-token for å kunne opprette organisasjoner.
             </Heading>
@@ -247,7 +247,7 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
             </Paragraph>
           </Alert>
 
-          <Button onClick={goToSettings} style={{ marginTop: "16px" }}>
+          <Button onClick={goToSettings} style={{ marginTop: '16px' }}>
             Gå til innstillinger
           </Button>
         </div>
@@ -256,24 +256,24 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
       {hasValidToken && creationSuccess === true && (
         <div
           style={{
-            padding: "24px",
-            marginTop: "24px",
-            background: "#fff",
-            borderRadius: "4px",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            padding: '24px',
+            marginTop: '24px',
+            background: '#fff',
+            borderRadius: '4px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           }}
         >
-          <div style={{ textAlign: "center", marginBottom: "24px" }}>
+          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
             <Heading level={3} data-size="sm">
               Organisasjon opprettet
             </Heading>
-            <p style={{ margin: "16px 0" }}>
+            <p style={{ margin: '16px 0' }}>
               Organisasjonen er nå opprettet i Altinn Studio, og standard teams
               er konfigurert.
             </p>
           </div>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button onClick={resetForm} style={{ minWidth: "180px" }}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button onClick={resetForm} style={{ minWidth: '180px' }}>
               Opprett ny organisasjon
             </Button>
           </div>
@@ -283,11 +283,11 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
       {hasValidToken && creationSuccess !== true && (
         <div
           style={{
-            padding: "24px",
-            marginTop: "24px",
-            background: "#fff",
-            borderRadius: "4px",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            padding: '24px',
+            marginTop: '24px',
+            background: '#fff',
+            borderRadius: '4px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           }}
         >
           <form onSubmit={handleSubmit}>
@@ -298,7 +298,7 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
               environment={environment}
             />
             {validationFailed && (
-              <div style={{ marginTop: "24px" }}>
+              <div style={{ marginTop: '24px' }}>
                 <ErrorSummary>
                   <ErrorSummary.Heading>
                     For å opprette organisasjon må du fylle inn:
@@ -345,17 +345,17 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
             )}
             <div
               style={{
-                marginTop: "24px",
-                display: "flex",
-                justifyContent: "flex-end",
+                marginTop: '24px',
+                display: 'flex',
+                justifyContent: 'flex-end',
               }}
             >
               <Button
                 type="submit"
                 disabled={isCreating}
-                style={{ minWidth: "120px" }}
+                style={{ minWidth: '120px' }}
               >
-                {isCreating ? "Oppretter..." : "Opprett organisasjon"}
+                {isCreating ? 'Oppretter...' : 'Opprett organisasjon'}
               </Button>
             </div>
           </form>

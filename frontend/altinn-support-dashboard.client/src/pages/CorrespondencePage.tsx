@@ -1,60 +1,60 @@
-import { Checkbox, Heading, Label } from "@digdir/designsystemet-react";
-import classes from "./styles/CorrespondencePage.module.css";
-import { useState } from "react";
+import { Checkbox, Heading, Label } from '@digdir/designsystemet-react';
+import classes from './styles/CorrespondencePage.module.css';
+import { useState } from 'react';
 import {
   getLocalStorageValue,
   setLocalStorageValue,
-} from "../components/ManualRoleSearch/utils/storageUtils";
-import CorrespondenceButton from "../components/Correspondence/CorrespondenceButton";
-import MessageInputField from "../components/Correspondence/MessageInputField";
-import CorrespondenceRecipientsList from "../components/Correspondence/CorrespondenceRecipientsList";
-import CorrespondenceResponseField from "../components/Correspondence/CorrespondenceResponseField";
+} from '../components/ManualRoleSearch/utils/storageUtils';
+import CorrespondenceButton from '../components/Correspondence/CorrespondenceButton';
+import MessageInputField from '../components/Correspondence/MessageInputField';
+import CorrespondenceRecipientsList from '../components/Correspondence/CorrespondenceRecipientsList';
+import CorrespondenceResponseField from '../components/Correspondence/CorrespondenceResponseField';
 import {
   CorrespondenceResponse,
   NotificationChannel,
-} from "../models/correspondenceModels";
-import ResponseStatusCode from "../components/Correspondence/ResponseStatusCode";
-import { TestFlaskIcon } from "@navikt/aksel-icons";
-import CorrespondenceDueDate from "../components/Correspondence/CorrespondenceDueDate";
-import CorrespondenceResourceType from "../components/Correspondence/CorrespondenceResourceType";
-import CorrespondenceNotificationChannel from "../components/Correspondence/CorrespondenceNotificationChannel";
+} from '../models/correspondenceModels';
+import ResponseStatusCode from '../components/Correspondence/ResponseStatusCode';
+import { TestFlaskIcon } from '@navikt/aksel-icons';
+import CorrespondenceDueDate from '../components/Correspondence/CorrespondenceDueDate';
+import CorrespondenceResourceType from '../components/Correspondence/CorrespondenceResourceType';
+import CorrespondenceNotificationChannel from '../components/Correspondence/CorrespondenceNotificationChannel';
 
 export const CorrespondencePage = () => {
   const [recipients, setRecipients] = useState<string[]>(() => {
-    const item = getLocalStorageValue("recipients");
-    return item ? JSON.parse(item) : [""];
+    const item = getLocalStorageValue('recipients');
+    return item ? JSON.parse(item) : [''];
   });
-  const [title, setTitle] = useState<string>(getLocalStorageValue("title"));
+  const [title, setTitle] = useState<string>(getLocalStorageValue('title'));
   const [summary, setSummary] = useState<string>(
-    getLocalStorageValue("summary"),
+    getLocalStorageValue('summary')
   );
-  const [body, setBody] = useState<string>(getLocalStorageValue("body"));
+  const [body, setBody] = useState<string>(getLocalStorageValue('body'));
   const [confirmationNeeded, setConfirmationNeeded] = useState<boolean>(() => {
-    const item = getLocalStorageValue("confirmationNeeded");
+    const item = getLocalStorageValue('confirmationNeeded');
     return item ? JSON.parse(item) : false;
   });
   const [notificationChannel, setNotificationChannel] =
     useState<NotificationChannel>(() => {
-      const item = getLocalStorageValue("notificationChannel");
+      const item = getLocalStorageValue('notificationChannel');
       return item ? JSON.parse(item) : -1;
     });
 
   const [responseMessage, setResponseMessage] =
     useState<CorrespondenceResponse>(() => {
-      const item = sessionStorage.getItem("responseMessage");
+      const item = sessionStorage.getItem('responseMessage');
       return item ? JSON.parse(item) : undefined;
     });
 
   const [selectedDateTime, setSelectedDateTime] = useState<string>(
-    getLocalStorageValue("dueDate"),
+    getLocalStorageValue('dueDate')
   );
   const [resourceType, setResourceType] = useState<string>(
-    getLocalStorageValue("resourceType") || "default",
+    getLocalStorageValue('resourceType') || 'default'
   );
 
   const handleConfirmationChange = (bool: boolean) => {
     setConfirmationNeeded(bool);
-    setLocalStorageValue("confirmationNeeded", JSON.stringify(bool));
+    setLocalStorageValue('confirmationNeeded', JSON.stringify(bool));
   };
   return (
     <div>
@@ -75,7 +75,7 @@ export const CorrespondencePage = () => {
             value={title}
             onChange={(value) => {
               setTitle(value);
-              setLocalStorageValue("title", value);
+              setLocalStorageValue('title', value);
             }}
           />
           <MessageInputField
@@ -84,7 +84,7 @@ export const CorrespondencePage = () => {
             value={summary}
             onChange={(value) => {
               setSummary(value);
-              setLocalStorageValue("summary", value);
+              setLocalStorageValue('summary', value);
             }}
           />
           <MessageInputField
@@ -93,7 +93,7 @@ export const CorrespondencePage = () => {
             value={body}
             onChange={(value) => {
               setBody(value);
-              setLocalStorageValue("body", value);
+              setLocalStorageValue('body', value);
             }}
           />
           <Label className={classes.checkboxLabel}>

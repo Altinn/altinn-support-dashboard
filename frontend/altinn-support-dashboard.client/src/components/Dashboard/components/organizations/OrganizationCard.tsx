@@ -1,8 +1,8 @@
-import classes from "../../styles/OrganizationCard.module.css";
-import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
-import { Organization } from "../../../../models/models";
-import { useState } from "react";
-import { Card, Button, Heading, Paragraph } from "@digdir/designsystemet-react";
+import classes from '../../styles/OrganizationCard.module.css';
+import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
+import { Organization } from '../../../../models/models';
+import { useState } from 'react';
+import { Card, Button, Heading, Paragraph } from '@digdir/designsystemet-react';
 
 interface OrganizationCardProps {
   org: Organization;
@@ -39,8 +39,8 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           className={`${classes.headUnit} ${classes.card}`}
           variant={
             checkIsSelected(org.headUnit.organizationNumber)
-              ? "tinted"
-              : "default"
+              ? 'tinted'
+              : 'default'
           }
           data-color="neutral"
           key={org.headUnit.organizationNumber}
@@ -59,7 +59,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
       )}
       <Card
         data-color="neutral"
-        variant={checkIsSelected(org.organizationNumber) ? "tinted" : "default"}
+        variant={checkIsSelected(org.organizationNumber) ? 'tinted' : 'default'}
         className={`${classes.card} ${classes.mainCard} ${org.isDeleted && classes.cardIsDeleted}`}
         onClick={() => setSelectedOrg(org)}
       >
@@ -102,13 +102,13 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           {org.subUnits
             .filter(
               (sub: Organization) =>
-                sub.headUnit?.organizationNumber === org.organizationNumber,
+                sub.headUnit?.organizationNumber === org.organizationNumber
             )
             .map((sub: Organization) => (
               <Card
                 className={`${classes.subunit} ${classes.card}`}
                 variant={
-                  checkIsSelected(sub.organizationNumber) ? "tinted" : "default"
+                  checkIsSelected(sub.organizationNumber) ? 'tinted' : 'default'
                 }
                 data-color="neutral"
                 key={sub.organizationNumber}

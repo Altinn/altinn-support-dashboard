@@ -1,7 +1,7 @@
-import React from "react";
-import { Dialog, Heading } from "@digdir/designsystemet-react";
-import InformationDialogContent from "./InformationDialogContent";
-import styles from "./styles/InformationDialogBox.module.css";
+import React from 'react';
+import { Dialog, Heading } from '@digdir/designsystemet-react';
+import InformationDialogContent from './InformationDialogContent';
+import styles from './styles/InformationDialogBox.module.css';
 
 interface InformationDialogBoxProps {
   dialogRef: React.RefObject<HTMLDialogElement | null>;

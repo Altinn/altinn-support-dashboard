@@ -1,25 +1,25 @@
-import React, { useEffect } from "react";
-import "./App.css";
-import Sidebar from "../components/Sidebar/Sidebar";
-import { VersionDialog } from "../components/VersionDialog/VersionDialog";
+import React, { useEffect } from 'react';
+import './App.css';
+import Sidebar from '../components/Sidebar/Sidebar';
+import { VersionDialog } from '../components/VersionDialog/VersionDialog';
 
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
-} from "react-router-dom";
-import { useVersionCheck } from "../hooks/useVersionCheck";
-import { DashboardPage } from "../pages/DashboardPage";
-import SignOutPage from "../pages/SignOutPage";
-import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
-import SettingsPage from "../pages/SettingsPage";
-import { CorrespondencePage } from "../pages/CorrespondencePage";
-import { NotificationPage } from "../pages/NotificationPage";
-import IdentifierConversionPage from "../pages/IdentifierConversionPage";
-import { useAppStore } from "../stores/Appstore";
-import PrivateRoutes from "./PrivateRoutes";
-import { ToastContainer } from "react-toastify";
+} from 'react-router-dom';
+import { useVersionCheck } from '../hooks/useVersionCheck';
+import { DashboardPage } from '../pages/DashboardPage';
+import SignOutPage from '../pages/SignOutPage';
+import { ManualRoleSearchPage } from '../pages/ManualRoleSearchPage';
+import SettingsPage from '../pages/SettingsPage';
+import { CorrespondencePage } from '../pages/CorrespondencePage';
+import { NotificationPage } from '../pages/NotificationPage';
+import IdentifierConversionPage from '../pages/IdentifierConversionPage';
+import { useAppStore } from '../stores/Appstore';
+import PrivateRoutes from './PrivateRoutes';
+import { ToastContainer } from 'react-toastify';
 
 const App: React.FC = () => {
   // Sjekk etter nye versjoner
@@ -28,12 +28,12 @@ const App: React.FC = () => {
 
   //forces zustand to store states in localstorage first time
   useEffect(() => {
-    const stored = localStorage.getItem("app-storage");
+    const stored = localStorage.getItem('app-storage');
     if (!stored) {
       // Force Zustand to persist its current state
       localStorage.setItem(
-        "app-storage",
-        JSON.stringify(useAppStore.getState()),
+        'app-storage',
+        JSON.stringify(useAppStore.getState())
       );
     }
   }, []);

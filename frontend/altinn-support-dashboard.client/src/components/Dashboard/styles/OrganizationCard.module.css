@@ -42,7 +42,7 @@
   box-shadow: var(--ds-shadow-sm);
   transition: box-shadow 0.3s ease;
 }
-[data-color-scheme="dark"] .card {
+[data-color-scheme='dark'] .card {
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.08);
 }
 
@@ -50,7 +50,7 @@
   box-shadow: var(--ds-shadow-lg);
   transform: translateY(-2px) 0.3s ease;
 }
-[data-color-scheme="dark"] .card:hover {
+[data-color-scheme='dark'] .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 16px rgba(255, 255, 255, 0.1);
 }

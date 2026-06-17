@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Heading } from "@digdir/designsystemet-react";
-import ERRolesTable from "./ERRolesTable";
-import { RoleDetails } from "./RoleDetails";
-import ContactsSearchBar from "./contacts/ContactsSearchBar";
-import ContactsTable from "./contacts/ContactsTable";
-import { useOrgDetails } from "../../../hooks/hooks";
-import { Organization, PersonalContactAltinn3 } from "../../../models/models";
-import { useAppStore } from "../../../stores/Appstore";
-import { Card } from "@digdir/designsystemet-react";
-import styles from "../styles/DetailedOrgView.module.css";
-import NotificationContactTable from "./contacts/NotificationContactTable";
+import React, { useState, useEffect } from 'react';
+import { Heading } from '@digdir/designsystemet-react';
+import ERRolesTable from './ERRolesTable';
+import { RoleDetails } from './RoleDetails';
+import ContactsSearchBar from './contacts/ContactsSearchBar';
+import ContactsTable from './contacts/ContactsTable';
+import { useOrgDetails } from '../../../hooks/hooks';
+import { Organization, PersonalContactAltinn3 } from '../../../models/models';
+import { useAppStore } from '../../../stores/Appstore';
+import { Card } from '@digdir/designsystemet-react';
+import styles from '../styles/DetailedOrgView.module.css';
+import NotificationContactTable from './contacts/NotificationContactTable';
 
 interface DetailedOrgViewProps {
   selectedOrg: Organization | null;
@@ -19,14 +19,14 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
   const environment = useAppStore((state) => state.environment);
   const [selectedContact, setSelectedContact] =
     useState<PersonalContactAltinn3 | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
 
   const { notificationAdressesQuery } = useOrgDetails(
     environment,
-    selectedOrg?.organizationNumber,
+    selectedOrg?.organizationNumber
   );
   const handleClearSearch = () => {
-    setSearchQuery("");
+    setSearchQuery('');
     setSelectedContact(null);
   };
 
@@ -38,12 +38,12 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
     <div className={styles.container}>
       {selectedOrg && (
         <div
-          className={`${styles.orgDetails} ${selectedContact ? "full-width" : ""}`}
+          className={`${styles.orgDetails} ${selectedContact ? 'full-width' : ''}`}
         >
           <Heading className={styles.orgInformation}>
             <span>Org Nr: {selectedOrg.organizationNumber}</span>
             <span>Type: {selectedOrg.unitType}</span>
-            <span>IsDeleted: {selectedOrg.isDeleted ? "true" : "false"}</span>
+            <span>IsDeleted: {selectedOrg.isDeleted ? 'true' : 'false'}</span>
           </Heading>
           <Heading className={styles.orgName}>{selectedOrg.name}</Heading>
 

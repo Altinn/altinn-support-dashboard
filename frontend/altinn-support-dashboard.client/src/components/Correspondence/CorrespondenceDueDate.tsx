@@ -1,5 +1,5 @@
-import { Input, Label } from "@digdir/designsystemet-react";
-import { setLocalStorageValue } from "../ManualRoleSearch/utils/storageUtils";
+import { Input, Label } from '@digdir/designsystemet-react';
+import { setLocalStorageValue } from '../ManualRoleSearch/utils/storageUtils';
 
 interface CorrespondenceDuaDateProps {
   SelectedDateTime: string;
@@ -11,7 +11,7 @@ const CorrespondenceDueDate: React.FC<CorrespondenceDuaDateProps> = ({
   SetSelectedDateTime,
 }) => {
   const handleChange = (newDate: string) => {
-    setLocalStorageValue("dueDate", newDate);
+    setLocalStorageValue('dueDate', newDate);
     SetSelectedDateTime(newDate);
   };
 
@@ -23,7 +23,7 @@ const CorrespondenceDueDate: React.FC<CorrespondenceDuaDateProps> = ({
       <Label>Frist</Label>
       <Input
         value={SelectedDateTime}
-        min={validDate.toISOString().split("T")[0]}
+        min={validDate.toISOString().split('T')[0]}
         onChange={(e) => {
           handleChange(e.target.value);
         }}

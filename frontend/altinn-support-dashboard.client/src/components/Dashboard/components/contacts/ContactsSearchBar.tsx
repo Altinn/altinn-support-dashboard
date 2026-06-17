@@ -1,6 +1,6 @@
-import React from "react";
-import { Textfield } from "@digdir/designsystemet-react";
-import styles from "../../styles/ContactsSearchBar.module.css";
+import React from 'react';
+import { Textfield } from '@digdir/designsystemet-react';
+import styles from '../../styles/ContactsSearchBar.module.css';
 
 interface SearchContactsBarProps {
   searchQuery: string;
@@ -18,7 +18,7 @@ const SearchContactsBar: React.FC<SearchContactsBarProps> = ({
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
       placeholder="Navn / Fødselsnummer / Telefon / E-post"
-      className={styles["input"]}
+      className={styles['input']}
     />
   );
 };

@@ -1,7 +1,7 @@
-import React from "react";
-import { TopSearchBarTextField } from "./TopSearchBarTextField";
-import { Heading } from "@digdir/designsystemet-react";
-import { Organization } from "../../models/models";
+import React from 'react';
+import { TopSearchBarTextField } from './TopSearchBarTextField';
+import { Heading } from '@digdir/designsystemet-react';
+import { Organization } from '../../models/models';
 
 type SearchComponentProps = {
   query: string;

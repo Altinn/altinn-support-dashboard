@@ -1,6 +1,6 @@
-import { Label, Select } from "@digdir/designsystemet-react";
-import { setLocalStorageValue } from "../ManualRoleSearch/utils/storageUtils";
-import { NotificationChannel } from "../../models/correspondenceModels";
+import { Label, Select } from '@digdir/designsystemet-react';
+import { setLocalStorageValue } from '../ManualRoleSearch/utils/storageUtils';
+import { NotificationChannel } from '../../models/correspondenceModels';
 
 interface CorrespondenceNotificationChannelProps {
   channel: NotificationChannel;
@@ -12,7 +12,7 @@ const CorrespondenceNotificationChannel: React.FC<
 > = ({ channel, setChannel }) => {
   const handleChannelChange = (newChannel: number) => {
     setChannel(newChannel);
-    setLocalStorageValue("notificationChannel", JSON.stringify(newChannel));
+    setLocalStorageValue('notificationChannel', JSON.stringify(newChannel));
   };
   return (
     <div>

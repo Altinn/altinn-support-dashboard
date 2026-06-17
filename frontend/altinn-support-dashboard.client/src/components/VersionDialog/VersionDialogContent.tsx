@@ -1,6 +1,6 @@
-import type { VersionInfo } from "../../hooks/useVersionCheck";
-import { Dialog, Heading, Paragraph, List } from "@digdir/designsystemet-react";
-import styles from "./styles/VersionDialogContent.module.css";
+import type { VersionInfo } from '../../hooks/useVersionCheck';
+import { Dialog, Heading, Paragraph, List } from '@digdir/designsystemet-react';
+import styles from './styles/VersionDialogContent.module.css';
 
 type VersionDialogContentProps = {
   versionInfo: VersionInfo | null;

@@ -1,5 +1,5 @@
 // utils.test.ts
-import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import {
   getBaseUrl,
   authorizedFetch,
@@ -8,273 +8,273 @@ import {
   filterUserClaims,
   authorizedPost,
   fetchUserDetails,
-} from "./utils";
+} from './utils';
 
-describe("Utils tests", () => {
+describe('Utils tests', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  describe("capitalizeFirstCharacter", () => {
-    it("should capitalize the first letter", () => {
-      expect(capitalizeFirstCharacter("hello")).toBe("Hello");
+  describe('capitalizeFirstCharacter', () => {
+    it('should capitalize the first letter', () => {
+      expect(capitalizeFirstCharacter('hello')).toBe('Hello');
     });
 
-    it("should return empty string if input is empty", () => {
-      expect(capitalizeFirstCharacter("")).toBe("");
+    it('should return empty string if input is empty', () => {
+      expect(capitalizeFirstCharacter('')).toBe('');
     });
   });
 
-  describe("getBaseUrl", () => {
-    it("should return base API URL without environment", () => {
-    expect(getBaseUrl()).toBe("/api");
+  describe('getBaseUrl', () => {
+    it('should return base API URL without environment', () => {
+      expect(getBaseUrl()).toBe('/api');
+    });
+
+    it('should return environment-specific URL', () => {
+      expect(getBaseUrl('TT02')).toBe('/api/TT02');
+      expect(getBaseUrl('PROD')).toBe('/api/Production');
+    });
+
+    it('should return base URL for other environments', () => {
+      expect(getBaseUrl('DEV')).toBe('/api');
+      expect(getBaseUrl('DEV')).not.toContain('/DEV');
+    });
   });
 
-  it("should return environment-specific URL", () => {
-    expect(getBaseUrl("TT02")).toBe("/api/TT02");
-    expect(getBaseUrl("PROD")).toBe("/api/Production");
-  });
-
-  it("should return base URL for other environments", () => {
-    expect(getBaseUrl("DEV")).toBe("/api");
-    expect(getBaseUrl("DEV")).not.toContain("/DEV");
-  });
-  });
-
-  describe("getFormattedDateTime", () => {
-    it("should format date and time correctly", () => {
-      const date = new Date("2025-12-01T15:30:45");
+  describe('getFormattedDateTime', () => {
+    it('should format date and time correctly', () => {
+      const date = new Date('2025-12-01T15:30:45');
       const result = getFormattedDateTime(date);
-      expect(result.formattedTime).toBe("15:30:45");
-      expect(result.formattedDate).toContain("Mandag, 1. Desember 2025");
+      expect(result.formattedTime).toBe('15:30:45');
+      expect(result.formattedDate).toContain('Mandag, 1. Desember 2025');
     });
   });
 
-  describe("filterUserClaims", () => {
+  describe('filterUserClaims', () => {
     const user = {
       user_claims: [
-        { typ: "name", val: "Alice" },
-        { typ: "preferred_username", val: "alice@example.com" },
+        { typ: 'name', val: 'Alice' },
+        { typ: 'preferred_username', val: 'alice@example.com' },
       ],
     };
 
-    it("should find claim by type", () => {
-      expect(filterUserClaims(user, "name")?.val).toBe("Alice");
-      expect(filterUserClaims(user, "preferred_username")?.val).toBe(
-        "alice@example.com",
+    it('should find claim by type', () => {
+      expect(filterUserClaims(user, 'name')?.val).toBe('Alice');
+      expect(filterUserClaims(user, 'preferred_username')?.val).toBe(
+        'alice@example.com'
       );
     });
 
-    it("should return undefined if claim not found", () => {
-      expect(filterUserClaims(user, "role")).toBeUndefined();
+    it('should return undefined if claim not found', () => {
+      expect(filterUserClaims(user, 'role')).toBeUndefined();
     });
   });
 
-  describe("authorizedFetch", () => {
+  describe('authorizedFetch', () => {
     beforeEach(() => {
       vi.stubGlobal(
-        "fetch",
+        'fetch',
         vi.fn(() =>
-          Promise.resolve({ ok: true, json: () => Promise.resolve({}) }),
-        ) as unknown as typeof fetch,
+          Promise.resolve({ ok: true, json: () => Promise.resolve({}) })
+        ) as unknown as typeof fetch
       );
 
-      vi.stubGlobal("localStorage", {
-        getItem: vi.fn(() => "123"),
+      vi.stubGlobal('localStorage', {
+        getItem: vi.fn(() => '123'),
         setItem: vi.fn(),
       });
     });
 
-    it("should add Authorization header", async () => {
-      await authorizedFetch("/test");
+    it('should add Authorization header', async () => {
+      await authorizedFetch('/test');
       expect(fetch).toHaveBeenCalledWith(
-        "/test",
+        '/test',
         expect.objectContaining({
           headers: expect.objectContaining({
-            Authorization: "Basic 123",
+            Authorization: 'Basic 123',
           }),
-        }),
+        })
       );
     });
 
-    it("should use sessionStorage if localStorage is empty", async () => {
-      vi.stubGlobal("localStorage", {
+    it('should use sessionStorage if localStorage is empty', async () => {
+      vi.stubGlobal('localStorage', {
         getItem: vi.fn(() => null),
       });
-      vi.stubGlobal("sessionStorage", {
-        getItem: vi.fn(() => "456"),
+      vi.stubGlobal('sessionStorage', {
+        getItem: vi.fn(() => '456'),
       });
 
-      await authorizedFetch("/test");
+      await authorizedFetch('/test');
       expect(fetch).toHaveBeenCalledWith(
-        "/test",
+        '/test',
         expect.objectContaining({
           headers: expect.objectContaining({
-            Authorization: "Basic 456",
+            Authorization: 'Basic 456',
           }),
-        }),
+        })
       );
     });
   });
 
-  describe("authorizedPost", () => {
+  describe('authorizedPost', () => {
     beforeEach(() => {
       vi.stubGlobal(
-        "fetch",
-        vi.fn(() => 
-          Promise.resolve({ ok: true, json: () => Promise.resolve({}) }),
-      ) as unknown as typeof fetch,
-    );
+        'fetch',
+        vi.fn(() =>
+          Promise.resolve({ ok: true, json: () => Promise.resolve({}) })
+        ) as unknown as typeof fetch
+      );
 
-    vi.stubGlobal("localStorage", {
-      getItem: vi.fn(() => "123"),
-      setItem: vi.fn(),
-    });
+      vi.stubGlobal('localStorage', {
+        getItem: vi.fn(() => '123'),
+        setItem: vi.fn(),
+      });
     });
 
-    it("should POST with Authorization header and JSON body", async () => {
-      const body = { test: "data" };
-      await authorizedPost("/test", body);
+    it('should POST with Authorization header and JSON body', async () => {
+      const body = { test: 'data' };
+      await authorizedPost('/test', body);
 
       expect(fetch).toHaveBeenCalledWith(
-        "/test",
+        '/test',
         expect.objectContaining({
-          method: "POST",
+          method: 'POST',
           body: JSON.stringify(body),
           headers: expect.objectContaining({
-            Authorization: "Basic 123",
-            "Content-Type": "application/json",
+            Authorization: 'Basic 123',
+            'Content-Type': 'application/json',
           }),
-        }),
+        })
       );
     });
 
-    it("should use sessionStorage if localStorage is empty", async () => {
-      vi.stubGlobal("localStorage", {
+    it('should use sessionStorage if localStorage is empty', async () => {
+      vi.stubGlobal('localStorage', {
         getItem: vi.fn(() => null),
       });
-      vi.stubGlobal("sessionStorage", {
-        getItem: vi.fn(() => "456"),
+      vi.stubGlobal('sessionStorage', {
+        getItem: vi.fn(() => '456'),
       });
 
-      await authorizedPost("/test", { data: "test" });
+      await authorizedPost('/test', { data: 'test' });
       expect(fetch).toHaveBeenCalledWith(
-        "/test",
+        '/test',
         expect.objectContaining({
           headers: expect.objectContaining({
-            Authorization: "Basic 456",
+            Authorization: 'Basic 456',
           }),
-        }),
+        })
       );
-    })
+    });
   });
 
-  describe("fetchUserDetails", () => {
+  describe('fetchUserDetails', () => {
     afterEach(() => {
       vi.unstubAllGlobals();
-    })
+    });
 
-    it("should return user details from auth response", async () => {
+    it('should return user details from auth response', async () => {
       const mockUser = {
         user_claims: [
-          { typ: "name", val: "Test User" },
-          { typ: "preferred_username", val: "test@test.com" },
+          { typ: 'name', val: 'Test User' },
+          { typ: 'preferred_username', val: 'test@test.com' },
         ],
       };
 
       vi.stubGlobal(
-        "fetch",
+        'fetch',
         vi.fn(() =>
           Promise.resolve({
             ok: true,
             json: () => Promise.resolve([mockUser]),
-          }),
-        ) as unknown as typeof fetch);
+          })
+        ) as unknown as typeof fetch
+      );
 
       const result = await fetchUserDetails();
       expect(result).toEqual({
-        name: "Test User",
-        email: "test@test.com",
+        name: 'Test User',
+        email: 'test@test.com',
       });
     });
 
-    it("should return default values on error", async () => {
+    it('should return default values on error', async () => {
       vi.stubGlobal(
-        "fetch",
-        vi.fn(() => Promise.reject(new Error("Failed")))
+        'fetch',
+        vi.fn(() => Promise.reject(new Error('Failed')))
       );
 
       const result = await fetchUserDetails();
 
       expect(result).toEqual({
-        name: "Ukjent Bruker",
-        email: "Ingen e-post funnet",
+        name: 'Ukjent Bruker',
+        email: 'Ingen e-post funnet',
       });
     });
 
-    it("should return default values when auth respone is an empty array", async () => {
+    it('should return default values when auth respone is an empty array', async () => {
       vi.stubGlobal(
-        "fetch",
+        'fetch',
         vi.fn(() =>
           Promise.resolve({
             ok: true,
             json: () => Promise.resolve([]),
-          }),
-        ) as unknown as typeof fetch);
-      
+          })
+        ) as unknown as typeof fetch
+      );
+
       const result = await fetchUserDetails();
 
       expect(result).toEqual({
-        name: "Ukjent Bruker",
-        email: "Ingen e-post funnet",
+        name: 'Ukjent Bruker',
+        email: 'Ingen e-post funnet',
       });
     });
 
-    it("should use defaults when claims are missing", async () => {
+    it('should use defaults when claims are missing', async () => {
       const mockUser = {
-        user_claims: [
-          { typ: "name", val: "Test User" },
-        ],
+        user_claims: [{ typ: 'name', val: 'Test User' }],
       };
 
       vi.stubGlobal(
-        "fetch",
+        'fetch',
         vi.fn(() =>
           Promise.resolve({
             ok: true,
             json: () => Promise.resolve([mockUser]),
-          }),
-        ) as unknown as typeof fetch);
-      
+          })
+        ) as unknown as typeof fetch
+      );
+
       const result = await fetchUserDetails();
 
       expect(result).toEqual({
-        name: "Test User",
-        email: "Ingen e-post funnet",
+        name: 'Test User',
+        email: 'Ingen e-post funnet',
       });
     });
 
-    it("should use defaults when name claim is missing", async () => {
-    const mockUser = {
-      user_claims: [
-        { typ: "preferred_username", val: "test@test.com" },
-      ],
-    };
+    it('should use defaults when name claim is missing', async () => {
+      const mockUser = {
+        user_claims: [{ typ: 'preferred_username', val: 'test@test.com' }],
+      };
 
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve([mockUser]),
-        }),
-      ) as unknown as typeof fetch);
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(() =>
+          Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve([mockUser]),
+          })
+        ) as unknown as typeof fetch
+      );
 
       const result = await fetchUserDetails();
 
       expect(result).toEqual({
-        name: "Ukjent Bruker",
-        email: "test@test.com",
+        name: 'Ukjent Bruker',
+        email: 'test@test.com',
       });
     });
   });

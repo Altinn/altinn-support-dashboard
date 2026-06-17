@@ -1,12 +1,12 @@
-import React from "react";
-import SearchComponent from "../components/TopSearchBar/TopSearchBarComponent";
-import DetailedOrgView from "../components/Dashboard/components/DetailedOrgView";
-import { OrganizationList } from "../components/Dashboard/components/organizations/OrganizationList";
-import { useDashboardStore } from "../stores/DashboardStore";
-import { Button } from "@digdir/designsystemet-react";
-import InformationDialogBox from "../components/InformationDialog/InformationDialogBox";
-import { InformationIcon } from "@navikt/aksel-icons";
-import styles from "./styles/DashboardPage.module.css";
+import React from 'react';
+import SearchComponent from '../components/TopSearchBar/TopSearchBarComponent';
+import DetailedOrgView from '../components/Dashboard/components/DetailedOrgView';
+import { OrganizationList } from '../components/Dashboard/components/organizations/OrganizationList';
+import { useDashboardStore } from '../stores/DashboardStore';
+import { Button } from '@digdir/designsystemet-react';
+import InformationDialogBox from '../components/InformationDialog/InformationDialogBox';
+import { InformationIcon } from '@navikt/aksel-icons';
+import styles from './styles/DashboardPage.module.css';
 export const DashboardPage: React.FC = () => {
   const query = useDashboardStore((s) => s.query);
   const setQuery = useDashboardStore((s) => s.setQuery);
@@ -15,7 +15,7 @@ export const DashboardPage: React.FC = () => {
   const dialogRef = React.useRef<HTMLDialogElement>(null);
 
   return (
-    <div className={styles["dashboard-page-container"]}>
+    <div className={styles['dashboard-page-container']}>
       <Button
         onClick={() => dialogRef.current?.showModal()}
         className={styles.infoButton}
@@ -30,8 +30,8 @@ export const DashboardPage: React.FC = () => {
         setQuery={setQuery}
         setSelectedOrg={setSelectedOrg}
       />
-      <div className={styles["dashboard-container"]}>
-        <div className={styles["org-list-container"]}>
+      <div className={styles['dashboard-container']}>
+        <div className={styles['org-list-container']}>
           <OrganizationList
             setSelectedOrg={setSelectedOrg}
             selectedOrg={selectedOrg}
@@ -40,7 +40,7 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         <div></div>
-        <div className={styles["detailed-org-container"]}>
+        <div className={styles['detailed-org-container']}>
           <DetailedOrgView selectedOrg={selectedOrg} />
         </div>
       </div>

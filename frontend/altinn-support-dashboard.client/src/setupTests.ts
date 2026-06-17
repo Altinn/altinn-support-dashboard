@@ -20,7 +20,8 @@ if (!HTMLElement.prototype.hidePopover) {
 }
 
 if (typeof globalThis.requestAnimationFrame === 'undefined') {
-  globalThis.requestAnimationFrame = (callback) => setTimeout(callback, 0) as unknown as number;
+  globalThis.requestAnimationFrame = (callback) =>
+    setTimeout(callback, 0) as unknown as number;
 }
 if (typeof globalThis.cancelAnimationFrame === 'undefined') {
   globalThis.cancelAnimationFrame = (id) => clearTimeout(id);

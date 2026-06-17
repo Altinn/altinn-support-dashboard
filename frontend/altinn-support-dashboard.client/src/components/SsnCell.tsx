@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Table } from "@digdir/designsystemet-react";
-import { PersonalContactAltinn3 } from "../models/models";
-import { useSsnFromToken } from "../hooks/hooks";
+import React, { useEffect, useState } from 'react';
+import { Table } from '@digdir/designsystemet-react';
+import { PersonalContactAltinn3 } from '../models/models';
+import { useSsnFromToken } from '../hooks/hooks';
 
 interface SsnCellProps {
   contact: PersonalContactAltinn3;
@@ -13,8 +13,8 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const { data: unredactedSsn, refetch } = useSsnFromToken(
-    environment || "",
-    contact.ssnToken || "",
+    environment || '',
+    contact.ssnToken || ''
   );
 
   const handleClick = async () => {
@@ -23,7 +23,7 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
         await refetch();
         setIsRedacted(false);
       } catch (error) {
-        console.error("Error fetching unredacted SSN:", error);
+        console.error('Error fetching unredacted SSN:', error);
       }
     } else {
       setIsRedacted(!isRedacted);
@@ -46,9 +46,9 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
   return (
     <Table.Cell
       onClick={handleClick}
-      style={{ cursor: "pointer" }}
+      style={{ cursor: 'pointer' }}
       title={
-        isRedacted ? "Vis fullt fødselsnummer" : "Skjul fullt fødselsnummer"
+        isRedacted ? 'Vis fullt fødselsnummer' : 'Skjul fullt fødselsnummer'
       }
     >
       {!isRedacted && unredactedSsn

@@ -1,8 +1,8 @@
-import { Button, Input } from "@digdir/designsystemet-react";
-import { toast } from "react-toastify";
-import classes from "./styles/CorrespondenceRecipientsList.module.css";
-import { setLocalStorageValue } from "../ManualRoleSearch/utils/storageUtils";
-import { useEffect } from "react";
+import { Button, Input } from '@digdir/designsystemet-react';
+import { toast } from 'react-toastify';
+import classes from './styles/CorrespondenceRecipientsList.module.css';
+import { setLocalStorageValue } from '../ManualRoleSearch/utils/storageUtils';
+import { useEffect } from 'react';
 
 interface CorrespondenceRecipientsProps {
   setRecipients: React.Dispatch<React.SetStateAction<string[]>>;
@@ -14,12 +14,12 @@ const CorrespondenceRecipientsList: React.FC<CorrespondenceRecipientsProps> = ({
   recipients,
 }) => {
   const addRecipient = () => {
-    setRecipients((prev) => [...prev, ""]);
+    setRecipients((prev) => [...prev, '']);
   };
   const removeRecipient = (index: number) => {
     if (recipients.length <= 1) {
       toast.warning(
-        "You need at least one recipient to create a correspondence",
+        'You need at least one recipient to create a correspondence'
       );
     } else {
       setRecipients((prev) => prev.filter((_, i) => i !== index));
@@ -28,12 +28,12 @@ const CorrespondenceRecipientsList: React.FC<CorrespondenceRecipientsProps> = ({
 
   const updateRecipient = (index: number, value: string) => {
     setRecipients((prev) =>
-      prev.map((recipient, i) => (i === index ? value : recipient)),
+      prev.map((recipient, i) => (i === index ? value : recipient))
     );
   };
 
   useEffect(() => {
-    setLocalStorageValue("recipients", JSON.stringify(recipients));
+    setLocalStorageValue('recipients', JSON.stringify(recipients));
   }, [recipients]);
 
   return (

@@ -1,5 +1,5 @@
-import { Heading, Paragraph, Card } from "@digdir/designsystemet-react";
-import classes from "./styles/ResponseTabContent.module.css";
+import { Heading, Paragraph, Card } from '@digdir/designsystemet-react';
+import classes from './styles/ResponseTabContent.module.css';
 
 interface ResponseTabContentProps {
   body: string;

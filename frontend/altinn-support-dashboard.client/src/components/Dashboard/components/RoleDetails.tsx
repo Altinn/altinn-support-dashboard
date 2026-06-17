@@ -4,11 +4,11 @@ import {
   Card,
   Select,
   Label,
-} from "@digdir/designsystemet-react";
-import styles from "../styles/RoleDetails.module.css";
-import RoleTable from "../../ManualRoleSearch/RoleTable";
-import { Organization, PersonalContactAltinn3 } from "../../../models/models";
-import { useState } from "react";
+} from '@digdir/designsystemet-react';
+import styles from '../styles/RoleDetails.module.css';
+import RoleTable from '../../ManualRoleSearch/RoleTable';
+import { Organization, PersonalContactAltinn3 } from '../../../models/models';
+import { useState } from 'react';
 
 interface RoleDetailsProps {
   selectedContact: PersonalContactAltinn3;
@@ -25,13 +25,11 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
     onBack();
   };
   const [orgNoFocus, setOrgNoFocus] = useState<string>(
-    selectedOrg.organizationNumber,
+    selectedOrg.organizationNumber
   );
 
   const optionCount =
-    1 +
-    (selectedOrg.headUnit ? 1 : 0) +
-    (selectedOrg.subUnits?.length ?? 0);
+    1 + (selectedOrg.headUnit ? 1 : 0) + (selectedOrg.subUnits?.length ?? 0);
 
   return (
     <Card data-color="neutral" className={styles.Container}>
@@ -39,7 +37,7 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
 
       <Button
         data-color="accent"
-        className={styles["Button"]}
+        className={styles['Button']}
         onClick={handleBack}
         variant="primary"
       >

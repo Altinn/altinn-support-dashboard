@@ -1,11 +1,11 @@
-import logo from "../../assets/logo.png";
-import whiteLogo from "/asd_128_white.png";
-import { useSidebarDrag } from "./hooks/useSidebarDrag";
-import NavItem from "./NavItem";
-import SideBarDateTime from "./SidebarDateTime";
-import SidebarEnvToggle from "./SidebarEnvToggle";
-import { useUserDetails } from "../../hooks/hooks";
-import { initiateSignOut } from "../../utils/azureAuthApi";
+import logo from '../../assets/logo.png';
+import whiteLogo from '/asd_128_white.png';
+import { useSidebarDrag } from './hooks/useSidebarDrag';
+import NavItem from './NavItem';
+import SideBarDateTime from './SidebarDateTime';
+import SidebarEnvToggle from './SidebarEnvToggle';
+import { useUserDetails } from '../../hooks/hooks';
+import { initiateSignOut } from '../../utils/azureAuthApi';
 import {
   ArrowRightLeftIcon,
   Buildings3Icon,
@@ -15,13 +15,13 @@ import {
   CogIcon,
   EnvelopeOpenIcon,
   DatabaseIcon,
-} from "@navikt/aksel-icons";
+} from '@navikt/aksel-icons';
 
 // design system imports
-import { Button, Divider, Label } from "@digdir/designsystemet-react";
+import { Button, Divider, Label } from '@digdir/designsystemet-react';
 
-import classes from "./styles/SideBarComponent.module.css";
-import { useAuthDetails } from "../../hooks/azureAuthHooks";
+import classes from './styles/SideBarComponent.module.css';
+import { useAuthDetails } from '../../hooks/azureAuthHooks';
 
 const Sidebar: React.FC = () => {
   const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();
@@ -44,8 +44,8 @@ const Sidebar: React.FC = () => {
   const authData = authDetails.data;
   const hasInternalOrExternalCoreRoles =
     !authData.azureAuthActive ||
-    authData.roles.includes("Dashboard.Core.Internal") ||
-    authData.roles.includes("Dashboard.Core.External");
+    authData.roles.includes('Dashboard.Core.Internal') ||
+    authData.roles.includes('Dashboard.Core.External');
 
   return (
     <div className={classes.sidebarWrapper}>

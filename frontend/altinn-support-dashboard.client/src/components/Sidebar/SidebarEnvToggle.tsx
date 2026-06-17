@@ -1,8 +1,8 @@
-import classes from "./styles/SideBarEnvToggle.module.css";
-import { useAppStore } from "../../stores/Appstore";
-import { Select, SelectOption } from "@digdir/designsystemet-react";
-import { useEffect } from "react";
-import { useAuthDetails } from "../../hooks/azureAuthHooks";
+import classes from './styles/SideBarEnvToggle.module.css';
+import { useAppStore } from '../../stores/Appstore';
+import { Select, SelectOption } from '@digdir/designsystemet-react';
+import { useEffect } from 'react';
+import { useAuthDetails } from '../../hooks/azureAuthHooks';
 
 const SidebarEnvToggle: React.FC = () => {
   const environment = useAppStore((state) => state.environment);
@@ -20,17 +20,17 @@ const SidebarEnvToggle: React.FC = () => {
     }
 
     if (
-      environment == "TT02" &&
-      !userPolicies.includes("Dashboard.TT02") &&
-      userPolicies.includes("Dashboard.PROD")
+      environment == 'TT02' &&
+      !userPolicies.includes('Dashboard.TT02') &&
+      userPolicies.includes('Dashboard.PROD')
     ) {
-      setEnvironment("PROD");
+      setEnvironment('PROD');
     } else if (
-      environment == "PROD" &&
-      !userPolicies.includes("Dashboard.PROD") &&
-      userPolicies.includes("Dashboard.TT02")
+      environment == 'PROD' &&
+      !userPolicies.includes('Dashboard.PROD') &&
+      userPolicies.includes('Dashboard.TT02')
     ) {
-      setEnvironment("TT02");
+      setEnvironment('TT02');
     }
   }, [
     authDetails?.data?.isLoggedIn,
@@ -47,11 +47,11 @@ const SidebarEnvToggle: React.FC = () => {
         onChange={(e) => handleEnvironmentChange(e.target.value)}
       >
         {(!authDetails.data?.azureAuthActive ||
-          userPolicies?.includes("Dashboard.PROD")) && (
+          userPolicies?.includes('Dashboard.PROD')) && (
           <SelectOption value="PROD">PROD</SelectOption>
         )}
         {(!authDetails.data?.azureAuthActive ||
-          userPolicies?.includes("Dashboard.TT02")) && (
+          userPolicies?.includes('Dashboard.TT02')) && (
           <SelectOption value="TT02">TT02</SelectOption>
         )}
       </Select>
