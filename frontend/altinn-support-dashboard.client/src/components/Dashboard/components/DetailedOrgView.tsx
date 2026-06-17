@@ -23,7 +23,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
 
   const { notificationAdressesQuery } = useOrgDetails(
     environment,
-    selectedOrg?.organizationNumber,
+    selectedOrg?.organizationNumber
   );
   const handleClearSearch = () => {
     setSearchQuery("");

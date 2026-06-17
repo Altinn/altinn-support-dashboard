@@ -30,18 +30,18 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
   const environment = useAppStore((state) => state.environment);
   const { contactsQuery } = useOrgDetails(
     environment,
-    selectedOrg?.organizationNumber,
+    selectedOrg?.organizationNumber
   );
 
   const filteredContacts = filterContacts(
     contactsQuery.data || [],
-    searchQuery,
+    searchQuery
   );
   const [sortDirection, setSortDirection] = useState<SortDirection>(undefined);
   const sortedContacts = sortContacts(
     filteredContacts,
     sortField,
-    sortDirection,
+    sortDirection
   );
 
   const handleSort = (field: keyof PersonalContactAltinn3) => {

@@ -9,10 +9,10 @@ import RoleTable from "../components/ManualRoleSearch/RoleTable";
 
 export const ManualRoleSearchPage: React.FC = () => {
   const [rollehaver, setRollehaver] = useState<string>(
-    getLocalStorageValue("rollehaver"),
+    getLocalStorageValue("rollehaver")
   );
   const [rollegiver, setRollegiver] = useState<string>(
-    getLocalStorageValue("rollegiver"),
+    getLocalStorageValue("rollegiver")
   );
   const dialogRef = React.useRef<HTMLDialogElement>(null);
 

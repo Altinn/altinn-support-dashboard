@@ -21,12 +21,12 @@ const IdentifierConversionPage: React.FC = () => {
   const environment = useAppStore((state) => state.environment);
   const [input, setInput] = useState(getLocalStorageValue("identifierInput"));
   const [submittedQuery, setSubmittedQuery] = useState(
-    getLocalStorageValue("identifierQuery"),
+    getLocalStorageValue("identifierQuery")
   );
 
   const { data, isLoading, isError, error } = useInternalIdLookup(
     submittedQuery,
-    environment,
+    environment
   );
 
   useEffect(() => {

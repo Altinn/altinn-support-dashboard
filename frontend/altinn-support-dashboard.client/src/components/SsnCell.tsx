@@ -14,7 +14,7 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
 
   const { data: unredactedSsn, refetch } = useSsnFromToken(
     environment || "",
-    contact.ssnToken || "",
+    contact.ssnToken || ""
   );
 
   const handleClick = async () => {

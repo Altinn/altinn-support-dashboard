@@ -48,7 +48,7 @@ const SettingsPATComponent: React.FC = () => {
     window.open(
       `${baseUrl}/repos/user/settings/applications`,
       "_blank",
-      "noopener,noreferrer",
+      "noopener,noreferrer"
     );
   };
 

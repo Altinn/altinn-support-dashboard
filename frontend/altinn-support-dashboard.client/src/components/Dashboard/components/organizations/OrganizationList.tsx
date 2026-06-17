@@ -56,12 +56,12 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
             !organizations.some((other) =>
               other.subUnits?.some(
                 (sub: Organization) =>
-                  sub.organizationNumber === org.organizationNumber,
-              ),
-            ),
+                  sub.organizationNumber === org.organizationNumber
+              )
+            )
         )
         .sort((a: Organization, b: Organization) =>
-          a.name.localeCompare(b.name),
+          a.name.localeCompare(b.name)
         )
         .map((org) => (
           <OrganizationCard

@@ -18,10 +18,10 @@ const InputComponent: React.FC<InputComponentProps> = ({
   setRollegiver,
 }) => {
   const [localRollehaver, setLocalRollehaver] = useState<string>(
-    getLocalStorageValue("rollehaver") || "",
+    getLocalStorageValue("rollehaver") || ""
   );
   const [localRollegiver, setLocalRollegiver] = useState<string>(
-    getLocalStorageValue("rollegiver") || "",
+    getLocalStorageValue("rollegiver") || ""
   );
 
   const handleSearch = () => {
@@ -69,9 +69,7 @@ const InputComponent: React.FC<InputComponentProps> = ({
         </span>
       </Tooltip>
       <div className={style["button-group"]}>
-        <SearchButton
-          handleSearch={handleSearch}
-        />
+        <SearchButton handleSearch={handleSearch} />
         {(localRollehaver.trim() !== "" || localRollegiver.trim() !== "") && (
           <Button variant="secondary" onClick={clearSearch}>
             Tøm søk

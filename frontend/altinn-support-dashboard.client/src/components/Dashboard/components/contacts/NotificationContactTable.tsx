@@ -37,10 +37,7 @@ const NotificationContactTable: React.FC<ContactFieldTableProps> = ({
           {filteredContacts && filteredContacts.length > 0 ? (
             filteredContacts.map((contact, index) => (
               <Table.Row key={index}>
-                <NotificationContactCell
-                  contact={contact}
-                  field={field}
-                />
+                <NotificationContactCell contact={contact} field={field} />
                 <Table.Cell className={styles["cellText"]}>
                   {formatDate(contact[changedField] as string)}
                 </Table.Cell>

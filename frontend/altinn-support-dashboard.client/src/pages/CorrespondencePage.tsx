@@ -26,7 +26,7 @@ export const CorrespondencePage = () => {
   });
   const [title, setTitle] = useState<string>(getLocalStorageValue("title"));
   const [summary, setSummary] = useState<string>(
-    getLocalStorageValue("summary"),
+    getLocalStorageValue("summary")
   );
   const [body, setBody] = useState<string>(getLocalStorageValue("body"));
   const [confirmationNeeded, setConfirmationNeeded] = useState<boolean>(() => {
@@ -46,10 +46,10 @@ export const CorrespondencePage = () => {
     });
 
   const [selectedDateTime, setSelectedDateTime] = useState<string>(
-    getLocalStorageValue("dueDate"),
+    getLocalStorageValue("dueDate")
   );
   const [resourceType, setResourceType] = useState<string>(
-    getLocalStorageValue("resourceType") || "default",
+    getLocalStorageValue("resourceType") || "default"
   );
 
   const handleConfirmationChange = (bool: boolean) => {

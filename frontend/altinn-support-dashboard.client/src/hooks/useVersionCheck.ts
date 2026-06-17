@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 // Type for version.json structure
 export interface VersionInfo {
@@ -13,11 +13,11 @@ export interface VersionChange {
   details: string[];
 }
 
-const LOCAL_STORAGE_VERSION_KEY = 'altinn_support_dashboard_version';
+const LOCAL_STORAGE_VERSION_KEY = "altinn_support_dashboard_version";
 
 /**
  * Hook for å sjekke og håndtere applikasjonsversjoner
- * 
+ *
  * Sjekker gjeldende versjon mot den som er lagret i localStorage
  * og returnerer informasjon om en ny versjon er tilgjengelig
  */
@@ -33,24 +33,24 @@ export function useVersionCheck() {
       try {
         setIsLoading(true);
         // Hent versjonsfil
-        const response = await fetch('/version.json');
+        const response = await fetch("/version.json");
         if (!response.ok) {
-          throw new Error('Kunne ikke laste versjonsinformasjon');
+          throw new Error("Kunne ikke laste versjonsinformasjon");
         }
-        
+
         const versionData: VersionInfo = await response.json();
         setVersionInfo(versionData);
-        
+
         // Hent gjeldende versjon fra localStorage
         const storedVersion = localStorage.getItem(LOCAL_STORAGE_VERSION_KEY);
-        
+
         // Hvis ingen versjon er lagret eller versjonen er ulik, vis dialog
         if (!storedVersion || storedVersion !== versionData.version) {
           setShouldShowDialog(true);
         }
       } catch (err) {
-        console.error('Feil ved henting av versjonsinformasjon:', err);
-        setError(err instanceof Error ? err.message : 'Ukjent feil');
+        console.error("Feil ved henting av versjonsinformasjon:", err);
+        setError(err instanceof Error ? err.message : "Ukjent feil");
       } finally {
         setIsLoading(false);
       }
@@ -74,6 +74,6 @@ export function useVersionCheck() {
     shouldShowDialog,
     isLoading,
     error,
-    acknowledgeVersion
+    acknowledgeVersion,
   };
 }

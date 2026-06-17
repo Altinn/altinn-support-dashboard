@@ -11,7 +11,7 @@ import { useState } from "react";
 const SettingsLanguageComponent: React.FC = () => {
   const [language, setLanguage] = useState<string>("nb");
   const handleLanguageChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
+    event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setLanguage(event.target.value as string);
   };

@@ -33,4 +33,3 @@ const InformationDialogContent: React.FC = () => {
 };
 
 export default InformationDialogContent;
-

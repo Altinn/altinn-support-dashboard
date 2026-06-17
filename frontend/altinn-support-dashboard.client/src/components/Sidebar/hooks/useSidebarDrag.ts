@@ -30,7 +30,7 @@ export const useSidebarDrag = () => {
         setIsDragging(false);
       }
     },
-    [isDragging, dragStartX],
+    [isDragging, dragStartX]
   );
 
   const handleDragEnd = () => {
