@@ -44,7 +44,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
   const filterRoles = (roles?: string[]) => {
     if (!roles || !searchTerm) return roles;
     return roles.filter((role) =>
-      role.toLowerCase().includes(searchTerm.toLowerCase()),
+      role.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
 
@@ -126,8 +126,8 @@ const RoleTable: React.FC<RoleTableProps> = ({ subject, reportee }) => {
                 <RoleList
                   roles={filterRoles(
                     roleInfo.authorizedInstances?.map(
-                      (inst) => inst.instanceId ?? "",
-                    ),
+                      (inst) => inst.instanceId ?? ""
+                    )
                   )}
                   type="Altinn3 instanse"
                 />

@@ -88,7 +88,7 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     refetchOnWindowFocus: false,
     retry: false,
   });
-    const notificationAdressesQuery: UseQueryResult<
+  const notificationAdressesQuery: UseQueryResult<
     NotificationAdresses[],
     Error
   > = useQuery({
@@ -109,7 +109,7 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
 
 export const useRoles = (
   environment: string,
-  request: RolesAndRightsRequest,
+  request: RolesAndRightsRequest
 ) => {
   const rolesQuery: UseQueryResult<RolesAndRights, Error> = useQuery({
     queryKey: ["roles", environment, request],

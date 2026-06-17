@@ -35,7 +35,7 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
 
   useEffect(() => {
     const storedEnvironment = sessionStorage.getItem(
-      "selected_gitea_environment",
+      "selected_gitea_environment"
     );
     if (storedEnvironment) {
       setActiveEnvironment(storedEnvironment);
@@ -89,7 +89,7 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
       console.log("Required fields present:", requiredFieldsPresent(formData));
       console.log(
         "Can submit:",
-        !hasErrors(validationErrors) && requiredFieldsPresent(formData),
+        !hasErrors(validationErrors) && requiredFieldsPresent(formData)
       );
       console.log("Is creating:", isCreating);
       console.groupEnd();
@@ -160,7 +160,7 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
       console.error("Failed to create organization:", error);
       setCreationSuccess(false);
       setCreationMessage(
-        "En feil oppstod under opprettelsen av organisasjonen",
+        "En feil oppstod under opprettelsen av organisasjonen"
       );
     }
 

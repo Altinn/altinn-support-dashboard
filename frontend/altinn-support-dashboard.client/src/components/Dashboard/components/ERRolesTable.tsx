@@ -16,7 +16,7 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
   const environment = useAppStore((state) => state.environment);
   const { ERolesQuery } = useOrgDetails(
     environment,
-    selectedOrg.organizationNumber,
+    selectedOrg.organizationNumber
   );
   const roles = ERolesQuery.data;
 
@@ -42,7 +42,7 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
   };
 
   const getErRoleItems = (
-    rolegroups: ERRoles[] | undefined,
+    rolegroups: ERRoles[] | undefined
   ): ErRoleTableItem[] => {
     const erRoleItems: ErRoleTableItem[] = [];
     if (rolegroups == null) {
@@ -67,7 +67,7 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
   const sortedERRoles = sortERRoles(
     getErRoleItems(roles),
     erRoleSortField,
-    erRoleSortDirection,
+    erRoleSortDirection
   );
 
   return (

@@ -74,7 +74,7 @@ export const usePatTokenValidation = (environment: string) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ token }),
-        },
+        }
       );
 
       // Håndter HTTP-feil

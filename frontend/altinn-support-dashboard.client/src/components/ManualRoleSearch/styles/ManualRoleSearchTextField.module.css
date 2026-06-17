@@ -1,7 +1,6 @@
-
-.textfield-div{
-    flex:1;
-    min-width: 0;
+.textfield-div {
+  flex: 1;
+  min-width: 0;
 }
 
 .textfield-div input {
@@ -10,7 +9,7 @@
   padding: 1rem;
 }
 
-.textfield-div input:focus{
-    outline: none;
-    box-shadow:none;
+.textfield-div input:focus {
+  outline: none;
+  box-shadow: none;
 }

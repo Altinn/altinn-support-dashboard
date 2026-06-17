@@ -11,7 +11,7 @@
   .container {
     font-size: var(--ds-font-size-3);
   }
-  .select{
+  .select {
     max-height: 2.5rem;
   }
 }

@@ -19,7 +19,7 @@ const CorrespondenceRecipientsList: React.FC<CorrespondenceRecipientsProps> = ({
   const removeRecipient = (index: number) => {
     if (recipients.length <= 1) {
       toast.warning(
-        "You need at least one recipient to create a correspondence",
+        "You need at least one recipient to create a correspondence"
       );
     } else {
       setRecipients((prev) => prev.filter((_, i) => i !== index));
@@ -28,7 +28,7 @@ const CorrespondenceRecipientsList: React.FC<CorrespondenceRecipientsProps> = ({
 
   const updateRecipient = (index: number, value: string) => {
     setRecipients((prev) =>
-      prev.map((recipient, i) => (i === index ? value : recipient)),
+      prev.map((recipient, i) => (i === index ? value : recipient))
     );
   };
 

@@ -34,7 +34,7 @@ const App: React.FC = () => {
       // Force Zustand to persist its current state
       localStorage.setItem(
         "app-storage",
-        JSON.stringify(useAppStore.getState()),
+        JSON.stringify(useAppStore.getState())
       );
     }
   }, []);

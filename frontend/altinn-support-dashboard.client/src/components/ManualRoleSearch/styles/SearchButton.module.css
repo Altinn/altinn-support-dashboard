@@ -1,12 +1,10 @@
-
-
-.search-button { 
-    align-self: flex-end;
-    margin-left: 0;
+.search-button {
+  align-self: flex-end;
+  margin-left: 0;
 }
 
-@media (max-width:1439px) {
-    .search-button {
-        font-size: var(--ds-font-size-3);
-    }
+@media (max-width: 1439px) {
+  .search-button {
+    font-size: var(--ds-font-size-3);
+  }
 }

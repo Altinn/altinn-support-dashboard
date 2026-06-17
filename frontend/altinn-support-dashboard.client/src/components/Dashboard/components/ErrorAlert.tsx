@@ -1,7 +1,4 @@
-import {
-  Alert,
-  Heading
-} from "@digdir/designsystemet-react"
+import { Alert, Heading } from "@digdir/designsystemet-react";
 
 interface ErrorAlertProps {
   error: {
@@ -15,14 +12,8 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({ error }) => {
 
   return (
     <Alert data-color="danger">
-      <Heading>
-        {error.message}
-      </Heading>
-      {error.response && (
-        <Heading>
-          {error.response}
-        </Heading>
-      )}
+      <Heading>{error.message}</Heading>
+      {error.response && <Heading>{error.response}</Heading>}
     </Alert>
   );
 };

@@ -7,7 +7,7 @@ export function getBaseUrl(environment?: string): string {
 }
 export async function authorizedFetch(
   url: string,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ): Promise<Response> {
   const token =
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
@@ -28,7 +28,7 @@ export async function authorizedFetch(
 export async function authorizedPost<T>(
   url: string,
   body: T,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ): Promise<Response> {
   const token =
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
@@ -73,7 +73,7 @@ export function capitalizeFirstCharacter(word: string) {
 
 export function filterUserClaims(user: any, claimType: string) {
   return user.user_claims.find(
-    (claim: { typ: string; val: string }) => claim.typ === claimType,
+    (claim: { typ: string; val: string }) => claim.typ === claimType
   );
 }
 

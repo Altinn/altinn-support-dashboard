@@ -11,4 +11,3 @@ export interface PartyPerson {
   middleName?: string;
   lastName?: string;
 }
-
