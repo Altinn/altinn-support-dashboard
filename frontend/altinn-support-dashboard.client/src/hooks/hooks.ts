@@ -16,6 +16,7 @@ import {
   fetchResourceByIdentifier,
   fetchResourcePolicyRules,
   fetchResources,
+  fetchRoleDefinitions,
   fetchRolesForOrg,
   fetchSsnFromToken,
 } from "../utils/api";
@@ -26,7 +27,7 @@ import {
 import { sendCorrespondence } from "../utils/correspondenceApi";
 import { toast } from "react-toastify";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
-import { PolicyRule, Resource } from "../models/resourceModels";
+import { Altinn2Role, PolicyRule, Resource } from "../models/resourceModels";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -205,4 +206,13 @@ export function useResourceWithPolicies(environment: string, identifier?: string
   });
 
   return { resourceQuery, policyRulesQuery };
+}
+
+export function useRoleDefinitions(environment: string) {
+  return useQuery<Altinn2Role[], Error>({
+    queryKey: ["roleDefinitions", environment],
+    queryFn: () => fetchRoleDefinitions(environment),
+    staleTime: 24 * 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 }

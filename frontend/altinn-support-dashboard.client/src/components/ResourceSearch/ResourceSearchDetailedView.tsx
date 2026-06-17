@@ -1,6 +1,6 @@
 import { Card, Heading, Spinner } from "@digdir/designsystemet-react";
 import { useAppStore } from "../../stores/Appstore";
-import { useResourceWithPolicies } from "../../hooks/hooks";
+import { useResourceWithPolicies, useRoleDefinitions } from "../../hooks/hooks";
 import { ResourceSearchResult } from "../../models/resourceModels";
 import styles from "./styles/ResourceSearchDetailedView.module.css";
 import PolicySubjectCard from "./PolicySubjectCard";
@@ -17,6 +17,12 @@ const ResourceSearchDetailedView: React.FC<ResourceSearchDetailedViewProps> = ({
         environment,
         selectedResource?.identifier,
     );
+    const roleDefinitionsQuery = useRoleDefinitions(environment);
+    const roleNameMap: Record<string, string> = {};
+    for (const r of roleDefinitionsQuery.data ?? []) {
+        roleNameMap[r.code.toLowerCase()] = r.name;
+        if (r.legacyRoleCode) roleNameMap[r.legacyRoleCode.toLowerCase()] = r.name;
+    }
 
     if (!selectedResource) return null;
 
@@ -108,8 +114,8 @@ const ResourceSearchDetailedView: React.FC<ResourceSearchDetailedViewProps> = ({
                         {Object.entries(groupedRoleRules).length === 0 ? (
                             <p>Ingen roller</p>
                         ) : (
-                            Object.entries(groupedRoleRules).map(([subject, actions]) => (
-                                <PolicySubjectCard key={subject} subject={subject} actions={[...actions]} />
+                            Object.entries(groupedRoleRules).map(([code, actions]) => (
+                                <PolicySubjectCard key={code} subject={roleNameMap[code.toLowerCase()] ?? code} actions={[...actions]} />
                             ))
                         )}
                     </Card>

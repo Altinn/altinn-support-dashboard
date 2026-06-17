@@ -5,7 +5,7 @@ import {
 } from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 import { NotificationOrderResponse } from "../models/notificationModels";
-import { PolicyRule, Resource, ResourceSearchResult } from "../models/resourceModels";
+import { Altinn2Role, PolicyRule, Resource, ResourceSearchResult } from "../models/resourceModels";
 import { PartyModel } from "../models/PartyModel";
 
 //this file defines which which api endpoints we want to fetch data from
@@ -173,6 +173,12 @@ export const fetchResourcePolicyRules = async (
   const data = await res.json();
   return Array.isArray(data) ? data : [];
 }
+export const fetchRoleDefinitions = async (environment: string): Promise<Altinn2Role[]> => {
+  const res = await authorizedFetch(`${getBaseUrl(environment)}/serviceowner/rolesList`);
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching role definitions");
+  return await res.json();
+};
+
 export const fetchInternalIds = async (
   query: string,
   environment: string,

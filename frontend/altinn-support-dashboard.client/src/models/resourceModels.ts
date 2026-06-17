@@ -52,3 +52,10 @@ export interface XacmlAttribute {
     type?: string;
     value?: string;
 }
+
+export interface Altinn2Role {
+    id: string;
+    name: string;
+    code: string;
+    legacyRoleCode?: string;
+}
