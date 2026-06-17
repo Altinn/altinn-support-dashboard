@@ -5,7 +5,6 @@ import {
   fetchRolesForOrg,
   fetchPersonalContacts,
   fetchERoles,
-  fetchOfficialContacts,
   fetchSsnFromToken,
   fetchNotificationAddresses,
 } from "../../src/utils/api";
@@ -205,62 +204,7 @@ describe("api", () => {
     });
   });
 
-  describe("fetchOfficialContacts", () => {
-    it("should fetch and return official contacts array", async () => {
-      const mockData = [{ name: "Test Contact" }];
-      vi.mocked(utils.authorizedFetch).mockResolvedValue({
-        ok: true,
-        status: 200,
-        json: vi.fn().mockResolvedValue(mockData),
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      const result = await fetchOfficialContacts("TEST", "123");
-
-      expect(result).toEqual(mockData);
-    });
-
-    it("should wrap single object in array", async () => {
-      const mockData = { name: "Test Contact" };
-      vi.mocked(utils.authorizedFetch).mockResolvedValue({
-        ok: true,
-        status: 200,
-        json: vi.fn().mockResolvedValue(mockData),
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      const result = await fetchOfficialContacts("TEST", "123");
-
-      expect(result).toEqual([mockData]);
-    });
-
-    it("should return empty array on 404", async () => {
-      vi.mocked(utils.authorizedFetch).mockResolvedValue({
-        ok: false,
-        status: 404,
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      const result = await fetchOfficialContacts("TEST", "123");
-
-      expect(result).toEqual([]);
-    });
-
-    it("should throw error on failure", async () => {
-      vi.mocked(utils.authorizedFetch).mockResolvedValue({
-        ok: false,
-        status: 500,
-        text: vi.fn().mockResolvedValue("Internal Server Error"),
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      await expect(fetchOfficialContacts("TEST", "123")).rejects.toThrow(
-        "Internal Server Error",
-      );
-    });
-  });
-
-  describe("fetchSsnFromToken", () => {
+    describe("fetchSsnFromToken", () => {
     it("should fetch and return ssn", async () => {
       const mockData = { socialSecurityNumber: "12345678901" };
       vi.mocked(utils.authorizedFetch).mockResolvedValue({

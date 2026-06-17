@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  OfficialContact,
   ERRoles,
   NotificationAdresses,
   PersonalContactAltinn3,
@@ -12,7 +11,6 @@ import {
   fetchInternalIds,
   fetchNotificationAddresses,
   fetchNotificationByOrderId,
-  fetchOfficialContacts,
   fetchOrganizations,
   fetchPersonalContacts,
   fetchRolesForOrg,
@@ -85,14 +83,7 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     refetchOnWindowFocus: false,
     retry: false,
   });
-  const officialContactsQuery: UseQueryResult<OfficialContact[], Error> =
-    useQuery({
-      queryKey: ["officialContacts", environment, orgNumber],
-      queryFn: () => fetchOfficialContacts(environment, orgNumber!),
-      enabled: !!orgNumber,
-    });
-
-  const notificationAdressesQuery: UseQueryResult<
+    const notificationAdressesQuery: UseQueryResult<
     NotificationAdresses[],
     Error
   > = useQuery({
@@ -107,7 +98,6 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
   return {
     contactsQuery,
     ERolesQuery,
-    officialContactsQuery,
     notificationAdressesQuery,
   };
 }
