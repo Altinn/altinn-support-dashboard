@@ -6,7 +6,7 @@
       "title": "Ressurssøk og siste finpuss før altinn2 stenges ned",
       "description": "Ressurssøk som gir lik informasjon som tjenesteoversikten har blitt lagt til og siste avhengigheter til altinn2 har blitt fjernet.",
       "details": [
-        "Fjernet siste avhengigheter til altinn2 ap",
+        "Fjernet siste avhengigheter til altinn2",
         "Ressurssøk funksjonalitet lagt til"
       ]
     }
