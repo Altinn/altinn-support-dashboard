@@ -24,3 +24,23 @@ export interface NotificationSendStatus {
   description: string;
   lastUpdate: string;
 }
+
+export interface NotificationShipmentResponse {
+  shipmentId: string;
+  creatorName: string;
+  resourceId: string;
+  sendersRefereance: string;
+  requestedSendTime: string;
+  notificationChannel: string;
+  recipients: ShipmentRecipient[];
+}
+
+export interface ShipmentRecipient{
+  nationalIdentityNumber?: string;
+  organizationNumber: string | null;
+  channel: string;
+  emailAdress: string | null;
+  mobileNumber: string | null;
+  result: string;
+  resultTime: string;
+}
