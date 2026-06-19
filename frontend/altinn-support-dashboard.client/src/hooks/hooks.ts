@@ -13,6 +13,10 @@ import {
   fetchNotificationByOrderId,
   fetchOrganizations,
   fetchPersonalContacts,
+  fetchResourceByIdentifier,
+  fetchResourcePolicyRules,
+  fetchResources,
+  fetchRoleDefinitions,
   fetchRolesForOrg,
   fetchSsnFromToken,
 } from "../utils/api";
@@ -23,6 +27,7 @@ import {
 import { sendCorrespondence } from "../utils/correspondenceApi";
 import { toast } from "react-toastify";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
+import { Altinn2Role, PolicyRule, Resource } from "../models/resourceModels";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -167,4 +172,47 @@ export function useNotifications(orderId: string) {
     refetchOnWindowFocus: false,
   });
   return notificationQuery;
+}
+
+export function useResourceSearch(environment: string, query: string) {
+  const resourceQuery = useQuery({
+    queryKey: ["resources", environment, query],
+    queryFn: () => fetchResources(environment, query),
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    enabled: !!query,
+  });
+  return { resourceQuery };
+}
+
+export function useResourceWithPolicies(environment: string, identifier?: string) {
+  const resourceQuery = useQuery<Resource | null, Error>({
+    queryKey: ["resource", environment, identifier],
+    queryFn: () => fetchResourceByIdentifier(environment, identifier!),
+    enabled: !!identifier,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+    const policyRulesQuery = useQuery<PolicyRule[], Error>({
+    queryKey: ["policyRules", environment, identifier],
+    queryFn: () => fetchResourcePolicyRules(environment, identifier!),
+    enabled: !!identifier,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  return { resourceQuery, policyRulesQuery };
+}
+
+export function useRoleDefinitions(environment: string) {
+  return useQuery<Altinn2Role[], Error>({
+    queryKey: ["roleDefinitions", environment],
+    queryFn: () => fetchRoleDefinitions(environment),
+    staleTime: 24 * 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 }

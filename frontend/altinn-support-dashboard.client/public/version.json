@@ -1,13 +1,13 @@
 {
-  "version": "4.3",
-  "releaseDate": "2026-06-12",
+  "version": "4.5",
+  "releaseDate": "2026-06-18",
   "changes": [
     {
-      "title": "Tilgangspakker til underenheter vises nå rett",
-      "description": "Har fikset problem med visningsfeil som oppstod ved tilgangspakker for underenheter.",
+      "title": "Ressurssøk og siste finpuss før altinn2 stenges ned",
+      "description": "Ressurssøk som gir lik informasjon som tjenesteoversikten har blitt lagt til og siste avhengigheter til altinn2 har blitt fjernet.",
       "details": [
-        "fikset Problem for underenheter",
-        "lagt til funksjonalitet for å å konverte fra ekstern til intern id (For utviklere)"
+        "Fjernet siste avhengigheter til altinn2",
+        "Ressurssøk funksjonalitet lagt til"
       ]
     }
   ]

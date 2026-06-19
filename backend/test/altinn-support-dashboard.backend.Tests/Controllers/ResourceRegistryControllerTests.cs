@@ -138,34 +138,6 @@ public class ResourceRegistryControllerTests
     }
 
     [Fact]
-    public async Task GetResourcePolicyRights_ReturnsOk_WithList()
-    {
-        // Arrange
-        var expected = new List<PolicyRight> { new PolicyRight { RightKey = "read:app1" } };
-        _mockService.Setup(s => s.GetResourcePolicyRights("TT02", "app1")).ReturnsAsync(expected);
-
-        // Act
-        var result = await _controller.GetResourcePolicyRights("TT02", "app1");
-
-        // Assert
-        var ok = Assert.IsType<OkObjectResult>(result);
-        Assert.IsType<List<PolicyRight>>(ok.Value);
-    }
-
-    [Fact]
-    public async Task GetResourcePolicyRights_DelegatesToService()
-    {
-        // Arrange
-        _mockService.Setup(s => s.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new List<PolicyRight>());
-
-        // Act
-        await _controller.GetResourcePolicyRights("TT02", "app1");
-
-        // Assert
-        _mockService.Verify(s => s.GetResourcePolicyRights("TT02", "app1"), Times.Once);
-    }
-
-    [Fact]
     public async Task GetResourceByIdentifier_ReturnsNotFound_WhenServiceReturnsNull()
     {
         // Arrange
@@ -186,19 +158,6 @@ public class ResourceRegistryControllerTests
 
         // Act
         var result = await _controller.GetResourcePolicyRules("TT02", "nonexistent");
-
-        // Assert
-        Assert.IsType<NotFoundResult>(result);
-    }
-
-    [Fact]
-    public async Task GetResourcePolicyRights_ReturnsNotFound_WhenServiceReturnsNull()
-    {
-        // Arrange
-        _mockService.Setup(s => s.GetResourcePolicyRights(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<List<PolicyRight>?>(null));
-
-        // Act
-        var result = await _controller.GetResourcePolicyRights("TT02", "nonexistent");
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
