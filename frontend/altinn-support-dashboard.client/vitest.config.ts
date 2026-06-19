@@ -10,6 +10,9 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/setupTests.ts"],
     exclude: ["**/node_modules/**", "**/e2e/**"],
+    onConsoleLog(log) {
+      if (log.includes("Designsystemet:")) return false;
+    },
 
     coverage: {
       provider: "v8",

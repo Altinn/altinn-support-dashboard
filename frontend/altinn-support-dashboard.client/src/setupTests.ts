@@ -4,6 +4,23 @@ import "@testing-library/jest-dom";
 
 expect.extend(matchers);
 
+// jsdom doesn't implement adoptedStyleSheets as an iterable, which crashes
+// the @oddbird/popover-polyfill used by @digdir/designsystemet-web
+Object.defineProperty(document, "adoptedStyleSheets", {
+  value: [],
+  writable: true,
+  configurable: true,
+});
+
+// Suppress verbose design system warnings that are irrelevant in jsdom
+const originalConsoleLog = console.log;
+console.log = (...args: unknown[]) => {
+  if (typeof args[0] === "string" && args[0].startsWith("Designsystemet:")) {
+    return;
+  }
+  originalConsoleLog(...args);
+};
+
 if (typeof CSS === "undefined" || !CSS.supports) {
   Object.defineProperty(globalThis, "CSS", {
     value: { supports: () => false },
