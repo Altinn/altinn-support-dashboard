@@ -57,11 +57,7 @@ export const getVersionInfo = () => {
   let changes: VersionData["changes"] = [];
 
   // Hent miljøinformasjon for visning
-  const envName =
-    (typeof process !== "undefined" &&
-      process.env &&
-      process.env.REACT_APP_ENV_NAME) ||
-    "";
+  const envName = import.meta.env.VITE_ENV_NAME || "";
   let versionName: string;
   switch (envName) {
     case "production":

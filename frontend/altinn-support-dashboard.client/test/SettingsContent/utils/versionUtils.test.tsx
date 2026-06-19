@@ -1,193 +1,197 @@
-import { beforeEach, afterEach, describe, it, vi } from "vitest";
-import { fetchVersionData, getVersionInfo } from "../../../src/components/SettingsContent/utils/versionUtils";
+import { beforeEach, afterEach, describe, it, vi, expect } from "vitest";
+import {
+  fetchVersionData,
+  getVersionInfo,
+} from "../../../src/components/SettingsContent/utils/versionUtils";
 
+describe("versionUtils", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    global.fetch = vi.fn();
+    vi.clearAllMocks();
+  });
 
-const originalEnv = process.env.REACT_APP_ENV_NAME;
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+  });
 
-describe('versionUtils', () => {
-    beforeEach(() => {
-        sessionStorage.clear();
-        global.fetch = vi.fn();
-        vi.clearAllMocks();
+  describe("fetchVersionData", () => {
+    it("should return cached data from sessionStorage", async () => {
+      const mockData = {
+        version: "1.0.0",
+        releaseDate: "2024-01-01",
+        changes: [
+          {
+            title: "Initial Release",
+            description: "First version of the app",
+            details: [],
+          },
+        ],
+      };
+      sessionStorage.setItem("versionData", JSON.stringify(mockData));
+
+      const data = await fetchVersionData();
+
+      expect(data).toEqual(mockData);
+      expect(global.fetch).not.toHaveBeenCalled();
     });
 
-    afterEach(() => {
-        process.env.REACT_APP_ENV_NAME = originalEnv;
-        vi.restoreAllMocks();
+    it("should fetch from /version.json when cache is empty", async () => {
+      const mockData = {
+        version: "1.0.0",
+        releaseDate: "2024-01-01",
+        changes: [
+          {
+            title: "Initial Release",
+            description: "First version of the app",
+            details: [],
+          },
+        ],
+      };
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (global.fetch as any).mockResolvedValueOnce(
+        new Response(JSON.stringify(mockData), { status: 200 })
+      );
+
+      const data = await fetchVersionData();
+
+      expect(data).toEqual(mockData);
+      expect(global.fetch).toHaveBeenCalledWith("/version.json");
+      const cachedData = sessionStorage.getItem("versionData");
+      expect(cachedData).toEqual(JSON.stringify(mockData));
     });
 
-    describe('fetchVersionData', () => {
-        it('should return cached data from sessionStorage', async () => {
-            const mockData = {
-                version: '1.0.0',
-                releaseDate: '2024-01-01',
-                changes: [{
-                    title: 'Initial Release',
-                    description: 'First version of the app',
-                    details: [],
-                }]
-            };
-            sessionStorage.setItem('versionData', JSON.stringify(mockData));
+    it("should return default values on fetch error", async () => {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (global.fetch as any).mockResolvedValueOnce(
+        new Response("Not Found", { status: 404 })
+      );
 
-            const data = await fetchVersionData();
+      const data = await fetchVersionData();
 
-            expect(data).toEqual(mockData);
-            expect(global.fetch).not.toHaveBeenCalled();
-        });
-
-        it('should fetch from /version.json when cache is empty', async () => {
-            const mockData = {
-                version: '1.0.0',
-                releaseDate: '2024-01-01',
-                changes: [{
-                    title: 'Initial Release',
-                    description: 'First version of the app',
-                    details: [],
-                }]
-            };
-            //eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (global.fetch as any).mockResolvedValueOnce(new Response(JSON.stringify(mockData), { status: 200 }));
-
-            const data = await fetchVersionData();
-
-            expect(data).toEqual(mockData);
-            expect(global.fetch).toHaveBeenCalledWith('/version.json');
-            const cachedData = sessionStorage.getItem('versionData');
-            expect(cachedData).toEqual(JSON.stringify(mockData));
-        });
-
-        it('should return default values on fetch error', async () => {
-            //eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (global.fetch as any).mockResolvedValueOnce(new Response('Not Found', { status: 404 }));
-
-            const data = await fetchVersionData();
-
-            expect(data).toEqual({
-                version: '0.0.0',
-                releaseDate: '',
-                changes: []
-            });
-        });
-
-        it('should handle JSON parse error from fetch', async () => {
-            //eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (global.fetch as any).mockResolvedValueOnce(new Response('Invalid JSON', { status: 200 }));
-
-            const data = await fetchVersionData();
-
-            expect(data).toEqual({
-                version: '0.0.0',
-                releaseDate: '',
-                changes: []
-            });
-
-            expect(global.fetch).toHaveBeenCalledWith('/version.json');
-        });
-
-        it('should return default values on network error', async () => {
-            //eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (global.fetch as any).mockRejectedValueOnce(new Error('Network Error'));
-
-            const data = await fetchVersionData();
-
-            expect(data).toEqual({
-                version: '0.0.0',
-                releaseDate: '',
-                changes: []
-            });
-        });
-
-        it('should return default values when cache has malformed JSON', async () => {
-            sessionStorage.setItem('versionData', 'Invalid JSON');
-
-            const data = await fetchVersionData();
-
-            expect(data).toEqual({
-                version: '0.0.0',
-                releaseDate: '',
-                changes: []
-            });
-        });
+      expect(data).toEqual({
+        version: "0.0.0",
+        releaseDate: "",
+        changes: [],
+      });
     });
 
-    describe('getVersionInfo', () => {
-        it('should return default values when sessionStorage is empty', () => {
-            const info = getVersionInfo();
+    it("should handle JSON parse error from fetch", async () => {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (global.fetch as any).mockResolvedValueOnce(
+        new Response("Invalid JSON", { status: 200 })
+      );
 
-            expect(info).toEqual({
-                versionNumber: '0.0.0',
-                versionName: 'Miljø',
-                releaseDate: '',
-                changes: []
-            });
-        });
+      const data = await fetchVersionData();
 
-        it('should return cached version data from sessionStorage', () => {
-            const mockData = {
-                version: '1.0.0',
-                releaseDate: '2024-01-01',
-                changes: [{
-                    title: 'Initial Release',
-                    description: 'First version of the app',
-                    details: [],
-                }]
-            };
-            sessionStorage.setItem('versionData', JSON.stringify(mockData));
+      expect(data).toEqual({
+        version: "0.0.0",
+        releaseDate: "",
+        changes: [],
+      });
 
-            const info = getVersionInfo();
+      expect(global.fetch).toHaveBeenCalledWith("/version.json");
+    });
 
-            expect(info).toEqual({
-                versionNumber: '1.0.0',
-                versionName: 'Miljø',
-                releaseDate: '2024-01-01',
-                changes: mockData.changes
-            });
-        });
+    it("should return default values on network error", async () => {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (global.fetch as any).mockRejectedValueOnce(new Error("Network Error"));
 
-        it('should set versionName to "Produksjonsmiljø" when environment is production', () => {
-            process.env.REACT_APP_ENV_NAME = 'production';
-            const info = getVersionInfo();
+      const data = await fetchVersionData();
 
-            expect(info.versionName).toBe('Produksjonsmiljø');
-        });
+      expect(data).toEqual({
+        version: "0.0.0",
+        releaseDate: "",
+        changes: [],
+      });
+    });
 
-        it('should set versionName to "Testmiljø" when environment is test', () => {
-            process.env.REACT_APP_ENV_NAME = 'test';
-            const info = getVersionInfo();
-            expect(info.versionName).toBe('Testmiljø');
-        });
+    it("should return default values when cache has malformed JSON", async () => {
+      sessionStorage.setItem("versionData", "Invalid JSON");
 
-        it('should set versionName to "Miljø" for unknown environments', () => {
-            process.env.REACT_APP_ENV_NAME = 'staging';
-            const info = getVersionInfo();
-            expect(info.versionName).toBe('Miljø');
-        });
+      const data = await fetchVersionData();
 
-        it('should handle JSON parse error in sessionStorage', () => {
-            sessionStorage.setItem('versionData', 'Invalid JSON');
-            const info = getVersionInfo();
+      expect(data).toEqual({
+        version: "0.0.0",
+        releaseDate: "",
+        changes: [],
+      });
+    });
+  });
 
-            expect(info).toEqual({
-                versionNumber: '0.0.0',
-                versionName: 'Miljø',
-                releaseDate: '',
-                changes: []
-            });
-        });
+  describe("getVersionInfo", () => {
+    it("should return default values when sessionStorage is empty", () => {
+      const info = getVersionInfo();
 
-        it('should handle missing process.env gracefully', () => {
+      expect(info).toEqual({
+        versionNumber: "0.0.0",
+        versionName: "Miljø",
+        releaseDate: "",
+        changes: [],
+      });
+    });
 
-            const originalProcess = global.process;
+    it("should return cached version data from sessionStorage", () => {
+      const mockData = {
+        version: "1.0.0",
+        releaseDate: "2024-01-01",
+        changes: [
+          {
+            title: "Initial Release",
+            description: "First version of the app",
+            details: [],
+          },
+        ],
+      };
+      sessionStorage.setItem("versionData", JSON.stringify(mockData));
 
-            // @ts-expect-error - Testing behaviour when process global is undefined 
-            delete global.process;
+      const info = getVersionInfo();
 
-            const info = getVersionInfo();
+      expect(info).toEqual({
+        versionNumber: "1.0.0",
+        versionName: "Miljø",
+        releaseDate: "2024-01-01",
+        changes: mockData.changes,
+      });
+    });
 
-            expect(info.versionName).toBe('Miljø'); 
+    it('should set versionName to "Produksjonsmiljø" when environment is production', () => {
+      vi.stubEnv("VITE_ENV_NAME", "production");
+      const info = getVersionInfo();
 
-            global.process = originalProcess;
-        });
-    })
+      expect(info.versionName).toBe("Produksjonsmiljø");
+    });
 
-})
+    it('should set versionName to "Testmiljø" when environment is test', () => {
+      vi.stubEnv("VITE_ENV_NAME", "test");
+      const info = getVersionInfo();
+      expect(info.versionName).toBe("Testmiljø");
+    });
+
+    it('should set versionName to "Miljø" for unknown environments', () => {
+      vi.stubEnv("VITE_ENV_NAME", "staging");
+      const info = getVersionInfo();
+      expect(info.versionName).toBe("Miljø");
+    });
+
+    it("should handle JSON parse error in sessionStorage", () => {
+      sessionStorage.setItem("versionData", "Invalid JSON");
+      const info = getVersionInfo();
+
+      expect(info).toEqual({
+        versionNumber: "0.0.0",
+        versionName: "Miljø",
+        releaseDate: "",
+        changes: [],
+      });
+    });
+
+    it("should return 'Miljø' when VITE_ENV_NAME is not set", () => {
+      const info = getVersionInfo();
+
+      expect(info.versionName).toBe("Miljø");
+    });
+  });
+});
+

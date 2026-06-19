@@ -40,10 +40,7 @@ describe("hooks", () => {
 
   describe("useUserDetails", () => {
     it("should start with default values", () => {
-      vi.mocked(utils.fetchUserDetails).mockResolvedValue({
-        name: "Test User",
-        email: "test@test.no",
-      });
+      vi.mocked(utils.fetchUserDetails).mockReturnValue(new Promise(() => {}));
 
       const { result } = renderHook(() => useUserDetails());
 
@@ -78,7 +75,7 @@ describe("hooks", () => {
       vi.useRealTimers();
     });
 
-    it("should return current date and time", () => {
+    it("should return current date and time", async () => {
       const mockDate = new Date("2026-01-01T12:00:00Z");
       vi.setSystemTime(mockDate);
 
@@ -88,13 +85,14 @@ describe("hooks", () => {
       });
 
       const { result } = renderHook(() => useCurrentDateTime());
+      await act(async () => {});
 
       expect(result.current.currentDateTime).toEqual(mockDate);
       expect(result.current.formattedTime).toBe("12:00:00");
       expect(result.current.formattedDate).toBe("01.01.2026");
     });
 
-    it("should update every second", () => {
+    it("should update every second", async () => {
       const initialDate = new Date("2026-01-01T12:00:00Z");
 
       vi.setSystemTime(initialDate);
@@ -110,6 +108,7 @@ describe("hooks", () => {
         });
 
       const { result } = renderHook(() => useCurrentDateTime());
+      await act(async () => {});
 
       expect(result.current.currentDateTime).toEqual(initialDate);
       expect(result.current.formattedTime).toBe("12:00:00");
