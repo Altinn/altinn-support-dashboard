@@ -13,7 +13,7 @@ const NotificationContactCell: React.FC<NotificationContactCellProps> = ({
   field,
 }) => {
   const userInput = useDashboardStore((s) =>
-    s.query.replace(/\s/g, "").toLowerCase(),
+    s.query.replace(/\s/g, "").toLowerCase()
   );
 
   const value = contact[field] as string | null;

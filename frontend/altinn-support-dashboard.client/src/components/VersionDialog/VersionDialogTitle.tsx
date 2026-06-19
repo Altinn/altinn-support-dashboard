@@ -24,4 +24,3 @@ const VersionDialogTitle: React.FC<VersionDialogTitleProps> = ({
 };
 
 export default VersionDialogTitle;
-

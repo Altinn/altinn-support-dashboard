@@ -1,38 +1,36 @@
-
-
 .paragraph {
-    font-size: var(--ds-font-size-4);
-    margin-bottom: 1rem;
+  font-size: var(--ds-font-size-4);
+  margin-bottom: 1rem;
 }
 .itemContainer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    font-size: var(--ds-font-size-4);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: var(--ds-font-size-4);
 }
 .listParagraph {
-    display: 1 1 0;
-    font-style: italic;
-    min-width: 0;
-    max-width: 85%;
+  display: 1 1 0;
+  font-style: italic;
+  min-width: 0;
+  max-width: 85%;
 }
 
 .listIconCorrect,
 .listIconWrong {
-    display: flex;
-    margin-left: auto;
-    width: 40px;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
+  display: flex;
+  margin-left: auto;
+  width: 40px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .listIconCorrect {
-    color: green;
-    font-size: var(--ds-font-size-8);
+  color: green;
+  font-size: var(--ds-font-size-8);
 }
 
 .listIconWrong {
-    color: red;
-    font-size: var(--ds-font-size-7);
+  color: red;
+  font-size: var(--ds-font-size-7);
 }

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  OfficialContact,
   ERRoles,
   NotificationAdresses,
   PersonalContactAltinn3,
@@ -9,11 +8,15 @@ import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   fetchERoles,
+  fetchInternalIds,
   fetchNotificationAddresses,
   fetchNotificationByOrderId,
-  fetchOfficialContacts,
   fetchOrganizations,
   fetchPersonalContacts,
+  fetchResourceByIdentifier,
+  fetchResourcePolicyRules,
+  fetchResources,
+  fetchRoleDefinitions,
   fetchRolesForOrg,
   fetchSsnFromToken,
 } from "../utils/api";
@@ -24,6 +27,7 @@ import {
 import { sendCorrespondence } from "../utils/correspondenceApi";
 import { toast } from "react-toastify";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
+import { Altinn2Role, PolicyRule, Resource } from "../models/resourceModels";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -84,13 +88,6 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
     refetchOnWindowFocus: false,
     retry: false,
   });
-  const officialContactsQuery: UseQueryResult<OfficialContact[], Error> =
-    useQuery({
-      queryKey: ["officialContacts", environment, orgNumber],
-      queryFn: () => fetchOfficialContacts(environment, orgNumber!),
-      enabled: !!orgNumber,
-    });
-
   const notificationAdressesQuery: UseQueryResult<
     NotificationAdresses[],
     Error
@@ -106,16 +103,15 @@ export function useOrgDetails(environment: string, orgNumber?: string) {
   return {
     contactsQuery,
     ERolesQuery,
-    officialContactsQuery,
     notificationAdressesQuery,
   };
 }
 
 export const useRoles = (
   environment: string,
-  request: RolesAndRightsRequest,
+  request: RolesAndRightsRequest
 ) => {
-  const rolesQuery: UseQueryResult<RolesAndRights[], Error> = useQuery({
+  const rolesQuery: UseQueryResult<RolesAndRights, Error> = useQuery({
     queryKey: ["roles", environment, request],
     queryFn: () => fetchRolesForOrg(environment, request),
     enabled:
@@ -155,6 +151,17 @@ export const useCorrespondencePost = () => {
   });
 };
 
+export function useInternalIdLookup(query: string, environment: string) {
+  return useQuery({
+    queryKey: ["internalIdLookup", environment, query],
+    queryFn: () => fetchInternalIds(query, environment),
+    enabled: !!query && !!environment,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
 export function useNotifications(orderId: string) {
   const notificationQuery = useQuery({
     queryKey: ["notifications", orderId],
@@ -165,4 +172,47 @@ export function useNotifications(orderId: string) {
     refetchOnWindowFocus: false,
   });
   return notificationQuery;
+}
+
+export function useResourceSearch(environment: string, query: string) {
+  const resourceQuery = useQuery({
+    queryKey: ["resources", environment, query],
+    queryFn: () => fetchResources(environment, query),
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    enabled: !!query,
+  });
+  return { resourceQuery };
+}
+
+export function useResourceWithPolicies(environment: string, identifier?: string) {
+  const resourceQuery = useQuery<Resource | null, Error>({
+    queryKey: ["resource", environment, identifier],
+    queryFn: () => fetchResourceByIdentifier(environment, identifier!),
+    enabled: !!identifier,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+    const policyRulesQuery = useQuery<PolicyRule[], Error>({
+    queryKey: ["policyRules", environment, identifier],
+    queryFn: () => fetchResourcePolicyRules(environment, identifier!),
+    enabled: !!identifier,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  return { resourceQuery, policyRulesQuery };
+}
+
+export function useRoleDefinitions(environment: string) {
+  return useQuery<Altinn2Role[], Error>({
+    queryKey: ["roleDefinitions", environment],
+    queryFn: () => fetchRoleDefinitions(environment),
+    staleTime: 24 * 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 }

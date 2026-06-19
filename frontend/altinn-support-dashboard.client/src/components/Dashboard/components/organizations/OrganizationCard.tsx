@@ -102,7 +102,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           {org.subUnits
             .filter(
               (sub: Organization) =>
-                sub.headUnit?.organizationNumber === org.organizationNumber,
+                sub.headUnit?.organizationNumber === org.organizationNumber
             )
             .map((sub: Organization) => (
               <Card

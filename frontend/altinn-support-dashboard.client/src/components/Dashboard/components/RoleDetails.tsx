@@ -25,13 +25,11 @@ export const RoleDetails: React.FC<RoleDetailsProps> = ({
     onBack();
   };
   const [orgNoFocus, setOrgNoFocus] = useState<string>(
-    selectedOrg.organizationNumber,
+    selectedOrg.organizationNumber
   );
 
   const optionCount =
-    1 +
-    (selectedOrg.headUnit ? 1 : 0) +
-    (selectedOrg.subUnits?.length ?? 0);
+    1 + (selectedOrg.headUnit ? 1 : 0) + (selectedOrg.subUnits?.length ?? 0);
 
   return (
     <Card data-color="neutral" className={styles.Container}>

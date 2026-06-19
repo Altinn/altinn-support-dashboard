@@ -16,6 +16,6 @@ export const useAppStore = create<AppState>()(
     {
       //local storage key for global data
       name: "app-storage",
-    },
-  ),
+    }
+  )
 );

@@ -95,11 +95,8 @@ namespace AltinnSupportDashboard
                     // Register application services
                     services.AddScoped<DataBrregClient>();
                     services.AddScoped<IDataBrregService, DataBrregService>();
-                    services.AddScoped<AltinnApiClient>();
-                    services.AddScoped<Altinn3ApiClient>();
-                    services.AddScoped<IAltinnApiService, AltinnApiService>();
                     services.AddScoped<IAltinn3Service, Altinn3Service>();
-                    services.AddScoped<PartyApiClient>();
+                    services.AddScoped<IPartyApiClient, PartyApiClient>();
                     services.AddScoped<IPartyApiService, PartyApiService>();
                     services.AddScoped<INotificationsClient, NotificationsClient>();
                     services.AddScoped<INotificationsService, NotificationsService>();

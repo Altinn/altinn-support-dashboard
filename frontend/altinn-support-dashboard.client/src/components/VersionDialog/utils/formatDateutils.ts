@@ -12,4 +12,3 @@ const formatDate = (dateString: string) => {
 };
 
 export default formatDate;
-

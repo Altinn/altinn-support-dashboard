@@ -27,18 +27,18 @@ describe("Utils tests", () => {
 
   describe("getBaseUrl", () => {
     it("should return base API URL without environment", () => {
-    expect(getBaseUrl()).toBe("/api");
-  });
+      expect(getBaseUrl()).toBe("/api");
+    });
 
-  it("should return environment-specific URL", () => {
-    expect(getBaseUrl("TT02")).toBe("/api/TT02");
-    expect(getBaseUrl("PROD")).toBe("/api/Production");
-  });
+    it("should return environment-specific URL", () => {
+      expect(getBaseUrl("TT02")).toBe("/api/TT02");
+      expect(getBaseUrl("PROD")).toBe("/api/Production");
+    });
 
-  it("should return base URL for other environments", () => {
-    expect(getBaseUrl("DEV")).toBe("/api");
-    expect(getBaseUrl("DEV")).not.toContain("/DEV");
-  });
+    it("should return base URL for other environments", () => {
+      expect(getBaseUrl("DEV")).toBe("/api");
+      expect(getBaseUrl("DEV")).not.toContain("/DEV");
+    });
   });
 
   describe("getFormattedDateTime", () => {
@@ -61,7 +61,7 @@ describe("Utils tests", () => {
     it("should find claim by type", () => {
       expect(filterUserClaims(user, "name")?.val).toBe("Alice");
       expect(filterUserClaims(user, "preferred_username")?.val).toBe(
-        "alice@example.com",
+        "alice@example.com"
       );
     });
 
@@ -75,8 +75,8 @@ describe("Utils tests", () => {
       vi.stubGlobal(
         "fetch",
         vi.fn(() =>
-          Promise.resolve({ ok: true, json: () => Promise.resolve({}) }),
-        ) as unknown as typeof fetch,
+          Promise.resolve({ ok: true, json: () => Promise.resolve({}) })
+        ) as unknown as typeof fetch
       );
 
       vi.stubGlobal("localStorage", {
@@ -93,7 +93,7 @@ describe("Utils tests", () => {
           headers: expect.objectContaining({
             Authorization: "Basic 123",
           }),
-        }),
+        })
       );
     });
 
@@ -112,7 +112,7 @@ describe("Utils tests", () => {
           headers: expect.objectContaining({
             Authorization: "Basic 456",
           }),
-        }),
+        })
       );
     });
   });
@@ -121,15 +121,15 @@ describe("Utils tests", () => {
     beforeEach(() => {
       vi.stubGlobal(
         "fetch",
-        vi.fn(() => 
-          Promise.resolve({ ok: true, json: () => Promise.resolve({}) }),
-      ) as unknown as typeof fetch,
-    );
+        vi.fn(() =>
+          Promise.resolve({ ok: true, json: () => Promise.resolve({}) })
+        ) as unknown as typeof fetch
+      );
 
-    vi.stubGlobal("localStorage", {
-      getItem: vi.fn(() => "123"),
-      setItem: vi.fn(),
-    });
+      vi.stubGlobal("localStorage", {
+        getItem: vi.fn(() => "123"),
+        setItem: vi.fn(),
+      });
     });
 
     it("should POST with Authorization header and JSON body", async () => {
@@ -145,7 +145,7 @@ describe("Utils tests", () => {
             Authorization: "Basic 123",
             "Content-Type": "application/json",
           }),
-        }),
+        })
       );
     });
 
@@ -164,15 +164,15 @@ describe("Utils tests", () => {
           headers: expect.objectContaining({
             Authorization: "Basic 456",
           }),
-        }),
+        })
       );
-    })
+    });
   });
 
   describe("fetchUserDetails", () => {
     afterEach(() => {
       vi.unstubAllGlobals();
-    })
+    });
 
     it("should return user details from auth response", async () => {
       const mockUser = {
@@ -188,8 +188,9 @@ describe("Utils tests", () => {
           Promise.resolve({
             ok: true,
             json: () => Promise.resolve([mockUser]),
-          }),
-        ) as unknown as typeof fetch);
+          })
+        ) as unknown as typeof fetch
+      );
 
       const result = await fetchUserDetails();
       expect(result).toEqual({
@@ -219,9 +220,10 @@ describe("Utils tests", () => {
           Promise.resolve({
             ok: true,
             json: () => Promise.resolve([]),
-          }),
-        ) as unknown as typeof fetch);
-      
+          })
+        ) as unknown as typeof fetch
+      );
+
       const result = await fetchUserDetails();
 
       expect(result).toEqual({
@@ -232,9 +234,7 @@ describe("Utils tests", () => {
 
     it("should use defaults when claims are missing", async () => {
       const mockUser = {
-        user_claims: [
-          { typ: "name", val: "Test User" },
-        ],
+        user_claims: [{ typ: "name", val: "Test User" }],
       };
 
       vi.stubGlobal(
@@ -243,9 +243,10 @@ describe("Utils tests", () => {
           Promise.resolve({
             ok: true,
             json: () => Promise.resolve([mockUser]),
-          }),
-        ) as unknown as typeof fetch);
-      
+          })
+        ) as unknown as typeof fetch
+      );
+
       const result = await fetchUserDetails();
 
       expect(result).toEqual({
@@ -255,20 +256,19 @@ describe("Utils tests", () => {
     });
 
     it("should use defaults when name claim is missing", async () => {
-    const mockUser = {
-      user_claims: [
-        { typ: "preferred_username", val: "test@test.com" },
-      ],
-    };
+      const mockUser = {
+        user_claims: [{ typ: "preferred_username", val: "test@test.com" }],
+      };
 
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve([mockUser]),
-        }),
-      ) as unknown as typeof fetch);
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(() =>
+          Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve([mockUser]),
+          })
+        ) as unknown as typeof fetch
+      );
 
       const result = await fetchUserDetails();
 

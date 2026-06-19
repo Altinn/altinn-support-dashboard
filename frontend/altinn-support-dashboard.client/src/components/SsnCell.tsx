@@ -10,11 +10,11 @@ interface SsnCellProps {
 
 const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
   const [isRedacted, setIsRedacted] = useState(true);
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { data: unredactedSsn, refetch } = useSsnFromToken(
     environment || "",
-    contact.ssnToken || "",
+    contact.ssnToken || ""
   );
 
   const handleClick = async () => {

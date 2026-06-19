@@ -13,13 +13,14 @@ import { useVersionCheck } from "../hooks/useVersionCheck";
 import { DashboardPage } from "../pages/DashboardPage";
 import SignOutPage from "../pages/SignOutPage";
 import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
-import NewOrganizationPage from "../pages/NewOrganizationPage";
 import SettingsPage from "../pages/SettingsPage";
 import { CorrespondencePage } from "../pages/CorrespondencePage";
 import { NotificationPage } from "../pages/NotificationPage";
+import IdentifierConversionPage from "../pages/IdentifierConversionPage";
 import { useAppStore } from "../stores/Appstore";
 import PrivateRoutes from "./PrivateRoutes";
 import { ToastContainer } from "react-toastify";
+import { ResourceSearchPage } from "../pages/ResourceSearchPage";
 
 const App: React.FC = () => {
   // Sjekk etter nye versjoner
@@ -33,7 +34,7 @@ const App: React.FC = () => {
       // Force Zustand to persist its current state
       localStorage.setItem(
         "app-storage",
-        JSON.stringify(useAppStore.getState()),
+        JSON.stringify(useAppStore.getState())
       );
     }
   }, []);
@@ -68,15 +69,19 @@ const App: React.FC = () => {
                   path="/manualrolesearch"
                   element={<ManualRoleSearchPage />}
                 />
-                <Route path="/new-org" element={<NewOrganizationPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route
                   path="/correspondence"
                   element={<CorrespondencePage />}
                 />
+                <Route path="/notification" element={<NotificationPage />} />
                 <Route
-                  path="/notification"
-                  element={<NotificationPage />}
+                  path="/identifier-conversion"
+                  element={<IdentifierConversionPage />}
+                />
+                <Route 
+                  path="/resourcesearch"
+                  element={<ResourceSearchPage/>}
                 />
                 <Route path="/signout" element={<SignOutPage />} />
               </Route>

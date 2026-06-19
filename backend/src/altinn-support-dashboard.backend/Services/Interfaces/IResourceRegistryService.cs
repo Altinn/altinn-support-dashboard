@@ -9,5 +9,4 @@ public interface IResourceRegistryService
     Task<List<ResourceSearchResult>> SearchResources(string environmentName, string query);
     Task<Resource?> GetResourceByIdentifier(string environmentName, string identifier);
     Task<List<PolicyRule>?> GetResourcePolicyRules(string environmentName, string identifier);
-    Task<List<PolicyRight>?> GetResourcePolicyRights(string environmentName, string identifier);
 }

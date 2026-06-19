@@ -1,6 +1,5 @@
 
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
 
@@ -8,12 +7,12 @@ namespace altinn_support_dashboard.Server.Services;
 
 public class PartyApiService : IPartyApiService
 {
-    private IPartyApiClient _client;
-    private JsonSerializerOptions jsonOptions;
+    private readonly IPartyApiClient _client;
+    private readonly JsonSerializerOptions _jsonOptions;
+
     public PartyApiService(IPartyApiClient client)
     {
-
-        jsonOptions = new JsonSerializerOptions
+        _jsonOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             PropertyNameCaseInsensitive = true
@@ -21,88 +20,65 @@ public class PartyApiService : IPartyApiService
         _client = client;
     }
 
-    public async Task<PartyModel> GetPartyFromOrgAsync(string orgNumber)
+    public async Task<PartyModel> GetPartyFromOrgAsync(string orgNumber, string environmentName)
     {
-        var result = await _client.GetParty(orgNumber, true);
-
-        var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
+        var result = await _client.GetParty(orgNumber, true, environmentName);
+        var party = JsonSerializer.Deserialize<PartyModel>(result, _jsonOptions);
         if (party == null)
-        {
             throw new Exception("Party not valid");
-        }
         return party;
     }
 
-    public async Task<PartyModel> GetPartyFromSsnAsync(string ssn)
+    public async Task<PartyModel> GetPartyFromSsnAsync(string ssn, string environmentName)
     {
-
-        var result = await _client.GetParty(ssn, false);
-
-        var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
+        var result = await _client.GetParty(ssn, false, environmentName);
+        var party = JsonSerializer.Deserialize<PartyModel>(result, _jsonOptions);
         if (party == null)
-        {
             throw new Exception("Party not valid");
-        }
         return party;
     }
 
-    public async Task<PartyModel> GetPartyFromUuidAsync(string uuid)
+    public async Task<PartyModel> GetPartyFromUuidAsync(string uuid, string environmentName)
     {
-        var result = await _client.GetPartyByUuid(uuid);
-
-        var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
-
+        var result = await _client.GetPartyByUuid(uuid, environmentName);
+        var party = JsonSerializer.Deserialize<PartyModel>(result, _jsonOptions);
         if (party == null)
-        {
             throw new Exception("Party not valid");
-        }
         return party;
     }
 
-    public async Task<string> GetRolesFromPartyAsync(string uuid)
+    public async Task<string> GetRolesFromPartyAsync(string uuid, string environmentName)
     {
-        var result = await _client.GetPartyRoles(uuid);
-
-        return result;
+        return await _client.GetPartyRoles(uuid, environmentName);
     }
 
-    public async Task<ErRollerModel> GetRolesFromOrgAsync(string orgNumber)
+    public async Task<ErRollerModel> GetRolesFromOrgAsync(string orgNumber, string environmentName)
     {
-        var resultOrgParty = await _client.GetParty(orgNumber, true);
-        var orgParty = JsonSerializer.Deserialize<PartyModel>(resultOrgParty, jsonOptions);
+        var resultOrgParty = await _client.GetParty(orgNumber, true, environmentName);
+        var orgParty = JsonSerializer.Deserialize<PartyModel>(resultOrgParty, _jsonOptions);
 
         if (orgParty == null)
-        {
             throw new Exception("OrgParty not valid");
-        }
 
-        var resultPartyRoles = await _client.GetPartyRoles(orgParty.PartyUuid);
-
-
+        var resultPartyRoles = await _client.GetPartyRoles(orgParty.PartyUuid, environmentName);
 
         using JsonDocument doc = JsonDocument.Parse(resultPartyRoles);
         JsonElement root = doc.RootElement;
 
-        //iterate and add the the party with the roles identifier
         List<(PartyModel party, string identifier)> partyRoles = new();
         foreach (var item in root.GetProperty("data").EnumerateArray())
         {
             string identifier = item.GetProperty("role").GetProperty("identifier").GetString() ?? "";
             string toUuid = item.GetProperty("to").GetProperty("partyUuid").GetString() ?? "";
-            var partyResult = await _client.GetPartyByUuid(toUuid);
-            var party = JsonSerializer.Deserialize<PartyModel>(partyResult, jsonOptions);
+            var partyResult = await _client.GetPartyByUuid(toUuid, environmentName);
+            var party = JsonSerializer.Deserialize<PartyModel>(partyResult, _jsonOptions);
 
-            if (party == null || String.IsNullOrEmpty(identifier))
-            {
+            if (party == null || string.IsNullOrEmpty(identifier))
                 continue;
-            }
 
             partyRoles.Add((party, identifier));
         }
 
-
-
-        //construct and map the data found to the erRollermodel
         var erRollerModel = new ErRollerModel
         {
             Rollegrupper = new List<Rollegrupper>()
@@ -111,9 +87,7 @@ public class PartyApiService : IPartyApiService
         foreach (var item in partyRoles)
         {
             if (item.party.Person == null)
-            {
                 continue;
-            }
 
             var rolle = new Roller
             {
@@ -135,7 +109,6 @@ public class PartyApiService : IPartyApiService
                         Mellomnavn = item.party.Person.MiddleName,
                         Etternavn = item.party.Person.LastName,
                     }
-
                 }
             };
 
@@ -145,8 +118,6 @@ public class PartyApiService : IPartyApiService
             });
         }
 
-
         return erRollerModel;
     }
-
 }

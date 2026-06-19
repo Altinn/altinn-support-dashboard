@@ -1,13 +1,13 @@
 {
-  "version": "4.2.6",
-  "releaseDate": "2026-03-05",
+  "version": "4.5",
+  "releaseDate": "2026-06-18",
   "changes": [
     {
-      "title": "småfiksing av diverse problemer",
-      "description": "Har fikset diverse småproblemer og lagt til muligheten til å se roller en person har i under/overenheten i rolledetalj vinduet",
+      "title": "Ressurssøk og siste finpuss før altinn2 stenges ned",
+      "description": "Ressurssøk som gir lik informasjon som tjenesteoversikten har blitt lagt til og siste avhengigheter til altinn2 har blitt fjernet.",
       "details": [
-        "fikset rolleproblem",
-        "lagt til funksjonalitet for å se roller en person har til under/overenheter"
+        "Fjernet siste avhengigheter til altinn2",
+        "Ressurssøk funksjonalitet lagt til"
       ]
     }
   ]

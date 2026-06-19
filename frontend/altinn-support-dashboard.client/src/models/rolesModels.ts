@@ -6,6 +6,7 @@ export interface AuthorizedInstanceDto {
 
 export interface RolesAndRights {
   name: string;
+  organizationnumber: string;
   authorizedAccessPackages?: string[];
   authorizedResources?: string[];
   authorizedRoles?: string[];

@@ -7,6 +7,7 @@ import SidebarEnvToggle from "./SidebarEnvToggle";
 import { useUserDetails } from "../../hooks/hooks";
 import { initiateSignOut } from "../../utils/azureAuthApi";
 import {
+  ArrowRightLeftIcon,
   Buildings3Icon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -14,6 +15,7 @@ import {
   CogIcon,
   EnvelopeOpenIcon,
   DatabaseIcon,
+  FilesIcon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -39,6 +41,12 @@ const Sidebar: React.FC = () => {
   if (authDetails.isLoading || !authDetails?.data?.isLoggedIn) {
     return;
   }
+
+  const authData = authDetails.data;
+  const hasInternalOrExternalCoreRoles =
+    !authData.azureAuthActive ||
+    authData.roles.includes("Dashboard.Core.Internal") ||
+    authData.roles.includes("Dashboard.Core.External");
 
   return (
     <div className={classes.sidebarWrapper}>
@@ -92,19 +100,34 @@ const Sidebar: React.FC = () => {
               icon={<MagnifyingGlassIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
-
+            <NavItem
+              to="/resourcesearch"
+              title="Ressurs søk"
+              icon={<FilesIcon className={classes.icons} />}
+              isCollapsed={isCollapsed}
+            />
             <NavItem
               to="/correspondence"
               title="Melding"
               icon={<EnvelopeOpenIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
-            <NavItem
-              to="/notification"
-              title="Varsling"
-              icon={<DatabaseIcon className={classes.icons} />}
-              isCollapsed={isCollapsed}
-            />
+            {hasInternalOrExternalCoreRoles && (
+              <div>
+                <NavItem
+                  to="/notification"
+                  title="Varsling"
+                  icon={<DatabaseIcon className={classes.icons} />}
+                  isCollapsed={isCollapsed}
+                />
+                <NavItem
+                  to="/identifier-conversion"
+                  title="ID-konvertering"
+                  icon={<ArrowRightLeftIcon className={classes.icons} />}
+                  isCollapsed={isCollapsed}
+                />
+              </div>
+            )}
             <NavItem
               to="/settings"
               title="Innstillinger"

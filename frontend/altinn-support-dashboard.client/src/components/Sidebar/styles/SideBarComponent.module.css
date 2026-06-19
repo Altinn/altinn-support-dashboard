@@ -13,7 +13,8 @@
     width 0.3s ease,
     min-width 0.3s ease;
   background-color: var(--ds-color-accent-base-default);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 [data-color-scheme="dark"] .sidebar {
@@ -118,6 +119,7 @@
   color: var(--ds-color-text-default);
   color: #fff;
   font-size: var(--ds-font-size-4);
+  margin-top: 0;
 }
 .loggedInOrgName {
   font-style: italic;
@@ -136,7 +138,7 @@
 .logoutButton {
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 1rem;
+  margin-bottom: 0.2rem;
 }
 
 [data-color-scheme="light"] .logoutButton {

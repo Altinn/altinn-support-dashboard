@@ -10,4 +10,3 @@ export function showPopup(message: string, type?: string) {
     });
   }
 }
-
