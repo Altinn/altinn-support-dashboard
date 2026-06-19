@@ -63,16 +63,6 @@ public class ResourceRegistryService : IResourceRegistryService
         return JsonSerializer.Deserialize<List<PolicyRule>>(json);
     }
 
-    public async Task<List<PolicyRight>?> GetResourcePolicyRights(string environmentName, string identifier)
-    {
-        var json = await _resourceRegistryClient.GetResourcePolicyRights(environmentName, identifier);
-        if (json == null)
-        {
-            return null;
-        }
-        return JsonSerializer.Deserialize<List<PolicyRight>>(json);
-    }
-
     private async Task<List<ResourceSearchResult>> GetCachedResourceList(string environmentName)
     {
         return await _cache.GetOrCreateAsync<List<ResourceSearchResult>>($"resourceList_{environmentName}", async entry =>

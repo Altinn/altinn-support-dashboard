@@ -15,6 +15,7 @@ import {
   CogIcon,
   EnvelopeOpenIcon,
   DatabaseIcon,
+  FilesIcon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -99,7 +100,12 @@ const Sidebar: React.FC = () => {
               icon={<MagnifyingGlassIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
-
+            <NavItem
+              to="/resourcesearch"
+              title="Ressurs søk"
+              icon={<FilesIcon className={classes.icons} />}
+              isCollapsed={isCollapsed}
+            />
             <NavItem
               to="/correspondence"
               title="Melding"
