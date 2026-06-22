@@ -10,6 +10,8 @@ public class NotificationsServiceTests
     private readonly Mock<INotificationsClient> _clientMock;
     private readonly NotificationsService _service;
 
+    private const string EnvironmentName = "TT02";
+
     private const string ValidOrderJson = """
         {
             "orderId": "order-123",
@@ -19,149 +21,6 @@ public class NotificationsServiceTests
             "notifications": []
         }
         """;
-
-    public NotificationsServiceTests()
-    {
-        _clientMock = new Mock<INotificationsClient>();
-        var logger = Mock.Of<ILogger<INotificationsService>>();
-        _service = new NotificationsService(_clientMock.Object, logger);
-    }
-
-    [Fact]
-    public async Task GetEmailNotificationsByOrderId_ReturnsDeserializedResponse_WhenClientSucceeds()
-    {
-        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
-
-        var result = await _service.GetEmailNotificationsByOrderId("order-123");
-
-        Assert.Equal("order-123", result.OrderId);
-    }
-
-    [Fact]
-    public async Task GetEmailNotificationsByOrderId_DelegatesToClient_WithCorrectOrderId()
-    {
-        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId("order-123")).ReturnsAsync(ValidOrderJson);
-
-        await _service.GetEmailNotificationsByOrderId("order-123");
-
-        _clientMock.Verify(c => c.GetEmailNotificationsByOrderId("order-123"), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetEmailNotificationsByOrderId_ThrowsException_WhenClientThrows()
-    {
-        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>()))
-            .ThrowsAsync(new Exception("API request failed"));
-
-        await Assert.ThrowsAsync<Exception>(() => _service.GetEmailNotificationsByOrderId("order-123"));
-    }
-
-    [Fact]
-    public async Task GetEmailNotificationsByOrderId_ThrowsJsonException_WhenResponseIsInvalidJson()
-    {
-        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync("not-valid-json");
-
-        await Assert.ThrowsAsync<JsonException>(() => _service.GetEmailNotificationsByOrderId("order-123"));
-    }
-
-    [Fact]
-    public async Task GetEmailNotificationsByOrderId_ThrowsException_WhenResponseDeserializesToNull()
-    {
-        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync("null");
-
-        await Assert.ThrowsAsync<Exception>(() => _service.GetEmailNotificationsByOrderId("order-123"));
-    }
-
-    [Fact]
-    public async Task GetSmsNotificationsByOrderId_ReturnsDeserializedResponse_WhenClientSucceeds()
-    {
-        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
-
-        var result = await _service.GetSmsNotificationsByOrderId("order-123");
-
-        Assert.Equal("order-123", result.OrderId);
-    }
-
-    [Fact]
-    public async Task GetSmsNotificationsByOrderId_DelegatesToClient_WithCorrectOrderId()
-    {
-        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId("order-123")).ReturnsAsync(ValidOrderJson);
-
-        await _service.GetSmsNotificationsByOrderId("order-123");
-
-        _clientMock.Verify(c => c.GetSmsNotificationsByOrderId("order-123"), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetSmsNotificationsByOrderId_ThrowsException_WhenClientThrows()
-    {
-        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>()))
-            .ThrowsAsync(new Exception("API request failed"));
-
-        await Assert.ThrowsAsync<Exception>(() => _service.GetSmsNotificationsByOrderId("order-123"));
-    }
-
-    [Fact]
-    public async Task GetSmsNotificationsByOrderId_ThrowsJsonException_WhenResponseIsInvalidJson()
-    {
-        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync("not-valid-json");
-
-        await Assert.ThrowsAsync<JsonException>(() => _service.GetSmsNotificationsByOrderId("order-123"));
-    }
-
-    [Fact]
-    public async Task GetSmsNotificationsByOrderId_ThrowsException_WhenResponseDeserializesToNull()
-    {
-        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync("null");
-
-        await Assert.ThrowsAsync<Exception>(() => _service.GetSmsNotificationsByOrderId("order-123"));
-    }
-
-    // --- GetAllNotificationsByOrderId ---
-
-    [Fact]
-    public async Task GetAllNotificationsByOrderId_ReturnsBothResults_WhenBothCallsSucceed()
-    {
-        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
-        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
-
-        var result = await _service.GetAllNotificationsByOrderId("order-123");
-
-        Assert.Equal(2, result.Count);
-    }
-
-    [Fact]
-    public async Task GetAllNotificationsByOrderId_ReturnsSingleResult_WhenEmailFails()
-    {
-        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>())).ThrowsAsync(new Exception("Email API failure"));
-        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
-
-        var result = await _service.GetAllNotificationsByOrderId("order-123");
-
-        Assert.Single(result);
-    }
-
-    [Fact]
-    public async Task GetAllNotificationsByOrderId_ReturnsSingleResult_WhenSmsFails()
-    {
-        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
-        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>())).ThrowsAsync(new Exception("SMS API failure"));
-
-        var result = await _service.GetAllNotificationsByOrderId("order-123");
-
-        Assert.Single(result);
-    }
-
-    [Fact]
-    public async Task GetAllNotificationsByOrderId_ThrowsError_WhenBothCallsFail()
-    {
-        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>())).ThrowsAsync(new Exception("Email API failure"));
-        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>())).ThrowsAsync(new Exception("SMS API failure"));
-
-        await Assert.ThrowsAsync<HttpRequestException>(() => _service.GetAllNotificationsByOrderId("order-123"));
-    }
-
-    // --- GetFutureNotificationsByNin ---
 
     private const string ValidFutureNotificationsJson = """
         [
@@ -177,13 +36,156 @@ public class NotificationsServiceTests
         ]
         """;
 
+    public NotificationsServiceTests()
+    {
+        _clientMock = new Mock<INotificationsClient>();
+        var logger = Mock.Of<ILogger<INotificationsService>>();
+        _service = new NotificationsService(_clientMock.Object, logger);
+    }
+
+    [Fact]
+    public async Task GetEmailNotificationsByOrderId_ReturnsDeserializedResponse_WhenClientSucceeds()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
+
+        var result = await _service.GetEmailNotificationsByOrderId("order-123", EnvironmentName);
+
+        Assert.Equal("order-123", result.OrderId);
+    }
+
+    [Fact]
+    public async Task GetEmailNotificationsByOrderId_DelegatesToClient_WithCorrectOrderId()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId("order-123", EnvironmentName)).ReturnsAsync(ValidOrderJson);
+
+        await _service.GetEmailNotificationsByOrderId("order-123", EnvironmentName);
+
+        _clientMock.Verify(c => c.GetEmailNotificationsByOrderId("order-123", EnvironmentName), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetEmailNotificationsByOrderId_ThrowsException_WhenClientThrows()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>()))
+            .ThrowsAsync(new Exception("API request failed"));
+
+        await Assert.ThrowsAsync<Exception>(() => _service.GetEmailNotificationsByOrderId("order-123", EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetEmailNotificationsByOrderId_ThrowsJsonException_WhenResponseIsInvalidJson()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("not-valid-json");
+
+        await Assert.ThrowsAsync<JsonException>(() => _service.GetEmailNotificationsByOrderId("order-123", EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetEmailNotificationsByOrderId_ThrowsException_WhenResponseDeserializesToNull()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(() => _service.GetEmailNotificationsByOrderId("order-123", EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetSmsNotificationsByOrderId_ReturnsDeserializedResponse_WhenClientSucceeds()
+    {
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
+
+        var result = await _service.GetSmsNotificationsByOrderId("order-123", EnvironmentName);
+
+        Assert.Equal("order-123", result.OrderId);
+    }
+
+    [Fact]
+    public async Task GetSmsNotificationsByOrderId_DelegatesToClient_WithCorrectOrderId()
+    {
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId("order-123", EnvironmentName)).ReturnsAsync(ValidOrderJson);
+
+        await _service.GetSmsNotificationsByOrderId("order-123", EnvironmentName);
+
+        _clientMock.Verify(c => c.GetSmsNotificationsByOrderId("order-123", EnvironmentName), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetSmsNotificationsByOrderId_ThrowsException_WhenClientThrows()
+    {
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>()))
+            .ThrowsAsync(new Exception("API request failed"));
+
+        await Assert.ThrowsAsync<Exception>(() => _service.GetSmsNotificationsByOrderId("order-123", EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetSmsNotificationsByOrderId_ThrowsJsonException_WhenResponseIsInvalidJson()
+    {
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("not-valid-json");
+
+        await Assert.ThrowsAsync<JsonException>(() => _service.GetSmsNotificationsByOrderId("order-123", EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetSmsNotificationsByOrderId_ThrowsException_WhenResponseDeserializesToNull()
+    {
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(() => _service.GetSmsNotificationsByOrderId("order-123", EnvironmentName));
+    }
+
+    // --- GetAllNotificationsByOrderId ---
+
+    [Fact]
+    public async Task GetAllNotificationsByOrderId_ReturnsBothResults_WhenBothCallsSucceed()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
+
+        var result = await _service.GetAllNotificationsByOrderId("order-123", EnvironmentName);
+
+        Assert.Equal(2, result.Count);
+    }
+
+    [Fact]
+    public async Task GetAllNotificationsByOrderId_ReturnsSingleResult_WhenEmailFails()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception("Email API failure"));
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
+
+        var result = await _service.GetAllNotificationsByOrderId("order-123", EnvironmentName);
+
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public async Task GetAllNotificationsByOrderId_ReturnsSingleResult_WhenSmsFails()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(ValidOrderJson);
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception("SMS API failure"));
+
+        var result = await _service.GetAllNotificationsByOrderId("order-123", EnvironmentName);
+
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public async Task GetAllNotificationsByOrderId_ThrowsError_WhenBothCallsFail()
+    {
+        _clientMock.Setup(c => c.GetEmailNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception("Email API failure"));
+        _clientMock.Setup(c => c.GetSmsNotificationsByOrderId(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception("SMS API failure"));
+
+        await Assert.ThrowsAsync<HttpRequestException>(() => _service.GetAllNotificationsByOrderId("order-123", EnvironmentName));
+    }
+
+    // --- GetFutureNotificationsByNin ---
+
     [Fact]
     public async Task GetFutureNotificationsByNin_ReturnsDeserializedResponse_WhenClientSucceeds()
     {
-        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
             .ReturnsAsync(ValidFutureNotificationsJson);
 
-        var result = await _service.GetFutureNotificationsByNin("12345678901", null, null);
+        var result = await _service.GetFutureNotificationsByNin("12345678901", null, null, EnvironmentName);
 
         Assert.Single(result);
         Assert.Equal("test-creator", result[0].CreatorName);
@@ -194,38 +196,38 @@ public class NotificationsServiceTests
     {
         var from = new DateTime(2024, 1, 1);
         var to = new DateTime(2024, 2, 1);
-        _clientMock.Setup(c => c.GetFutureNotificationsByNin("12345678901", from, to))
+        _clientMock.Setup(c => c.GetFutureNotificationsByNin("12345678901", from, to, EnvironmentName))
             .ReturnsAsync(ValidFutureNotificationsJson);
 
-        await _service.GetFutureNotificationsByNin("12345678901", from, to);
+        await _service.GetFutureNotificationsByNin("12345678901", from, to, EnvironmentName);
 
-        _clientMock.Verify(c => c.GetFutureNotificationsByNin("12345678901", from, to), Times.Once);
+        _clientMock.Verify(c => c.GetFutureNotificationsByNin("12345678901", from, to, EnvironmentName), Times.Once);
     }
 
     [Fact]
     public async Task GetFutureNotificationsByNin_ThrowsException_WhenClientThrows()
     {
-        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
             .ThrowsAsync(new Exception("API request failed"));
 
-        await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByNin("12345678901", null, null));
+        await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByNin("12345678901", null, null, EnvironmentName));
     }
 
     [Fact]
     public async Task GetFutureNotificationsByNin_ThrowsJsonException_WhenResponseIsInvalidJson()
     {
-        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
             .ReturnsAsync("not-valid-json");
 
-        await Assert.ThrowsAsync<JsonException>(() => _service.GetFutureNotificationsByNin("12345678901", null, null));
+        await Assert.ThrowsAsync<JsonException>(() => _service.GetFutureNotificationsByNin("12345678901", null, null, EnvironmentName));
     }
 
     [Fact]
     public async Task GetFutureNotificationsByNin_ThrowsException_WhenResponseDeserializesToNull()
     {
-        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
             .ReturnsAsync("null");
 
-        await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByNin("12345678901", null, null));
+        await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByNin("12345678901", null, null, EnvironmentName));
     }
 }

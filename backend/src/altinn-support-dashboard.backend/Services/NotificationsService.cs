@@ -22,28 +22,28 @@ public class NotificationsService : INotificationsService
         _logger = logger;
     }
 
-    public async Task<NotificationOrderResponseDto> GetEmailNotificationsByOrderId(string orderId)
+    public async Task<NotificationOrderResponseDto> GetEmailNotificationsByOrderId(string orderId, string environmentName)
     {
-        var result = await _client.GetEmailNotificationsByOrderId(orderId);
+        var result = await _client.GetEmailNotificationsByOrderId(orderId, environmentName);
         return JsonSerializer.Deserialize<NotificationOrderResponseDto>(result, _jsonOptions) ?? throw new Exception("Error deserializing email notifications response");
     }
 
-    public async Task<NotificationOrderResponseDto> GetSmsNotificationsByOrderId(string orderId)
+    public async Task<NotificationOrderResponseDto> GetSmsNotificationsByOrderId(string orderId, string environmentName)
     {
-        var result = await _client.GetSmsNotificationsByOrderId(orderId);
+        var result = await _client.GetSmsNotificationsByOrderId(orderId, environmentName);
         return JsonSerializer.Deserialize<NotificationOrderResponseDto>(result, _jsonOptions) ?? throw new Exception("Error deserializing SMS notifications response");
     }
 
-    public async Task<List<FutureNotificationDto>> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to)
+    public async Task<List<FutureNotificationDto>> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to, string environmentName)
     {
-        var result = await _client.GetFutureNotificationsByNin(nin, from, to);
+        var result = await _client.GetFutureNotificationsByNin(nin, from, to, environmentName);
         return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
     }
 
-    public async Task<List<NotificationOrderResponseDto>> GetAllNotificationsByOrderId(string orderId)
+    public async Task<List<NotificationOrderResponseDto>> GetAllNotificationsByOrderId(string orderId, string environmentName)
     {
-        var smsTask = GetSmsNotificationsByOrderId(orderId);
-        var emailTask = GetEmailNotificationsByOrderId(orderId);
+        var smsTask = GetSmsNotificationsByOrderId(orderId, environmentName);
+        var emailTask = GetEmailNotificationsByOrderId(orderId, environmentName);
 
         // runs the tasks in parrallel
         await Task.WhenAll(

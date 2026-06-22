@@ -7,8 +7,7 @@ using Security;
 namespace AltinnSupportDashboard.Controllers;
 
 [ApiController]
-[Route("api/notifications")]
-//added authorization temporary
+[Route("api/{environmentName}/notifications")]
 [Authorize(AzureRoles.Authenticated)]
 [Authorize(AzureRoles.CoreInternal)]
 public class NotificationsController : ControllerBase
@@ -23,48 +22,43 @@ public class NotificationsController : ControllerBase
     }
 
     [HttpGet("orderid/email/{orderId}")]
-    public async Task<IActionResult> GetEmailNotificationsByOrderId(string orderId)
+    public async Task<IActionResult> GetEmailNotificationsByOrderId([FromRoute] string environmentName, string orderId)
     {
         if (!ValidationService.IsValidNotificationOrderId(orderId))
-        {
             return BadRequest(InvalidOrderIdMessage);
-        }
 
-        var response = await _service.GetEmailNotificationsByOrderId(orderId);
+        var response = await _service.GetEmailNotificationsByOrderId(orderId, environmentName);
         return Ok(response);
     }
 
     [HttpGet("orderid/sms/{orderId}")]
-    public async Task<IActionResult> GetSmsNotificationsByOrderId(string orderId)
+    public async Task<IActionResult> GetSmsNotificationsByOrderId([FromRoute] string environmentName, string orderId)
     {
         if (!ValidationService.IsValidNotificationOrderId(orderId))
-        {
             return BadRequest(InvalidOrderIdMessage);
-        }
 
-        var response = await _service.GetSmsNotificationsByOrderId(orderId);
+        var response = await _service.GetSmsNotificationsByOrderId(orderId, environmentName);
         return Ok(response);
     }
 
     [HttpGet("orderid/{orderId}")]
-    public async Task<IActionResult> GetAllNotificationsByOrderId(string orderId)
+    public async Task<IActionResult> GetAllNotificationsByOrderId([FromRoute] string environmentName, string orderId)
     {
         if (!ValidationService.IsValidNotificationOrderId(orderId))
-        {
             return BadRequest(InvalidOrderIdMessage);
-        }
 
-        var response = await _service.GetAllNotificationsByOrderId(orderId);
+        var response = await _service.GetAllNotificationsByOrderId(orderId, environmentName);
         return Ok(response);
     }
 
     [HttpGet("future/nin")]
     public async Task<IActionResult> GetFutureNotificationsByNin(
+        [FromRoute] string environmentName,
         [FromHeader(Name = "NationalIdentityNumber")] string nationalIdentityNumber,
         [FromQuery] DateTime? from,
         [FromQuery] DateTime? to)
     {
-        var response = await _service.GetFutureNotificationsByNin(nationalIdentityNumber, from, to);
+        var response = await _service.GetFutureNotificationsByNin(nationalIdentityNumber, from, to, environmentName);
         return Ok(response);
     }
 }
