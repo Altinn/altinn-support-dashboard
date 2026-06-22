@@ -4,8 +4,6 @@ import styles from "../styles/NotificationCard.module.css"
 import { colorMap } from "../NotificationStatusCode";
 
 
-
-
 type NotificationShipemntCardProps = {
     shipment: NotificationShipmentResponse
 };
