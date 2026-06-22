@@ -49,4 +49,37 @@ public class NotificationsClient : INotificationsClient
 
         return responseBody;
     }
+
+    public async Task<string> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to)
+    {
+        var query = new List<string>();
+
+        if (from.HasValue)
+        {
+            query.Add($"from={Uri.EscapeDataString(from.Value.ToString("O"))}");
+        }
+        if (to.HasValue)
+        {
+            query.Add($"to={Uri.EscapeDataString(to.Value.ToString("O"))}");
+        }
+        var url = "notifications/api/v1/future/dashboard/recipients/notifications/nin";
+        if (query.Count > 0) url += "?" + string.Join("&", query);
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+        //nin is set in header
+        request.Headers.Add("NationalIdentityNumber", nin);
+        var response = await _client.SendAsync(request);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException(
+                $"Api request failed with status code {response.StatusCode}: {responseBody}",
+                inner: null,
+                statusCode: response.StatusCode);
+        }
+
+        return responseBody;
+    }
 }
