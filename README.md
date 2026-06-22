@@ -19,7 +19,7 @@ Velkommen til Altinn Support Dashboard. Løsningen ble utviklet for å få en mo
 
 ## Teknologier
 
-- **Backend**: .NET 8, C#, ASP.NET Core Web API
+- **Backend**: .NET 10, C#, ASP.NET Core Web API
 - **Frontend**: React, TypeScript, Vite
 - **Testing**: xUnit for backend
 - **CI/CD**: GitHub Actions
