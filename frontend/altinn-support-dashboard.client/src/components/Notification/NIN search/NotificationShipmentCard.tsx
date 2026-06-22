@@ -1,6 +1,7 @@
-import { Card, Heading, Paragraph, Table } from "@digdir/designsystemet-react";
+import { Alert, Card, Heading, Paragraph, Table } from "@digdir/designsystemet-react";
 import { NotificationShipmentResponse } from "../../../models/notificationModels"
 import styles from "../styles/NotificationCard.module.css"
+import { colorMap } from "../NotificationStatusCode";
 
 
 
@@ -31,7 +32,23 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
                 </Table.Row>
             </Table.Head>
             <Table.Body>
-                
+                {shipment.recipients.map((r, i) => (
+                    <Table.Row key={i}>
+                        <Table.Cell>{r.channel === "email" ? "E-post" : "SMS"}</Table.Cell>
+                        <Table.Cell>{r.emailAdress ?? r.mobileNumber}</Table.Cell>
+                        <Table.Cell>
+                            <Alert
+                                data-color={colorMap[r.result.toLowerCase()] ?? "info"}
+                                data-size="sm"
+                            >
+                                {r.result}
+                            </Alert>
+                        </Table.Cell>
+                        <Table.Cell>
+                            {new Date(r.resultTime).toLocaleString("nb-NO")}
+                        </Table.Cell>
+                    </Table.Row>
+                ))}
             </Table.Body>
         </Table>
     </Card>
