@@ -29,7 +29,7 @@ export interface NotificationShipmentResponse {
   shipmentId: string;
   creatorName: string;
   resourceId: string;
-  sendersRefereance: string;
+  sendersReference: string;
   requestedSendTime: string;
   notificationChannel: string;
   recipients: ShipmentRecipient[];

@@ -6,7 +6,7 @@ type NotificationStatusCodeProps = {
   notification: NotificationItem;
 };
 
-const colorMap: Record<string, "success" | "danger" | "warning" | "info"> = {
+export const colorMap: Record<string, "success" | "danger" | "warning" | "info"> = {
   registered: "info",
   processing: "info",
   completed: "success",
