@@ -10,7 +10,8 @@ Velkommen til Altinn Support Dashboard. Løsningen ble utviklet for å få en mo
 - **Bedriftsinformasjon**: Få tilgang til detaljer om bedrifter innringeren er koblet til eller har rettigheter i.
 - **Roller og Rettigheter**: Slå opp og vis roller, inkludert enhetsregisterroller (ER-roller).
 - **Kontaktinformasjon**: Få opp kontaktinformasjon om personer i bedriften når du klikker på en bedrift.
-- **Organisasjonsopprettelse**: Opprett nye organisasjoner i Altinn Studio med validering av informasjon mot Brønnøysundregistrene. Oppretter automatisk standard teams og repositories.
+- **Ressurs søk**: Søk opp ressurser (her hardkodet til å bare finne applikasjoner) ved hjelpe av tittel.
+- **ID-konvertering**: Konvertert fra organisasjonsnummer eller fødselssnummer til UUID og PartyId.
 - **PAT-token håndtering**: Sikker lagring og validering av Personal Access Tokens for Altinn Studio i Settings-modulen, med miljøvelger for development eller production.
 - **Brukervennlig grensesnitt**: Utviklet med React for å sikre en responsiv og intuitiv brukeropplevelse.
 - **Sikkerhet**: Implementert i henhold til Microsoft Security Development Lifecycle for sikker håndtering av personopplysninger.
@@ -18,14 +19,14 @@ Velkommen til Altinn Support Dashboard. Løsningen ble utviklet for å få en mo
 
 ## Teknologier
 
-- **Backend**: .NET 8, C#, ASP.NET Core Web API
+- **Backend**: .NET 10, C#, ASP.NET Core Web API
 - **Frontend**: React, TypeScript, Vite
 - **Testing**: xUnit for backend
 - **CI/CD**: GitHub Actions
 - **Hosting**: Azure App Service
 - **Autentisering**: Azure AD B2C
 - **API Integrasjoner**: REST-API til Brønnøysundregistrene og Altinn 
-- **Styling og komponenter**: MUI
+- **Styling og komponenter**: [Designsystemet](https://designsystemet.no/no)
 
 ## Komme i gang
 
@@ -83,8 +84,8 @@ Dette prosjektet er lisensiert under MIT-lisensen - se [LICENSE](LICENSE) filen 
 
 ## Kontakt
 
-For spørsmål eller forespørsler, vennligst kontakt [Ernst Jonny Lyngøy](mailto:ernst.jonny.lyngoy@digdir.no) på epost
+For spørsmål eller forespørsler, vennligst kontakt [Siri Esteri Berg-Johnsen](mailto:siri.esteri.berg-johnsen@digdir.no) eller [Fabian Ugedal](fabian.ugedal@digdir.no)på epost
 
 ## Dokumentasjon
 
-Systemet er også dokumentert på [Confluence](https://digdir.atlassian.net/wiki/spaces/BK/pages/3403087933/Altinn+Dashboard+Utvikling) (krever Digdir innlogging)
+Systemet er også dokumentert på [Confluence](https://digdir.atlassian.net/wiki/spaces/BASD/overview) (krever Digdir innlogging)
