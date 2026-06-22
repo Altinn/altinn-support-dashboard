@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { expect, it, vi } from "vitest";
 import SettingsVersionComponent from "../../src/components/SettingsContent/SettingsVersionComponent";
 
@@ -47,7 +47,9 @@ describe('SettingsVersionComponent', () => {
             environment: 'Test Environment',
         }));
 
-        render(<SettingsVersionComponent />);
+        await act(async () => {
+            render(<SettingsVersionComponent />);
+        });
 
         expect(screen.getByText('Applikasjonsinformasjon: Test App - Versjon 1.0.0')).toBeInTheDocument();
         expect(screen.getByText('Utgivelsesdato: 2024-01-01')).toBeInTheDocument();
@@ -77,7 +79,9 @@ describe('SettingsVersionComponent', () => {
             environment: 'Test Environment',
         }));
 
-        render(<SettingsVersionComponent />);
+        await act(async () => {
+            render(<SettingsVersionComponent />);
+        });
 
         expect(screen.getByText('Valgt miljø: Test Environment')).toBeInTheDocument();
     });
@@ -106,7 +110,9 @@ describe('SettingsVersionComponent', () => {
             environment: 'Test Environment',
         }));
 
-        render(<SettingsVersionComponent />);
+        await act(async () => {
+            render(<SettingsVersionComponent />);
+        });
 
         expect(screen.getByText('Utgivelsesdato: Ikke tilgjengelig')).toBeInTheDocument();
     });
@@ -136,7 +142,9 @@ describe('SettingsVersionComponent', () => {
             environment: 'Test Environment',
         }));
 
-        render(<SettingsVersionComponent />);
+        await act(async () => {
+            render(<SettingsVersionComponent />);
+        });
 
         const documentation = screen.getByText('Dokumentasjon').closest('a');
         const contactUs = screen.getByText('Kontakt oss på Slack').closest('a');
