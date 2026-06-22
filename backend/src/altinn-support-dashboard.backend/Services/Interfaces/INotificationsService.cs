@@ -7,4 +7,5 @@ public interface INotificationsService
     Task<NotificationOrderResponseDto> GetEmailNotificationsByOrderId(string orderId);
     Task<NotificationOrderResponseDto> GetSmsNotificationsByOrderId(string orderId);
     Task<List<NotificationOrderResponseDto>> GetAllNotificationsByOrderId(string orderId);
+    Task<List<FutureNotificationDto>> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to);
 }

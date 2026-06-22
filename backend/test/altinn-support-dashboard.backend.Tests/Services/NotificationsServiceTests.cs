@@ -160,4 +160,72 @@ public class NotificationsServiceTests
 
         await Assert.ThrowsAsync<HttpRequestException>(() => _service.GetAllNotificationsByOrderId("order-123"));
     }
+
+    // --- GetFutureNotificationsByNin ---
+
+    private const string ValidFutureNotificationsJson = """
+        [
+            {
+                "shipmentId": "dec90ca7-4f8d-410f-96ed-666fe019c946",
+                "creatorName": "test-creator",
+                "resourceId": null,
+                "sendersReference": "ref-1",
+                "requestedSendTime": "2024-01-01T00:00:00",
+                "notificationChannel": "email",
+                "deliveryAttempts": []
+            }
+        ]
+        """;
+
+    [Fact]
+    public async Task GetFutureNotificationsByNin_ReturnsDeserializedResponse_WhenClientSucceeds()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+            .ReturnsAsync(ValidFutureNotificationsJson);
+
+        var result = await _service.GetFutureNotificationsByNin("12345678901", null, null);
+
+        Assert.Single(result);
+        Assert.Equal("test-creator", result[0].CreatorName);
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByNin_DelegatesToClient_WithCorrectParameters()
+    {
+        var from = new DateTime(2024, 1, 1);
+        var to = new DateTime(2024, 2, 1);
+        _clientMock.Setup(c => c.GetFutureNotificationsByNin("12345678901", from, to))
+            .ReturnsAsync(ValidFutureNotificationsJson);
+
+        await _service.GetFutureNotificationsByNin("12345678901", from, to);
+
+        _clientMock.Verify(c => c.GetFutureNotificationsByNin("12345678901", from, to), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByNin_ThrowsException_WhenClientThrows()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+            .ThrowsAsync(new Exception("API request failed"));
+
+        await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByNin("12345678901", null, null));
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByNin_ThrowsJsonException_WhenResponseIsInvalidJson()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+            .ReturnsAsync("not-valid-json");
+
+        await Assert.ThrowsAsync<JsonException>(() => _service.GetFutureNotificationsByNin("12345678901", null, null));
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByNin_ThrowsException_WhenResponseDeserializesToNull()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+            .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByNin("12345678901", null, null));
+    }
 }

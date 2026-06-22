@@ -34,6 +34,12 @@ public class NotificationsService : INotificationsService
         return JsonSerializer.Deserialize<NotificationOrderResponseDto>(result, _jsonOptions) ?? throw new Exception("Error deserializing SMS notifications response");
     }
 
+    public async Task<List<FutureNotificationDto>> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to)
+    {
+        var result = await _client.GetFutureNotificationsByNin(nin, from, to);
+        return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+    }
+
     public async Task<List<NotificationOrderResponseDto>> GetAllNotificationsByOrderId(string orderId)
     {
         var smsTask = GetSmsNotificationsByOrderId(orderId);

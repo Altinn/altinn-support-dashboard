@@ -135,5 +135,44 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             Assert.IsType<BadRequestObjectResult>(result);
             _serviceMock.Verify(s => s.GetAllNotificationsByOrderId(It.IsAny<string>()), Times.Never);
         }
+
+        // --- GetFutureNotificationsByNin ---
+
+        [Fact]
+        public async Task GetFutureNotificationsByNin_ReturnsOk_WithServiceResult()
+        {
+            var response = new List<FutureNotificationDto>
+            {
+                new() { CreatorName = "test-creator", RequestedSendTime = DateTime.UtcNow }
+            };
+            _serviceMock.Setup(s => s.GetFutureNotificationsByNin("12345678901", null, null)).ReturnsAsync(response);
+
+            var result = await _controller.GetFutureNotificationsByNin("12345678901", null, null);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(response, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetFutureNotificationsByNin_CallsService_WithCorrectParameters()
+        {
+            var from = new DateTime(2024, 1, 1);
+            var to = new DateTime(2024, 2, 1);
+            _serviceMock.Setup(s => s.GetFutureNotificationsByNin("12345678901", from, to))
+                .ReturnsAsync([]);
+
+            await _controller.GetFutureNotificationsByNin("12345678901", from, to);
+
+            _serviceMock.Verify(s => s.GetFutureNotificationsByNin("12345678901", from, to), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetFutureNotificationsByNin_PropagatesException_WhenServiceThrows()
+        {
+            _serviceMock.Setup(s => s.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .ThrowsAsync(new Exception("Service failure"));
+
+            await Assert.ThrowsAsync<Exception>(() => _controller.GetFutureNotificationsByNin("12345678901", null, null));
+        }
     }
 }

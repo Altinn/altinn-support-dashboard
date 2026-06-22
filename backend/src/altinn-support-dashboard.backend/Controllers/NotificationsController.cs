@@ -57,4 +57,14 @@ public class NotificationsController : ControllerBase
         var response = await _service.GetAllNotificationsByOrderId(orderId);
         return Ok(response);
     }
+
+    [HttpGet("future/nin")]
+    public async Task<IActionResult> GetFutureNotificationsByNin(
+        [FromHeader(Name = "NationalIdentityNumber")] string nationalIdentityNumber,
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to)
+    {
+        var response = await _service.GetFutureNotificationsByNin(nationalIdentityNumber, from, to);
+        return Ok(response);
+    }
 }
