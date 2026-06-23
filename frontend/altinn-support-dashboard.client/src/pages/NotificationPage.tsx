@@ -12,14 +12,16 @@ type SearchType = "orderId" | "nin";
 export const NotificationPage = () => {
   const [searchType, setSearchType] = useState<SearchType>("orderId");
   const [searchValue, setSearchValue] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
 
   const orderQuery = useNotifications(searchType === "orderId" ? searchValue : "");
   const ninQuery = "";
 
-  const activeQuery = searchType === "orderId" ? orderQuery : ninQuery;
+  const activeQuery = searchType === "orderId" ? orderQuery : null;
 
   useEffect(() => {
-    if (activeQuery.isError) {
+    if (activeQuery?.isError) {
       showPopup(activeQuery.error.message, "error");
     }
   }, [activeQuery]);
@@ -32,7 +34,12 @@ export const NotificationPage = () => {
 
       <ToggleGroup
         value={searchType}
-        onChange={(val) => { setSearchType(val as SearchType); setSearchValue(""); }}
+        onChange={(val) => { 
+          setSearchType(val as SearchType); setSearchValue(""); 
+          setSearchValue("")
+          setDateFrom("")
+          setDateTo("")
+        }}
         data-size="sm"
       >
         <ToggleGroup.Item value="orderId">Order-Id</ToggleGroup.Item>
@@ -43,6 +50,10 @@ export const NotificationPage = () => {
         searchValue={searchValue}
         setSearchValue={setSearchValue}
         searchType={searchType}
+        dateFrom={dateFrom}
+        setDateFrom={setDateFrom}
+        dateTo={dateTo}
+        setDateTo={setDateTo}
       />
 
       {/* Filters out the notifications with 0 (shows only email if sms was 0 f.ex.) */}
