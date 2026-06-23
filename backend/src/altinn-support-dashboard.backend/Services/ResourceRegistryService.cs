@@ -38,8 +38,8 @@ public class ResourceRegistryService : IResourceRegistryService
         var response = await GetCachedResourceList(environmentName);
 
         return response.Where(r =>
-            r.ResourceType == "AltinnApp" &&
-            r.Title?.Values.Any(v => v.Contains(query, StringComparison.OrdinalIgnoreCase)) == true
+            r.Title?.Values.Any(v => v.Contains(query, StringComparison.OrdinalIgnoreCase)) == true ||
+            r.Identifier?.Contains(query, StringComparison.OrdinalIgnoreCase) == true
         ).ToList();   
     }
 

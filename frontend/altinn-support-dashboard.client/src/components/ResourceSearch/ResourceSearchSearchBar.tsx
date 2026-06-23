@@ -11,6 +11,8 @@ type ResourceSearchSearchBarProps = {
   setOnlyDelegable: (value: boolean) => void;
   onlyVisible: boolean;
   setOnlyVisible: (value: boolean) => void;
+  onlyAltinnApp: boolean;
+  setOnlyAltinnApp: (value: boolean) => void;
 };
 
 export const ResourceSearchSearchBar: React.FC<ResourceSearchSearchBarProps> = ({
@@ -20,7 +22,9 @@ export const ResourceSearchSearchBar: React.FC<ResourceSearchSearchBarProps> = (
   onlyDelegable,
   setOnlyDelegable,
   onlyVisible,
-  setOnlyVisible
+  setOnlyVisible,
+  onlyAltinnApp,
+  setOnlyAltinnApp
 }) => {
   const [textFieldValue, setTextFieldValue] = useState(query)
 
@@ -73,6 +77,13 @@ export const ResourceSearchSearchBar: React.FC<ResourceSearchSearchBarProps> = (
           checked={onlyVisible}
           onChange={(e) => setOnlyVisible(e.target.checked)}
         />
+        <Checkbox
+          label="Kun AltinnApp"
+          value="altinnApp"
+          checked={onlyAltinnApp}
+          onChange={(e) => setOnlyAltinnApp(e.target.checked)}
+        />
+
       </div>
     </div>
   );
