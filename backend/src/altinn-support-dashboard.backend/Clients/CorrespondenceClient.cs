@@ -1,10 +1,12 @@
 using System.Globalization;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Models.correspondence;
+using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -98,22 +100,35 @@ public class CorrespondenceClient : ICorrespondenceClient
 
         //Attachments
         //In the future we might add the ability to upload custom attachments
-        var content = "This is a test attachment";
-        var bytes = Encoding.UTF8.GetBytes(content);
 
-        var fileContent = new ByteArrayContent(bytes);
-        fileContent.Headers.ContentType =
-            new MediaTypeHeaderValue("text/plain");
-        fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-        form.Add(fileContent, "Attachments", "testfile.txt");
-        form.Add(
-            new StringContent("testfile-1"),
-            "correspondence.content.attachments[0].sendersReference"
-        );
-        form.Add(
-            new StringContent("testfile.txt"),
-            "correspondence.content.attachments[0].filename"
-        );
+        if(correspondenceData.Correspondence.AttachmentType == "zip")
+        {
+            var zipStream = new MemoryStream();
+            using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create, leaveOpen: true))
+            {
+                var entry = archive.CreateEntry("testfile.txt");
+                using var entryStream = entry.Open();
+                var textBytes = Encoding.UTF8.GetBytes("This is a test attachment");
+                entryStream.Write(textBytes, 0, textBytes.Length);
+            }
+            zipStream.Position = 0;
+            var fileContent = new ByteArrayContent(zipStream.ToArray());
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
+            form.Add(fileContent, "Attachments", "testfile.zip");
+            form.Add(new StringContent("testfile-1"), "correspondence.content.attachments[0].sendersReferance");
+            form.Add(new StringContent("testfile.zip"), "correspondence.content.attachments[0].filename");
+        }
+        else
+        {
+            var bytes = Encoding.UTF8.GetBytes("This is a test attachment");
+            var fileContent = new ByteArrayContent(bytes);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("");
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+            form.Add(fileContent, "Attachments", "testfile.txt");
+            form.Add(new StringContent("testfile-1"), "correspondence.content.attachments[0].sendersReferance");
+            form.Add(new StringContent("testfile.txt"), "correspondence.content.attachments[0].filename");
+        }
+        
 
         var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
         request.Content = form;
