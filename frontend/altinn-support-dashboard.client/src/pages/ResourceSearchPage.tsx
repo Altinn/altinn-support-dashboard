@@ -14,6 +14,7 @@ export const ResourceSearchPage = () => {
   
   const [onlyDelegable, setOnlyDelegable] = useState(false);
   const [onlyVisible, setOnlyVisible] = useState(false);
+  const [onlyAltinnApp, setOnlyAltinnApp] = useState(true);
 
   return (
     <div className={styles.pageContainer}>
@@ -28,6 +29,8 @@ export const ResourceSearchPage = () => {
         setOnlyDelegable={setOnlyDelegable}
         onlyVisible={onlyVisible}
         setOnlyVisible={setOnlyVisible}
+        onlyAltinnApp={onlyAltinnApp}
+        setOnlyAltinnApp={setOnlyAltinnApp}
       />
       <div className={styles.mainContainer}>
         <div className={styles.listContainer}>
@@ -37,6 +40,7 @@ export const ResourceSearchPage = () => {
             setSelectedResource={setSelectedResource}
             onlyDelegable={onlyDelegable}
             onlyVisible={onlyVisible}
+            onlyAltinnApp={onlyAltinnApp}
           />
         </div>
         <div className={styles.detailedContainer}>
