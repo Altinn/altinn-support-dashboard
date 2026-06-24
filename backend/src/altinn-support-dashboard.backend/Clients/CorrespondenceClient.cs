@@ -48,7 +48,7 @@ public class CorrespondenceClient : ICorrespondenceClient
                 form.Add(new StringContent(resourceTypes.SelfIdentifiedResourceId.ToString()), "correspondence.resourceid");
                 break;
             case "securitylvl4":
-                form.Add(new StringContent(resourceTypes.SecurityLvl4ResourceId), "correspondence.resourceId");
+                form.Add(new StringContent(resourceTypes.SecurityLvl4ResourceId.ToString()), "correspondence.resourceid");
                 break;
             default:
                 throw new BadRequestException($"ResourceType {correspondenceData.Correspondence.ResourceType} not valid");
