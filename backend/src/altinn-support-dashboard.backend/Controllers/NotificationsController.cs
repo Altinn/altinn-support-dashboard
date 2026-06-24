@@ -12,7 +12,7 @@ namespace AltinnSupportDashboard.Controllers;
 [Authorize(AzureRoles.CoreInternal)]
 public class NotificationsController : ControllerBase
 {
-    private const string InvalidOrderIdMessage = "Ordre-ID is invalid. It should be in GUID format";
+    private const string InvalidOrderIdMessage = "Order-ID is invalid. It should be in GUID format";
 
     private readonly INotificationsService _service;
 
