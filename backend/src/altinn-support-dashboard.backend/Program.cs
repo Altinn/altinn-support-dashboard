@@ -98,7 +98,17 @@ namespace AltinnSupportDashboard
                     services.AddScoped<IAltinn3Service, Altinn3Service>();
                     services.AddScoped<IPartyApiClient, PartyApiClient>();
                     services.AddScoped<IPartyApiService, PartyApiService>();
-                    services.AddScoped<INotificationsClient, NotificationsClient>();
+                    var useClientsMocks = hostContext.Configuration.GetValue<bool>("FeatureFlags:UseClientMocks");
+                    if (useClientsMocks)
+                    {
+                        services.AddScoped<NotificationsClient>();
+                        services.AddScoped<INotificationsClient>(sp =>
+                            new MockNotificationsClient(sp.GetRequiredService<NotificationsClient>()));
+                    }
+                    else
+                    {
+                        services.AddScoped<INotificationsClient, NotificationsClient>();
+                    }
                     services.AddScoped<INotificationsService, NotificationsService>();
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
                     services.AddScoped<ICorrespondenceService, CorrespondenceService>();
