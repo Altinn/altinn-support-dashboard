@@ -6,7 +6,7 @@ import NotificationCard from "../components/Notification/NotificationCard";
 import style from "./styles/NotificationPage.module.css";
 import { showPopup } from "../components/Popup";
 import { useAppStore } from "../stores/Appstore";
-import NotificationShipmentCard from "../components/Notification/NIN search/NotificationShipmentCard";
+import NotificationShipmentCard from "../components/Notification/NIN-search/NotificationShipmentCard";
 
 type SearchType = "orderId" | "nin";
 
