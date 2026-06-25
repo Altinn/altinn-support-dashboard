@@ -15,6 +15,7 @@ interface ResourceSearchListProps {
     query: string;
     onlyDelegable: boolean;
     onlyVisible: boolean;
+    onlyAltinnApp: boolean;
 }
 
 export const ResourceSearchList: React.FC<ResourceSearchListProps> = ({
@@ -22,12 +23,15 @@ export const ResourceSearchList: React.FC<ResourceSearchListProps> = ({
     setSelectedResource,
     query,
     onlyDelegable,
-    onlyVisible
+    onlyVisible,
+    onlyAltinnApp
 }) => {
     const environment = useAppStore((state) => state.environment);
     const { resourceQuery } = useResourceSearch(environment, query);
     const resources = (resourceQuery.data ?? []).filter(
-        (r) => (!onlyDelegable || r.delegable === true) && (!onlyVisible || r.visible === true)
+        (r) => (!onlyDelegable || r.delegable === true) && 
+        (!onlyVisible || r.visible === true) &&
+        (!onlyAltinnApp || r.resourceType === "AltinnApp")
     );
 
     useEffect(() => {
