@@ -2,7 +2,12 @@ import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
 import { NotificationAdresses, PersonalContactAltinn3 } from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 import { NotificationOrderResponse } from "../models/notificationModels";
-import { Altinn2Role, PolicyRule, Resource, ResourceSearchResult } from "../models/resourceModels";
+import {
+  Altinn2Role,
+  PolicyRule,
+  Resource,
+  ResourceSearchResult,
+} from "../models/resourceModels";
 import { PartyModel } from "../models/PartyModel";
 
 //this file defines which which api endpoints we want to fetch data from
@@ -114,10 +119,11 @@ export const fetchNotificationAddresses = async (
 };
 
 export const fetchNotificationByOrderId = async (
-  orderId: string
+  orderId: string,
+  environment: string
 ): Promise<NotificationOrderResponse[] | null> => {
   const res = await authorizedFetch(
-    `/api/notifications/orderid/${encodeURIComponent(orderId)}`
+    `/api/${environment}/notifications/orderid/${encodeURIComponent(orderId)}`
   );
 
   if (res.status === 404) return null;
@@ -134,28 +140,32 @@ export const fetchResources = async (
   query: string
 ): Promise<ResourceSearchResult[]> => {
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/resource/search?resourceTitle=${encodeURIComponent(query)}`,
+    `${getBaseUrl(environment)}/resource/search?resourceTitle=${encodeURIComponent(query)}`
   );
 
   if (res.status === 404) return [];
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching resources");
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching resources");
 
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
-}
+};
 
 export const fetchResourceByIdentifier = async (
   environment: string,
-  identifier: string,
+  identifier: string
 ): Promise<Resource | null> => {
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/resource/${encodeURIComponent(identifier)}`,
+    `${getBaseUrl(environment)}/resource/${encodeURIComponent(identifier)}`
   );
 
   if (res.status === 404) return null;
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching resource by identifier");
+  if (!res.ok)
+    throw new Error(
+      (await res.text()) || "Error fetching resource by identifier"
+    );
   return await res.json();
-}
+};
 
 export const fetchResourcePolicyRules = async (
   environment: string,
@@ -165,13 +175,19 @@ export const fetchResourcePolicyRules = async (
     `${getBaseUrl(environment)}/resource/${encodeURIComponent(identifier)}/policy/rules`
   );
   if (res.status === 404) return [];
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching policy rules");
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching policy rules");
   const data = await res.json();
   return Array.isArray(data) ? data : [];
-}
-export const fetchRoleDefinitions = async (environment: string): Promise<Altinn2Role[]> => {
-  const res = await authorizedFetch(`${getBaseUrl(environment)}/serviceowner/rolesList`);
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching role definitions");
+};
+export const fetchRoleDefinitions = async (
+  environment: string
+): Promise<Altinn2Role[]> => {
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/rolesList`
+  );
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching role definitions");
   return await res.json();
 };
 
