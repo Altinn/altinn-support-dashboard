@@ -36,10 +36,10 @@ describe("NotificationShipmentCard", () => {
 
   it("should render table headers", () => {
     render(<NotificationShipmentCard shipment={makeShipment()} />);
-    expect(screen.getByText("Kanal")).toBeInTheDocument();
-    expect(screen.getByText("Adresse")).toBeInTheDocument();
-    expect(screen.getByText("Resultat")).toBeInTheDocument();
-    expect(screen.getByText("Tidspunkt")).toBeInTheDocument();
+    expect(screen.getByText("Channel")).toBeInTheDocument();
+    expect(screen.getByText("Address")).toBeInTheDocument();
+    expect(screen.getByText("Result")).toBeInTheDocument();
+    expect(screen.getByText("Time")).toBeInTheDocument();
   });
 
   it("should render E-post for email channel", () => {

@@ -13,17 +13,17 @@ describe("NotificationSearchBar", () => {
     vi.clearAllMocks();
   });
 
-  describe("orderId mode", () => {
-    it("should render Ordre-ID label and placeholder", () => {
+  describe("shipmentId mode", () => {
+    it("should render Shipment-ID label and placeholder", () => {
       render(
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="orderId"
+          searchType="shipmentId"
         />
       );
-      expect(screen.getByText("Ordre-ID")).toBeInTheDocument();
-      expect(screen.getByPlaceholderText("Skriv inn ordre-ID")).toBeInTheDocument();
+      expect(screen.getByLabelText("Shipment-ID")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Shipment-ID")).toBeInTheDocument();
     });
 
     it("should not show date fields", () => {
@@ -31,11 +31,11 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="orderId"
+          searchType="shipmentId"
         />
       );
-      expect(screen.queryByText("Fra dato")).not.toBeInTheDocument();
-      expect(screen.queryByText("Til dato")).not.toBeInTheDocument();
+      expect(screen.queryByLabelText("From date")).not.toBeInTheDocument();
+      expect(screen.queryByLabelText("To dato")).not.toBeInTheDocument();
     });
   });
 
@@ -48,8 +48,8 @@ describe("NotificationSearchBar", () => {
           searchType="nin"
         />
       );
-      expect(screen.getByText("NIN")).toBeInTheDocument();
-      expect(screen.getByPlaceholderText("Skriv inn NIN")).toBeInTheDocument();
+      expect(screen.getByLabelText("NIN")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("NIN")).toBeInTheDocument();
     });
 
     it("should show date fields", () => {
@@ -60,11 +60,11 @@ describe("NotificationSearchBar", () => {
           searchType="nin"
         />
       );
-      expect(screen.getByText("Fra dato")).toBeInTheDocument();
-      expect(screen.getByText("Til dato")).toBeInTheDocument();
+      expect(screen.getByLabelText("From date")).toBeInTheDocument();
+      expect(screen.getByLabelText("To dato")).toBeInTheDocument();
     });
 
-    it("should call setDateFrom when Fra dato changes", () => {
+    it("should call setDateFrom when From date changes", () => {
       render(
         <NotificationSearchBar
           searchValue=""
@@ -76,12 +76,11 @@ describe("NotificationSearchBar", () => {
           setDateTo={mockSetDateTo}
         />
       );
-      const inputs = screen.getAllByDisplayValue("");
-      fireEvent.change(inputs[1], { target: { value: "2025-01-01" } });
+      fireEvent.change(screen.getByLabelText("From date"), { target: { value: "2025-01-01" } });
       expect(mockSetDateFrom).toHaveBeenCalledWith("2025-01-01");
     });
 
-    it("should call setDateTo when Til dato changes", () => {
+    it("should call setDateTo when To dato changes", () => {
       render(
         <NotificationSearchBar
           searchValue=""
@@ -93,8 +92,7 @@ describe("NotificationSearchBar", () => {
           setDateTo={mockSetDateTo}
         />
       );
-      const inputs = screen.getAllByDisplayValue("");
-      fireEvent.change(inputs[2], { target: { value: "2025-06-01" } });
+      fireEvent.change(screen.getByLabelText("To dato"), { target: { value: "2025-06-01" } });
       expect(mockSetDateTo).toHaveBeenCalledWith("2025-06-01");
     });
 
@@ -110,8 +108,8 @@ describe("NotificationSearchBar", () => {
           setDateTo={mockSetDateTo}
         />
       );
-      expect(screen.getByDisplayValue("2025-01-01")).toBeInTheDocument();
-      expect(screen.getByDisplayValue("2025-06-01")).toBeInTheDocument();
+      expect(screen.getByLabelText("From date")).toHaveValue("2025-01-01");
+      expect(screen.getByLabelText("To dato")).toHaveValue("2025-06-01");
     });
   });
 
@@ -121,10 +119,10 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue="existing-id"
           setSearchValue={mockSetSearchValue}
-          searchType="orderId"
+          searchType="shipmentId"
         />
       );
-      expect(screen.getByPlaceholderText("Skriv inn ordre-ID")).toHaveValue("existing-id");
+      expect(screen.getByLabelText("Shipment-ID")).toHaveValue("existing-id");
     });
 
     it("should update input value as user types", async () => {
@@ -132,11 +130,11 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="orderId"
+          searchType="shipmentId"
         />
       );
       const user = userEvent.setup();
-      const input = screen.getByPlaceholderText("Skriv inn ordre-ID");
+      const input = screen.getByLabelText("Shipment-ID");
       await user.type(input, "abc-123");
       expect(input).toHaveValue("abc-123");
     });
@@ -146,14 +144,12 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="orderId"
+          searchType="shipmentId"
         />
       );
       const user = userEvent.setup();
-      const input = screen.getByPlaceholderText("Skriv inn ordre-ID");
-      await user.type(input, "order-42");
-      const buttons = screen.getAllByRole("button");
-      await user.click(buttons[0]);
+      await user.type(screen.getByLabelText("Shipment-ID"), "order-42");
+      await user.click(screen.getAllByRole("button")[0]);
       expect(mockSetSearchValue).toHaveBeenCalledWith("order-42");
     });
 
@@ -162,12 +158,11 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="orderId"
+          searchType="shipmentId"
         />
       );
       const user = userEvent.setup();
-      const input = screen.getByPlaceholderText("Skriv inn ordre-ID");
-      await user.type(input, "order-99{Enter}");
+      await user.type(screen.getByLabelText("Shipment-ID"), "order-99{Enter}");
       expect(mockSetSearchValue).toHaveBeenCalledWith("order-99");
     });
 
@@ -176,11 +171,11 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="orderId"
+          searchType="shipmentId"
         />
       );
       const user = userEvent.setup();
-      const input = screen.getByPlaceholderText("Skriv inn ordre-ID");
+      const input = screen.getByLabelText("Shipment-ID");
       await user.type(input, "some-value");
       await user.click(screen.getByText("x"));
       expect(input).toHaveValue("");
