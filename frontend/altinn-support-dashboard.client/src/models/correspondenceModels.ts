@@ -8,6 +8,7 @@ export interface Correspondence {
   notification?: CorrespondenceNotification;
   isConfirmationNeeded?: boolean;
   dueDateTime?: string;
+  attachmentType?: "txt" | "zip";
 }
 
 export interface CorrespondenceContent {

@@ -13,6 +13,7 @@ type CorrespondenceButtonProps = {
   summary: string;
   body: string;
   confirmationNeeded: boolean;
+  attachmentType: "txt" | "zip";
   notificationChannel: NotificationChannel;
 
   setResponseMessage: (responseData: CorrespondenceResponse) => void;
@@ -27,6 +28,7 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
   summary,
   body,
   confirmationNeeded,
+  attachmentType,
   setResponseMessage,
   dueDate,
 }) => {
@@ -45,6 +47,7 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
         resourceType: resourceType,
         isConfirmationNeeded: confirmationNeeded,
         dueDateTime: dueDate || undefined,
+        attachmentType: attachmentType,
       },
     };
     //sets notification options

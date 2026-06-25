@@ -142,4 +142,29 @@ public class CorrespondenceServiceTests
         Assert.Contains("Need at least one Recipient", ex.Message);
         _clientMock.Verify(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()), Times.Never);
     }
+
+    [Theory]
+    [InlineData("txt")]
+    [InlineData("zip")]
+    public async Task UploadCorrespondence_AttachmentType_IsPassedThroughToClient(string attachmentType)
+    {
+        var request = new CorrespondenceUploadRequest
+        {
+            Recipients = new List<string> { "123456789" },
+            Correspondence = new Correspondence { AttachmentType = attachmentType }
+        };
+
+        _clientMock
+            .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
+            .ReturnsAsync(new CorrespondenceResponse());
+
+        await _service.UploadCorrespondence(request);
+
+        _clientMock.Verify(c =>
+            c.UploadCorrespondence(It.Is<CorrespondenceUploadRequest>(r =>
+                r.Correspondence.AttachmentType == attachmentType
+            )),
+            Times.Once
+        );
+    }
 }
