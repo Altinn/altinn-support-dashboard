@@ -118,17 +118,16 @@ public class CorrespondenceClient : ICorrespondenceClient
             var fileContent = new ByteArrayContent(zipStream.ToArray());
             fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
             form.Add(fileContent, "Attachments", "testfile.zip");
-            form.Add(new StringContent("testfile-1"), "correspondence.content.attachments[0].sendersReferance");
+            form.Add(new StringContent("testfile-1"), "correspondence.content.attachments[0].sendersreference");
             form.Add(new StringContent("testfile.zip"), "correspondence.content.attachments[0].filename");
         }
         else
         {
             var bytes = Encoding.UTF8.GetBytes("This is a test attachment");
             var fileContent = new ByteArrayContent(bytes);
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue("");
             fileContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
             form.Add(fileContent, "Attachments", "testfile.txt");
-            form.Add(new StringContent("testfile-1"), "correspondence.content.attachments[0].sendersReferance");
+            form.Add(new StringContent("testfile-1"), "correspondence.content.attachments[0].sendersreference");
             form.Add(new StringContent("testfile.txt"), "correspondence.content.attachments[0].filename");
         }
         
