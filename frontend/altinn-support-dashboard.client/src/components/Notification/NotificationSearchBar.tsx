@@ -5,7 +5,7 @@ import style from "./styles/NotificationSearchBar.module.css";
 type NotificationSearchBarProps = {
   searchValue: string;
   setSearchValue: (value: string) => void;
-  searchType: "orderId" | "nin";
+  searchType: "shipmentId" | "nin";
   dateFrom?: string;
   setDateFrom?: (v: string) => void;
   dateTo?: string;
@@ -40,8 +40,8 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
   <div className={style.container}>
     <div className={style.row}>
       <Textfield
-        label={searchType === "orderId" ? "Ordre-ID" : "NIN"}
-        placeholder={searchType === "orderId" ? "Skriv inn ordre-ID" : "Skriv inn NIN"}
+        label={searchType === "shipmentId" ? "Shipment-ID" : "NIN"}
+        placeholder={searchType === "shipmentId" ? "Shipment-ID" : "NIN"}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
@@ -56,15 +56,15 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
     {searchType === "nin" && (
       <div className={style.row}>
         <Textfield
-          label="Fra dato"
+          label="From date"
           type="date"
-          max = {today}
+          max = {dateTo || today}
           value={dateFrom ?? ""}
           onChange={(e) => setDateFrom?.(e.target.value)}
           className={style.datefield}
         />
         <Textfield
-          label="Til dato"
+          label="To dato"
           type="date"
           max={today}
           value={dateTo ?? ""}

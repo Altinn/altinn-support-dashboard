@@ -8,17 +8,17 @@ import { showPopup } from "../components/Popup";
 import { useAppStore } from "../stores/Appstore";
 import NotificationShipmentCard from "../components/Notification/NIN-search/NotificationShipmentCard";
 
-type SearchType = "orderId" | "nin";
+type SearchType = "shipmentId" | "nin";
 
 export const NotificationPage = () => {
   const environment = useAppStore((state) => state.environment);
-  const [searchType, setSearchType] = useState<SearchType>("orderId");
+  const [searchType, setSearchType] = useState<SearchType>("shipmentId");
   const [searchValue, setSearchValue] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
   const orderQuery = useNotifications(
-    searchType === "orderId" ? searchValue : "",
+    searchType === "shipmentId" ? searchValue : "",
     environment
   );
   const ninQuery = useNotificationsByNin(
@@ -28,7 +28,7 @@ export const NotificationPage = () => {
     dateTo || undefined,
   );
 
-  const activeQuery = searchType === "orderId" ? orderQuery : ninQuery;
+  const activeQuery = searchType === "shipmentId" ? orderQuery : ninQuery;
 
   useEffect(() => {
     if (activeQuery?.isError) {
@@ -53,7 +53,7 @@ export const NotificationPage = () => {
         }}
         data-size="sm"
       >
-        <ToggleGroup.Item value="orderId">Order-Id</ToggleGroup.Item>
+        <ToggleGroup.Item value="shipmentId">Shipment-Id</ToggleGroup.Item>
         <ToggleGroup.Item value="nin">NIN</ToggleGroup.Item>
       </ToggleGroup>
 
@@ -69,7 +69,7 @@ export const NotificationPage = () => {
 
       {/* Filters out the notifications with 0 (shows only email if sms was 0 f.ex.) */}
       {/* Different result view based on what type of search it is */}
-      {searchType === "orderId" && 
+      {searchType === "shipmentId" && 
         orderQuery.data
           ?.filter((o) => o.notifications.length > 0)
           .map((order, i) => <NotificationCard key={i} order={order}/>)}
