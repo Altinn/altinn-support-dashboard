@@ -1,16 +1,34 @@
 import { Heading, ToggleGroup } from "@digdir/designsystemet-react";
 import { useEffect, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
-import { useNotifications } from "../hooks/hooks";
+import { useNotifications, useNotificationsByNin } from "../hooks/hooks";
 import NotificationCard from "../components/Notification/NotificationCard";
 import style from "./styles/NotificationPage.module.css";
 import { showPopup } from "../components/Popup";
 import { useAppStore } from "../stores/Appstore";
+import NotificationShipmentCard from "../components/Notification/NIN search/NotificationShipmentCard";
+
+type SearchType = "orderId" | "nin";
 
 export const NotificationPage = () => {
-  const [orderId, setOrderId] = useState("");
   const environment = useAppStore((state) => state.environment);
-  const notificationQuery = useNotifications(orderId, environment);
+  const [searchType, setSearchType] = useState<SearchType>("orderId");
+  const [searchValue, setSearchValue] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+
+  const orderQuery = useNotifications(
+    searchType === "orderId" ? searchValue : "",
+    environment
+  );
+  const ninQuery = useNotificationsByNin(
+    searchType === "nin" ? searchValue : "",
+    environment,
+    dateFrom || undefined,
+    dateTo || undefined,
+  );
+
+  const activeQuery = searchType === "orderId" ? orderQuery : ninQuery;
 
   useEffect(() => {
     if (activeQuery?.isError) {
@@ -26,6 +44,7 @@ export const NotificationPage = () => {
 
       <ToggleGroup
         value={searchType}
+        data-toggle-group="Søketype"
         onChange={(val) => { 
           setSearchType(val as SearchType); setSearchValue(""); 
           setSearchValue("")

@@ -28,19 +28,19 @@ export interface NotificationSendStatus {
 export interface NotificationShipmentResponse {
   shipmentId: string;
   creatorName: string;
-  resourceId: string;
-  sendersReference: string;
+  resourceId: string | null;
+  sendersReference: string | null;
   requestedSendTime: string;
-  notificationChannel: string;
-  recipients: ShipmentRecipient[];
+  notificationChannel: string | null;
+  notificationType: string | null;
+  deliveryAttempts: DeliveryAttempt[];
 }
 
-export interface ShipmentRecipient{
-  nationalIdentityNumber?: string;
-  organizationNumber: string | null;
-  channel: string;
-  emailAdress: string | null;
+export interface DeliveryAttempt {
+  nationalIdentityNumber: string | null;
+  channel: string | null;
+  emailAddress: string | null;
   mobileNumber: string | null;
-  result: string;
-  resultTime: string;
+  result: string | null;
+  resultTime: string | null;
 }

@@ -34,54 +34,47 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
     setSearchValue(inputValue);
   };
 
+  const today = new Date().toISOString().split("T")[0];
+
   return (
-    <div className={style.container}>
+  <div className={style.container}>
+    <div className={style.row}>
       <Textfield
-        label="Shipment ID"
-        placeholder="Skriv inn shipment-id"
+        label={searchType === "orderId" ? "Ordre-ID" : "NIN"}
+        placeholder={searchType === "orderId" ? "Skriv inn ordre-ID" : "Skriv inn NIN"}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            handleSearch();
-          }
-        }}
+        onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
         className={style.textfield}
       />
-      <Button
-        onClick={handleSearch}
-        variant="secondary"
-        className={style.searchButton}
-      >
+      <Button onClick={handleSearch} variant="secondary" className={style.searchButton}>
         <Search />
       </Button>
-      <Button
-        onClick={handleClear}
-        className={style.removeButton}
-      >
-        x
-      </Button>
-
-      {searchType === "nin" && (
-        <div className={style.row}>
-          <Textfield
-            label="Fra dato"
-            type="date"
-            value={dateFrom ?? ""}
-            onChange={(e) => setDateFrom?.(e.target.value)}
-            className={style.textfield}
-          />
-          <Textfield
-            label="Til dato"
-            type="date"
-            value={dateTo ?? ""}
-            onChange={(e) => setDateTo?.(e.target.value)}
-            className={style.textfield}
-          />
-        </div>
-      )}
+      <Button onClick={handleClear} className={style.removeButton}>x</Button>
     </div>
-  );
+
+    {searchType === "nin" && (
+      <div className={style.row}>
+        <Textfield
+          label="Fra dato"
+          type="date"
+          max = {today}
+          value={dateFrom ?? ""}
+          onChange={(e) => setDateFrom?.(e.target.value)}
+          className={style.datefield}
+        />
+        <Textfield
+          label="Til dato"
+          type="date"
+          max={today}
+          value={dateTo ?? ""}
+          onChange={(e) => setDateTo?.(e.target.value)}
+          className={style.datefield}
+        />
+      </div>
+    )}
+  </div>
+);
 };
 
 export default NotificationSearchBar;
