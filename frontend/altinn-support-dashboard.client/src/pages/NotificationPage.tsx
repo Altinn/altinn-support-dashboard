@@ -5,10 +5,12 @@ import { useNotifications } from "../hooks/hooks";
 import NotificationCard from "../components/Notification/NotificationCard";
 import style from "./styles/NotificationPage.module.css";
 import { showPopup } from "../components/Popup";
+import { useAppStore } from "../stores/Appstore";
 
 export const NotificationPage = () => {
   const [orderId, setOrderId] = useState("");
-  const notificationQuery = useNotifications(orderId);
+  const environment = useAppStore((state) => state.environment);
+  const notificationQuery = useNotifications(orderId, environment);
 
   useEffect(() => {
     if (notificationQuery.isError) {

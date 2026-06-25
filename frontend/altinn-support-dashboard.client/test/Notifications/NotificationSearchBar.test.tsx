@@ -8,7 +8,7 @@ describe("NotificationSearchBar", () => {
     it("should render input and buttons", () => {
         render(<NotificationSearchBar orderId="" setOrderId={vi.fn()} />);
 
-        expect(screen.getByPlaceholderText("Skriv inn ordre-id")).toBeInTheDocument();
+        expect(screen.getByPlaceholderText("Skriv inn shipment-id")).toBeInTheDocument();
         expect(screen.getByText("x")).toBeInTheDocument();
     });
 
@@ -16,7 +16,7 @@ describe("NotificationSearchBar", () => {
         render(<NotificationSearchBar orderId="" setOrderId={vi.fn()} />);
         const user = userEvent.setup();
 
-        const input = screen.getByPlaceholderText("Skriv inn ordre-id");
+        const input = screen.getByPlaceholderText("Skriv inn shipment-id");
         await user.type(input, "abc-123");
 
         expect(input).toHaveValue("abc-123");
@@ -27,7 +27,7 @@ describe("NotificationSearchBar", () => {
         render(<NotificationSearchBar orderId="" setOrderId={setOrderId} />);
         const user = userEvent.setup();
 
-        const input = screen.getByPlaceholderText("Skriv inn ordre-id");
+        const input = screen.getByPlaceholderText("Skriv inn shipment-id");
         await user.type(input, "order-42");
         const buttons = screen.getAllByRole("button");
         await user.click(buttons[0]);
@@ -40,7 +40,7 @@ describe("NotificationSearchBar", () => {
         render(<NotificationSearchBar orderId="" setOrderId={setOrderId} />);
         const user = userEvent.setup();
 
-        const input = screen.getByPlaceholderText("Skriv inn ordre-id");
+        const input = screen.getByPlaceholderText("Skriv inn shipment-id");
         await user.type(input, "order-99{Enter}");
 
         expect(setOrderId).toHaveBeenCalledWith("order-99");
@@ -51,7 +51,7 @@ describe("NotificationSearchBar", () => {
         render(<NotificationSearchBar orderId="" setOrderId={setOrderId} />);
         const user = userEvent.setup();
 
-        const input = screen.getByPlaceholderText("Skriv inn ordre-id");
+        const input = screen.getByPlaceholderText("Skriv inn shipment-id");
         await user.type(input, "some-value");
         await user.click(screen.getByText("x"));
 
@@ -62,6 +62,6 @@ describe("NotificationSearchBar", () => {
     it("should initialize input with provided orderId", () => {
         render(<NotificationSearchBar orderId="existing-id" setOrderId={vi.fn()} />);
 
-        expect(screen.getByPlaceholderText("Skriv inn ordre-id")).toHaveValue("existing-id");
+        expect(screen.getByPlaceholderText("Skriv inn shipment-id")).toHaveValue("existing-id");
     });
 });

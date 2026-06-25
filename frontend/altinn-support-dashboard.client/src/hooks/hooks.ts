@@ -162,10 +162,10 @@ export function useInternalIdLookup(query: string, environment: string) {
   });
 }
 
-export function useNotifications(orderId: string) {
+export function useNotifications(orderId: string, environment: string) {
   const notificationQuery = useQuery({
-    queryKey: ["notifications", orderId],
-    queryFn: () => fetchNotificationByOrderId(orderId),
+    queryKey: ["notifications", orderId, environment],
+    queryFn: () => fetchNotificationByOrderId(orderId, environment),
     enabled: !!orderId,
     retry: false,
     staleTime: 2 * 60 * 1000,
@@ -186,7 +186,10 @@ export function useResourceSearch(environment: string, query: string) {
   return { resourceQuery };
 }
 
-export function useResourceWithPolicies(environment: string, identifier?: string) {
+export function useResourceWithPolicies(
+  environment: string,
+  identifier?: string
+) {
   const resourceQuery = useQuery<Resource | null, Error>({
     queryKey: ["resource", environment, identifier],
     queryFn: () => fetchResourceByIdentifier(environment, identifier!),
@@ -196,7 +199,7 @@ export function useResourceWithPolicies(environment: string, identifier?: string
     refetchOnWindowFocus: false,
   });
 
-    const policyRulesQuery = useQuery<PolicyRule[], Error>({
+  const policyRulesQuery = useQuery<PolicyRule[], Error>({
     queryKey: ["policyRules", environment, identifier],
     queryFn: () => fetchResourcePolicyRules(environment, identifier!),
     enabled: !!identifier,
