@@ -71,7 +71,10 @@ public class NotificationsClient : INotificationsClient
             query.Add($"to={Uri.EscapeDataString(to.Value.ToString("O"))}");
         }
         var url = "notifications/api/v1/future/dashboard/recipients/notifications/nin";
-        if (query.Count > 0) url += "?" + string.Join("&", query);
+        if (query.Count > 0)
+        {
+            url += "?" + string.Join("&", query);
+        }
 
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
 
