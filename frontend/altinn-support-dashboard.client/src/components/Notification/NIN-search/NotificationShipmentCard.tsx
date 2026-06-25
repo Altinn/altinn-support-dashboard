@@ -30,8 +30,8 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
                 </Table.Row>
             </Table.Head>
             <Table.Body>
-                {(shipment.deliveryAttempts ?? []).map((attempt, i) => (
-                    <Table.Row key={i}>
+                {(shipment.deliveryAttempts ?? []).map((attempt, index) => (
+                    <Table.Row key={index}>
                         <Table.Cell>{attempt.channel === "email" ? "E-post" : "SMS"}</Table.Cell>
                         <Table.Cell>{attempt.emailAddress ?? attempt.mobileNumber}</Table.Cell>
                         <Table.Cell>
