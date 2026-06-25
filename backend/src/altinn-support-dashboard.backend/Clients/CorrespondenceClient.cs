@@ -104,7 +104,7 @@ public class CorrespondenceClient : ICorrespondenceClient
         //Attachments
         //In the future we might add the ability to upload custom attachments
 
-        if(correspondenceData.Correspondence?.AttachmentType == "zip")
+        if(correspondenceData?.Correspondence?.AttachmentType == "zip")
         {
             var zipStream = new MemoryStream();
             using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create, leaveOpen: true))
