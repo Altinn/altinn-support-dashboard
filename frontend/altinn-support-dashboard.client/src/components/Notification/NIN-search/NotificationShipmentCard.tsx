@@ -1,6 +1,6 @@
 import { Alert, Card, Paragraph, Table } from "@digdir/designsystemet-react";
 import { NotificationShipmentResponse } from "../../../models/notificationModels"
-import styles from "../styles/NotificationCard.module.css"
+import styles from "./NotificationShipmentCard.module.css"
 import { colorMap } from "../NotificationStatusCode";
 
 
