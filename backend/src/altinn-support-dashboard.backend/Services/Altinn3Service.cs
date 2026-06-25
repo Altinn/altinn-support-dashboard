@@ -76,12 +76,15 @@ public class Altinn3Service : IAltinn3Service
     public async Task<List<OrgPartyInfoDto>> GetOrganizationspartyInfo(List<int> partyIds, string environment)
     {
         var result = await _client.GetOrganizationsPartyInfoByPartyId(partyIds, environment);
+        if (string.IsNullOrEmpty(result)) return [];
         var parties = JsonSerializer.Deserialize<List<OrgPartyInfoDto>>(result, jsonOptions) ?? throw new Exception("Error deserializing");
         return parties;
     }
 
     public async Task<List<Organization>> GetOrganizationsByOrgNumbers(List<string> orgNumbers, string environment)
     {
+        if (orgNumbers.Count == 0) return [];
+
         var identifiers = await GetOrganizationsIdentifiers(orgNumbers, environment);
         var parties = await GetOrganizationspartyInfo(identifiers.Select((i) => i.PartyId).ToList(), environment);
         List<Organization> organizations = [];
