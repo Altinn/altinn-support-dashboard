@@ -14,6 +14,8 @@ public class FutureNotificationDto
 
 	public string? NotificationChannel { get; set; }
 
+	public string? NotificationType { get; set; }
+
 	public List<FutureNotificationDeliveryAttemptDto?> DeliveryAttempts { get; set; } = [];
 
 }

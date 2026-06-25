@@ -22,6 +22,12 @@ public class NotificationsService : INotificationsService
         _logger = logger;
     }
 
+    public async Task<List<FutureNotificationDto>> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to, string environmentName)
+    {
+        var result = await _client.GetFutureNotificationsByNin(nin, from, to, environmentName);
+        return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+    }
+
     public async Task<NotificationOrderResponseDto> GetEmailNotificationsByOrderId(string orderId, string environmentName)
     {
         var result = await _client.GetEmailNotificationsByOrderId(orderId, environmentName);
@@ -34,11 +40,6 @@ public class NotificationsService : INotificationsService
         return JsonSerializer.Deserialize<NotificationOrderResponseDto>(result, _jsonOptions) ?? throw new Exception("Error deserializing SMS notifications response");
     }
 
-    public async Task<List<FutureNotificationDto>> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to, string environmentName)
-    {
-        var result = await _client.GetFutureNotificationsByNin(nin, from, to, environmentName);
-        return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
-    }
 
     public async Task<List<NotificationOrderResponseDto>> GetAllNotificationsByOrderId(string orderId, string environmentName)
     {
