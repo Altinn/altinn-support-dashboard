@@ -5,20 +5,12 @@ import { useNotifications } from "../hooks/hooks";
 import NotificationCard from "../components/Notification/NotificationCard";
 import style from "./styles/NotificationPage.module.css";
 import { showPopup } from "../components/Popup";
-import NotificationShipmentCard from "../components/Notification/NIN search/NotificationShipmentCard";
-
-type SearchType = "orderId" | "nin";
+import { useAppStore } from "../stores/Appstore";
 
 export const NotificationPage = () => {
-  const [searchType, setSearchType] = useState<SearchType>("orderId");
-  const [searchValue, setSearchValue] = useState("");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
-
-  const orderQuery = useNotifications(searchType === "orderId" ? searchValue : "");
-  const ninQuery = "";
-
-  const activeQuery = searchType === "orderId" ? orderQuery : null;
+  const [orderId, setOrderId] = useState("");
+  const environment = useAppStore((state) => state.environment);
+  const notificationQuery = useNotifications(orderId, environment);
 
   useEffect(() => {
     if (activeQuery?.isError) {

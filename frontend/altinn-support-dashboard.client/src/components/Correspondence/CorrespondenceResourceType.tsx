@@ -26,6 +26,7 @@ const CorrespondenceResourceType: React.FC<CorrespondenceResourceTypeProps> = ({
           Taushetsbelagt post
         </Select.Option>
         <Select.Option value="default">Ordinær post</Select.Option>
+        <Select.Option value="securitylvl4">Sikkerhetsnivå 4</Select.Option>
       </Select>
     </div>
   );
