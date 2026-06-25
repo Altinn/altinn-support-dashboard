@@ -51,14 +51,14 @@ public class NotificationsController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("future/nin")]
+    [HttpGet("future/nin/{nin}")]
     public async Task<IActionResult> GetFutureNotificationsByNin(
         [FromRoute] string environmentName,
-        [FromHeader(Name = "NationalIdentityNumber")] string nationalIdentityNumber,
+        [FromRoute] string nin,
         [FromQuery] DateTime? from,
         [FromQuery] DateTime? to)
     {
-        var response = await _service.GetFutureNotificationsByNin(nationalIdentityNumber, from, to, environmentName);
+        var response = await _service.GetFutureNotificationsByNin(nin, from, to, environmentName);
         return Ok(response);
     }
 }
