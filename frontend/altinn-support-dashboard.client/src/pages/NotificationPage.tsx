@@ -84,12 +84,6 @@ export const NotificationPage = () => {
         <Spinner aria-label="Søker..." />
       )}
 
-      {activeQuery.isError && !activeQuery.isFetching && (
-        <Alert data-color="danger">
-          Søket feilet: {activeQuery.error.message}
-        </Alert>
-      )}
-
       {!activeQuery.isFetching && !activeQuery.isError && activeQuery.data !== undefined && activeQuery.data?.length === 0 && (
         <Alert data-color="info">Ingen resultater funnet.</Alert>
       )}
