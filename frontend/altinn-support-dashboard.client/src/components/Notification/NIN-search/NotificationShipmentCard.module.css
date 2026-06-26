@@ -1,0 +1,9 @@
+.card {
+  width: 100%;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.paragraph {
+    margin-bottom: 0.3rem;
+}

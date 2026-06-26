@@ -84,7 +84,7 @@ Dette prosjektet er lisensiert under MIT-lisensen - se [LICENSE](LICENSE) filen 
 
 ## Kontakt
 
-For spørsmål eller forespørsler, vennligst kontakt [Siri Esteri Berg-Johnsen](mailto:siri.esteri.berg-johnsen@digdir.no) eller [Fabian Ugedal](fabian.ugedal@digdir.no)på epost
+For spørsmål eller forespørsler, vennligst kontakt [Siri Esteri Berg-Johnsen](mailto:siri.esteri.berg-johnsen@digdir.no) eller [Fabian Ugedal](mailto:fabian.ugedal@digdir.no) på epost
 
 ## Dokumentasjon
 

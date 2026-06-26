@@ -1,7 +1,7 @@
 import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
 import { NotificationAdresses, PersonalContactAltinn3 } from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
-import { NotificationOrderResponse } from "../models/notificationModels";
+import { NotificationOrderResponse, NotificationShipmentResponse } from "../models/notificationModels";
 import {
   Altinn2Role,
   PolicyRule,
@@ -134,6 +134,34 @@ export const fetchNotificationByOrderId = async (
 
   return await res.json();
 };
+
+export const fetchNotificationsByNin = async (
+  nin: string,
+  environment: string,
+  dateFrom?: string,
+  dateTo?: string,
+): Promise<NotificationShipmentResponse[] | null> => {
+  const params = new URLSearchParams();
+  if (dateFrom) params.set("from", new Date(dateFrom).toISOString());
+  if (dateTo) {
+    const toDate = new Date(dateTo + "T23:59:59");
+    const now = new Date();
+    params.set("to", (toDate > now ? now : toDate).toISOString());
+  }
+  const query = params.toString() ? `?${params}` : "";
+
+  const res = await authorizedFetch(
+    `/api/${environment}/notifications/future/nin/${encodeURIComponent(nin)}${query}`
+  );
+
+  if (res.status === 404) return null;
+  if (!res.ok)
+    throw new Error(
+      (await res.text()) || "Error fetching notification by NIN"
+    );
+
+  return await res.json();
+}
 
 export const fetchResources = async (
   environment: string,
