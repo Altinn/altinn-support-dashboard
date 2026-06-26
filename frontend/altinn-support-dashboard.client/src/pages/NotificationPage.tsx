@@ -1,4 +1,4 @@
-import { Heading, ToggleGroup } from "@digdir/designsystemet-react";
+import { Alert, Heading, Spinner, ToggleGroup } from "@digdir/designsystemet-react";
 import { useEffect, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
 import { useNotifications, useNotificationsByNin } from "../hooks/hooks";
@@ -79,6 +79,21 @@ export const NotificationPage = () => {
         dateTo={dateTo}
         setDateTo={setDateTo}
       />
+
+      {activeQuery.isFetching && (
+        <Spinner aria-label="Søker..." />
+      )}
+
+      {activeQuery.isError && !activeQuery.isFetching && (
+        <Alert data-color="danger">
+          Søket feilet: {activeQuery.error.message}
+        </Alert>
+      )}
+
+      {!activeQuery.isFetching && !activeQuery.isError && activeQuery.data !== undefined && activeQuery.data?.length === 0 && (
+        <Alert data-color="info">Ingen resultater funnet.</Alert>
+      )}
+
 
       {/* Filters out the notifications with 0 (shows only email if sms was 0 f.ex.) */}
       {/* Different result view based on what type of search it is */}
