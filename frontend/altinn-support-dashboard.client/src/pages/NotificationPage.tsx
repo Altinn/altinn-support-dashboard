@@ -1,4 +1,4 @@
-import { Alert, Heading, Spinner, ToggleGroup } from "@digdir/designsystemet-react";
+import { Alert, Heading, Skeleton, Spinner, ToggleGroup } from "@digdir/designsystemet-react";
 import { useEffect, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
 import { useNotifications, useNotificationsByNin } from "../hooks/hooks";
@@ -81,7 +81,11 @@ export const NotificationPage = () => {
       />
 
       {activeQuery.isFetching && (
-        <Spinner aria-label="Søker..." />
+        <>
+          <Skeleton variant="rectangle" height="6rem" />
+          <Skeleton variant="rectangle" height="6rem" />
+          <Skeleton variant="rectangle" height="6rem" />
+        </>
       )}
 
       {!activeQuery.isFetching && !activeQuery.isError && activeQuery.data !== undefined && activeQuery.data?.length === 0 && (
