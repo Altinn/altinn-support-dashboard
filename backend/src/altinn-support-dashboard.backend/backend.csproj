@@ -50,6 +50,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Clients\Mocks\Data\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\frontend\altinn-support-dashboard.client\altinn-support-dashboard.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>

@@ -1,0 +1,18 @@
+{
+  "orderId": "mock-order-sms-001",
+  "sendersReference": "mock-ref-001",
+  "generated": 1,
+  "succeeded": 1,
+  "notifications": [
+    {
+      "id": "mock-notif-sms-001",
+      "succeeded": true,
+      "recipient": { "mobileNumber": "99999999" },
+      "sendStatus": {
+        "status": "Succeeded",
+        "description": "SMS delivered successfully",
+        "lastUpdate": "2024-01-15T10:00:00"
+      }
+    }
+  ]
+}

@@ -93,7 +93,10 @@ namespace AltinnSupportDashboard
                     services.AddAzureEntraAuthenticationAndAuthorization(hostContext.Configuration);
 
                     // Register application services
-                    services.AddScoped<DataBrregClient>();
+                    services.AddSingleton<GiteaApiClient>();
+                    services.AddScoped<IGiteaService, GiteaService>();
+                    services.AddScoped<IAltinn3ApiClient, Altinn3ApiClient>();
+                    services.AddScoped<IDataBrregClient, DataBrregClient>();
                     services.AddScoped<IDataBrregService, DataBrregService>();
                     services.AddScoped<IAltinn3Service, Altinn3Service>();
                     services.AddScoped<IPartyApiClient, PartyApiClient>();
