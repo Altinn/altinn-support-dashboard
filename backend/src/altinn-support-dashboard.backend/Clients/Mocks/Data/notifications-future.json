@@ -19,7 +19,7 @@
         "nationalIdentityNumber": "13896895898",
         "channel": "Sms",
         "mobileNumber": "99999999",
-        "result": "Succeeded",
+        "result": "Failed",
         "resultTime": "2024-06-01T12:01:00"
       }
     ]
