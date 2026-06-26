@@ -11,6 +11,7 @@ import {
   fetchInternalIds,
   fetchNotificationAddresses,
   fetchNotificationByOrderId,
+  fetchNotificationsByNin,
   fetchOrganizations,
   fetchPersonalContacts,
   fetchResourceByIdentifier,
@@ -172,6 +173,22 @@ export function useNotifications(orderId: string, environment: string) {
     refetchOnWindowFocus: false,
   });
   return notificationQuery;
+}
+
+export function useNotificationsByNin(
+  nin: string,
+  environment: string,
+  dateFrom?: string,
+  dateTo?: string
+) {
+  return useQuery({
+    queryKey: ["notificationsByNin", nin, environment, dateFrom, dateTo],
+    queryFn: () => fetchNotificationsByNin(nin, environment, dateFrom, dateTo),
+    enabled: nin.length > 0,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 }
 
 export function useResourceSearch(environment: string, query: string) {

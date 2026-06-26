@@ -3,52 +3,79 @@ import { Button, Search, Textfield } from "@digdir/designsystemet-react";
 import style from "./styles/NotificationSearchBar.module.css";
 
 type NotificationSearchBarProps = {
-  orderId: string;
-  setOrderId: (value: string) => void;
+  searchValue: string;
+  setSearchValue: (value: string) => void;
+  searchType: "shipmentId" | "future";
+  dateFrom?: string;
+  setDateFrom?: (v: string) => void;
+  dateTo?: string;
+  setDateTo?: (v: string) => void;
 };
 
 const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
-  orderId,
-  setOrderId,
+  searchValue,
+  setSearchValue,
+  searchType,
+  dateFrom,
+  setDateFrom,
+  dateTo,
+  setDateTo
 }) => {
-  const [inputValue, setInputValue] = useState(orderId ?? "");
+  const [inputValue, setInputValue] = useState(searchValue ?? "");
 
-  const handleSearch = () => {
-    setOrderId(inputValue);
+  const handleClear = () => {
+    setInputValue("");
+    setSearchValue("");
+    setDateFrom?.("");
+    setDateTo?.("");
   };
 
+  const handleSearch = () => {
+    setSearchValue(inputValue);
+  };
+
+  const today = new Date().toISOString().split("T")[0];
+
   return (
-    <div className={style.container}>
+  <div className={style.container}>
+    <div className={style.row}>
       <Textfield
-        label="Shipment ID"
-        placeholder="Skriv inn shipment-id"
+        label={searchType === "shipmentId" ? "Shipment-ID" : "Future"}
+        placeholder={searchType === "shipmentId" ? "Shipment-ID" : "Valid values: NIN"}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            handleSearch();
-          }
-        }}
+        onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
         className={style.textfield}
       />
-      <Button
-        onClick={handleSearch}
-        variant="secondary"
-        className={style.searchButton}
-      >
+      <Button onClick={handleSearch} variant="secondary" className={style.searchButton}>
         <Search />
       </Button>
-      <Button
-        onClick={() => {
-          setInputValue("");
-          setOrderId("");
-        }}
-        className={style.removeButton}
-      >
-        x
-      </Button>
+      <Button onClick={handleClear} className={style.removeButton}>x</Button>
     </div>
-  );
+
+    {searchType === "future" && (
+      <div className={style.row}>
+        <Textfield
+          label="From date"
+          type="date"
+          max = {dateTo || today}
+          value={dateFrom ?? ""}
+          onChange={(e) => setDateFrom?.(e.target.value)}
+          className={style.datefield}
+        />
+        <Textfield
+          label="To dato"
+          type="date"
+          max={today}
+          min={dateFrom}
+          value={dateTo ?? ""}
+          onChange={(e) => setDateTo?.(e.target.value)}
+          className={style.datefield}
+        />
+      </div>
+    )}
+  </div>
+);
 };
 
 export default NotificationSearchBar;
