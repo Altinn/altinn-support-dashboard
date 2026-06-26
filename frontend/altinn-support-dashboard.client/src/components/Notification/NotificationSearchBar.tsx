@@ -55,7 +55,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
 
     {searchType === "future" && (
       <div>
-        <Paragraph>If no values are present, it will default to the past 7 days</Paragraph>
+        <Paragraph className={style.paragraph}>If no values are present, it will default to the past 7 days</Paragraph>
         <div className={style.row}>
           <Textfield
             label="From date"
