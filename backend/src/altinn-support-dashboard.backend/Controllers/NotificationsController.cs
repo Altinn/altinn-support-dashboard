@@ -58,6 +58,10 @@ public class NotificationsController : ControllerBase
         [FromQuery] DateTime? from,
         [FromQuery] DateTime? to)
     {
+        if (!ValidationService.isValidSsn(nin))
+        {
+            return BadRequest("Not a valid nin");
+        }
         var response = await _service.GetFutureNotificationsByNin(nin, from, to, environmentName);
         return Ok(response);
     }
