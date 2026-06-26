@@ -59,21 +59,21 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
           <Textfield
             label="From date"
             type="date"
-            description="If no values are present, it will default to the past 7 days"
+            description="Deafults to past 7 days if empty"
             max = {dateTo || today}
             value={dateFrom ?? ""}
             onChange={(e) => setDateFrom?.(e.target.value)}
-            className={style.datefield}
+            className={style.dateFieldFrom}
           />
           <Textfield
             label="To date"
             type="date"
-            description="If no values are present, it will default to the past 7 days"
+            description=" \ "
             max={today}
             min={dateFrom}
             value={dateTo ?? ""}
             onChange={(e) => setDateTo?.(e.target.value)}
-            className={style.datefield}
+            className={style.dateFieldTo}
           />
         </div>
       </div>

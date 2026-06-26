@@ -9,6 +9,7 @@
   display: flex;
   flex-direction: row;
   gap: 1.5rem;
+  align-items: flex-start;
 }
 
 .textfield {
@@ -29,10 +30,13 @@
   padding: 0;
 }
 
-.dateField {
-  width: 12rem;
+.dateFieldTo {
+  width: 18rem;
 }
 
-.paragraph{
-  font-style: italic;
+.dateFieldFrom {
+}
+
+.dateField :global(label) {
+  font-weight: bold;
 }
