@@ -1,0 +1,29 @@
+[
+  {
+    "identifier": "skd-mva",
+    "title": { "nb": "Merverdiavgift", "nn": "Meirverdiavgift", "en": "VAT" },
+    "description": { "nb": "Tjeneste for merverdiavgift", "en": "VAT service" },
+    "resourceType": "MaskinportenSchema",
+    "hasCompetentAuthority": { "name": { "nb": "Skatteetaten" } },
+    "visible": true,
+    "delegable": true
+  },
+  {
+    "identifier": "nav-dagpenger",
+    "title": { "nb": "Dagpenger", "en": "Unemployment benefits" },
+    "description": { "nb": "Tjeneste for dagpenger", "en": "Unemployment benefits service" },
+    "resourceType": "MaskinportenSchema",
+    "hasCompetentAuthority": { "name": { "nb": "NAV" } },
+    "visible": true,
+    "delegable": true
+  },
+  {
+    "identifier": "altinn-access-management",
+    "title": { "nb": "Tilgangsstyring", "en": "Access management" },
+    "description": { "nb": "Tjeneste for tilgangsstyring i Altinn", "en": "Access management in Altinn" },
+    "resourceType": "AltinnApp",
+    "hasCompetentAuthority": { "name": { "nb": "Digitaliseringsdirektoratet" } },
+    "visible": true,
+    "delegable": false
+  }
+]

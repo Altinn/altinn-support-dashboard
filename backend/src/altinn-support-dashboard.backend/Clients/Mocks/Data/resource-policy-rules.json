@@ -1,0 +1,20 @@
+[
+  {
+    "subject": [
+      { "type": "urn:altinn:rolecode", "value": "DAGL" }
+    ],
+    "action": { "type": "urn:oasis:names:tc:xacml:1.0:action:action-id", "value": "read" },
+    "resource": [
+      { "type": "urn:altinn:resource", "value": "skd-mva" }
+    ]
+  },
+  {
+    "subject": [
+      { "type": "urn:altinn:rolecode", "value": "DAGL" }
+    ],
+    "action": { "type": "urn:oasis:names:tc:xacml:1.0:action:action-id", "value": "write" },
+    "resource": [
+      { "type": "urn:altinn:resource", "value": "skd-mva" }
+    ]
+  }
+]

@@ -111,18 +111,21 @@ namespace AltinnSupportDashboard
                         services.AddScoped<DataBrregClient>();
                         services.AddScoped<IDataBrregClient>(sp =>
                             new MockDataBrregClient(sp.GetRequiredService<DataBrregClient>()));
+                        services.AddScoped<ResourceRegistryClient>();
+                        services.AddScoped<IResourceRegistryClient>(sp =>
+                            new MockResourceRegistryClient(sp.GetRequiredService<ResourceRegistryClient>()));
                     }
                     else
                     {
                         services.AddScoped<IAltinn3ApiClient, Altinn3ApiClient>();
                         services.AddScoped<INotificationsClient, NotificationsClient>();
                         services.AddScoped<IDataBrregClient, DataBrregClient>();
+                        services.AddScoped<IResourceRegistryClient, ResourceRegistryClient>();
                     }
                     services.AddScoped<INotificationsService, NotificationsService>();
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
                     services.AddScoped<ICorrespondenceService, CorrespondenceService>();
                     services.AddScoped<ISsnTokenService, SsnTokenService>();
-                    services.AddScoped<IResourceRegistryClient, ResourceRegistryClient>();
                     services.AddScoped<IResourceRegistryService, ResourceRegistryService>();
                 });
     }
