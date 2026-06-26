@@ -68,7 +68,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
           <Textfield
             label="To date"
             type="date"
-            description=" \ "
+            description={"\u00A0"}
             max={today}
             min={dateFrom}
             value={dateTo ?? ""}
