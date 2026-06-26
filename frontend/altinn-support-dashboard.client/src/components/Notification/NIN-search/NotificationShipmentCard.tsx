@@ -1,4 +1,4 @@
-import { Alert, Card, Heading, Paragraph, Table } from "@digdir/designsystemet-react";
+import { Alert, Card, Paragraph, Table } from "@digdir/designsystemet-react";
 import { NotificationShipmentResponse } from "../../../models/notificationModels"
 import styles from "./NotificationShipmentCard.module.css"
 import { colorMap } from "../notificationColorMap";
@@ -12,7 +12,7 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
     shipment
 }) => (
     <Card data-color="neutral" className={styles.card}>
-        <Heading>{shipment.notificationChannel}</Heading>
+        <Paragraph className={styles.paragraph}><strong>Notification channel:</strong> {shipment.notificationChannel}</Paragraph>
         <Paragraph className={styles.paragraph}><strong>Shipment Id:</strong> {shipment.shipmentId}</Paragraph>
         <Paragraph className={styles.paragraph}><strong>Creator name:</strong> {shipment.creatorName}</Paragraph>
         <Paragraph className={styles.paragraph}><strong>Senders reference:</strong> {shipment.sendersReference}</Paragraph>

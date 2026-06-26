@@ -5,7 +5,7 @@ import style from "./styles/NotificationSearchBar.module.css";
 type NotificationSearchBarProps = {
   searchValue: string;
   setSearchValue: (value: string) => void;
-  searchType: "shipmentId" | "nin";
+  searchType: "shipmentId" | "future";
   dateFrom?: string;
   setDateFrom?: (v: string) => void;
   dateTo?: string;
@@ -40,8 +40,8 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
   <div className={style.container}>
     <div className={style.row}>
       <Textfield
-        label={searchType === "shipmentId" ? "Shipment-ID" : "NIN"}
-        placeholder={searchType === "shipmentId" ? "Shipment-ID" : "NIN"}
+        label={searchType === "shipmentId" ? "Shipment-ID" : "Future"}
+        placeholder={searchType === "shipmentId" ? "Shipment-ID" : "Future"}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
@@ -53,7 +53,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
       <Button onClick={handleClear} className={style.removeButton}>x</Button>
     </div>
 
-    {searchType === "nin" && (
+    {searchType === "future" && (
       <div className={style.row}>
         <Textfield
           label="From date"
@@ -67,6 +67,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
           label="To dato"
           type="date"
           max={today}
+          min={dateFrom}
           value={dateTo ?? ""}
           onChange={(e) => setDateTo?.(e.target.value)}
           className={style.datefield}

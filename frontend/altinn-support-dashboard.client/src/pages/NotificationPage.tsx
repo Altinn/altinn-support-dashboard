@@ -8,21 +8,34 @@ import { showPopup } from "../components/Popup";
 import { useAppStore } from "../stores/Appstore";
 import NotificationShipmentCard from "../components/Notification/NIN-search/NotificationShipmentCard";
 
-type SearchType = "shipmentId" | "nin";
+type SearchType = "shipmentId" | "future";
 
 export const NotificationPage = () => {
   const environment = useAppStore((state) => state.environment);
-  const [searchType, setSearchType] = useState<SearchType>("shipmentId");
-  const [searchValue, setSearchValue] = useState("");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
+  const [searchType, setSearchType] = useState<SearchType>(
+    () => (sessionStorage.getItem("notif_searchType") as SearchType) || "shipmentId"
+  );
+  const [searchValue, setSearchValue] = useState(
+    () => sessionStorage.getItem("notif_searchValue") || ""
+  );
+  const [dateFrom, setDateFrom] = useState(
+    () => sessionStorage.getItem("notif_dateFrom") || ""
+  );
+  const [dateTo, setDateTo] = useState(
+    () => sessionStorage.getItem("notif_dateTo") || ""
+  );
+
+  useEffect(() => { sessionStorage.setItem("notif_searchType", searchType); }, [searchType]);
+  useEffect(() => { sessionStorage.setItem("notif_searchValue", searchValue); }, [searchValue]);
+  useEffect(() => { sessionStorage.setItem("notif_dateFrom", dateFrom); }, [dateFrom]);
+  useEffect(() => { sessionStorage.setItem("notif_dateTo", dateTo); }, [dateTo]);
 
   const orderQuery = useNotifications(
     searchType === "shipmentId" ? searchValue : "",
     environment
   );
   const ninQuery = useNotificationsByNin(
-    searchType === "nin" ? searchValue : "",
+    searchType === "future" ? searchValue : "",
     environment,
     dateFrom || undefined,
     dateTo || undefined,
@@ -54,7 +67,7 @@ export const NotificationPage = () => {
         data-size="sm"
       >
         <ToggleGroup.Item value="shipmentId">Shipment-Id</ToggleGroup.Item>
-        <ToggleGroup.Item value="nin">NIN</ToggleGroup.Item>
+        <ToggleGroup.Item value="future">Future</ToggleGroup.Item>
       </ToggleGroup>
 
       <NotificationSearchBar
@@ -74,7 +87,7 @@ export const NotificationPage = () => {
           ?.filter((o) => o.notifications.length > 0)
           .map((order, i) => <NotificationCard key={i} order={order}/>)}
 
-      {searchType === "nin" &&
+      {searchType === "future" &&
         ninQuery.data?.map((shipment, i) => (
           <NotificationShipmentCard key={i} shipment={shipment}/> 
         ))}
