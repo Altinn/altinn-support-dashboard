@@ -1,4 +1,4 @@
-import { Alert, Heading, Skeleton, Spinner, ToggleGroup } from "@digdir/designsystemet-react";
+import { Alert, Heading, Skeleton, ToggleGroup } from "@digdir/designsystemet-react";
 import { useEffect, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
 import { useNotifications, useNotificationsByNin } from "../hooks/hooks";
