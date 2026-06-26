@@ -35,7 +35,7 @@ describe("NotificationSearchBar", () => {
         />
       );
       expect(screen.queryByLabelText("From date")).not.toBeInTheDocument();
-      expect(screen.queryByLabelText("To dato")).not.toBeInTheDocument();
+      expect(screen.queryByLabelText("To date")).not.toBeInTheDocument();
     });
   });
 
@@ -61,7 +61,7 @@ describe("NotificationSearchBar", () => {
         />
       );
       expect(screen.getByLabelText("From date")).toBeInTheDocument();
-      expect(screen.getByLabelText("To dato")).toBeInTheDocument();
+      expect(screen.getByLabelText("To date")).toBeInTheDocument();
     });
 
     it("should call setDateFrom when From date changes", () => {
@@ -80,7 +80,7 @@ describe("NotificationSearchBar", () => {
       expect(mockSetDateFrom).toHaveBeenCalledWith("2025-01-01");
     });
 
-    it("should call setDateTo when To dato changes", () => {
+    it("should call setDateTo when To date changes", () => {
       render(
         <NotificationSearchBar
           searchValue=""
@@ -92,7 +92,7 @@ describe("NotificationSearchBar", () => {
           setDateTo={mockSetDateTo}
         />
       );
-      fireEvent.change(screen.getByLabelText("To dato"), { target: { value: "2025-06-01" } });
+      fireEvent.change(screen.getByLabelText("To date"), { target: { value: "2025-06-01" } });
       expect(mockSetDateTo).toHaveBeenCalledWith("2025-06-01");
     });
 
@@ -109,7 +109,7 @@ describe("NotificationSearchBar", () => {
         />
       );
       expect(screen.getByLabelText("From date")).toHaveValue("2025-01-01");
-      expect(screen.getByLabelText("To dato")).toHaveValue("2025-06-01");
+      expect(screen.getByLabelText("To date")).toHaveValue("2025-06-01");
     });
   });
 
