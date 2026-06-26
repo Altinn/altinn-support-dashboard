@@ -342,7 +342,7 @@ public class Altinn3Service : IAltinn3Service
         var allParties = rolesAndRightsResponse
             .Concat(rolesAndRightsResponse.SelectMany(r => r.Subunits ?? []))
             .ToList();
-        var match = allParties.FirstOrDefault(r => r.OrganizationNumber == partyFilterValue);
+        var match = allParties.FirstOrDefault(r => r.OrganizationNumber == partyFilterValue || r.PersonId == partyFilterValue);
         RolesAndRightsDto roles = match != null
             ? new RolesAndRightsDto
             {
