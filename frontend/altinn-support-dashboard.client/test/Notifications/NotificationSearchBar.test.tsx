@@ -39,17 +39,17 @@ describe("NotificationSearchBar", () => {
     });
   });
 
-  describe("nin mode", () => {
-    it("should render NIN label and placeholder", () => {
+  describe("future mode", () => {
+    it("should render Future label and placeholder", () => {
       render(
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="nin"
+          searchType="future"
         />
       );
-      expect(screen.getByLabelText("NIN")).toBeInTheDocument();
-      expect(screen.getByPlaceholderText("NIN")).toBeInTheDocument();
+      expect(screen.getByLabelText("Future")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Future")).toBeInTheDocument();
     });
 
     it("should show date fields", () => {
@@ -57,7 +57,7 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="nin"
+          searchType="future"
         />
       );
       expect(screen.getByLabelText("From date")).toBeInTheDocument();
@@ -69,7 +69,7 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="nin"
+          searchType="future"
           dateFrom=""
           setDateFrom={mockSetDateFrom}
           dateTo=""
@@ -85,7 +85,7 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="nin"
+          searchType="future"
           dateFrom=""
           setDateFrom={mockSetDateFrom}
           dateTo=""
@@ -101,7 +101,7 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="nin"
+          searchType="future"
           dateFrom="2025-01-01"
           setDateFrom={mockSetDateFrom}
           dateTo="2025-06-01"
@@ -187,7 +187,7 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="nin"
+          searchType="future"
           dateFrom="2025-01-01"
           setDateFrom={mockSetDateFrom}
           dateTo="2025-06-01"
