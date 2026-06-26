@@ -49,7 +49,7 @@ describe("NotificationSearchBar", () => {
         />
       );
       expect(screen.getByLabelText("Future")).toBeInTheDocument();
-      expect(screen.getByPlaceholderText("Future")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Valid values: NIN")).toBeInTheDocument();
     });
 
     it("should show date fields", () => {
