@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Search, Textfield } from "@digdir/designsystemet-react";
+import { Button, Paragraph, Search, Textfield } from "@digdir/designsystemet-react";
 import style from "./styles/NotificationSearchBar.module.css";
 
 type NotificationSearchBarProps = {
@@ -54,24 +54,27 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
     </div>
 
     {searchType === "future" && (
-      <div className={style.row}>
-        <Textfield
-          label="From date"
-          type="date"
-          max = {dateTo || today}
-          value={dateFrom ?? ""}
-          onChange={(e) => setDateFrom?.(e.target.value)}
-          className={style.datefield}
-        />
-        <Textfield
-          label="To dato"
-          type="date"
-          max={today}
-          min={dateFrom}
-          value={dateTo ?? ""}
-          onChange={(e) => setDateTo?.(e.target.value)}
-          className={style.datefield}
-        />
+      <div>
+        <Paragraph>If no values are present, it will default to the past 7 days</Paragraph>
+        <div className={style.row}>
+          <Textfield
+            label="From date"
+            type="date"
+            max = {dateTo || today}
+            value={dateFrom ?? ""}
+            onChange={(e) => setDateFrom?.(e.target.value)}
+            className={style.datefield}
+          />
+          <Textfield
+            label="To dato"
+            type="date"
+            max={today}
+            min={dateFrom}
+            value={dateTo ?? ""}
+            onChange={(e) => setDateTo?.(e.target.value)}
+            className={style.datefield}
+          />
+        </div>
       </div>
     )}
   </div>
