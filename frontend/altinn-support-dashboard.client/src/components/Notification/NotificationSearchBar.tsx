@@ -41,7 +41,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
     <div className={style.row}>
       <Textfield
         label={searchType === "shipmentId" ? "Shipment-ID" : "Future"}
-        placeholder={searchType === "shipmentId" ? "Shipment-ID" : "Future"}
+        placeholder={searchType === "shipmentId" ? "Shipment-ID" : "Valid values: NIN"}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
