@@ -95,8 +95,6 @@ namespace AltinnSupportDashboard
                     // Register application services
                     services.AddSingleton<GiteaApiClient>();
                     services.AddScoped<IGiteaService, GiteaService>();
-                    services.AddScoped<IAltinn3ApiClient, Altinn3ApiClient>();
-                    services.AddScoped<IDataBrregClient, DataBrregClient>();
                     services.AddScoped<IDataBrregService, DataBrregService>();
                     services.AddScoped<IAltinn3Service, Altinn3Service>();
                     services.AddScoped<IPartyApiClient, PartyApiClient>();
@@ -104,13 +102,21 @@ namespace AltinnSupportDashboard
                     var useClientsMocks = hostContext.Configuration.GetValue<bool>("FeatureFlags:UseClientMocks");
                     if (useClientsMocks)
                     {
+                        services.AddScoped<Altinn3ApiClient>();
+                        services.AddScoped<IAltinn3ApiClient>(sp =>
+                            new MockAltinn3ApiClient(sp.GetRequiredService<Altinn3ApiClient>()));
                         services.AddScoped<NotificationsClient>();
                         services.AddScoped<INotificationsClient>(sp =>
                             new MockNotificationsClient(sp.GetRequiredService<NotificationsClient>()));
+                        services.AddScoped<DataBrregClient>();
+                        services.AddScoped<IDataBrregClient>(sp =>
+                            new MockDataBrregClient(sp.GetRequiredService<DataBrregClient>()));
                     }
                     else
                     {
+                        services.AddScoped<IAltinn3ApiClient, Altinn3ApiClient>();
                         services.AddScoped<INotificationsClient, NotificationsClient>();
+                        services.AddScoped<IDataBrregClient, DataBrregClient>();
                     }
                     services.AddScoped<INotificationsService, NotificationsService>();
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
