@@ -1,0 +1,16 @@
+{
+  "organisasjonsnummer": "910110914",
+  "navn": "Digitaliseringsdirektoratet Avdeling Oslo",
+  "organisasjonsform": { "kode": "BEDR", "beskrivelse": "Bedrift" },
+  "overordnetEnhet": "310110914",
+  "antallAnsatte": 50,
+  "beliggenhetsadresse": {
+    "land": "Norge",
+    "landkode": "NO",
+    "postnummer": "0151",
+    "poststed": "OSLO",
+    "adresse": ["Grev Wedels plass 9"],
+    "kommune": "OSLO",
+    "kommunenummer": "0301"
+  }
+}

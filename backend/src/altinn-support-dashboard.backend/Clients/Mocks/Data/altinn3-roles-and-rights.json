@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Digitaliseringsdirektoratet",
+    "organizationNumber": "310110914",
+    "authorizedRoles": ["DAGL", "PRIV"],
+    "authorizedResources": [
+      "skd-mva",
+      "nav-dagpenger",
+      "altinn-access-management"
+    ],
+    "authorizedAccessPackages": [
+      "skatt-naering",
+      "lonn-og-personalarbeid"
+    ],
+    "subunits": []
+  }
+]

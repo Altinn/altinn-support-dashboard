@@ -23,6 +23,16 @@ namespace AltinnSupportDashboard.Controllers
 
 
     [ApiController]
+    [Authorize(AzureRoles.Authenticated)]
+    [Route("api/mock/serviceowner")]
+    public class AltinnMockController : AltinnBaseController
+    {
+        public AltinnMockController(IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration) : base(altinn3Service, "mock", ssnTokenService, telemetryService, configuration)
+        {
+        }
+    }
+
+    [ApiController]
     [Authorize(AzureRoles.TT02)]
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController

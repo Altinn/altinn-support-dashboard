@@ -1,0 +1,15 @@
+{
+  "identifier": "skd-mva",
+  "title": { "nb": "Merverdiavgift", "nn": "Meirverdiavgift", "en": "VAT" },
+  "resourceType": "MaskinportenSchema",
+  "delegable": true,
+  "visible": true,
+  "hasCompetentAuthority": {
+    "name": { "nb": "Skatteetaten" },
+    "organization": "974761076",
+    "orgcode": "SKD"
+  },
+  "selfIdentifiedUserEnabled": false,
+  "enterpriseUserEnabled": true,
+  "accessListMode": "Disabled"
+}

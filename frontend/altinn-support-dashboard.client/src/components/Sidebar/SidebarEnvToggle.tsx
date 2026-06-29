@@ -54,6 +54,7 @@ const SidebarEnvToggle: React.FC = () => {
           userPolicies?.includes("Dashboard.TT02")) && (
           <SelectOption value="TT02">TT02</SelectOption>
         )}
+        {import.meta.env.DEV && <SelectOption value="mock">MOCK</SelectOption>}
       </Select>
     </div>
   );

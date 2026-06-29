@@ -1,0 +1,11 @@
+[
+  {
+    "notificationAddressId": 1,
+    "countryCode": "+47",
+    "email": "test@digdir.no",
+    "phone": "99999999",
+    "sourceOrgNumber": "310110914",
+    "requestedOrgNumber": "310110914",
+    "lastChanged": "2024-01-15T10:00:00"
+  }
+]

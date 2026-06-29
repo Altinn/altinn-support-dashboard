@@ -60,7 +60,7 @@ public class NotificationsController : ControllerBase
     {
         if (!ValidationService.isValidSsn(nin))
         {
-            return BadRequest("Not valid nin");
+            return BadRequest("Not a valid nin");
         }
         var response = await _service.GetFutureNotificationsByNin(nin, from, to, environmentName);
         return Ok(response);

@@ -93,17 +93,39 @@ namespace AltinnSupportDashboard
                     services.AddAzureEntraAuthenticationAndAuthorization(hostContext.Configuration);
 
                     // Register application services
-                    services.AddScoped<DataBrregClient>();
+                    services.AddSingleton<GiteaApiClient>();
+                    services.AddScoped<IGiteaService, GiteaService>();
                     services.AddScoped<IDataBrregService, DataBrregService>();
                     services.AddScoped<IAltinn3Service, Altinn3Service>();
                     services.AddScoped<IPartyApiClient, PartyApiClient>();
                     services.AddScoped<IPartyApiService, PartyApiService>();
-                    services.AddScoped<INotificationsClient, NotificationsClient>();
+                    var useClientsMocks = hostContext.Configuration.GetValue<bool>("FeatureFlags:UseClientMocks");
+                    if (useClientsMocks)
+                    {
+                        services.AddScoped<Altinn3ApiClient>();
+                        services.AddScoped<IAltinn3ApiClient>(sp =>
+                            new MockAltinn3ApiClient(sp.GetRequiredService<Altinn3ApiClient>()));
+                        services.AddScoped<NotificationsClient>();
+                        services.AddScoped<INotificationsClient>(sp =>
+                            new MockNotificationsClient(sp.GetRequiredService<NotificationsClient>()));
+                        services.AddScoped<DataBrregClient>();
+                        services.AddScoped<IDataBrregClient>(sp =>
+                            new MockDataBrregClient(sp.GetRequiredService<DataBrregClient>()));
+                        services.AddScoped<ResourceRegistryClient>();
+                        services.AddScoped<IResourceRegistryClient>(sp =>
+                            new MockResourceRegistryClient(sp.GetRequiredService<ResourceRegistryClient>()));
+                    }
+                    else
+                    {
+                        services.AddScoped<IAltinn3ApiClient, Altinn3ApiClient>();
+                        services.AddScoped<INotificationsClient, NotificationsClient>();
+                        services.AddScoped<IDataBrregClient, DataBrregClient>();
+                        services.AddScoped<IResourceRegistryClient, ResourceRegistryClient>();
+                    }
                     services.AddScoped<INotificationsService, NotificationsService>();
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
                     services.AddScoped<ICorrespondenceService, CorrespondenceService>();
                     services.AddScoped<ISsnTokenService, SsnTokenService>();
-                    services.AddScoped<IResourceRegistryClient, ResourceRegistryClient>();
                     services.AddScoped<IResourceRegistryService, ResourceRegistryService>();
                 });
     }
