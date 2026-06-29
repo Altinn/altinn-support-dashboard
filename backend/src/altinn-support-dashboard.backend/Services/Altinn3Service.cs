@@ -253,7 +253,9 @@ public class Altinn3Service : IAltinn3Service
                 MobileNumber = contact.Phone,
                 SocialSecurityNumber = contact.NationalIdentityNumber,
                 MobileNumberChanged = contact.LastChanged,
-                EMailAddressChanged = contact.LastChanged
+                EMailAddressChanged = contact.LastChanged,
+                ResourceIncludeList = contact.ResourceIncludeList
+
             };
 
             contacts.Add(newContact);
@@ -302,7 +304,7 @@ public class Altinn3Service : IAltinn3Service
         return notificationAddresses;
     }
 
-    public async Task<RolesAndRightsDto> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRightsRequest, string environment)
+    public async Task<RolesAndRightsDto> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRightsRequest, List<string>? anyOfResourceIds, string environment, bool convertNames = true)
     {
         var ssn = _ssnTokenService.GetSsnFromToken(rolesAndRightsRequest.Value);
 
@@ -325,7 +327,7 @@ public class Altinn3Service : IAltinn3Service
         List<AuthorizedPartyDto> rolesAndRightsResponse = [];
         try
         {
-            var result = await _client.GetRolesAndRightsAltinn3(rolesAndRightsRequest, environment);
+            var result = await _client.GetRolesAndRightsAltinn3(rolesAndRightsRequest, anyOfResourceIds, environment);
 
             if (!string.IsNullOrWhiteSpace(result))
             {
@@ -356,39 +358,33 @@ public class Altinn3Service : IAltinn3Service
             : new RolesAndRightsDto { OrganizationNumber = partyFilterValue ?? "" };
 
 
-        //TODO: add new roles mapping to get rolesname from meta endpoinup
-        var authorizedRoles = roles.AuthorizedRoles;
-        if (authorizedRoles != null && authorizedRoles.Count >= 1)
+        if (convertNames)
         {
-            try
-            {
-                var roleNames = await GetAltinn2RoleNamesFromCodes(authorizedRoles, environment);
-                if (roleNames != null)
-                {
-                    roles.AuthorizedRoles = roleNames;
-                }
-            }
-            catch (Exception e) { _logger.LogError($"Error converting roleNames: {e}"); }
-
-        }
-
-
-
-        if (roles.AuthorizedResources != null && roles.AuthorizedResources.Count >= 1)
-        {
-            //Sets resources to name to be more readable
-            var authorizedResources = roles.AuthorizedResources;
-            if (authorizedResources != null && authorizedResources.Count >= 1)
+            var authorizedRoles = roles.AuthorizedRoles;
+            if (authorizedRoles != null && authorizedRoles.Count >= 1)
             {
                 try
                 {
-                    var resourceNames = await GetResourceNamesFromCodes(authorizedResources, environment);
+                    var roleNames = await GetAltinn2RoleNamesFromCodes(authorizedRoles, environment);
+                    if (roleNames != null)
+                    {
+                        roles.AuthorizedRoles = roleNames;
+                    }
+                }
+                catch (Exception e) { _logger.LogError($"Error converting roleNames: {e}"); }
+            }
+
+            if (roles.AuthorizedResources != null && roles.AuthorizedResources.Count >= 1)
+            {
+                try
+                {
+                    var resourceNames = await GetResourceNamesFromCodes(roles.AuthorizedResources, environment);
                     if (resourceNames != null)
                     {
                         roles.AuthorizedResources = resourceNames;
                     }
                 }
-                catch (Exception e) { _logger.LogError($"Error converting roleNames: {e}"); }
+                catch (Exception e) { _logger.LogError($"Error converting resourceNames: {e}"); }
             }
         }
         return roles;
@@ -429,6 +425,46 @@ public class Altinn3Service : IAltinn3Service
             return rolesList;
         }) ?? throw new Exception("Cache returned null");
     }
+
+    public async Task<ResourceAvailabilityResponse> GetResourceAvailabilityAsync(ResourceAvailabilityRequest request, string environment)
+    {
+        RolesAndRightsRequest rolesAndRightsRequest = new RolesAndRightsRequest
+        {
+            Value = request.NationalIdentityNumber,
+            Type = getTypeFromValue(request.NationalIdentityNumber),
+            PartyFilter = [new PartyFilter {
+                Value = request.OrganizationNumber,
+                Type = getTypeFromValue(request.OrganizationNumber)
+                }
+            ]
+        };
+        var rightsResponse = await GetRolesAndRightsAltinn3(rolesAndRightsRequest, [request.ResourceId], environment, false);
+
+        var personalContacts = await GetPersonalContactsByOrgAltinn3(request.OrganizationNumber, environment);
+        List<string>? resourceIncludeList = personalContacts.FirstOrDefault(p => p.NationalIdentityNumber == request.NationalIdentityNumber)?.ResourceIncludeList;
+
+        var resourcePolicyRules = await _resourceRegistryService.GetResourcePolicyRules(environment, request.ResourceId);
+
+
+        var rulesForAction = resourcePolicyRules?
+            .Where(r => r.Action?.Value?.Equals(request.ActionOnResource, StringComparison.OrdinalIgnoreCase) == true)
+            .ToList() ?? [];
+
+        var hasAccess = rulesForAction.Any(rule =>
+            rule.Subject?.Any(subject =>
+                rightsResponse.AuthorizedRoles?.Contains(subject.Value ?? "", StringComparer.OrdinalIgnoreCase) == true ||
+                rightsResponse.AuthorizedAccessPackages?.Contains(subject.Value ?? "", StringComparer.OrdinalIgnoreCase) == true ||
+                rightsResponse.AuthorizedResources?.Contains(subject.Value ?? "", StringComparer.OrdinalIgnoreCase) == true
+            ) == true
+        );
+
+        return new ResourceAvailabilityResponse
+        {
+            HasAccessToResource = hasAccess,
+            InResourceIncludeList = resourceIncludeList?.Contains(request.ResourceId) == true,
+        };
+    }
+
 
     private string getTypeFromValue(string value)
     {
