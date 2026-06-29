@@ -441,6 +441,10 @@ public class Altinn3Service : IAltinn3Service
         {
             return "urn:altinn:organization:identifier-no";
         }
+        else if (Guid.TryParse(trimmedValued, out _))
+        {
+            return "urn:altinn:systemuser:uuid";
+        }
         throw new Exception("Not a valid format, needs to be either a orgnumber or ssn");
     }
 
