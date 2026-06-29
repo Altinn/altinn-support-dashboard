@@ -54,24 +54,28 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
     </div>
 
     {searchType === "future" && (
-      <div className={style.row}>
-        <Textfield
-          label="From date"
-          type="date"
-          max = {dateTo || today}
-          value={dateFrom ?? ""}
-          onChange={(e) => setDateFrom?.(e.target.value)}
-          className={style.datefield}
-        />
-        <Textfield
-          label="To dato"
-          type="date"
-          max={today}
-          min={dateFrom}
-          value={dateTo ?? ""}
-          onChange={(e) => setDateTo?.(e.target.value)}
-          className={style.datefield}
-        />
+      <div>
+        <div className={style.row}>
+          <Textfield
+            label="From date"
+            type="date"
+            description="Defaults to past 7 days if empty"
+            max = {dateTo || today}
+            value={dateFrom ?? ""}
+            onChange={(e) => setDateFrom?.(e.target.value)}
+            className={style.dateFieldFrom}
+          />
+          <Textfield
+            label="To date"
+            type="date"
+            description={"\u00A0"}
+            max={today}
+            min={dateFrom}
+            value={dateTo ?? ""}
+            onChange={(e) => setDateTo?.(e.target.value)}
+            className={style.dateFieldTo}
+          />
+        </div>
       </div>
     )}
   </div>
