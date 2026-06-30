@@ -1,7 +1,10 @@
 import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
 import { NotificationAdresses, PersonalContactAltinn3 } from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
-import { NotificationOrderResponse, NotificationShipmentResponse } from "../models/notificationModels";
+import {
+  NotificationOrderResponse,
+  NotificationShipmentResponse,
+} from "../models/notificationModels";
 import {
   Altinn2Role,
   PolicyRule,
@@ -25,9 +28,6 @@ export const fetchOrganizations = async (
   if (res.status === 404) {
     return [];
   }
-
-  if (!res.ok)
-    throw new Error((await res.text()) || "Error fetching organizations");
 
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
@@ -139,7 +139,7 @@ export const fetchNotificationsByNin = async (
   nin: string,
   environment: string,
   dateFrom?: string,
-  dateTo?: string,
+  dateTo?: string
 ): Promise<NotificationShipmentResponse[] | null> => {
   const params = new URLSearchParams();
   if (dateFrom) params.set("from", new Date(dateFrom).toISOString());
@@ -151,17 +151,15 @@ export const fetchNotificationsByNin = async (
   const query = params.toString() ? `?${params}` : "";
 
   const res = await authorizedFetch(
-    `/api/${environment}/notifications/future/nin/${encodeURIComponent(nin)}${query}`
+    `${getBaseUrl(environment)}/notifications/future/nin/${encodeURIComponent(nin)}${query}`
   );
 
   if (res.status === 404) return null;
   if (!res.ok)
-    throw new Error(
-      (await res.text()) || "Error fetching notification by NIN"
-    );
+    throw new Error((await res.text()) || "Error fetching notification by NIN");
 
   return await res.json();
-}
+};
 
 export const fetchResources = async (
   environment: string,
