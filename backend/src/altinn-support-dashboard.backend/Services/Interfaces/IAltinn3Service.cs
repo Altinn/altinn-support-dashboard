@@ -24,6 +24,7 @@ public interface IAltinn3Service
     Task<RolesAndRightsDto> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, string environment);
     Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName);
     Task<List<Altinn2RoleDto>> GetAltinn2RolesList(string environmentName);
+    Task<List<AuthorizedPartyExtendedDto>> GetAuthorizedPartiesForSystemUser(string uuid, AuthorizedPartiesQueryParams queryParams, string environmentName);
 
 }
 

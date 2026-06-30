@@ -298,4 +298,29 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         return responseBody;
     }
 
+    public async Task<string> GetAuthorizedPartiesForSystemUser(string uuid, AuthorizedPartiesQueryParams queryParams, string environmentName)
+    {
+        var client = _clients[environmentName];
+
+        var qs = new StringBuilder("accessmanagement/api/v1/resourceowner/authorizedparties?");
+        qs.Append($"includeAltinn2={queryParams.IncludeAltinn2}&");
+        qs.Append($"includeAltinn3={queryParams.IncludeAltinn3}&");
+        qs.Append($"includeRoles={queryParams.IncludeRoles}&");
+        qs.Append($"includeAccessPackages={queryParams.IncludeAccessPackages}&");
+        qs.Append($"includeResources={queryParams.IncludeResources}&");
+        qs.Append($"includeInstances={queryParams.IncludeInstances}");
+
+        var body = new { type = "urn:altinn:systemuser:uuid", value = uuid };
+        var content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+
+        var response = await client.PostAsync(qs.ToString(), content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+
+        return responseBody;
+    }
+
+
 }

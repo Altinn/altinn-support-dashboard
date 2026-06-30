@@ -469,4 +469,11 @@ public class Altinn3Service : IAltinn3Service
         return roleNames;
     }
 
+    public async Task<List<AuthorizedPartyExtendedDto>> GetAuthorizedPartiesForSystemUser(string uuid, AuthorizedPartiesQueryParams queryParams, string environmentName)
+    {
+        var result = await _client.GetAuthorizedPartiesForSystemUser(uuid, queryParams, environmentName);
+        return JsonSerializer.Deserialize<List<AuthorizedPartyExtendedDto>>(result, jsonOptions) ?? [];
+    }
+
+
 }

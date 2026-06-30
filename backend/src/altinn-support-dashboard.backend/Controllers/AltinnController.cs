@@ -272,5 +272,13 @@ namespace AltinnSupportDashboard.Controllers
             var result = await _altinn3Service.GetAltinn2RolesList(environmentName);
             return Ok(result);
         }
+
+        [HttpGet("authorizedparties/systemuser")]
+        public async Task<IActionResult> GetAuthorizedPartiesForSystemUser([FromQuery] string uuid, [FromQuery] AuthorizedPartiesQueryParams queryParams)
+        {
+            var result = await _altinn3Service.GetAuthorizedPartiesForSystemUser(uuid, queryParams, environmentName);
+            return Ok(result);
+        }
+
     }
 }
