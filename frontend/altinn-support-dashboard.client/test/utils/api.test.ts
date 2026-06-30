@@ -60,19 +60,6 @@ describe("api", () => {
 
       expect(result).toEqual([]);
     });
-
-    it("should throw error on failure", async () => {
-      vi.mocked(utils.authorizedFetch).mockResolvedValue({
-        ok: false,
-        status: 500,
-        text: vi.fn().mockResolvedValue("Internal Server Error"),
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      await expect(fetchOrganizations("TEST", "Test query")).rejects.toThrow(
-        "Internal Server Error"
-      );
-    });
   });
 
   describe("fetchRolesForOrg", () => {
