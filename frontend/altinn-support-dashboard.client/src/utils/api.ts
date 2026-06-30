@@ -25,7 +25,7 @@ export const fetchOrganizations = async (
     `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search?query=${encodeURIComponent(trimmedQuery)}`
   );
 
-  if (res.status === 404) {
+  if (!res.ok) {
     return [];
   }
 

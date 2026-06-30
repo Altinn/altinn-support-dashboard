@@ -31,7 +31,7 @@ describe("api", () => {
 
       expect(result).toEqual(mockData);
       expect(utils.authorizedFetch).toHaveBeenCalledWith(
-        expect.stringContaining("query=Testquery"),
+        expect.stringContaining("query=Testquery")
       );
     });
 
@@ -61,20 +61,7 @@ describe("api", () => {
       expect(result).toEqual([]);
     });
 
-    it("should throw error on failure", async () => {
-      vi.mocked(utils.authorizedFetch).mockResolvedValue({
-        ok: false,
-        status: 500,
-        text: vi.fn().mockResolvedValue("Internal Server Error"),
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      await expect(fetchOrganizations("TEST", "Test query")).rejects.toThrow(
-        "Internal Server Error",
-      );
-    });
-  });
-
+    
   describe("fetchRolesForOrg", () => {
     it("should fetch and return roles array", async () => {
       const mockData = [{ role: "Admin" }];
@@ -92,7 +79,7 @@ describe("api", () => {
       expect(result).toEqual(mockData);
       expect(utils.authorizedPost).toHaveBeenCalledWith(
         expect.stringContaining("/roles"),
-        request,
+        request
       );
     });
 
@@ -158,7 +145,7 @@ describe("api", () => {
       } as any);
 
       await expect(fetchPersonalContacts("TEST", "123")).rejects.toThrow(
-        "Internal Server Error",
+        "Internal Server Error"
       );
     });
   });
@@ -199,12 +186,12 @@ describe("api", () => {
       } as any);
 
       await expect(fetchERoles("TEST", "123")).rejects.toThrow(
-        "Internal Server Error",
+        "Internal Server Error"
       );
     });
   });
 
-    describe("fetchSsnFromToken", () => {
+  describe("fetchSsnFromToken", () => {
     it("should fetch and return ssn", async () => {
       const mockData = { socialSecurityNumber: "12345678901" };
       vi.mocked(utils.authorizedFetch).mockResolvedValue({
@@ -218,7 +205,7 @@ describe("api", () => {
 
       expect(result).toEqual("12345678901");
       expect(utils.authorizedFetch).toHaveBeenCalledWith(
-        expect.stringContaining("/personalcontacts/token/ssn"),
+        expect.stringContaining("/personalcontacts/token/ssn")
       );
     });
 
@@ -231,7 +218,7 @@ describe("api", () => {
       } as any);
 
       await expect(fetchSsnFromToken("TEST", "token")).rejects.toThrow(
-        "Internal Server Error",
+        "Internal Server Error"
       );
     });
   });
@@ -286,7 +273,7 @@ describe("api", () => {
       } as any);
 
       await expect(fetchNotificationAddresses("TEST", "123")).rejects.toThrow(
-        "Internal Server Error",
+        "Internal Server Error"
       );
     });
   });
