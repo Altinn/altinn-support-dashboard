@@ -61,7 +61,20 @@ describe("api", () => {
       expect(result).toEqual([]);
     });
 
-    
+    it("should throw error on failure", async () => {
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: false,
+        status: 500,
+        text: vi.fn().mockResolvedValue("Internal Server Error"),
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      await expect(fetchOrganizations("TEST", "Test query")).rejects.toThrow(
+        "Internal Server Error"
+      );
+    });
+  });
+
   describe("fetchRolesForOrg", () => {
     it("should fetch and return roles array", async () => {
       const mockData = [{ role: "Admin" }];
@@ -175,19 +188,6 @@ describe("api", () => {
       const result = await fetchERoles("TEST", "123");
 
       expect(result).toEqual([]);
-    });
-
-    it("should throw error on failure", async () => {
-      vi.mocked(utils.authorizedFetch).mockResolvedValue({
-        ok: false,
-        status: 500,
-        text: vi.fn().mockResolvedValue("Internal Server Error"),
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-
-      await expect(fetchERoles("TEST", "123")).rejects.toThrow(
-        "Internal Server Error"
-      );
     });
   });
 
