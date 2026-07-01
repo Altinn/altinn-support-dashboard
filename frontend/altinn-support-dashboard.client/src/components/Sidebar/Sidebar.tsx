@@ -17,6 +17,7 @@ import {
   EnvelopeOpenIcon,
   DatabaseIcon,
   FilesIcon,
+  TerminalIcon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -117,7 +118,7 @@ const Sidebar: React.FC = () => {
               <div>
                 <NavGroup
                   title="Core"
-                  icon={<DatabaseIcon className={classes.icons} />}
+                  icon={<TerminalIcon className={classes.icons} />}
                   isCollapsed={isCollapsed}
                   paths={["/notification", "/identifier-conversion"]}
                 >
