@@ -122,3 +122,26 @@ export interface PersonalContactAltinn3 {
   displayedSocialSecurityNumber?: string;
   ssnToken?: string;
 }
+
+export interface AuthorizedPartyExtended {
+  partyUuid: string;
+  partyId: number;
+  name: string;
+  organizationsNumber?: string;
+  personId?: string;
+  unitType?: string;
+  isDeleted?: boolean;
+  authorizedResources: string[];
+  authorizedRoles: string[];
+  authorisedAccessPackages: string[];
+  authorizedInstances: { resourceId: string; instanceId: string; instanceRef: string }[]
+}
+
+export interface AuthorizedPartiesQueryParams {
+  includeAltinn2: boolean;
+  includeAltinn3: boolean;
+  includeRoles: boolean;
+  includeAccessPackages: boolean;
+  includeResources: boolean;
+  includeInstances: boolean;
+}

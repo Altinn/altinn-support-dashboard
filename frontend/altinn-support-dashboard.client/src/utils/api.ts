@@ -1,5 +1,5 @@
 import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
-import { NotificationAdresses, PersonalContactAltinn3 } from "../models/models";
+import { AuthorizedPartiesQueryParams, AuthorizedPartyExtended, NotificationAdresses, PersonalContactAltinn3 } from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 import { NotificationOrderResponse, NotificationShipmentResponse } from "../models/notificationModels";
 import {
@@ -256,4 +256,27 @@ export const fetchInternalIdsFromSsn = async (
   if (!res.ok) throw new Error("Feil ved henting av intern ID");
 
   return await res.json();
-};
+}
+
+export const fetchAuthorizedPartiesForSystemUser = async (
+  environment: string,
+  uuid: string,
+  params: AuthorizedPartiesQueryParams
+): Promise<AuthorizedPartyExtended[]> => {
+  const query = new URLSearchParams({
+    uuid,
+    includeAltinn2: String(params.includeAltinn2),
+    includeAltinn3: String(params.includeAltinn3),
+    includeRoles: String(params.includeRoles),
+    includeAccessPackages: String(params.includeAccessPackages),
+    includeResources: String(params.includeResources),
+    includeInstances: String(params.includeInstances),
+  });
+
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/authorizedparties/systemuser?${query}`
+  );
+
+  if (!res.ok) throw new Error((await res.text()) || "Error fetching authorized parties");
+  return await res.json();
+}

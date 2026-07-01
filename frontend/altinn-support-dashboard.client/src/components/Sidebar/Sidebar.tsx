@@ -16,6 +16,7 @@ import {
   EnvelopeOpenIcon,
   DatabaseIcon,
   FilesIcon,
+  PersonIcon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -98,6 +99,12 @@ const Sidebar: React.FC = () => {
               to="/manualrolesearch"
               title="Manuelt rollesøk"
               icon={<MagnifyingGlassIcon className={classes.icons} />}
+              isCollapsed={isCollapsed}
+            />
+            <NavItem
+              to="/systemusersearch"
+              title="Systembruker søk"
+              icon={<PersonIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
             <NavItem

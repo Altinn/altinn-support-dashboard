@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  AuthorizedPartiesQueryParams,
   ERRoles,
   NotificationAdresses,
   PersonalContactAltinn3,
@@ -7,6 +8,7 @@ import {
 import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
+  fetchAuthorizedPartiesForSystemUser,
   fetchERoles,
   fetchInternalIds,
   fetchNotificationAddresses,
@@ -234,5 +236,18 @@ export function useRoleDefinitions(environment: string) {
     queryFn: () => fetchRoleDefinitions(environment),
     staleTime: 24 * 60 * 60 * 1000,
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useAuthorizedPartiesForSystemUser(
+  environment: string,
+  uuid: string,
+  params: AuthorizedPartiesQueryParams
+) {
+  return useQuery({
+    queryKey: ["authorizedParties", environment, uuid, params],
+    queryFn: () => fetchAuthorizedPartiesForSystemUser(environment, uuid, params),
+    enabled: !uuid,
+    retry: false,
   });
 }
