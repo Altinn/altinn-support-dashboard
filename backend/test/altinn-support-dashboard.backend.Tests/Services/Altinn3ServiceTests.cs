@@ -216,10 +216,10 @@ public class Altinn3ServiceTests
     ]";
 
         _mockAltinn3Client
-            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), null, "TT02"))
             .ReturnsAsync(jsonResponse);
 
-        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, null, "TT02");
 
         Assert.NotNull(result);
         Assert.Equal("urn:altinn:person:identifier-no", request.Type);
@@ -235,10 +235,10 @@ public class Altinn3ServiceTests
         };
 
         _mockAltinn3Client
-            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), null, "TT02"))
             .ReturnsAsync("[]");
 
-        await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+        await _altinnApiService.GetRolesAndRightsAltinn3(request, null, "TT02");
 
         Assert.Equal("urn:altinn:organization:identifier-no", request.Type);
     }
@@ -252,10 +252,10 @@ public class Altinn3ServiceTests
         };
 
         _mockAltinn3Client
-            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), null, "TT02"))
             .ReturnsAsync("null");
 
-        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, null, "TT02");
 
         Assert.NotNull(result);
         Assert.Null(result.AuthorizedAccessPackages);
@@ -298,10 +298,10 @@ public class Altinn3ServiceTests
         ]";
 
         _mockAltinn3Client
-            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), null, "TT02"))
             .ReturnsAsync(jsonResponse);
 
-        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, null, "TT02");
 
         Assert.NotNull(result);
         Assert.Equal("314782860", result.OrganizationNumber);
@@ -335,10 +335,10 @@ public class Altinn3ServiceTests
         ]";
 
         _mockAltinn3Client
-            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), null, "TT02"))
             .ReturnsAsync(jsonResponse);
 
-        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, null, "TT02");
 
         Assert.NotNull(result);
         Assert.Equal("313062090", result.OrganizationNumber);
@@ -381,10 +381,10 @@ public class Altinn3ServiceTests
         ]";
 
         _mockAltinn3Client
-            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), null, "TT02"))
             .ReturnsAsync(jsonResponse);
 
-        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, null, "TT02");
 
         Assert.NotNull(result);
         Assert.NotNull(result.AuthorizedAccessPackages);
@@ -486,7 +486,7 @@ public class Altinn3ServiceTests
         var altinn2RolesJson = @"[{""id"": ""1"", ""name"": ""Daglig leder"", ""code"": ""DAGL""}]";
 
         _mockAltinn3Client
-            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), null, "TT02"))
             .ReturnsAsync(rolesAndRightsJson);
 
         SetupCacheMiss();
@@ -494,7 +494,7 @@ public class Altinn3ServiceTests
             .Setup(x => x.GetAltinn2RolesList("TT02"))
             .ReturnsAsync(altinn2RolesJson);
 
-        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, null, "TT02");
 
         Assert.NotNull(result);
         Assert.NotNull(result.AuthorizedRoles);
@@ -529,7 +529,7 @@ public class Altinn3ServiceTests
         var altinn2RolesJson = @"[{""id"": ""1"", ""name"": ""Daglig leder"", ""code"": ""DAGL""}]";
 
         _mockAltinn3Client
-            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), "TT02"))
+            .Setup(x => x.GetRolesAndRightsAltinn3(It.IsAny<RolesAndRightsRequest>(), null, "TT02"))
             .ReturnsAsync(rolesAndRightsJson);
 
         SetupCacheMiss();
@@ -537,7 +537,7 @@ public class Altinn3ServiceTests
             .Setup(x => x.GetAltinn2RolesList("TT02"))
             .ReturnsAsync(altinn2RolesJson);
 
-        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, "TT02");
+        var result = await _altinnApiService.GetRolesAndRightsAltinn3(request, null, "TT02");
 
         Assert.NotNull(result);
         Assert.NotNull(result.AuthorizedRoles);

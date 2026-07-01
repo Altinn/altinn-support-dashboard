@@ -251,12 +251,19 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
     }
 
-    public async Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, string environmentName)
+    public async Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, List<string>? AnyOfResourceIds, string environmentName)
     {
 
         var client = _clients[environmentName];
 
         var requestUrl = $"accessmanagement/api/v1/resourceowner/authorizedparties?includeAltinn3=true&includeResources=true&includeAccessPackages=true";
+        if (AnyOfResourceIds != null && AnyOfResourceIds.Count > 0)
+        {
+            foreach (string resourceId in AnyOfResourceIds)
+            {
+                requestUrl += $"&anyOfResourceIds={resourceId}";
+            }
+        }
 
 
         string jsonPayload = JsonSerializer.Serialize(dto);

@@ -247,8 +247,15 @@ namespace AltinnSupportDashboard.Controllers
         [HttpPost("organizations/altinn3/roles")]
         public async Task<IActionResult> PostRolesAndRightsAltinn3([FromBody] RolesAndRightsRequest request)
         {
-            var result = await _altinn3Service.GetRolesAndRightsAltinn3(request, environmentName);
+            var result = await _altinn3Service.GetRolesAndRightsAltinn3(request, null, environmentName);
 
+            return Ok(result);
+        }
+
+        [HttpPost("organizations/altinn3/resourceavailability")]
+        public async Task<IActionResult> PostResourceAvailability([FromBody] ResourceAvailabilityRequest request)
+        {
+            var result = await _altinn3Service.GetResourceAvailabilityAsync(request, environmentName);
             return Ok(result);
         }
 
