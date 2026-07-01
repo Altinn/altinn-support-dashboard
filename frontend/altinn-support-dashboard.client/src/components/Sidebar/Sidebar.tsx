@@ -2,6 +2,7 @@ import logo from "../../assets/logo.png";
 import whiteLogo from "/asd_128_white.png";
 import { useSidebarDrag } from "./hooks/useSidebarDrag";
 import NavItem from "./NavItem";
+import NavGroup from "./NavGroup";
 import SideBarDateTime from "./SidebarDateTime";
 import SidebarEnvToggle from "./SidebarEnvToggle";
 import { useUserDetails } from "../../hooks/hooks";
@@ -114,18 +115,25 @@ const Sidebar: React.FC = () => {
             />
             {hasInternalOrExternalCoreRoles && (
               <div>
-                <NavItem
-                  to="/notification"
-                  title="Varsling"
+                <NavGroup
+                  title="Core"
                   icon={<DatabaseIcon className={classes.icons} />}
                   isCollapsed={isCollapsed}
-                />
-                <NavItem
-                  to="/identifier-conversion"
-                  title="ID-konvertering"
-                  icon={<ArrowRightLeftIcon className={classes.icons} />}
-                  isCollapsed={isCollapsed}
-                />
+                  paths={["/notification", "/identifier-conversion"]}
+                >
+                  <NavItem
+                    to="/notification"
+                    title="Varsling Søk"
+                    icon={<DatabaseIcon className={classes.icons} />}
+                    isCollapsed={isCollapsed}
+                  />
+                  <NavItem
+                    to="/identifier-conversion"
+                    title="ID-konvertering"
+                    icon={<ArrowRightLeftIcon className={classes.icons} />}
+                    isCollapsed={isCollapsed}
+                  />
+                </NavGroup>
               </div>
             )}
             <NavItem
