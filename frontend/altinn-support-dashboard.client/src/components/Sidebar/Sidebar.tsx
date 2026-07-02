@@ -2,6 +2,7 @@ import logo from "../../assets/logo.png";
 import whiteLogo from "/asd_128_white.png";
 import { useSidebarDrag } from "./hooks/useSidebarDrag";
 import NavItem from "./NavItem";
+import NavGroup from "./NavGroup";
 import SideBarDateTime from "./SidebarDateTime";
 import SidebarEnvToggle from "./SidebarEnvToggle";
 import { useUserDetails } from "../../hooks/hooks";
@@ -17,6 +18,7 @@ import {
   DatabaseIcon,
   FilesIcon,
   PersonIcon,
+  TerminalIcon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -120,10 +122,15 @@ const Sidebar: React.FC = () => {
               isCollapsed={isCollapsed}
             />
             {hasInternalOrExternalCoreRoles && (
-              <div>
+              <NavGroup
+                title="Core"
+                icon={<TerminalIcon className={classes.icons} />}
+                isCollapsed={isCollapsed}
+                paths={["/notification", "/identifier-conversion"]}
+              >
                 <NavItem
                   to="/notification"
-                  title="Varsling"
+                  title="Varsling Søk"
                   icon={<DatabaseIcon className={classes.icons} />}
                   isCollapsed={isCollapsed}
                 />
@@ -133,7 +140,7 @@ const Sidebar: React.FC = () => {
                   icon={<ArrowRightLeftIcon className={classes.icons} />}
                   isCollapsed={isCollapsed}
                 />
-              </div>
+              </NavGroup>
             )}
             <NavItem
               to="/settings"
