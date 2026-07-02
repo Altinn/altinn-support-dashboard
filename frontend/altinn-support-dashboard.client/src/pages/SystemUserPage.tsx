@@ -1,7 +1,7 @@
 import { Alert, Button, Heading, Skeleton, Switch, Textfield } from "@digdir/designsystemet-react";
 import { useAuthorizedPartiesForSystemUser } from "../hooks/hooks";
 import { useAppStore } from "../stores/Appstore";
-import { AuthorizedPartiesQueryParams, AuthorizedPartyExtended } from "../models/models";
+import { AuthorizedPartiesQueryParams } from "../models/models";
 import { useState } from "react";
 import styles from "./styles/SystemUserPage.module.css";
 import SystemUserCard from "../components/SystemUser/SystemUserCard";
@@ -10,25 +10,24 @@ import SystemUserDetailedView from "../components/SystemUser/SystemUserDeatiledV
 
 export const SystemUserPage = () => {
     const environment = useAppStore((state) => state.environment);
-    const [uuid, setUuid] = useState("");
-    const [submittedUuid, setSubmittedUuid] = useState("");
-    const [params, setParams] = useState<AuthorizedPartiesQueryParams>({
-        includeAltinn2: false,
-        includeAltinn3: true,
-        includeRoles: true,
-        includeAccessPackages: true,
-        includeResources: true,
-        includeInstances: false,
-    });
-    const [selectedParty, setSelectedParty] = useState<AuthorizedPartyExtended | null>(null);
+    const systemUserUuid = useAppStore((state) => state.systemUserUuid);
+    const systemUserParams = useAppStore((state) => state.systemUserParams);
+    const systemUserSelectedPartyUuid = useAppStore((state) => state.systemUserSelectedPartyUuid);
+    const setSystemUserUuid = useAppStore((state) => state.setSystemUserUuid);
+    const setSystemUserParams = useAppStore((state) => state.setSystemUserParams);
+    const setSystemUserSelectedPartyUuid = useAppStore((state) => state.setSystemUserSelectedPartyUuid);
 
-    const { data, isLoading, error } = useAuthorizedPartiesForSystemUser(environment, submittedUuid, params);
+    const [uuid, setUuid] = useState(systemUserUuid);
+
+    const { data, isLoading, error } = useAuthorizedPartiesForSystemUser(environment, systemUserUuid, systemUserParams);
+
+    const selectedParty = data?.find((p) => p.partyUuid === systemUserSelectedPartyUuid) ?? null;
 
     const handleToggle = (key: keyof AuthorizedPartiesQueryParams) => {
-        setParams((prevParams) => ({
-            ...prevParams,
-            [key]: !prevParams[key],
-        }));
+        setSystemUserParams({
+            ...systemUserParams,
+            [key]: !systemUserParams[key],
+        });
     }
 
     return (
@@ -42,40 +41,41 @@ export const SystemUserPage = () => {
                         label="Systembruker UUID"
                         value={uuid}
                         onChange={(e) => setUuid(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && setSystemUserUuid(uuid)}
                     />
                     <div className={styles.switchGrid}>
                         <Switch
-                            checked={params.includeAltinn2}
+                            checked={systemUserParams.includeAltinn2}
                             onChange={() => handleToggle("includeAltinn2")}
                             label="Inkluder Altinn 2"
                         />
                         <Switch
-                            checked={params.includeAltinn3}
+                            checked={systemUserParams.includeAltinn3}
                             onChange={() => handleToggle("includeAltinn3")}
                             label="Inkluder Altinn 3"
                         />
                         <Switch
-                            checked={params.includeRoles}
+                            checked={systemUserParams.includeRoles}
                             onChange={() => handleToggle("includeRoles")}
                             label="Inkluder roller"
                         />
                         <Switch
-                            checked={params.includeAccessPackages}
+                            checked={systemUserParams.includeAccessPackages}
                             onChange={() => handleToggle("includeAccessPackages")}
                             label="Inkluder tilgangspakker"
                         />
                         <Switch
-                            checked={params.includeResources}
+                            checked={systemUserParams.includeResources}
                             onChange={() => handleToggle("includeResources")}
                             label="Inkluder ressurser"
                         />
                         <Switch
-                            checked={params.includeInstances}
+                            checked={systemUserParams.includeInstances}
                             onChange={() => handleToggle("includeInstances")}
                             label="Inkluder instanser"
                         />
                     </div>
-                    <Button onClick={() => setSubmittedUuid(uuid)}>Søk</Button>
+                    <Button onClick={() => setSystemUserUuid(uuid)}>Søk</Button>
                 </div>
                 <div className={styles.responseContainer}>
                     <div className={styles.partyList}>
@@ -86,8 +86,8 @@ export const SystemUserPage = () => {
                             <SystemUserCard
                                 key={party.partyUuid}
                                 party={party}
-                                isSelected={selectedParty?.partyUuid === party.partyUuid}
-                                onClick={() => setSelectedParty(party)}
+                                isSelected={systemUserSelectedPartyUuid === party.partyUuid}
+                                onClick={() => setSystemUserSelectedPartyUuid(party.partyUuid)}
                             />
                         ))}
                     </div>
