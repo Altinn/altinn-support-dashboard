@@ -185,6 +185,7 @@ public class Altinn3Service : IAltinn3Service
             Phone = contact.Phone,
             Email = contact.Email,
             LastChanged = contact.LastChanged,
+            ResourceIncludeList = contact.ResourceIncludeList
         }).ToList();
 
         foreach (var contact in contacts)
@@ -428,6 +429,10 @@ public class Altinn3Service : IAltinn3Service
 
     public async Task<ResourceAvailabilityResponse> GetResourceAvailabilityAsync(ResourceAvailabilityRequest request, string environment)
     {
+
+        var resourcePolicyRules = await _resourceRegistryService.GetResourcePolicyRules(environment, request.ResourceId);
+
+
         RolesAndRightsRequest rolesAndRightsRequest = new RolesAndRightsRequest
         {
             Value = request.NationalIdentityNumber,
@@ -439,16 +444,36 @@ public class Altinn3Service : IAltinn3Service
             ]
         };
         var rightsResponse = await GetRolesAndRightsAltinn3(rolesAndRightsRequest, [request.ResourceId], environment, false);
-
         var personalContacts = await GetPersonalContactsByOrgAltinn3(request.OrganizationNumber, environment);
-        List<string>? resourceIncludeList = personalContacts.FirstOrDefault(p => p.NationalIdentityNumber == request.NationalIdentityNumber)?.ResourceIncludeList;
 
-        var resourcePolicyRules = await _resourceRegistryService.GetResourcePolicyRules(environment, request.ResourceId);
+        //personalContacts have their NationalIdentityNumber redacted and replaced with an SsnToken, so we decrypt both sides to compare
+        var ssn = _ssnTokenService.GetSsnFromToken(request.NationalIdentityNumber);
+        if (string.IsNullOrWhiteSpace(ssn))
+        {
+            ssn = request.NationalIdentityNumber.Replace(" ", ""); //If the subject isn't a token, use it as is
+        }
 
+        //resourceregistry doesnt use the prefix so we have to strip it
+        const string ResourceUrnPrefix = "urn:altinn:resource:";
+        List<string>? resourceIncludeList = personalContacts
+            .FirstOrDefault(p => p.SsnToken != null && _ssnTokenService.GetSsnFromToken(p.SsnToken) == ssn)
+            ?.ResourceIncludeList;
+        List<string> strippedResourceIncludeList = [];
+        if (resourceIncludeList != null)
+        {
+            foreach (var resourceId in resourceIncludeList)
+            {
+                var stripped = resourceId.StartsWith(ResourceUrnPrefix, StringComparison.OrdinalIgnoreCase)
+                    ? resourceId[ResourceUrnPrefix.Length..]
+                    : resourceId;
+                strippedResourceIncludeList.Add(stripped);
+                _logger.LogDebug("{ResourceId}", stripped);
+            }
+        }
 
         var rulesForAction = resourcePolicyRules?
-            .Where(r => r.Action?.Value?.Equals(request.ActionOnResource, StringComparison.OrdinalIgnoreCase) == true)
-            .ToList() ?? [];
+        .Where(r => r.Action?.Value?.Equals(request.ActionOnResource, StringComparison.OrdinalIgnoreCase) == true)
+        .ToList() ?? [];
 
         var hasAccess = rulesForAction.Any(rule =>
             rule.Subject?.Any(subject =>
@@ -461,8 +486,9 @@ public class Altinn3Service : IAltinn3Service
         return new ResourceAvailabilityResponse
         {
             HasAccessToResource = hasAccess,
-            InResourceIncludeList = resourceIncludeList?.Contains(request.ResourceId) == true,
+            InResourceIncludeList = strippedResourceIncludeList.Count == 0 || strippedResourceIncludeList.Contains(request.ResourceId),
         };
+
     }
 
 
