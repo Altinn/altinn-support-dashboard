@@ -115,27 +115,25 @@ const Sidebar: React.FC = () => {
               isCollapsed={isCollapsed}
             />
             {hasInternalOrExternalCoreRoles && (
-              <div>
-                <NavGroup
-                  title="Core"
-                  icon={<TerminalIcon className={classes.icons} />}
+              <NavGroup
+                title="Core"
+                icon={<TerminalIcon className={classes.icons} />}
+                isCollapsed={isCollapsed}
+                paths={["/notification", "/identifier-conversion"]}
+              >
+                <NavItem
+                  to="/notification"
+                  title="Varsling Søk"
+                  icon={<DatabaseIcon className={classes.icons} />}
                   isCollapsed={isCollapsed}
-                  paths={["/notification", "/identifier-conversion"]}
-                >
-                  <NavItem
-                    to="/notification"
-                    title="Varsling Søk"
-                    icon={<DatabaseIcon className={classes.icons} />}
-                    isCollapsed={isCollapsed}
-                  />
-                  <NavItem
-                    to="/identifier-conversion"
-                    title="ID-konvertering"
-                    icon={<ArrowRightLeftIcon className={classes.icons} />}
-                    isCollapsed={isCollapsed}
-                  />
-                </NavGroup>
-              </div>
+                />
+                <NavItem
+                  to="/identifier-conversion"
+                  title="ID-konvertering"
+                  icon={<ArrowRightLeftIcon className={classes.icons} />}
+                  isCollapsed={isCollapsed}
+                />
+              </NavGroup>
             )}
             <NavItem
               to="/settings"
