@@ -29,7 +29,7 @@
 .responseContainer {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
+  gap: 2rem;
   flex: 1;
   min-height: 0;
   overflow: hidden;
