@@ -5,6 +5,7 @@ import { AuthorizedPartiesQueryParams, AuthorizedPartyExtended } from "../models
 import { useState } from "react";
 import styles from "./styles/SystemUserPage.module.css";
 import SystemUserCard from "../components/SystemUser/SystemUserCard";
+import SystemUserDetailedView from "../components/SystemUser/SystemUserDeatiledView";
 
 
 export const SystemUserPage = () => {
@@ -89,6 +90,10 @@ export const SystemUserPage = () => {
                                 onClick={() => setSelectedParty(party)}
                             />
                         ))}
+                    </div>
+
+                    <div className={styles.partyDetails}>
+                        <SystemUserDetailedView party={selectedParty} />
                     </div>
                 </div>
             </div>

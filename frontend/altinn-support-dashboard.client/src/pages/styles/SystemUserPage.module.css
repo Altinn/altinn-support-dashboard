@@ -22,7 +22,7 @@
 
 .switchGrid {
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
 }
 
@@ -31,18 +31,22 @@
   flex-direction: row;
   gap: 1rem;
   flex: 1;
-  min-width: 0;
-  overflow-x: auto;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .partyList {
   flex: 0 0 300px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.detailView {
+.partyDetails {
   flex: 1;
   min-width: 0;
+  overflow-y: auto;
 }
 
 

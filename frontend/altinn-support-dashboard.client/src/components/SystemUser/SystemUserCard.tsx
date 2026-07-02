@@ -22,7 +22,13 @@ const SystemUserCard: React.FC<SystemUserCardProps> = ({
         style={{ cursor: "pointer", marginBottom: "1rem" }}
     >
         <Heading level={6}>{party.name}</Heading>
-        <Paragraph variant="short">{party.organizationNumber ?? party.personId ?? "—"}</Paragraph>
+        <Paragraph variant="short">
+            {party.organizationNumber
+                ? `Org Nr: ${party.organizationNumber}`
+                : party.personId
+                ? `Personnr: ${party.personId}`
+                : "—"}
+        </Paragraph>
     </Card>
 )
 
