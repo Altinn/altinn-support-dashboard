@@ -127,14 +127,16 @@ export interface AuthorizedPartyExtended {
   partyUuid: string;
   partyId: number;
   name: string;
-  organizationsNumber?: string;
+  organizationNumber?: string;
   personId?: string;
   unitType?: string;
   isDeleted?: boolean;
   authorizedResources: string[];
   authorizedRoles: string[];
-  authorisedAccessPackages: string[];
+  authorizedAccessPackages: string[];
   authorizedInstances: { resourceId: string; instanceId: string; instanceRef: string }[]
+  type?: string;
+  subunits?: AuthorizedPartyExtended[];
 }
 
 export interface AuthorizedPartiesQueryParams {

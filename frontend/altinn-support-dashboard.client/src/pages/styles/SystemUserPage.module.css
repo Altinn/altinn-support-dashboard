@@ -1,0 +1,48 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.switchRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.switchGrid {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 0.5rem;
+}
+
+.responseContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.partyList {
+  flex: 0 0 300px;
+  overflow-y: auto;
+}
+
+.detailView {
+  flex: 1;
+  min-width: 0;
+}
+
+

@@ -247,7 +247,7 @@ export function useAuthorizedPartiesForSystemUser(
   return useQuery({
     queryKey: ["authorizedParties", environment, uuid, params],
     queryFn: () => fetchAuthorizedPartiesForSystemUser(environment, uuid, params),
-    enabled: !uuid,
+    enabled: !!uuid,
     retry: false,
   });
 }
