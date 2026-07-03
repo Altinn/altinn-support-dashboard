@@ -24,7 +24,7 @@ public interface IAltinn3Service
     Task<RolesAndRightsDto> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, List<string>? anyOfResourceIds, string environment, bool convertNames = true);
     Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName);
     Task<List<Altinn2RoleDto>> GetAltinn2RolesList(string environmentName);
-    Task<ResourceAvailabilityResponse> GetResourceAvailabilityAsync(ResourceAvailabilityRequest request, string environment);
+    Task<NotificationAvailabilityResponse> GetNotificationAvailabilityForResourceAsync(NotificationAvailabilityRequest request, string environment);
 
 }
 

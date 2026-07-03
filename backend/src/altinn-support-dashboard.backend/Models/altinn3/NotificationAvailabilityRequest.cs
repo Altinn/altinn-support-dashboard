@@ -1,6 +1,6 @@
 namespace Models.altinn3Dtos;
 
-public class ResourceAvailabilityRequest
+public class NotificationAvailabilityRequest
 {
 	public required string NationalIdentityNumber { get; set; }
 	public required string OrganizationNumber { get; set; }

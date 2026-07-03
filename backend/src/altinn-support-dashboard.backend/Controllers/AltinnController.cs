@@ -252,13 +252,6 @@ namespace AltinnSupportDashboard.Controllers
             return Ok(result);
         }
 
-        [HttpPost("organizations/altinn3/resourceavailability")]
-        public async Task<IActionResult> PostResourceAvailability([FromBody] ResourceAvailabilityRequest request)
-        {
-            var result = await _altinn3Service.GetResourceAvailabilityAsync(request, environmentName);
-            return Ok(result);
-        }
-
         [HttpPost("organizations/altinn3/identifiers")]
         public async Task<IActionResult> PostOrganizationsIdentifiers([FromBody] OrgNumbersRequestDto request)
         {

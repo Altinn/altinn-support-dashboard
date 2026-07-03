@@ -427,8 +427,27 @@ public class Altinn3Service : IAltinn3Service
         }) ?? throw new Exception("Cache returned null");
     }
 
-    public async Task<ResourceAvailabilityResponse> GetResourceAvailabilityAsync(ResourceAvailabilityRequest request, string environment)
+    public async Task<NotificationAvailabilityResponse> GetNotificationAvailabilityForResourceAsync(NotificationAvailabilityRequest request, string environment)
     {
+
+        var personalContacts = await GetPersonalContactsByOrgAltinn3(request.OrganizationNumber, environment);
+
+        //personalContacts have their NationalIdentityNumber redacted and replaced with an SsnToken, so we decrypt both sides to compare
+        var ssn = _ssnTokenService.GetSsnFromToken(request.NationalIdentityNumber);
+        if (string.IsNullOrWhiteSpace(ssn))
+        {
+            ssn = request.NationalIdentityNumber.Replace(" ", ""); //If the subject isn't a token, use it as is
+        }
+
+        var matchingContact = personalContacts.FirstOrDefault(p => p.SsnToken != null && _ssnTokenService.GetSsnFromToken(p.SsnToken) == ssn);
+        // If the person has no contact information setup they wont be contacted
+
+
+        var hasContactInformation = false;
+        if (matchingContact != null)
+        {
+            hasContactInformation = true;
+        }
 
         var resourcePolicyRules = await _resourceRegistryService.GetResourcePolicyRules(environment, request.ResourceId);
 
@@ -444,30 +463,20 @@ public class Altinn3Service : IAltinn3Service
             ]
         };
         var rightsResponse = await GetRolesAndRightsAltinn3(rolesAndRightsRequest, [request.ResourceId], environment, false);
-        var personalContacts = await GetPersonalContactsByOrgAltinn3(request.OrganizationNumber, environment);
 
-        //personalContacts have their NationalIdentityNumber redacted and replaced with an SsnToken, so we decrypt both sides to compare
-        var ssn = _ssnTokenService.GetSsnFromToken(request.NationalIdentityNumber);
-        if (string.IsNullOrWhiteSpace(ssn))
-        {
-            ssn = request.NationalIdentityNumber.Replace(" ", ""); //If the subject isn't a token, use it as is
-        }
+
 
         //resourceregistry doesnt use the prefix so we have to strip it
         const string ResourceUrnPrefix = "urn:altinn:resource:";
-        List<string>? resourceIncludeList = personalContacts
-            .FirstOrDefault(p => p.SsnToken != null && _ssnTokenService.GetSsnFromToken(p.SsnToken) == ssn)
-            ?.ResourceIncludeList;
         List<string> strippedResourceIncludeList = [];
-        if (resourceIncludeList != null)
+        if (matchingContact?.ResourceIncludeList != null)
         {
-            foreach (var resourceId in resourceIncludeList)
+            foreach (var resourceId in matchingContact.ResourceIncludeList)
             {
                 var stripped = resourceId.StartsWith(ResourceUrnPrefix, StringComparison.OrdinalIgnoreCase)
                     ? resourceId[ResourceUrnPrefix.Length..]
                     : resourceId;
                 strippedResourceIncludeList.Add(stripped);
-                _logger.LogDebug("{ResourceId}", stripped);
             }
         }
 
@@ -475,7 +484,7 @@ public class Altinn3Service : IAltinn3Service
         .Where(r => r.Action?.Value?.Equals(request.ActionOnResource, StringComparison.OrdinalIgnoreCase) == true)
         .ToList() ?? [];
 
-        var hasAccess = rulesForAction.Any(rule =>
+        var hasAccessToResource = rulesForAction.Any(rule =>
             rule.Subject?.Any(subject =>
                 rightsResponse.AuthorizedRoles?.Contains(subject.Value ?? "", StringComparer.OrdinalIgnoreCase) == true ||
                 rightsResponse.AuthorizedAccessPackages?.Contains(subject.Value ?? "", StringComparer.OrdinalIgnoreCase) == true ||
@@ -483,10 +492,11 @@ public class Altinn3Service : IAltinn3Service
             ) == true
         );
 
-        return new ResourceAvailabilityResponse
+        return new NotificationAvailabilityResponse
         {
-            HasAccessToResource = hasAccess,
+            HasAccessToResourceForOrg = hasAccessToResource,
             InResourceIncludeList = strippedResourceIncludeList.Count == 0 || strippedResourceIncludeList.Contains(request.ResourceId),
+            HasContactInformationForOrg = hasContactInformation,
         };
 
     }
