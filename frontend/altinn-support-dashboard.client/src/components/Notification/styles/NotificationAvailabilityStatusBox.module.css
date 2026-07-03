@@ -1,0 +1,20 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  color: whitesmoke;
+  width: 12rem;
+  height: 7rem;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.cardSuccess {
+  background-color: green;
+}
+
+.cardDanger {
+  background-color: red;
+}
