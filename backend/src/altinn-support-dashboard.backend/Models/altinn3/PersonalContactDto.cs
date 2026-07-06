@@ -9,6 +9,7 @@ public class PersonalContactDto
     public required string Email { get; set; }
     public required string Phone { get; set; }
     public DateTime? LastChanged { get; set; }
+    public List<string>? ResourceIncludeList { get; set; }
 }
 
 

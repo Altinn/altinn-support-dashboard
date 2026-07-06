@@ -1,3 +1,4 @@
+using System.Net;
 using altinn_support_dashboard.Server.Models;
 using Microsoft.Extensions.Options;
 using Models.altinn3Dtos;

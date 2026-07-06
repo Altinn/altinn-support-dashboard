@@ -44,3 +44,16 @@ export interface DeliveryAttempt {
   result?: string;
   resultTime?: string;
 }
+
+export interface NotificationAvailabilityRequest {
+  nationalIdentityNumber: string;
+  organizationNumber: string;
+  resourceId: string;
+  actionOnResource: string;
+}
+
+export interface NotificationAvailabilityResponse {
+  hasAccessToResourceForOrg: boolean;
+  inResourceIncludeList: boolean;
+  hasContactInformationForOrg: boolean;
+}

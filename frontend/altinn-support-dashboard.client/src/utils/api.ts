@@ -2,6 +2,8 @@ import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
 import { NotificationAdresses, PersonalContactAltinn3 } from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 import {
+  NotificationAvailabilityRequest,
+  NotificationAvailabilityResponse,
   NotificationOrderResponse,
   NotificationShipmentResponse,
 } from "../models/notificationModels";
@@ -157,6 +159,23 @@ export const fetchNotificationsByNin = async (
   if (res.status === 404) return null;
   if (!res.ok)
     throw new Error((await res.text()) || "Error fetching notification by NIN");
+
+  return await res.json();
+};
+
+export const fetchNotificationAvailability = async (
+  environment: string,
+  request: NotificationAvailabilityRequest
+): Promise<NotificationAvailabilityResponse> => {
+  const res = await authorizedPost(
+    `${getBaseUrl(environment)}/notifications/availability`,
+    request
+  );
+
+  if (!res.ok)
+    throw new Error(
+      (await res.text()) || "Error fetching notification availability"
+    );
 
   return await res.json();
 };

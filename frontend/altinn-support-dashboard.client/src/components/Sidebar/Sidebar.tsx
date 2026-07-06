@@ -18,6 +18,7 @@ import {
   DatabaseIcon,
   FilesIcon,
   TerminalIcon,
+  CheckmarkCircleIcon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -136,12 +137,22 @@ const Sidebar: React.FC = () => {
                 title="Core"
                 icon={<TerminalIcon className={classes.icons} />}
                 isCollapsed={isCollapsed}
-                paths={["/notification", "/identifier-conversion"]}
+                paths={[
+                  "/notification",
+                  "/identifier-conversion",
+                  "/notification-availability",
+                ]}
               >
                 <NavItem
                   to="/notification"
                   title="Varsling Søk"
                   icon={<DatabaseIcon className={classes.icons} />}
+                  isCollapsed={isCollapsed}
+                />
+                <NavItem
+                  to="/notification-availability"
+                  title="Varslingskontroll"
+                  icon={<CheckmarkCircleIcon className={classes.icons} />}
                   isCollapsed={isCollapsed}
                 />
               </NavGroup>
