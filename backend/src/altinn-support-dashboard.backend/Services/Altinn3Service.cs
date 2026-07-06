@@ -495,7 +495,7 @@ public class Altinn3Service : IAltinn3Service
         return new NotificationAvailabilityResponse
         {
             HasAccessToResourceForOrg = hasAccessToResource,
-            InResourceIncludeList = strippedResourceIncludeList.Count == 0 || strippedResourceIncludeList.Contains(request.ResourceId),
+            InResourceIncludeList = hasContactInformation && (strippedResourceIncludeList.Count == 0 || strippedResourceIncludeList.Contains(request.ResourceId)),
             HasContactInformationForOrg = hasContactInformation,
         };
 

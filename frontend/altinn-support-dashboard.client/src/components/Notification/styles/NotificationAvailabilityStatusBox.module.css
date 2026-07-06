@@ -3,7 +3,6 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  color: whitesmoke;
   width: 12rem;
   height: 7rem;
   padding: 0.5rem;
@@ -12,9 +11,11 @@
 }
 
 .cardSuccess {
-  background-color: green;
+  background-color: var(--ds-color-success-base-default);
+  color: var(--ds-color-success-base-contrast-default);
 }
 
 .cardDanger {
-  background-color: red;
+  background-color: var(--ds-color-danger-base-default);
+  color: var(--ds-color-danger-base-contrast-default);
 }

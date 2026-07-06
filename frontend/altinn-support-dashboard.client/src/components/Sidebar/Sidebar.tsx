@@ -134,7 +134,7 @@ const Sidebar: React.FC = () => {
                 />
                 <NavItem
                   to="/notification-availability"
-                  title="Varslingstilgjengelighet"
+                  title="Varslingskontroll"
                   icon={<CheckmarkCircleIcon className={classes.icons} />}
                   isCollapsed={isCollapsed}
                 />

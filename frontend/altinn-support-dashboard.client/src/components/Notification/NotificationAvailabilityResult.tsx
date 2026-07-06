@@ -18,16 +18,17 @@ const NotificationAvailabilityResult: React.FC<
   return (
     <div className={style.row}>
       <NotificationAvailabilityStatusBox
-        title="Har tilgang til ressurs for org"
+        title="Tilgang til ressurs"
         value={result.hasAccessToResourceForOrg}
+      />
+
+      <NotificationAvailabilityStatusBox
+        title="Har oppgitt kontaktinformasjon"
+        value={result.hasContactInformationForOrg}
       />
       <NotificationAvailabilityStatusBox
         title="I ressursens inkluderingsliste"
         value={result.inResourceIncludeList}
-      />
-      <NotificationAvailabilityStatusBox
-        title="Har kontaktinformasjon for org"
-        value={result.hasContactInformationForOrg}
       />
       <span className={style.equals}>=</span>
       <NotificationAvailabilityStatusBox
