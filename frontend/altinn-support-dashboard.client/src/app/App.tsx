@@ -16,6 +16,7 @@ import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
 import SettingsPage from "../pages/SettingsPage";
 import { CorrespondencePage } from "../pages/CorrespondencePage";
 import { NotificationPage } from "../pages/NotificationPage";
+import { NotificationAvailabilityPage } from "../pages/NotificationAvailabilityPage";
 import IdentifierConversionPage from "../pages/IdentifierConversionPage";
 import { useAppStore } from "../stores/Appstore";
 import PrivateRoutes from "./PrivateRoutes";
@@ -75,6 +76,10 @@ const App: React.FC = () => {
                   element={<CorrespondencePage />}
                 />
                 <Route path="/notification" element={<NotificationPage />} />
+                <Route
+                  path="/notification-availability"
+                  element={<NotificationAvailabilityPage />}
+                />
                 <Route
                   path="/identifier-conversion"
                   element={<IdentifierConversionPage />}

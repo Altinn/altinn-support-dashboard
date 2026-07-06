@@ -32,10 +32,10 @@ public class MockAltinn3ApiClient(Altinn3ApiClient inner) : IAltinn3ApiClient
             ? Task.FromResult(MockUtils.Read("altinn3-notification-addresses.json"))
             : inner.GetNotificationAddressesByEmail(email, environmentName);
 
-    public Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, string environmentName) =>
+    public Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, List<string>? anyOfResourceIds, string environmentName) =>
         MockUtils.IsMock(environmentName)
             ? Task.FromResult(MockUtils.Read("altinn3-roles-and-rights.json"))
-            : inner.GetRolesAndRightsAltinn3(dto, environmentName);
+            : inner.GetRolesAndRightsAltinn3(dto, anyOfResourceIds, environmentName);
 
     public Task<string> GetOrganizationIdentifiers(List<string> orgNumbers, string environmentName) =>
         MockUtils.IsMock(environmentName)
@@ -52,3 +52,5 @@ public class MockAltinn3ApiClient(Altinn3ApiClient inner) : IAltinn3ApiClient
             ? Task.FromResult(MockUtils.Read("altinn3-altinn2-roles.json"))
             : inner.GetAltinn2RolesList(environmentName);
 }
+
+

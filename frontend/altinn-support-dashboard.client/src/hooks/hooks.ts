@@ -10,6 +10,7 @@ import {
   fetchERoles,
   fetchInternalIds,
   fetchNotificationAddresses,
+  fetchNotificationAvailability,
   fetchNotificationByOrderId,
   fetchNotificationsByNin,
   fetchOrganizations,
@@ -21,6 +22,10 @@ import {
   fetchRolesForOrg,
   fetchSsnFromToken,
 } from "../utils/api";
+import {
+  NotificationAvailabilityRequest,
+  NotificationAvailabilityResponse,
+} from "../models/notificationModels";
 import {
   CorrespondenceResponse,
   CorrespondenceUploadRequest,
@@ -188,6 +193,17 @@ export function useNotificationsByNin(
     retry: false,
     staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useNotificationAvailability() {
+  return useMutation<
+    NotificationAvailabilityResponse,
+    Error,
+    { environment: string; request: NotificationAvailabilityRequest }
+  >({
+    mutationFn: ({ environment, request }) =>
+      fetchNotificationAvailability(environment, request),
   });
 }
 

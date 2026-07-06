@@ -14,6 +14,7 @@ public class PersonalContact
     public DateTime? MobileNumberChanged { get; set; }
     public string? EMailAddress { get; set; }
     public DateTime? EMailAddressChanged { get; set; }
+    public List<string>? ResourceIncludeList { get; set; }
 
     [JsonPropertyName("_links")]
     public List<PersonalContactLink>? Links { get; set; }
