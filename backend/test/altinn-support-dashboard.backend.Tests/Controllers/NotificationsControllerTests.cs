@@ -15,11 +15,13 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 
         private readonly NotificationsController _controller;
         private readonly Mock<INotificationsService> _serviceMock;
+        private readonly Mock<IAltinn3Service> _altinn3ServiceMock;
 
         public NotificationsControllerTests()
         {
             _serviceMock = new Mock<INotificationsService>();
-            _controller = new NotificationsController(_serviceMock.Object);
+            _altinn3ServiceMock = new Mock<IAltinn3Service>();
+            _controller = new NotificationsController(_serviceMock.Object, _altinn3ServiceMock.Object);
         }
 
         [Fact]
