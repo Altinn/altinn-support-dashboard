@@ -37,7 +37,7 @@ const mockERoles = {
                         navn: { fornavn: "Test", mellomnavn: null, etternavn: "Person" },
                         erDoed: false
                     },
-                    fratraadt: false
+                    avregistrert: false
                 }
             ]
         }

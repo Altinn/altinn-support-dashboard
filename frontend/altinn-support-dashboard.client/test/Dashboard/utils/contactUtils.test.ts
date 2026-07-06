@@ -111,8 +111,8 @@ describe('contactUtils', () => {
 
     describe('sortERRoles', () => {
         const mockRoles: ErRoleTableItem[] = [
-            { type: { beskrivelse: 'Daglig leder', kode: 'DL' }, person: { navn: { fornavn: 'Ola', mellomnavn: '', etternavn: 'Nordmann' }, erDoed: false }, sistEndret: '2025-12-31', fratraadt: false, groupType: { beskrivelse: 'Type1', kode: 'T1' } },
-            { type: { beskrivelse: 'Styremedlem', kode: 'SM' }, person: { navn: { fornavn: 'Kari', mellomnavn: '', etternavn: 'Nord' }, erDoed: false }, sistEndret: '2026-12-31', fratraadt: false, groupType: { beskrivelse: 'Type2', kode: 'T2' } },
+            { type: { beskrivelse: 'Daglig leder', kode: 'DL' }, person: { navn: { fornavn: 'Ola', mellomnavn: '', etternavn: 'Nordmann' }, erDoed: false }, sistEndret: '2025-12-31', avregistrert: false, groupType: { beskrivelse: 'Type1', kode: 'T1' } },
+            { type: { beskrivelse: 'Styremedlem', kode: 'SM' }, person: { navn: { fornavn: 'Kari', mellomnavn: '', etternavn: 'Nord' }, erDoed: false }, sistEndret: '2026-12-31', avregistrert: false, groupType: { beskrivelse: 'Type2', kode: 'T2' } },
         ];
 
         it('should return unsorted roles when sortField is null', () => {
@@ -158,8 +158,8 @@ describe('contactUtils', () => {
 
         it('should handle roles with missing fields', () => {
             const rolesWithMissingFields: ErRoleTableItem[] = [
-                { type: { beskrivelse: '', kode: '' }, person: { navn: { fornavn: '', mellomnavn: '', etternavn: '' }, erDoed: false }, sistEndret: '', fratraadt: false, groupType: { beskrivelse: '', kode: '' } },
-                { type: { beskrivelse: 'Valid Type', kode: 'VT' }, person: { navn: { fornavn: 'Valid', mellomnavn: '', etternavn: 'Person' }, erDoed: false }, sistEndret: '2026-01-01', fratraadt: false, groupType: { beskrivelse: 'Type3', kode: 'T3' } }
+                { type: { beskrivelse: '', kode: '' }, person: { navn: { fornavn: '', mellomnavn: '', etternavn: '' }, erDoed: false }, sistEndret: '', avregistrert: false, groupType: { beskrivelse: '', kode: '' } },
+                { type: { beskrivelse: 'Valid Type', kode: 'VT' }, person: { navn: { fornavn: 'Valid', mellomnavn: '', etternavn: 'Person' }, erDoed: false }, sistEndret: '2026-01-01', avregistrert: false, groupType: { beskrivelse: 'Type3', kode: 'T3' } }
             ];
             const result = sortERRoles(rolesWithMissingFields, 'type', "ascending");
             expect(result).toEqual([rolesWithMissingFields[0], rolesWithMissingFields[1]]);

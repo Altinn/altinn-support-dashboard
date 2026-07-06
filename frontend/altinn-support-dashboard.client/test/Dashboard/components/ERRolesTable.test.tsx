@@ -76,7 +76,7 @@ describe("ERRolesTable", () => {
             navn: { fornavn: "Test", mellomnavn: "", etternavn: "User" },
             erDoed: false,
           },
-          fratraadt: false,
+          avregistrert: false,
         },
       ],
     },
@@ -135,7 +135,7 @@ describe("ERRolesTable", () => {
               organisasjonsform: { kode: "AS", beskrivelse: "Aksjeselskap" },
               erSlettet: false,
             },
-            fratraadt: false,
+            avregistrert: false,
           },
         ],
       },
@@ -153,7 +153,7 @@ describe("ERRolesTable", () => {
     expect(screen.getByText("Test Company (987654321)")).toBeInTheDocument();
   });
 
-  it('should display "Fratrådt" status for inactive roles', () => {
+  it('should display "Avregistrert" status for inactive roles', () => {
     const inactiveRole: ERRoles[] = [
       {
         type: { kode: "ERole", beskrivelse: "ERole" },
@@ -165,7 +165,7 @@ describe("ERRolesTable", () => {
               navn: { fornavn: "Inactive", mellomnavn: "", etternavn: "User" },
               erDoed: false,
             },
-            fratraadt: true,
+            avregistrert: true,
           },
         ],
       },
@@ -180,7 +180,7 @@ describe("ERRolesTable", () => {
 
     render(<ERRolesTable selectedOrg={mockSelectedOrg} />);
 
-    expect(screen.getByText("Fratrådt")).toBeInTheDocument();
+    expect(screen.getByText("Avregistrert")).toBeInTheDocument();
   });
 
   it('should display "Død" for deceased persons', () => {
@@ -195,7 +195,7 @@ describe("ERRolesTable", () => {
               navn: { fornavn: "Deceased", mellomnavn: "", etternavn: "User" },
               erDoed: true,
             },
-            fratraadt: false,
+            avregistrert: false,
           },
         ],
       },
@@ -229,7 +229,7 @@ describe("ERRolesTable", () => {
               organisasjonsform: { kode: "AS", beskrivelse: "Aksjeselskap" },
               erSlettet: true,
             },
-            fratraadt: false,
+            avregistrert: false,
           },
         ],
       },
