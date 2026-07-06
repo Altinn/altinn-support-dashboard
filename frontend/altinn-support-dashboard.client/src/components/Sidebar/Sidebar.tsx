@@ -50,7 +50,12 @@ const Sidebar: React.FC = () => {
     !authData.azureAuthActive ||
     authData.roles.includes("Dashboard.Core.Internal") ||
     authData.roles.includes("Dashboard.Core.External");
-
+  const hasDeveloperRole =
+    !authData.azureAuthActive || authData.roles.includes("Dashboard.Developer");
+  const hasTT02OrProductionRoles =
+    !authData.azureAuthActive ||
+    authData.roles.includes("Dashboard.PROD") ||
+    authData.roles.includes("Dashboard.TT02");
   return (
     <div className={classes.sidebarWrapper}>
       <div className={classes.dragHandle} onMouseDown={handleDragStart} />
@@ -91,18 +96,22 @@ const Sidebar: React.FC = () => {
           <Divider className={classes.divider} />
 
           <nav className={classes.nav}>
-            <NavItem
-              to="/dashboard"
-              title="Oppslag"
-              icon={<Buildings3Icon className={classes.icons} />}
-              isCollapsed={isCollapsed}
-            />
-            <NavItem
-              to="/manualrolesearch"
-              title="Manuelt rollesøk"
-              icon={<MagnifyingGlassIcon className={classes.icons} />}
-              isCollapsed={isCollapsed}
-            />
+            {hasTT02OrProductionRoles && (
+              <div>
+                <NavItem
+                  to="/dashboard"
+                  title="Oppslag"
+                  icon={<Buildings3Icon className={classes.icons} />}
+                  isCollapsed={isCollapsed}
+                />
+                <NavItem
+                  to="/manualrolesearch"
+                  title="Manuelt rollesøk"
+                  icon={<MagnifyingGlassIcon className={classes.icons} />}
+                  isCollapsed={isCollapsed}
+                />
+              </div>
+            )}
             <NavItem
               to="/resourcesearch"
               title="Ressurs søk"
@@ -115,6 +124,14 @@ const Sidebar: React.FC = () => {
               icon={<EnvelopeOpenIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
+            {hasDeveloperRole && (
+              <NavItem
+                to="/identifier-conversion"
+                title="ID-konvertering"
+                icon={<ArrowRightLeftIcon className={classes.icons} />}
+                isCollapsed={isCollapsed}
+              />
+            )}
             {hasInternalOrExternalCoreRoles && (
               <NavGroup
                 title="Core"
@@ -136,12 +153,6 @@ const Sidebar: React.FC = () => {
                   to="/notification-availability"
                   title="Varslingskontroll"
                   icon={<CheckmarkCircleIcon className={classes.icons} />}
-                  isCollapsed={isCollapsed}
-                />
-                <NavItem
-                  to="/identifier-conversion"
-                  title="ID-konvertering"
-                  icon={<ArrowRightLeftIcon className={classes.icons} />}
                   isCollapsed={isCollapsed}
                 />
               </NavGroup>

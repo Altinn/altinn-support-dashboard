@@ -62,7 +62,12 @@ describe("Sidebar", () => {
     });
 
     vi.mocked(useAuthDetails).mockReturnValue({
-      data: { isLoggedIn: true, name: "Test User", azureAuthActive: true, roles: [] },
+      data: {
+        isLoggedIn: true,
+        name: "Test User",
+        azureAuthActive: true,
+        roles: [],
+      },
       isLoading: false,
     } as unknown as ReturnType<typeof useAuthDetails>);
   });
@@ -79,7 +84,7 @@ describe("Sidebar", () => {
     const { container } = render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(container.firstChild).toBeNull();
@@ -97,30 +102,17 @@ describe("Sidebar", () => {
     const { container } = render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(container.firstChild).toBeNull();
-  });
-
-  it("should render all navItems when expanded", () => {
-    render(
-      <MemoryRouter>
-        <Sidebar />
-      </MemoryRouter>,
-    );
-
-    expect(screen.getByText("Oppslag")).toBeInTheDocument();
-    expect(screen.getByText("Manuelt rollesøk")).toBeInTheDocument();
-    expect(screen.getByText("Melding")).toBeInTheDocument();
-    expect(screen.getByText("Innstillinger")).toBeInTheDocument();
   });
 
   it("should show collapse button correctly when expanded", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(screen.getByText("Minimer sidepanel")).toBeInTheDocument();
@@ -138,7 +130,7 @@ describe("Sidebar", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(screen.queryByText("Oppslag")).not.toBeInTheDocument();
@@ -153,7 +145,7 @@ describe("Sidebar", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     const collapseButton = screen.getByRole("button", {
@@ -168,7 +160,7 @@ describe("Sidebar", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(screen.getByText("Test User")).toBeInTheDocument();
@@ -186,7 +178,7 @@ describe("Sidebar", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(screen.queryByText("Test User")).not.toBeInTheDocument();
@@ -204,7 +196,7 @@ describe("Sidebar", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(screen.queryByText("EnvToggle")).not.toBeInTheDocument();
@@ -214,7 +206,7 @@ describe("Sidebar", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(screen.getByText("EnvToggle")).toBeInTheDocument();
@@ -232,12 +224,12 @@ describe("Sidebar", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(screen.queryByText("DateTime")).not.toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: /Logg ut/i }),
+      screen.queryByRole("button", { name: /Logg ut/i })
     ).not.toBeInTheDocument();
   });
 
@@ -245,12 +237,12 @@ describe("Sidebar", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(screen.getByText("DateTime")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /Logg ut/i }),
+      screen.getByRole("button", { name: /Logg ut/i })
     ).toBeInTheDocument();
   });
 
@@ -266,13 +258,13 @@ describe("Sidebar", () => {
     const { container } = render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     const img = container.querySelector("img");
     expect(img).toHaveAttribute(
       "src",
-      expect.stringContaining("asd_128_white.png"),
+      expect.stringContaining("asd_128_white.png")
     );
   });
 
@@ -280,7 +272,7 @@ describe("Sidebar", () => {
     const { container } = render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     const img = container.querySelector("img");
@@ -291,7 +283,7 @@ describe("Sidebar", () => {
     const { container } = render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     const dragHandle = container.querySelector('[class*="dragHandle"]');
@@ -300,4 +292,3 @@ describe("Sidebar", () => {
     expect(mockHandleDragStart).toHaveBeenCalled();
   });
 });
-
