@@ -2,6 +2,7 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models.altinn3Dtos;
 using Security;
 
 namespace AltinnSupportDashboard.Controllers;
@@ -15,10 +16,12 @@ public class NotificationsController : ControllerBase
     private const string InvalidOrderIdMessage = "Order-ID is invalid. It should be in GUID format";
 
     private readonly INotificationsService _service;
+    private readonly IAltinn3Service _altinn3Service;
 
-    public NotificationsController(INotificationsService service)
+    public NotificationsController(INotificationsService service, IAltinn3Service altinn3Service)
     {
         _service = service;
+        _altinn3Service = altinn3Service;
     }
 
     [HttpGet("orderid/email/{orderId}")]
@@ -64,5 +67,12 @@ public class NotificationsController : ControllerBase
         }
         var response = await _service.GetFutureNotificationsByNin(nin, from, to, environmentName);
         return Ok(response);
+    }
+
+    [HttpPost("availability")]
+    public async Task<IActionResult> GetNotificationAvailabilityForResource([FromRoute] string environmentName, [FromBody] NotificationAvailabilityRequest request)
+    {
+        var result = await _altinn3Service.GetNotificationAvailabilityForResourceAsync(request, environmentName);
+        return Ok(result);
     }
 }
