@@ -52,7 +52,7 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
     for (const rolegroup of rolegroups) {
       for (const role of rolegroup.roller) {
         erRoleItems.push({
-          fratraadt: role.fratraadt,
+          avregistrert: role.avregistrert,
           sistEndret: rolegroup.sistEndret,
           type: role.type,
           enhet: role.enhet,
@@ -127,7 +127,7 @@ const ERRolesTable: React.FC<ERRolesTableProps> = ({ selectedOrg }) => {
                     : role?.person?.fodselsdato}
                 </Table.Cell>
                 <Table.Cell className={styles["cell-font"]}>
-                  {role.fratraadt ? "Fratrådt" : "Aktiv"}
+                  {role.avregistrert ? "Avregistrert" : "Aktiv"}
                   {role.person?.erDoed ? " (Død)" : ""}
                   {role.enhet?.erSlettet ? " (Slettet)" : ""}
                 </Table.Cell>

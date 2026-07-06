@@ -11,7 +11,7 @@
             "navn": { "fornavn": "Test", "mellomnavn": null, "etternavn": "Testesen" },
             "erDoed": false
           },
-          "fratraadt": false,
+          "avreegistrert": false,
           "rekkefolge": 1
         }
       ]
