@@ -1,4 +1,4 @@
-import { Alert, Heading, Skeleton, ToggleGroup } from "@digdir/designsystemet-react";
+import { Alert, Heading, Skeleton, Textfield, ToggleGroup } from "@digdir/designsystemet-react";
 import { useEffect, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
 import { useNotifications, useNotificationsByNin } from "../hooks/hooks";
@@ -24,11 +24,15 @@ export const NotificationPage = () => {
   const [dateTo, setDateTo] = useState(
     () => sessionStorage.getItem("notif_dateTo") || ""
   );
+  const [creatorFilter, setCreatorFilter] = useState(
+    () => sessionStorage.getItem("notif_creatorFilter") || ""
+  );
 
   useEffect(() => { sessionStorage.setItem("notif_searchType", searchType); }, [searchType]);
   useEffect(() => { sessionStorage.setItem("notif_searchValue", searchValue); }, [searchValue]);
   useEffect(() => { sessionStorage.setItem("notif_dateFrom", dateFrom); }, [dateFrom]);
   useEffect(() => { sessionStorage.setItem("notif_dateTo", dateTo); }, [dateTo]);
+  useEffect(() => { sessionStorage.setItem("notif_creatorFilter", creatorFilter); }, [creatorFilter]);
 
   const orderQuery = useNotifications(
     searchType === "shipmentId" ? searchValue : "",
@@ -52,7 +56,7 @@ export const NotificationPage = () => {
   return (
     <div className={style.container}>
       <Heading level={1} data-size="sm" className={style.heading}>
-        Søk etter varsling
+        Notification search
       </Heading>
 
       <ToggleGroup
@@ -80,6 +84,16 @@ export const NotificationPage = () => {
         setDateTo={setDateTo}
       />
 
+      {searchType === "future" && (
+        <Textfield 
+          label="Creator name filter"
+          value={creatorFilter}
+          onChange={(e) => setCreatorFilter(e.target.value)}
+          data-size="sm"
+          className={style.creatorFilter}
+        />
+      )}
+
       {activeQuery.isFetching && (
         <>
           <Skeleton variant="rectangle" height="6rem" />
@@ -101,7 +115,11 @@ export const NotificationPage = () => {
           .map((order, i) => <NotificationCard key={i} order={order}/>)}
 
       {searchType === "future" &&
-        ninQuery.data?.map((shipment, i) => (
+        ninQuery.data
+          ?.filter((shipment) =>
+            shipment.creatorName.toLowerCase().includes(creatorFilter.toLowerCase())
+        )
+        .map((shipment, i) => (
           <NotificationShipmentCard key={i} shipment={shipment}/> 
         ))}
     </div>
