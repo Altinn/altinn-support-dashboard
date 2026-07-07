@@ -46,7 +46,6 @@ public class PartyApiClient : IPartyApiClient
             var request = new HttpRequestMessage(HttpMethod.Post, "parties/lookup") { Content = content };
             var response = await client.SendAsync(request);
             var responseBody = await response.Content.ReadAsStringAsync();
-            _logger.LogDebug("Party lookup response: {ResponseBody}", responseBody);
 
             if (response.IsSuccessStatusCode)
                 return responseBody;
@@ -115,7 +114,6 @@ public class PartyApiClient : IPartyApiClient
             var response = await client.SendAsync(request);
 
             var responseBody = await response.Content.ReadAsStringAsync();
-            _logger.LogDebug(responseBody);
 
             if (response.IsSuccessStatusCode)
                 return responseBody;
