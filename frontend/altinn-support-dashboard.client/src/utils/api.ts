@@ -240,12 +240,13 @@ export const fetchInternalIds = async (
   query: string,
   environment: string
 ): Promise<PartyModel> => {
-  const digits = query.replace(/\s/g, "");
-  if (digits.length === 11) return fetchInternalIdsFromSsn(digits, environment);
-  if (digits.length === 9) return fetchInternalIdsFromOrg(digits, environment);
-  throw new Error(
-    "Identifikatoren må være 9 siffer (org.nr.) eller 11 siffer (fødselsnummer)"
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/parties/lookup/${query}`
   );
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
+  return await res.json();
 };
 
 export const fetchInternalIdsFromOrg = async (
