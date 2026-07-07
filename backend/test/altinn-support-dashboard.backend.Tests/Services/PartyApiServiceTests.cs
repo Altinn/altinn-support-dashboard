@@ -94,6 +94,9 @@ public class PartyApiServiceTests
         _mockClient
         .Setup(x => x.GetParty(It.IsAny<string>(), false, It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
+        _mockClient
+        .Setup(x => x.GetPartyWithUserInformationByUuid(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync(@"{ ""user"": { ""userId"": 123 } }");
 
         var result = await _service.GetPartyFromSsnAsync(validSsn, Env);
 

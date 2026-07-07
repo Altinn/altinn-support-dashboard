@@ -1,6 +1,7 @@
 export interface PartyModel {
   partyId: number;
   partyUuid: string;
+  userId?: string;
   orgNumber?: string;
   ssn?: string;
   name?: string;
