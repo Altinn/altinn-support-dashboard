@@ -63,10 +63,11 @@ export const NotificationPage = () => {
         value={searchType}
         data-toggle-group="Søketype"
         onChange={(val) => { 
-          setSearchType(val as SearchType); setSearchValue(""); 
+          setSearchType(val as SearchType);
           setSearchValue("")
           setDateFrom("")
           setDateTo("")
+          setCreatorFilter("")
         }}
         data-size="sm"
       >
@@ -116,9 +117,12 @@ export const NotificationPage = () => {
 
       {searchType === "future" &&
         ninQuery.data
-          ?.filter((shipment) =>
-            shipment.creatorName.toLowerCase().includes(creatorFilter.toLowerCase())
-        )
+          ?.filter((shipment) =>{
+            /*If the creatorname is empty, it will still show with an empty filter*/
+            const term = creatorFilter.trim().toLowerCase();
+            if (!term) return true;
+            return shipment.creatorName?.toLowerCase().includes(term)
+          })
         .map((shipment, i) => (
           <NotificationShipmentCard key={i} shipment={shipment}/> 
         ))}
