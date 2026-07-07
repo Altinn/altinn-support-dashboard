@@ -137,11 +137,7 @@ const Sidebar: React.FC = () => {
                 title="Core"
                 icon={<TerminalIcon className={classes.icons} />}
                 isCollapsed={isCollapsed}
-                paths={[
-                  "/notification",
-                  "/identifier-conversion",
-                  "/notification-availability",
-                ]}
+                paths={["/notification", "/notification-availability"]}
               >
                 <NavItem
                   to="/notification"
