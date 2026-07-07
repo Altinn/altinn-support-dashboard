@@ -75,6 +75,12 @@ const IdentifierConversionPage: React.FC = () => {
           <Paragraph>
             <strong>PartyUuid:</strong> {data.partyUuid}
           </Paragraph>
+
+          {data.userId && (
+            <Paragraph>
+              <strong>UserId:</strong> {data.userId}
+            </Paragraph>
+          )}
         </Card>
       )}
     </div>
