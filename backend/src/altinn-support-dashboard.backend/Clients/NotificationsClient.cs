@@ -107,7 +107,7 @@ public class NotificationsClient : INotificationsClient
         {
             query.Add($"to={Uri.EscapeDataString(to.Value.ToString("O"))}");
         }
-        var url = "notifications/api/v1/future/dashboard/recipients/notifications/orgnr";
+        var url = "notifications/api/v1/future/dashboard/recipients/notifications/orgnumber";
         if (query.Count > 0)
         {
             url += "?" + string.Join("&", query);
@@ -115,8 +115,8 @@ public class NotificationsClient : INotificationsClient
 
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-        //nin is set in header
-        request.Headers.Add("NationalIdentityNumber", orgNr);
+        //orgnr is set in header
+        request.Headers.Add("OrganizationNumber", orgNr);
         var response = await client.SendAsync(request);
         var responseBody = await response.Content.ReadAsStringAsync();
 
