@@ -51,7 +51,7 @@ public class PartyApiService : IPartyApiService
         return party;
     }
 
-    public async Task<PartyModel> GetPartyFromUuidAsync(string uuid, string environmentName)
+    public async Task<PartyModel> GetPartyByUuidAsync(string uuid, string environmentName)
     {
         var result = await _client.GetPartyByUuid(uuid, environmentName);
 
@@ -61,6 +61,31 @@ public class PartyApiService : IPartyApiService
         {
             throw new Exception("Party not valid");
         }
+
+        var userInformationResult = await _client.GetPartyWithUserInformationByUuid(party.PartyUuid, environmentName);
+        var userInformation = JsonSerializer.Deserialize<PartyUserInformationDto>(userInformationResult, jsonOptions);
+
+        party.UserId = userInformation?.User?.UserId;
+
+        return party;
+    }
+
+    public async Task<PartyModel> GetPartyByIdAsync(string partyId, string environmentName)
+    {
+        var result = await _client.GetPartyByid(partyId, environmentName);
+
+        var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
+
+        if (party == null)
+        {
+            throw new Exception("Party not valid");
+        }
+
+        var userInformationResult = await _client.GetPartyWithUserInformationByUuid(party.PartyUuid, environmentName);
+        var userInformation = JsonSerializer.Deserialize<PartyUserInformationDto>(userInformationResult, jsonOptions);
+
+        party.UserId = userInformation?.User?.UserId;
+
         return party;
     }
 

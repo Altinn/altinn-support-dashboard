@@ -5,4 +5,5 @@ public interface IPartyApiClient
     Task<string> GetPartyRoles(string partyUuid, string environmentName);
     Task<string> GetPartyByUuid(string uuid, string environmentName);
     Task<string> GetPartyWithUserInformationByUuid(string uuid, string environmentName);
+    Task<string> GetPartyByid(string partyId, string environmentName);
 }

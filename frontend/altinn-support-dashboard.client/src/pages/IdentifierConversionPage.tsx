@@ -47,7 +47,8 @@ const IdentifierConversionPage: React.FC = () => {
       <div className={styles.searchRow}>
         <Textfield
           className={styles.input}
-          label="Organisasjonsnummer (9 siffer) eller fødselsnummer (11 siffer)"
+          label=""
+          placeholder="orgnr, nin, partyid, partyuuid"
           value={input}
           onChange={(e) => {
             setInput(e.target.value);
@@ -69,6 +70,18 @@ const IdentifierConversionPage: React.FC = () => {
 
       {data && (
         <Card className={styles.result}>
+          {data.ssn && (
+            <Paragraph>
+              <strong>Nin:</strong> {data.ssn}
+            </Paragraph>
+          )}
+
+          {data.orgNumber && (
+            <Paragraph>
+              <strong>OrgNr:</strong> {data.orgNumber}
+            </Paragraph>
+          )}
+
           <Paragraph>
             <strong>PartyId:</strong> {data.partyId}
           </Paragraph>

@@ -1,6 +1,7 @@
 
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Security;
@@ -65,10 +66,47 @@ namespace altinn_support_dashboard.Server.Controllers
         }
 
         [HttpGet("parties/lookup/uuid/{Uuid}")]
-        public async Task<IActionResult> GetPartyUuid([FromRoute] string Uuid)
+        public async Task<IActionResult> GetPartyByUuid([FromRoute] string Uuid)
         {
-            var result = await _service.GetPartyFromUuidAsync(Uuid, _environmentName);
+            var result = await _service.GetPartyByUuidAsync(Uuid, _environmentName);
             return Ok(result);
+        }
+
+        [HttpGet("parties/lookup/partyId/{partyId}")]
+        public async Task<IActionResult> GetPartyByPartyId([FromRoute] string partytId)
+        {
+            var result = await _service.GetPartyByUuidAsync(partytId, _environmentName);
+            return Ok(result);
+        }
+
+        [HttpGet("parties/lookup/{value}")]
+        public async Task<IActionResult> GetPartyByValue([FromRoute] string value)
+        {
+            if (Guid.TryParse(value, out _))
+            {
+                var result = await _service.GetPartyByUuidAsync(value, _environmentName);
+                return Ok(result);
+            }
+
+            if (ValidationService.isValidSsn(value))
+            {
+                var result = await _service.GetPartyFromSsnAsync(value, _environmentName);
+                return Ok(result);
+            }
+
+            if (ValidationService.IsValidOrgNumber(value))
+            {
+                var result = await _service.GetPartyFromOrgAsync(value, _environmentName);
+                return Ok(result);
+            }
+
+            if (value.All(char.IsDigit))
+            {
+                var result = await _service.GetPartyByIdAsync(value, _environmentName);
+                return Ok(result);
+            }
+
+            return BadRequest("Value is not a valid SSN, organization number, party ID, or party UUID.");
         }
     }
 }
