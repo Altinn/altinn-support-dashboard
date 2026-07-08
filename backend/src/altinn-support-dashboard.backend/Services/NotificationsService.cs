@@ -28,6 +28,12 @@ public class NotificationsService : INotificationsService
         return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
     }
 
+    public async Task<List<FutureNotificationDto>> GetFutureNotificationsByOrgNr(string orgNr, DateTime? from, DateTime? to, string environmentName)
+    {
+        var result = await _client.GetFutureNotificationsByOrgNr(orgNr, from, to, environmentName);
+        return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+    }
+
     public async Task<NotificationOrderResponseDto> GetEmailNotificationsByOrderId(string orderId, string environmentName)
     {
         var result = await _client.GetEmailNotificationsByOrderId(orderId, environmentName);
