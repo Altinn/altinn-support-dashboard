@@ -9,6 +9,7 @@ public class PartyModel
     public string? Ssn { get; set; }
     public string? Name { get; set; }
     public PartyPerson? Person { get; set; }
+    public int? UserId { get; set; }
 }
 
 

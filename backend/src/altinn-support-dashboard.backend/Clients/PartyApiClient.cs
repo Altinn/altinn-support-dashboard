@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 public class PartyApiClient : IPartyApiClient
 {
     private readonly Dictionary<string, HttpClient> _clients = new();
+    private readonly ILogger<IPartyApiClient> _logger;
 
     public class LookupRequest
     {
@@ -13,10 +14,12 @@ public class PartyApiClient : IPartyApiClient
         public string? Ssn { get; set; }
     }
 
-    public PartyApiClient(IOptions<Configuration> configuration, IHttpClientFactory clientFactory)
+    public PartyApiClient(IOptions<Configuration> configuration, IHttpClientFactory clientFactory, ILogger<IPartyApiClient> logger)
     {
         InitClient(nameof(configuration.Value.TT02), configuration.Value.TT02, clientFactory);
         InitClient(nameof(configuration.Value.Production), configuration.Value.Production, clientFactory);
+
+        _logger = logger;
     }
 
     private void InitClient(string environmentName, EnvironmentConfiguration config, IHttpClientFactory clientFactory)
@@ -27,7 +30,7 @@ public class PartyApiClient : IPartyApiClient
         _clients.Add(environmentName, client);
     }
 
-    public async Task<string> GetParty(string orgNumber, bool isOrg, string environmentName)
+    public async Task<string> GetParty(string lookupValue, bool isOrg, string environmentName)
     {
         try
         {
@@ -35,18 +38,18 @@ public class PartyApiClient : IPartyApiClient
             var requestBody = new LookupRequest();
 
             if (isOrg)
-                requestBody.OrgNo = orgNumber;
+                requestBody.OrgNo = lookupValue;
             else
-                requestBody.Ssn = orgNumber;
+                requestBody.Ssn = lookupValue;
 
             var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
             var request = new HttpRequestMessage(HttpMethod.Post, "parties/lookup") { Content = content };
             var response = await client.SendAsync(request);
+            var responseBody = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsStringAsync();
+                return responseBody;
 
-            var responseBody = await response.Content.ReadAsStringAsync();
             if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 throw new BadRequestException($"Invalid lookup request: {responseBody}");
 
@@ -94,6 +97,47 @@ public class PartyApiClient : IPartyApiClient
                 return await response.Content.ReadAsStringAsync();
 
             var responseBody = await response.Content.ReadAsStringAsync();
+            throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+        }
+    }
+
+    public async Task<string> GetPartyByid(string partyId, string environmentName)
+    {
+        try
+        {
+            var client = _clients[environmentName];
+            var request = new HttpRequestMessage(HttpMethod.Get, $"parties/{partyId}");
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsStringAsync();
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+        }
+    }
+
+    public async Task<string> GetPartyWithUserInformationByUuid(string partyUuid, string environmentName)
+    {
+        try
+        {
+            var client = _clients[environmentName];
+            var request = new HttpRequestMessage(HttpMethod.Get, $"support-dashboard/parties/{partyUuid}?fields=user");
+            var response = await client.SendAsync(request);
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+                return responseBody;
+
             throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
         }
         catch (Exception ex)
