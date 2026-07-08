@@ -1,5 +1,5 @@
-import { Alert, Heading, Skeleton, Textfield, ToggleGroup } from "@digdir/designsystemet-react";
-import { useEffect, useState } from "react";
+import { Alert, Button, Checkbox, Combobox, Dropdown, Heading, Skeleton, ToggleGroup } from "@digdir/designsystemet-react";
+import { useEffect, useMemo, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
 import { useNotifications, useNotificationsByNin } from "../hooks/hooks";
 import NotificationCard from "../components/Notification/NotificationCard";
@@ -24,15 +24,18 @@ export const NotificationPage = () => {
   const [dateTo, setDateTo] = useState(
     () => sessionStorage.getItem("notif_dateTo") || ""
   );
-  const [creatorFilter, setCreatorFilter] = useState(
-    () => sessionStorage.getItem("notif_creatorFilter") || ""
-  );
+  const [selectedCreators, setSelectedCreators] = useState<string[]>(() => {
+    const saved = sessionStorage.getItem("notif_selectedCreators");
+    return saved ? JSON.parse(saved) : [];
+  })
 
   useEffect(() => { sessionStorage.setItem("notif_searchType", searchType); }, [searchType]);
   useEffect(() => { sessionStorage.setItem("notif_searchValue", searchValue); }, [searchValue]);
   useEffect(() => { sessionStorage.setItem("notif_dateFrom", dateFrom); }, [dateFrom]);
   useEffect(() => { sessionStorage.setItem("notif_dateTo", dateTo); }, [dateTo]);
-  useEffect(() => { sessionStorage.setItem("notif_creatorFilter", creatorFilter); }, [creatorFilter]);
+  useEffect(() => {
+    sessionStorage.setItem("notif_selectedCreators", JSON.stringify(selectedCreators));
+  })
 
   const orderQuery = useNotifications(
     searchType === "shipmentId" ? searchValue : "",
@@ -53,6 +56,28 @@ export const NotificationPage = () => {
     }
   }, [activeQuery]);
 
+  const creatorNames = useMemo(() => {
+    const names = new Set<string>();
+    ninQuery.data?.forEach((shipment) => { if (shipment.creatorName) names.add(shipment.creatorName); });
+    return Array.from(names).sort();
+  }, [ninQuery.data]);
+
+  useEffect(() => {
+    setSelectedCreators((prev) => prev.filter((creator) => creatorNames.includes(creator)));
+  }, [creatorNames]);
+
+  const filteredShipments = useMemo(() => {
+    if (!ninQuery.data) return ninQuery.data;
+    if (selectedCreators.length === 0) return ninQuery.data;
+    return ninQuery.data.filter((shipment) => shipment.creatorName ? selectedCreators.includes(shipment.creatorName) : false);
+  }, [ninQuery.data, selectedCreators]);
+
+  const toggleCreator = (name: string) => {
+    setSelectedCreators((prev) => 
+      prev.includes(name) ? prev.filter((creator) => creator !== name) : [...prev, name]
+    )
+  }
+
   return (
     <div className={style.container}>
       <Heading level={1} data-size="sm" className={style.heading}>
@@ -67,7 +92,6 @@ export const NotificationPage = () => {
           setSearchValue("")
           setDateFrom("")
           setDateTo("")
-          setCreatorFilter("")
         }}
         data-size="sm"
       >
@@ -85,14 +109,30 @@ export const NotificationPage = () => {
         setDateTo={setDateTo}
       />
 
-      {searchType === "future" && (
-        <Textfield 
-          label="Creator name filter"
-          value={creatorFilter}
-          onChange={(e) => setCreatorFilter(e.target.value)}
-          data-size="sm"
-          className={style.creatorFilter}
-        />
+      {searchType === "future" && creatorNames.length > 0 && (
+        <div className={style.creatorFilter}>
+          <Dropdown.TriggerContext>
+            <Dropdown.Trigger>
+              <Button variant="secondary" data-size="sm">
+                Filter by creator name
+                {selectedCreators.length > 0 ? ` (${selectedCreators.length})` : ""}
+              </Button>
+            </Dropdown.Trigger>
+            <Dropdown data-size="sm">
+              <Dropdown.List>
+                {creatorNames.map((name) => (
+                  <Dropdown.Item key={name}>
+                    <Checkbox 
+                      label={name}
+                      checked={selectedCreators.includes(name)}
+                      onChange={() => toggleCreator(name)}
+                    />
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.List>
+            </Dropdown>
+          </Dropdown.TriggerContext>
+        </div>
       )}
 
       {activeQuery.isFetching && (
@@ -108,24 +148,7 @@ export const NotificationPage = () => {
       )}
 
 
-      {/* Filters out the notifications with 0 (shows only email if sms was 0 f.ex.) */}
-      {/* Different result view based on what type of search it is */}
-      {searchType === "shipmentId" && 
-        orderQuery.data
-          ?.filter((o) => o.notifications.length > 0)
-          .map((order, i) => <NotificationCard key={i} order={order}/>)}
-
-      {searchType === "future" &&
-        ninQuery.data
-          ?.filter((shipment) =>{
-            /*If the creatorname is empty, it will still show with an empty filter*/
-            const term = creatorFilter.trim().toLowerCase();
-            if (!term) return true;
-            return shipment.creatorName?.toLowerCase().includes(term)
-          })
-        .map((shipment, i) => (
-          <NotificationShipmentCard key={i} shipment={shipment}/> 
-        ))}
+      {!orderQuery.isFetching}
     </div>
   );
 };
