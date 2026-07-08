@@ -1,7 +1,16 @@
-import { Alert, Heading, Skeleton, ToggleGroup } from "@digdir/designsystemet-react";
+import {
+  Alert,
+  Heading,
+  Skeleton,
+  ToggleGroup,
+} from "@digdir/designsystemet-react";
 import { useEffect, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
-import { useNotifications, useNotificationsByNin } from "../hooks/hooks";
+import {
+  useNotifications,
+  useNotificationsAdvanced,
+  useNotificationsByNin,
+} from "../hooks/hooks";
 import NotificationCard from "../components/Notification/NotificationCard";
 import style from "./styles/NotificationPage.module.css";
 import { showPopup } from "../components/Popup";
@@ -13,7 +22,8 @@ type SearchType = "shipmentId" | "future";
 export const NotificationPage = () => {
   const environment = useAppStore((state) => state.environment);
   const [searchType, setSearchType] = useState<SearchType>(
-    () => (sessionStorage.getItem("notif_searchType") as SearchType) || "shipmentId"
+    () =>
+      (sessionStorage.getItem("notif_searchType") as SearchType) || "shipmentId"
   );
   const [searchValue, setSearchValue] = useState(
     () => sessionStorage.getItem("notif_searchValue") || ""
@@ -25,20 +35,28 @@ export const NotificationPage = () => {
     () => sessionStorage.getItem("notif_dateTo") || ""
   );
 
-  useEffect(() => { sessionStorage.setItem("notif_searchType", searchType); }, [searchType]);
-  useEffect(() => { sessionStorage.setItem("notif_searchValue", searchValue); }, [searchValue]);
-  useEffect(() => { sessionStorage.setItem("notif_dateFrom", dateFrom); }, [dateFrom]);
-  useEffect(() => { sessionStorage.setItem("notif_dateTo", dateTo); }, [dateTo]);
+  useEffect(() => {
+    sessionStorage.setItem("notif_searchType", searchType);
+  }, [searchType]);
+  useEffect(() => {
+    sessionStorage.setItem("notif_searchValue", searchValue);
+  }, [searchValue]);
+  useEffect(() => {
+    sessionStorage.setItem("notif_dateFrom", dateFrom);
+  }, [dateFrom]);
+  useEffect(() => {
+    sessionStorage.setItem("notif_dateTo", dateTo);
+  }, [dateTo]);
 
   const orderQuery = useNotifications(
     searchType === "shipmentId" ? searchValue : "",
     environment
   );
-  const ninQuery = useNotificationsByNin(
+  const ninQuery = useNotificationsAdvanced(
     searchType === "future" ? searchValue : "",
     environment,
     dateFrom || undefined,
-    dateTo || undefined,
+    dateTo || undefined
   );
 
   const activeQuery = searchType === "shipmentId" ? orderQuery : ninQuery;
@@ -58,11 +76,12 @@ export const NotificationPage = () => {
       <ToggleGroup
         value={searchType}
         data-toggle-group="Søketype"
-        onChange={(val) => { 
-          setSearchType(val as SearchType); setSearchValue(""); 
-          setSearchValue("")
-          setDateFrom("")
-          setDateTo("")
+        onChange={(val) => {
+          setSearchType(val as SearchType);
+          setSearchValue("");
+          setSearchValue("");
+          setDateFrom("");
+          setDateTo("");
         }}
         data-size="sm"
       >
@@ -88,21 +107,23 @@ export const NotificationPage = () => {
         </>
       )}
 
-      {!activeQuery.isFetching && !activeQuery.isError && activeQuery.data !== undefined && activeQuery.data?.length === 0 && (
-        <Alert data-color="info">Ingen resultater funnet.</Alert>
-      )}
-
+      {!activeQuery.isFetching &&
+        !activeQuery.isError &&
+        activeQuery.data !== undefined &&
+        activeQuery.data?.length === 0 && (
+          <Alert data-color="info">Ingen resultater funnet.</Alert>
+        )}
 
       {/* Filters out the notifications with 0 (shows only email if sms was 0 f.ex.) */}
       {/* Different result view based on what type of search it is */}
-      {searchType === "shipmentId" && 
+      {searchType === "shipmentId" &&
         orderQuery.data
           ?.filter((o) => o.notifications.length > 0)
-          .map((order, i) => <NotificationCard key={i} order={order}/>)}
+          .map((order, i) => <NotificationCard key={i} order={order} />)}
 
       {searchType === "future" &&
         ninQuery.data?.map((shipment, i) => (
-          <NotificationShipmentCard key={i} shipment={shipment}/> 
+          <NotificationShipmentCard key={i} shipment={shipment} />
         ))}
     </div>
   );
