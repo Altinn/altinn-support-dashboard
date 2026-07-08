@@ -84,6 +84,24 @@ public class NotificationsController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("future/{query}")]
+    public async Task<IActionResult> GetFutureNofifications([FromRoute] string environmentName,
+        [FromRoute] string query,
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to)
+    {
+        if (ValidationService.IsValidOrgNumberV2(query))
+        {
+            return await GetFutureNotificationsByOrgNr(environmentName, query, from, to);
+        }
+
+        if (ValidationService.isValidSsn(query))
+        {
+            return await GetFutureNotificationsByNin(environmentName, query, from, to);
+        }
+        return BadRequest("Not a valid nin or org number");
+    }
+
     [HttpPost("availability")]
     public async Task<IActionResult> GetNotificationAvailabilityForResource([FromRoute] string environmentName, [FromBody] NotificationAvailabilityRequest request)
     {
