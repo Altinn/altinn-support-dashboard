@@ -122,6 +122,7 @@ export const NotificationPage = () => {
             </Dropdown.Trigger>
             <Dropdown 
             data-size="sm"
+            placement="bottom-start"
             onOpen={() => setIsCreatorFilterOpen(true)}
             onClose={() => setIsCreatorFilterOpen(false)}
             >
