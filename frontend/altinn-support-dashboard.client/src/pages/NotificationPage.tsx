@@ -6,18 +6,14 @@ import {
 } from "@digdir/designsystemet-react";
 import { useEffect, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
-import {
-  useNotifications,
-  useNotificationsAdvanced,
-  useNotificationsByNin,
-} from "../hooks/hooks";
+import { useNotifications, useNotificationsAdvanced } from "../hooks/hooks";
 import NotificationCard from "../components/Notification/NotificationCard";
 import style from "./styles/NotificationPage.module.css";
 import { showPopup } from "../components/Popup";
 import { useAppStore } from "../stores/Appstore";
 import NotificationShipmentCard from "../components/Notification/NIN-search/NotificationShipmentCard";
 
-type SearchType = "shipmentId" | "future";
+type SearchType = "shipmentId" | "advanced";
 
 export const NotificationPage = () => {
   const environment = useAppStore((state) => state.environment);
@@ -53,7 +49,7 @@ export const NotificationPage = () => {
     environment
   );
   const ninQuery = useNotificationsAdvanced(
-    searchType === "future" ? searchValue : "",
+    searchType === "advanced" ? searchValue : "",
     environment,
     dateFrom || undefined,
     dateTo || undefined
@@ -86,10 +82,11 @@ export const NotificationPage = () => {
         data-size="sm"
       >
         <ToggleGroup.Item value="shipmentId">Shipment-Id</ToggleGroup.Item>
-        <ToggleGroup.Item value="future">Future</ToggleGroup.Item>
+        <ToggleGroup.Item value="advanced">Avansert søk</ToggleGroup.Item>
       </ToggleGroup>
 
       <NotificationSearchBar
+        key={searchType}
         searchValue={searchValue}
         setSearchValue={setSearchValue}
         searchType={searchType}
@@ -121,7 +118,7 @@ export const NotificationPage = () => {
           ?.filter((o) => o.notifications.length > 0)
           .map((order, i) => <NotificationCard key={i} order={order} />)}
 
-      {searchType === "future" &&
+      {searchType === "advanced" &&
         ninQuery.data?.map((shipment, i) => (
           <NotificationShipmentCard key={i} shipment={shipment} />
         ))}
