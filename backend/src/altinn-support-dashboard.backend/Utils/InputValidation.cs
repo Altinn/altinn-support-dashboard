@@ -70,6 +70,28 @@ namespace altinn_support_dashboard.Server.Utils
             return !string.IsNullOrEmpty(ssn) && SsnPattern.IsMatch(ssn);
         }
 
+        public static bool IsValidOrgNumberV2(string orgNumber)
+        {
+            if (string.IsNullOrWhiteSpace(orgNumber) || orgNumber.Length != 9 || !orgNumber.All(char.IsDigit))
+            {
+                return false;
+            }
+
+            var digits = orgNumber.Select(c => c - '0').ToArray();
+            int[] weights = { 3, 2, 7, 6, 5, 4, 3, 2 };
+
+            int sum = 0;
+            for (int i = 0; i < weights.Length; i++)
+            {
+                sum += digits[i] * weights[i];
+            }
+
+            int remainder = sum % 11;
+            int checkDigit = remainder == 0 ? 0 : 11 - remainder;
+
+            return checkDigit != 10 && checkDigit == digits[8];
+        }
+
 
         public static string SanitizeRedirect(string? url)
         {

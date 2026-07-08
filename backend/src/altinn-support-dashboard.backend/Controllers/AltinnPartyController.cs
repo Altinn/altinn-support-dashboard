@@ -122,7 +122,7 @@ namespace altinn_support_dashboard.Server.Controllers
                 return Ok(result);
             }
 
-            if (ValidationService.IsValidOrgNumber(value))
+            if (ValidationService.IsValidOrgNumberV2(value))
             {
                 var result = await _service.GetPartyFromOrgAsync(value, _environmentName);
                 if (result == null)
@@ -132,7 +132,7 @@ namespace altinn_support_dashboard.Server.Controllers
                 return Ok(result);
             }
 
-            if (value.All(char.IsDigit))
+            if (value.All(char.IsDigit) && value.Length == 8)
             {
                 var result = await _service.GetPartyByIdAsync(value, _environmentName);
                 if (result == null)
