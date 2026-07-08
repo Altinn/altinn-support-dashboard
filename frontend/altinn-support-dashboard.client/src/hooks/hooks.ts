@@ -13,7 +13,6 @@ import {
   fetchNotificationAvailability,
   fetchNotificationByOrderId,
   fetchNotificationsAdvancedSearch,
-  fetchNotificationsByNin,
   fetchOrganizations,
   fetchPersonalContacts,
   fetchResourceByIdentifier,
