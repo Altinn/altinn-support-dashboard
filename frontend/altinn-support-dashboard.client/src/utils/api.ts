@@ -240,9 +240,13 @@ export const fetchInternalIds = async (
   query: string,
   environment: string
 ): Promise<PartyModel> => {
+  const strippedQuery = query.replace(/\s/g, "");
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/parties/lookup/${query}`
+    `${getBaseUrl(environment)}/parties/lookup/${strippedQuery}`
   );
+  if (res.status === 404) {
+    throw new Error("Not found");
+  }
   if (!res.ok) {
     throw new Error(await res.text());
   }
