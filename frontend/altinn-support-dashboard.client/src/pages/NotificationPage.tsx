@@ -1,4 +1,4 @@
-import { Alert, Button, Checkbox, Combobox, Dropdown, Heading, Skeleton, ToggleGroup } from "@digdir/designsystemet-react";
+import { Alert, Checkbox,  Dropdown, Heading, Skeleton, ToggleGroup } from "@digdir/designsystemet-react";
 import { useEffect, useMemo, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
 import { useNotifications, useNotificationsByNin } from "../hooks/hooks";
@@ -7,6 +7,7 @@ import style from "./styles/NotificationPage.module.css";
 import { showPopup } from "../components/Popup";
 import { useAppStore } from "../stores/Appstore";
 import NotificationShipmentCard from "../components/Notification/NIN-search/NotificationShipmentCard";
+import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
 
 type SearchType = "shipmentId" | "future";
 
@@ -28,6 +29,7 @@ export const NotificationPage = () => {
     const saved = sessionStorage.getItem("notif_selectedCreators");
     return saved ? JSON.parse(saved) : [];
   })
+  const [isCreatorFilterOpen, setIsCreatorFilterOpen] = useState(false);
 
   useEffect(() => { sessionStorage.setItem("notif_searchType", searchType); }, [searchType]);
   useEffect(() => { sessionStorage.setItem("notif_searchValue", searchValue); }, [searchValue]);
@@ -35,7 +37,7 @@ export const NotificationPage = () => {
   useEffect(() => { sessionStorage.setItem("notif_dateTo", dateTo); }, [dateTo]);
   useEffect(() => {
     sessionStorage.setItem("notif_selectedCreators", JSON.stringify(selectedCreators));
-  })
+  }, [selectedCreators]);
 
   const orderQuery = useNotifications(
     searchType === "shipmentId" ? searchValue : "",
@@ -63,8 +65,9 @@ export const NotificationPage = () => {
   }, [ninQuery.data]);
 
   useEffect(() => {
+    if (!ninQuery.data) return;
     setSelectedCreators((prev) => prev.filter((creator) => creatorNames.includes(creator)));
-  }, [creatorNames]);
+  }, [creatorNames, ninQuery.data]);
 
   const filteredShipments = useMemo(() => {
     if (!ninQuery.data) return ninQuery.data;
@@ -113,12 +116,15 @@ export const NotificationPage = () => {
         <div className={style.creatorFilter}>
           <Dropdown.TriggerContext>
             <Dropdown.Trigger>
-              <Button variant="secondary" data-size="sm">
-                Filter by creator name
-                {selectedCreators.length > 0 ? ` (${selectedCreators.length})` : ""}
-              </Button>
+              Filter by creator
+              {selectedCreators.length > 0 ? ` (${selectedCreators.length})` : ""}
+              {isCreatorFilterOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
             </Dropdown.Trigger>
-            <Dropdown data-size="sm">
+            <Dropdown 
+            data-size="sm"
+            onOpen={() => setIsCreatorFilterOpen(true)}
+            onClose={() => setIsCreatorFilterOpen(false)}
+            >
               <Dropdown.List>
                 {creatorNames.map((name) => (
                   <Dropdown.Item key={name}>
@@ -143,12 +149,31 @@ export const NotificationPage = () => {
         </>
       )}
 
-      {!activeQuery.isFetching && !activeQuery.isError && activeQuery.data !== undefined && activeQuery.data?.length === 0 && (
-        <Alert data-color="info">Ingen resultater funnet.</Alert>
+
+      {!orderQuery.isFetching && !orderQuery.isError && searchType === "shipmentId" && orderQuery.data?.length === 0 && (
+        <Alert data-color="info">No shipments found.</Alert>
       )}
 
+      {!ninQuery.isFetching && !ninQuery.isError && searchType === "future" && ninQuery.data && filteredShipments?.length === 0 && (
+        <Alert data-color="info">
+          {ninQuery.data.length === 0
+            ? "No shipments found."
+            : "No shipments found for the selected creator(s)."}
+        </Alert>
+      )}
 
-      {!orderQuery.isFetching}
+      {/* Filters out the notifications with 0 (shows only email if sms was 0 f.ex.) */}
+      {/* Different result view based on what type of search it is */}
+      {searchType === "shipmentId" &&
+        orderQuery.data
+          ?.filter((o) => o.notifications.length > 0)
+          .map((order, i) => <NotificationCard key={i} order={order}/>)
+      }
+
+      {searchType === "future" &&
+        filteredShipments?.map((shipment, i) => (
+          <NotificationShipmentCard key={i} shipment={shipment}/>
+        ))}
     </div>
   );
 };
