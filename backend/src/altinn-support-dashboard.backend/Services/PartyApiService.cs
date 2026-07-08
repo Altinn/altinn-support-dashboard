@@ -21,9 +21,13 @@ public class PartyApiService : IPartyApiService
         _client = client;
     }
 
-    public async Task<PartyModel> GetPartyFromOrgAsync(string orgNumber, string environmentName)
+    public async Task<PartyModel?> GetPartyFromOrgAsync(string orgNumber, string environmentName)
     {
         var result = await _client.GetParty(orgNumber, true, environmentName);
+        if (string.IsNullOrEmpty(result))
+        {
+            return null;
+        }
 
         var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
         if (party == null)
@@ -33,10 +37,14 @@ public class PartyApiService : IPartyApiService
         return party;
     }
 
-    public async Task<PartyModel> GetPartyFromSsnAsync(string ssn, string environmentName)
+    public async Task<PartyModel?> GetPartyFromSsnAsync(string ssn, string environmentName)
     {
-
         var partyResult = await _client.GetParty(ssn, false, environmentName);
+        if (string.IsNullOrEmpty(partyResult))
+        {
+            return null;
+        }
+
         var party = JsonSerializer.Deserialize<PartyModel>(partyResult, jsonOptions);
         if (party == null)
         {
@@ -51,9 +59,13 @@ public class PartyApiService : IPartyApiService
         return party;
     }
 
-    public async Task<PartyModel> GetPartyByUuidAsync(string uuid, string environmentName)
+    public async Task<PartyModel?> GetPartyByUuidAsync(string uuid, string environmentName)
     {
         var result = await _client.GetPartyByUuid(uuid, environmentName);
+        if (string.IsNullOrEmpty(result))
+        {
+            return null;
+        }
 
         var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
 
@@ -70,9 +82,13 @@ public class PartyApiService : IPartyApiService
         return party;
     }
 
-    public async Task<PartyModel> GetPartyByIdAsync(string partyId, string environmentName)
+    public async Task<PartyModel?> GetPartyByIdAsync(string partyId, string environmentName)
     {
         var result = await _client.GetPartyByid(partyId, environmentName);
+        if (string.IsNullOrEmpty(result))
+        {
+            return null;
+        }
 
         var party = JsonSerializer.Deserialize<PartyModel>(result, jsonOptions);
 
@@ -96,9 +112,14 @@ public class PartyApiService : IPartyApiService
         return result;
     }
 
-    public async Task<ErRollerModel> GetRolesFromOrgAsync(string orgNumber, string environmentName)
+    public async Task<ErRollerModel?> GetRolesFromOrgAsync(string orgNumber, string environmentName)
     {
         var resultOrgParty = await _client.GetParty(orgNumber, true, environmentName);
+        if (string.IsNullOrEmpty(resultOrgParty))
+        {
+            return null;
+        }
+
         var orgParty = JsonSerializer.Deserialize<PartyModel>(resultOrgParty, jsonOptions);
 
         if (orgParty == null)
@@ -108,26 +129,33 @@ public class PartyApiService : IPartyApiService
 
         var resultPartyRoles = await _client.GetPartyRoles(orgParty.PartyUuid, environmentName);
 
-
-
-        using JsonDocument doc = JsonDocument.Parse(resultPartyRoles);
-        JsonElement root = doc.RootElement;
-
         //iterate and add the the party with the roles identifier
         List<(PartyModel party, string identifier)> partyRoles = new();
-        foreach (var item in root.GetProperty("data").EnumerateArray())
+        if (!string.IsNullOrEmpty(resultPartyRoles))
         {
-            string identifier = item.GetProperty("role").GetProperty("identifier").GetString() ?? "";
-            string toUuid = item.GetProperty("to").GetProperty("partyUuid").GetString() ?? "";
-            var partyResult = await _client.GetPartyByUuid(toUuid, environmentName);
-            var party = JsonSerializer.Deserialize<PartyModel>(partyResult, jsonOptions);
+            using JsonDocument doc = JsonDocument.Parse(resultPartyRoles);
+            JsonElement root = doc.RootElement;
 
-            if (party == null || String.IsNullOrEmpty(identifier))
+            foreach (var item in root.GetProperty("data").EnumerateArray())
             {
-                continue;
-            }
+                string identifier = item.GetProperty("role").GetProperty("identifier").GetString() ?? "";
+                string toUuid = item.GetProperty("to").GetProperty("partyUuid").GetString() ?? "";
+                var partyResult = await _client.GetPartyByUuid(toUuid, environmentName);
 
-            partyRoles.Add((party, identifier));
+                if (string.IsNullOrEmpty(partyResult) || String.IsNullOrEmpty(identifier))
+                {
+                    continue;
+                }
+
+                var party = JsonSerializer.Deserialize<PartyModel>(partyResult, jsonOptions);
+
+                if (party == null)
+                {
+                    continue;
+                }
+
+                partyRoles.Add((party, identifier));
+            }
         }
 
 

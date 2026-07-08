@@ -41,6 +41,10 @@ namespace altinn_support_dashboard.Server.Controllers
         public async Task<IActionResult> GetPartyOrg([FromRoute] string orgNumber)
         {
             var result = await _service.GetPartyFromOrgAsync(orgNumber, _environmentName);
+            if (result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
         }
 
@@ -48,6 +52,10 @@ namespace altinn_support_dashboard.Server.Controllers
         public async Task<IActionResult> GetPartySsn([FromRoute] string ssn)
         {
             var result = await _service.GetPartyFromSsnAsync(ssn, _environmentName);
+            if (result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
         }
 
@@ -62,6 +70,10 @@ namespace altinn_support_dashboard.Server.Controllers
         public async Task<IActionResult> GetRolesFromOrg([FromRoute] string orgNumber)
         {
             var result = await _service.GetRolesFromOrgAsync(orgNumber, _environmentName);
+            if (result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
         }
 
@@ -69,13 +81,21 @@ namespace altinn_support_dashboard.Server.Controllers
         public async Task<IActionResult> GetPartyByUuid([FromRoute] string Uuid)
         {
             var result = await _service.GetPartyByUuidAsync(Uuid, _environmentName);
+            if (result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
         }
 
         [HttpGet("parties/lookup/partyId/{partyId}")]
-        public async Task<IActionResult> GetPartyByPartyId([FromRoute] string partytId)
+        public async Task<IActionResult> GetPartyByPartyId([FromRoute] string partyId)
         {
-            var result = await _service.GetPartyByUuidAsync(partytId, _environmentName);
+            var result = await _service.GetPartyByIdAsync(partyId, _environmentName);
+            if (result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
         }
 
@@ -85,24 +105,40 @@ namespace altinn_support_dashboard.Server.Controllers
             if (Guid.TryParse(value, out _))
             {
                 var result = await _service.GetPartyByUuidAsync(value, _environmentName);
+                if (result == null)
+                {
+                    return NotFound();
+                }
                 return Ok(result);
             }
 
             if (ValidationService.isValidSsn(value))
             {
                 var result = await _service.GetPartyFromSsnAsync(value, _environmentName);
+                if (result == null)
+                {
+                    return NotFound();
+                }
                 return Ok(result);
             }
 
-            if (ValidationService.IsValidOrgNumber(value))
+            if (ValidationService.IsValidOrgNumberV2(value))
             {
                 var result = await _service.GetPartyFromOrgAsync(value, _environmentName);
+                if (result == null)
+                {
+                    return NotFound();
+                }
                 return Ok(result);
             }
 
-            if (value.All(char.IsDigit))
+            if (value.All(char.IsDigit) && value.Length == 8)
             {
                 var result = await _service.GetPartyByIdAsync(value, _environmentName);
+                if (result == null)
+                {
+                    return NotFound();
+                }
                 return Ok(result);
             }
 

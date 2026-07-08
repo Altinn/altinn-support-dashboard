@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using altinn_support_dashboard.Server.Models;
@@ -32,117 +33,87 @@ public class PartyApiClient : IPartyApiClient
 
     public async Task<string> GetParty(string lookupValue, bool isOrg, string environmentName)
     {
-        try
-        {
-            var client = _clients[environmentName];
-            var requestBody = new LookupRequest();
+        var client = _clients[environmentName];
+        var requestBody = new LookupRequest();
 
-            if (isOrg)
-                requestBody.OrgNo = lookupValue;
-            else
-                requestBody.Ssn = lookupValue;
+        if (isOrg)
+            requestBody.OrgNo = lookupValue;
+        else
+            requestBody.Ssn = lookupValue;
 
-            var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
-            var request = new HttpRequestMessage(HttpMethod.Post, "parties/lookup") { Content = content };
-            var response = await client.SendAsync(request);
-            var responseBody = await response.Content.ReadAsStringAsync();
+        var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
+        var response = await client.PostAsync("parties/lookup", content);
+        var responseBody = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-                return responseBody;
+        if (response.IsSuccessStatusCode)
+            return responseBody;
 
-            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                throw new BadRequestException($"Invalid lookup request: {responseBody}");
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return string.Empty;
 
-            throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
-        }
-        catch (BadRequestException)
-        {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
-        }
+        if (response.StatusCode == HttpStatusCode.BadRequest)
+            throw new BadRequestException($"Invalid lookup request: {responseBody}");
+
+        throw new HttpRequestException($"API request failed with status code {response.StatusCode}: {responseBody}");
     }
 
     public async Task<string> GetPartyRoles(string partyUuid, string environmentName)
     {
-        try
-        {
-            var client = _clients[environmentName];
-            var request = new HttpRequestMessage(HttpMethod.Get, $"correspondence/parties/{partyUuid}/roles/correspondence-roles");
-            var response = await client.SendAsync(request);
+        var client = _clients[environmentName];
+        var response = await client.GetAsync($"correspondence/parties/{partyUuid}/roles/correspondence-roles");
+        var responseBody = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsStringAsync();
+        if (response.IsSuccessStatusCode)
+            return responseBody;
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
-        }
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return string.Empty;
+
+        throw new HttpRequestException($"API request failed with status code {response.StatusCode}: {responseBody}");
     }
 
     public async Task<string> GetPartyByUuid(string partyUuid, string environmentName)
     {
-        try
-        {
-            var client = _clients[environmentName];
-            var request = new HttpRequestMessage(HttpMethod.Get, $"parties/byuuid/{partyUuid}");
-            var response = await client.SendAsync(request);
+        var client = _clients[environmentName];
+        var response = await client.GetAsync($"parties/byuuid/{partyUuid}");
+        var responseBody = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsStringAsync();
+        if (response.IsSuccessStatusCode)
+            return responseBody;
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
-        }
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return string.Empty;
+
+        throw new HttpRequestException($"API request failed with status code {response.StatusCode}: {responseBody}");
     }
 
     public async Task<string> GetPartyByid(string partyId, string environmentName)
     {
-        try
-        {
-            var client = _clients[environmentName];
-            var request = new HttpRequestMessage(HttpMethod.Get, $"parties/{partyId}");
-            var response = await client.SendAsync(request);
+        var client = _clients[environmentName];
+        var response = await client.GetAsync($"parties/{partyId}");
+        var responseBody = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsStringAsync();
+        if (response.IsSuccessStatusCode)
+            return responseBody;
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
-        }
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return string.Empty;
+
+        throw new HttpRequestException($"API request failed with status code {response.StatusCode}: {responseBody}");
     }
 
     public async Task<string> GetPartyWithUserInformationByUuid(string partyUuid, string environmentName)
     {
-        try
-        {
-            var client = _clients[environmentName];
-            var request = new HttpRequestMessage(HttpMethod.Get, $"support-dashboard/parties/{partyUuid}?fields=user");
-            var response = await client.SendAsync(request);
+        var client = _clients[environmentName];
+        var response = await client.GetAsync($"support-dashboard/parties/{partyUuid}?fields=user");
+        var responseBody = await response.Content.ReadAsStringAsync();
 
-            var responseBody = await response.Content.ReadAsStringAsync();
+        if (response.IsSuccessStatusCode)
+            return responseBody;
 
-            if (response.IsSuccessStatusCode)
-                return responseBody;
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return string.Empty;
 
-            throw new Exception($"API request failed with status code {response.StatusCode}: {responseBody}");
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
-        }
+        throw new HttpRequestException($"API request failed with status code {response.StatusCode}: {responseBody}");
     }
 }
