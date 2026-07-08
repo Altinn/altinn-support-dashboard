@@ -9,12 +9,22 @@ export const filterContacts = (
   searchQuery: string
 ): PersonalContactAltinn3[] => {
   if (searchQuery.trim().length < 3) return contacts;
+
+  // This will strip letters of extra stuff liek è will become e
+  const normalize = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    
+  const normalizedQuery = normalize(searchQuery);
+    
   return contacts.filter(
     (contact) =>
-      contact.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      contact.nationalIdentityNumber?.includes(searchQuery) ||
-      contact.phone?.includes(searchQuery) ||
-      contact.email?.toLowerCase().includes(searchQuery.toLowerCase())
+    (contact.name && normalize(contact.name).includes(normalizedQuery)) ||
+    contact.nationalIdentityNumber?.includes(searchQuery) ||
+    contact.phone?.includes(searchQuery) ||
+    (contact.email && normalize(contact.email).includes(normalizedQuery))
   );
 };
 
