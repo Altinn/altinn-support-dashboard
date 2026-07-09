@@ -16,7 +16,7 @@ public interface IAltinn3Service
     Task<List<PersonalContactAltinn3>> GetPersonalContactsByOrgAltinn3(string orgNumber, string environment);
     Task<List<PersonalContactDto>> GetPersonalContactsByEmailAltinn3(string email, string environment);
     Task<List<PersonalContactDto>> GetPersonalContactsByPhoneAltinn3(string phoneNumber, string environment);
-    Task<DashboardUserContactPointResponse?> GetUserContactInformationByNinAltinn3(string nin, string environment);
+    Task<UserContactInformationAltinn3?> GetUserContactInformationByNinAltinn3(string nin, string environment);
 
     Task<List<NotificationAddressDto>> GetNotificationAddressesByOrgAltinn3(string orgNumber, string environment);
     Task<List<NotificationAddressDto>> GetNotificationAddressesByPhoneAltinn3(string phoneNumber, string environment);

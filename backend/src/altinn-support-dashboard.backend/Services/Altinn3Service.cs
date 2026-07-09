@@ -239,7 +239,7 @@ public class Altinn3Service : IAltinn3Service
 
     }
 
-    public async Task<DashboardUserContactPointResponse?> GetUserContactInformationByNinAltinn3(string nin, string environment)
+    public async Task<UserContactInformationAltinn3?> GetUserContactInformationByNinAltinn3(string nin, string environment)
     {
         if (!ValidationService.isValidSsn(nin))
         {
@@ -248,7 +248,31 @@ public class Altinn3Service : IAltinn3Service
 
         var result = await _client.GetUserContactInformationByNin(nin, environment);
         if (string.IsNullOrEmpty(result)) return null;
-        var contactInformation = JsonSerializer.Deserialize<DashboardUserContactPointResponse>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+        var contactDto = JsonSerializer.Deserialize<DashboardUserContactPointResponse>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+
+        var contactInformation = new UserContactInformationAltinn3
+        {
+            NationalIdentityNumber = contactDto.NationalIdentityNumber,
+            IsReserved = contactDto.IsReserved,
+            PhoneNumber = contactDto.PhoneNumber,
+            EmailAddress = contactDto.EmailAddress,
+            PhoneNumberLastUpdatedOrVerified = contactDto.PhoneNumberLastUpdatedOrVerified,
+            EmailLastUpdatedOrVerified = contactDto.EmailLastUpdatedOrVerified,
+        };
+
+        try
+        {
+            if (!string.IsNullOrEmpty(contactInformation.NationalIdentityNumber))
+            {
+                contactInformation.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contactInformation.NationalIdentityNumber);
+                contactInformation.SsnToken = _ssnTokenService.GenerateSsnToken(contactInformation.NationalIdentityNumber);
+                contactInformation.NationalIdentityNumber = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error redacting national identity number");
+        }
 
         return contactInformation;
     }
