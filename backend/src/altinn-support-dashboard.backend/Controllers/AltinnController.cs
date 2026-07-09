@@ -186,6 +186,18 @@ namespace AltinnSupportDashboard.Controllers
 
         }
 
+        [HttpGet("users/altinn3/contactinformation/{nin}")]
+        public async Task<IActionResult> GetUserContactInformationByNinAltinn3([FromRoute] string nin)
+        {
+            if (!ValidationService.isValidSsn(nin))
+            {
+                return BadRequest("The National Identity Number is not valid. It must contain exactly 11 digits");
+            }
+            var result = await _altinn3Service.GetUserContactInformationByNinAltinn3(nin, environmentName);
+
+            return Ok(result);
+        }
+
         [HttpGet("organizations/{orgNumber}/altinn3/notificationaddresses")]
         public async Task<IActionResult> GetNotificationAddressesByOrg([FromRoute] string orgnumber)
         {

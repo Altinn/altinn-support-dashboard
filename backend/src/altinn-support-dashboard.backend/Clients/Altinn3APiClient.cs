@@ -130,6 +130,30 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
     }
 
+    public async Task<string> GetUserContactInformationByNin(string nin, string environmentName)
+    {
+        var client = _clients[environmentName];
+        var requestUrl = "profile/api/v1/dashboard/users/contactinformation";
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+        //nin is set in header
+        request.Headers.Add("NationalIdentityNumber", nin);
+        var response = await client.SendAsync(request);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return string.Empty;
+        }
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+
+        return responseBody;
+    }
+
     public async Task<string> GetPersonalContactsByEmail(string email, string environmentName)
     {
         var client = _clients[environmentName];

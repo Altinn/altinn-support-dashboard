@@ -239,6 +239,20 @@ public class Altinn3Service : IAltinn3Service
 
     }
 
+    public async Task<DashboardUserContactPointResponse?> GetUserContactInformationByNinAltinn3(string nin, string environment)
+    {
+        if (!ValidationService.isValidSsn(nin))
+        {
+            throw new ArgumentException("The National Identity Number is not valid. It must contain exactly 11 digits");
+        }
+
+        var result = await _client.GetUserContactInformationByNin(nin, environment);
+        if (string.IsNullOrEmpty(result)) return null;
+        var contactInformation = JsonSerializer.Deserialize<DashboardUserContactPointResponse>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+
+        return contactInformation;
+    }
+
     //helper function to map from altinn3 to 2, temporary (will switch over to altinn3 permenantly in future)
     private List<PersonalContact> mapPersonalContactAltinn3ToAltinn2(List<PersonalContactDto> altinn3Contacts)
     {
