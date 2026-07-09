@@ -567,12 +567,12 @@ public class Altinn3Service : IAltinn3Service
 
     private async Task<List<string>> GetAccessPackageNamesFromUrns(List<string> urns, string environmentName)
     {
+        const string accessPackageUrnPrefix = "urn:altinn:accesspackage:";
         var packages = await GetAccessPackagesList(environmentName);
         return urns.Select(urn =>
         {
-            var suffix = urn.Replace("urn:altinn:accesspackage:", "");
             var match = packages.FirstOrDefault(p =>
-                p.Urn?.EndsWith(suffix, StringComparison.OrdinalIgnoreCase) == true);
+                string.Equals(p.Urn?.Replace(accessPackageUrnPrefix, ""), urn, StringComparison.OrdinalIgnoreCase));
             return match?.Name ?? urn;
         }).ToList();
     }
