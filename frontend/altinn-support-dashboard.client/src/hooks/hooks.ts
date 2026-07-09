@@ -12,7 +12,7 @@ import {
   fetchNotificationAddresses,
   fetchNotificationAvailability,
   fetchNotificationByOrderId,
-  fetchNotificationsByNin,
+  fetchNotificationsAdvancedSearch,
   fetchOrganizations,
   fetchPersonalContacts,
   fetchResourceByIdentifier,
@@ -180,16 +180,17 @@ export function useNotifications(orderId: string, environment: string) {
   return notificationQuery;
 }
 
-export function useNotificationsByNin(
-  nin: string,
+export function useNotificationsAdvanced(
+  query: string,
   environment: string,
   dateFrom?: string,
   dateTo?: string
 ) {
   return useQuery({
-    queryKey: ["notificationsByNin", nin, environment, dateFrom, dateTo],
-    queryFn: () => fetchNotificationsByNin(nin, environment, dateFrom, dateTo),
-    enabled: nin.length > 0,
+    queryKey: ["notificationsByNin", query, environment, dateFrom, dateTo],
+    queryFn: () =>
+      fetchNotificationsAdvancedSearch(query, environment, dateFrom, dateTo),
+    enabled: query.length > 0,
     retry: false,
     staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,

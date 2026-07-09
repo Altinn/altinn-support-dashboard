@@ -137,8 +137,8 @@ export const fetchNotificationByOrderId = async (
   return await res.json();
 };
 
-export const fetchNotificationsByNin = async (
-  nin: string,
+export const fetchNotificationsAdvancedSearch = async (
+  query: string,
   environment: string,
   dateFrom?: string,
   dateTo?: string
@@ -150,10 +150,10 @@ export const fetchNotificationsByNin = async (
     const now = new Date();
     params.set("to", (toDate > now ? now : toDate).toISOString());
   }
-  const query = params.toString() ? `?${params}` : "";
+  const paramsString = params.toString() ? `?${params}` : "";
 
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/notifications/future/nin/${encodeURIComponent(nin)}${query}`
+    `${getBaseUrl(environment)}/notifications/future/${encodeURIComponent(query)}${paramsString}`
   );
 
   if (res.status === 404) return null;
