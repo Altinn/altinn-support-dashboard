@@ -39,17 +39,17 @@ describe("NotificationSearchBar", () => {
     });
   });
 
-  describe("future mode", () => {
-    it("should render Future label and placeholder", () => {
+  describe("advanced mode", () => {
+    it("should render Avansert søk label and placeholder", () => {
       render(
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="future"
+          searchType="advanced"
         />
       );
-      expect(screen.getByLabelText("Future")).toBeInTheDocument();
-      expect(screen.getByPlaceholderText("Valid values: NIN")).toBeInTheDocument();
+      expect(screen.getByLabelText("Avansert søk")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Nin, orgnr")).toBeInTheDocument();
     });
 
     it("should show date fields", () => {
@@ -57,19 +57,19 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="future"
+          searchType="advanced"
         />
       );
       expect(screen.getByLabelText("From date")).toBeInTheDocument();
       expect(screen.getByLabelText("To date")).toBeInTheDocument();
     });
 
-    it("should call setDateFrom when From date changes", () => {
+    it("should not call setDateFrom/setDateTo while typing, only on search", async () => {
       render(
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="future"
+          searchType="advanced"
           dateFrom=""
           setDateFrom={mockSetDateFrom}
           dateTo=""
@@ -77,23 +77,31 @@ describe("NotificationSearchBar", () => {
         />
       );
       fireEvent.change(screen.getByLabelText("From date"), { target: { value: "2025-01-01" } });
+      fireEvent.change(screen.getByLabelText("To date"), { target: { value: "2025-06-01" } });
+      expect(mockSetDateFrom).not.toHaveBeenCalled();
+      expect(mockSetDateTo).not.toHaveBeenCalled();
+
+      const user = userEvent.setup();
+      await user.click(screen.getAllByRole("button")[0]);
       expect(mockSetDateFrom).toHaveBeenCalledWith("2025-01-01");
+      expect(mockSetDateTo).toHaveBeenCalledWith("2025-06-01");
     });
 
-    it("should call setDateTo when To date changes", () => {
+    it("should propagate dates on Enter key press", async () => {
       render(
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="future"
+          searchType="advanced"
           dateFrom=""
           setDateFrom={mockSetDateFrom}
           dateTo=""
           setDateTo={mockSetDateTo}
         />
       );
-      fireEvent.change(screen.getByLabelText("To date"), { target: { value: "2025-06-01" } });
-      expect(mockSetDateTo).toHaveBeenCalledWith("2025-06-01");
+      fireEvent.change(screen.getByLabelText("From date"), { target: { value: "2025-01-01" } });
+      fireEvent.keyDown(screen.getByLabelText("From date"), { key: "Enter" });
+      expect(mockSetDateFrom).toHaveBeenCalledWith("2025-01-01");
     });
 
     it("should display provided dateFrom and dateTo values", () => {
@@ -101,7 +109,7 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="future"
+          searchType="advanced"
           dateFrom="2025-01-01"
           setDateFrom={mockSetDateFrom}
           dateTo="2025-06-01"
@@ -187,7 +195,7 @@ describe("NotificationSearchBar", () => {
         <NotificationSearchBar
           searchValue=""
           setSearchValue={mockSetSearchValue}
-          searchType="future"
+          searchType="advanced"
           dateFrom="2025-01-01"
           setDateFrom={mockSetDateFrom}
           dateTo="2025-06-01"

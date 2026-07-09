@@ -93,4 +93,41 @@ public class NotificationsClient : INotificationsClient
 
         return responseBody;
     }
+
+    public async Task<string> GetFutureNotificationsByOrgNr(string orgNr, DateTime? from, DateTime? to, string environmentName)
+    {
+        var client = _clients[environmentName];
+        var query = new List<string>();
+
+        if (from.HasValue)
+        {
+            query.Add($"from={Uri.EscapeDataString(from.Value.ToString("O"))}");
+        }
+        if (to.HasValue)
+        {
+            query.Add($"to={Uri.EscapeDataString(to.Value.ToString("O"))}");
+        }
+        var url = "notifications/api/v1/future/dashboard/recipients/notifications/orgnumber";
+        if (query.Count > 0)
+        {
+            url += "?" + string.Join("&", query);
+        }
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+        //orgnr is set in header
+        request.Headers.Add("OrganizationNumber", orgNr);
+        var response = await client.SendAsync(request);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException(
+                $"Api request failed with status code {response.StatusCode}: {responseBody}",
+                inner: null,
+                statusCode: response.StatusCode);
+        }
+
+        return responseBody;
+    }
 }
