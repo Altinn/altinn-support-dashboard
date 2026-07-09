@@ -10,7 +10,7 @@ export const filterContacts = (
 ): PersonalContactAltinn3[] => {
   if (searchQuery.trim().length < 3) return contacts;
 
-  // This will strip letters of extra stuff liek è will become e
+  // This will strip letters of extra stuff like è will become e
   const normalize = (value: string) =>
     value
       .toLowerCase()
