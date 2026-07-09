@@ -1,19 +1,19 @@
 import classes from "../../styles/OrganizationCard.module.css";
 import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
-import { Organization } from "../../../../models/models";
+import { Organization, SelectedCard, isOrganization } from "../../../../models/models";
 import { useState } from "react";
 import { Card, Button, Heading, Paragraph } from "@digdir/designsystemet-react";
 
 interface OrganizationCardProps {
   org: Organization;
-  selectedOrg?: Organization | null;
-  setSelectedOrg: (SelectedOrg: Organization) => void;
+  selectedCard?: SelectedCard | null;
+  setSelectedCard: (selectedCard: SelectedCard) => void;
 }
 
 export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   org,
-  selectedOrg,
-  setSelectedOrg,
+  selectedCard,
+  setSelectedCard,
 }) => {
   const [isExpandedSub, setIsExpandedSub] = useState(false);
   const [isExpandedHead, setIsExpandedHead] = useState(false);
@@ -29,7 +29,8 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   };
 
   const checkIsSelected = (orgNumber: string) => {
-    return orgNumber === selectedOrg?.organizationNumber;
+    const card = selectedCard ?? null;
+    return isOrganization(card) && orgNumber === card.organizationNumber;
   };
 
   return (
@@ -46,7 +47,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           key={org.headUnit.organizationNumber}
           onClick={() => {
             if (!org.headUnit) return;
-            setSelectedOrg(org.headUnit);
+            setSelectedCard(org.headUnit);
           }}
         >
           <Paragraph variant="short" className={classes.cardHeader}>
@@ -61,7 +62,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
         data-color="neutral"
         variant={checkIsSelected(org.organizationNumber) ? "tinted" : "default"}
         className={`${classes.card} ${classes.mainCard} ${org.isDeleted && classes.cardIsDeleted}`}
-        onClick={() => setSelectedOrg(org)}
+        onClick={() => setSelectedCard(org)}
       >
         <div className={`${classes.cardInfoContainer}`}>
           <Heading level={6} className={classes.cardHeader}>
@@ -112,7 +113,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                 }
                 data-color="neutral"
                 key={sub.organizationNumber}
-                onClick={() => setSelectedOrg(sub)}
+                onClick={() => setSelectedCard(sub)}
               >
                 <Paragraph variant="short" className={classes.cardHeader}>
                   {sub.name}

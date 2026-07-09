@@ -21,6 +21,7 @@ import {
   fetchRoleDefinitions,
   fetchRolesForOrg,
   fetchSsnFromToken,
+  fetchUserContactInformationByNin,
 } from "../utils/api";
 import {
   NotificationAvailabilityRequest,
@@ -73,6 +74,19 @@ export function useOrgSearch(environment: string, query: string) {
   return {
     orgQuery,
   };
+}
+
+export function useUserContactInfoByNin(environment: string, nin: string) {
+  const userQuery = useQuery({
+    queryKey: ["userContactInfo", environment, nin],
+    queryFn: () => fetchUserContactInformationByNin(environment, nin),
+    retry: false,
+    staleTime: 2 * 60 * 1000, // fresh for 2 minutes
+    refetchOnWindowFocus: false,
+    enabled: !!nin,
+  });
+
+  return { userQuery };
 }
 
 export function useOrgDetails(environment: string, orgNumber?: string) {

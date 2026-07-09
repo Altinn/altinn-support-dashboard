@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-grow: 1;
+  gap: 20px;
+  overflow: auto;
+  max-height: 80vh;
+}
+
+.userDetails {
+  flex: 2;
+  padding: 20px;
+  border-radius: 10px;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
+  overflow-x: auto;
+}
+
+.userInformation {
+  font-size: 1rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.userName {
+  font-size: 2rem;
+}

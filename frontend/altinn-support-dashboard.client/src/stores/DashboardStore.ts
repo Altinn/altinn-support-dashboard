@@ -3,7 +3,7 @@ import { DashboardState } from "./Dashboardstate";
 
 export const useDashboardStore = create<DashboardState>((set) => ({
   query: "",
-  selectedOrg: null,
+  selectedCard: null,
   setQuery: (q) => set({ query: q }),
-  setSelectedOrg: (org) => set({ selectedOrg: org }),
+  setSelectedCard: (card) => set({ selectedCard: card }),
 }));

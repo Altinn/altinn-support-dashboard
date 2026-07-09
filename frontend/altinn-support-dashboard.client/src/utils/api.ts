@@ -1,5 +1,9 @@
 import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
-import { NotificationAdresses, PersonalContactAltinn3 } from "../models/models";
+import {
+  NotificationAdresses,
+  PersonalContactAltinn3,
+  UserContactInformationAltinn3,
+} from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
 import {
   NotificationAvailabilityRequest,
@@ -263,6 +267,21 @@ export const fetchInternalIdsFromOrg = async (
   );
   if (res.status === 400) throw new Error("Ugyldig organisasjonsnummer");
   if (!res.ok) throw new Error("Feil ved henting av intern ID");
+
+  return await res.json();
+};
+
+export const fetchUserContactInformationByNin = async (
+  environment: string,
+  nin: string
+): Promise<UserContactInformationAltinn3 | null> => {
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/users/altinn3/contactinformation/${encodeURIComponent(nin)}`
+  );
+
+  if (!res.ok) {
+    return null;
+  }
 
   return await res.json();
 };
