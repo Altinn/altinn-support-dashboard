@@ -312,8 +312,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
     {
         var client = _clients[environmentName];
 
-        var requestUrl = "accessmanagement/api/v1/resourceowner/authorizedparties" +
-            "?includeAltinn2=false&includeAltinn3=true&includeRoles=false&includeAccessPackages=true&includeResources=false&includeInstances=false";
+        var requestUrl = "accessmanagement/api/v1/resourceowner/authorizedparties?includeAltinn2=true&includeAltinn3=true&includeRoles=false&includeAccessPackages=true&includeResources=true&includeInstances=true";
 
         var dto = new RolesAndRightsRequest
         {
