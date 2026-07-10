@@ -442,7 +442,7 @@ public class Altinn3Service : IAltinn3Service
                         roles.AuthorizedAccessPackages = accessPackageNames;
                     }
                 }
-                catch (Exception e) { _logger.LogError($"Error converting accessPackageNames: {e}");}
+                catch (Exception e) { _logger.LogError($"Error converting accessPackageNames: {e}"); }
             }
         }
         return roles;
@@ -597,7 +597,7 @@ public class Altinn3Service : IAltinn3Service
         {
             return "urn:altinn:organization:identifier-no";
         }
-        else if(Guid.TryParse(trimmedValued, out _))
+        else if (Guid.TryParse(trimmedValued, out _))
         {
             return "urn:altinn:person:uuid";
         }

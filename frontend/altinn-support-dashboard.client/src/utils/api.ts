@@ -4,7 +4,11 @@ import {
   PersonalContactAltinn3,
   UserContactInformationAltinn3,
 } from "../models/models";
-import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
+import {
+  AuthorizedPartyIdentifiers,
+  RolesAndRights,
+  RolesAndRightsRequest,
+} from "../models/rolesModels";
 import {
   NotificationAvailabilityRequest,
   NotificationAvailabilityResponse,
@@ -284,6 +288,24 @@ export const fetchUserContactInformationByNin = async (
   }
 
   return await res.json();
+};
+
+export const fetchAuthorizedParties = async (
+  environment: string,
+  nin: string
+): Promise<AuthorizedPartyIdentifiers[]> => {
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/altinn3/authorizedparties/${encodeURIComponent(nin)}`
+  );
+
+  if (res.status === 404) return [];
+  if (!res.ok)
+    throw new Error(
+      (await res.text()) || "Error fetching authorized parties"
+    );
+
+  const data = await res.json();
+  return Array.isArray(data) ? data : [data];
 };
 
 export const fetchInternalIdsFromSsn = async (

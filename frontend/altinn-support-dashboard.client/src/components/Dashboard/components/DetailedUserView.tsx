@@ -4,6 +4,7 @@ import { UserContactInformationAltinn3 } from "../../../models/models";
 import { useAppStore } from "../../../stores/Appstore";
 import SsnText from "../../SsnText";
 import UserContactInfoTableRow from "./UserContactInfoTableRow";
+import UserAuthorizedPartiesList from "./UserAuthorizedPartiesList";
 import styles from "../styles/DetailedUserView.module.css";
 
 interface DetailedUserViewProps {
@@ -56,6 +57,10 @@ const DetailedUserView: React.FC<DetailedUserViewProps> = ({
               </Table.Body>
             </Table>
           </Card>
+
+          <UserAuthorizedPartiesList
+            nationalIdentityNumber={selectedUser.nationalIdentityNumber}
+          />
         </div>
       )}
     </div>
