@@ -19,7 +19,7 @@ describe('TopSearchBarComponent', async () => {
             <SearchComponent
                 query = ""
                 setQuery = {() => {}}
-                setSelectedOrg = {() => {}}
+                setSelectedCard = {() => {}}
             />
         );
 
@@ -31,7 +31,7 @@ describe('TopSearchBarComponent', async () => {
             <SearchComponent
                 query = "Test Query"
                 setQuery = {() => {}}
-                setSelectedOrg = {() => {}}
+                setSelectedCard = {() => {}}
             />
         );
 
@@ -40,12 +40,12 @@ describe('TopSearchBarComponent', async () => {
 
     it('should pass correct props to TopSearchBarTextField', () => {
         const mockSetQuery = vi.fn();
-        const mockSetSelectedOrg = vi.fn();
+        const mockSetSelectedCard = vi.fn();
         render(
             <SearchComponent
                 query = "Test Query"
                 setQuery = {mockSetQuery}
-                setSelectedOrg = {mockSetSelectedOrg}
+                setSelectedCard = {mockSetSelectedCard}
             />
         );
 

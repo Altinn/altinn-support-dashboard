@@ -7,6 +7,32 @@ export interface Organization {
   subUnits?: Organization[];
 }
 
+export interface UserContactInformationAltinn3 {
+  name?: string;
+  nationalIdentityNumber?: string;
+  isReserved: boolean;
+  phoneNumber?: string;
+  emailAddress?: string;
+  phoneNumberLastUpdatedOrVerified?: string;
+  emailLastUpdatedOrVerified?: string;
+  displayedSocialSecurityNumber?: string;
+  ssnToken?: string;
+}
+
+export type SelectedCard = Organization | UserContactInformationAltinn3;
+
+export function isOrganization(
+  card: SelectedCard | null
+): card is Organization {
+  return card !== null && "organizationNumber" in card;
+}
+
+export function isUserContactInfo(
+  card: SelectedCard | null
+): card is UserContactInformationAltinn3 {
+  return card !== null && "ssnToken" in card;
+}
+
 export interface PersonalContact {
   personalContactId: string;
   name: string;

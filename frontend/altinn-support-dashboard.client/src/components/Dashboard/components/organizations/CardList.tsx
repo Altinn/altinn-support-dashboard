@@ -1,27 +1,30 @@
 import React, { useEffect } from "react";
 import { OrganizationCard } from "./OrganizationCard";
-import { useOrgSearch } from "../../../../hooks/hooks";
-import { Organization } from "../../../../models/models";
+import { UserCard } from "./UserCard";
+import { useOrgSearch, useUserContactInfoByNin } from "../../../../hooks/hooks";
+import { Organization, SelectedCard } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
-import classes from "../../styles/OrganizationList.module.css";
+import classes from "../../styles/CardList.module.css";
 import { showPopup } from "../../../Popup";
 
 import { Skeleton, Alert, Heading } from "@digdir/designsystemet-react";
 
-interface OrganizationListProps {
-  setSelectedOrg: (SelectedOrg: Organization) => void;
-  selectedOrg: Organization | null;
+interface CardListProps {
+  setSelectedCard: (selectedCard: SelectedCard) => void;
+  selectedCard: SelectedCard | null;
   query: string;
 }
 
-export const OrganizationList: React.FC<OrganizationListProps> = ({
-  setSelectedOrg,
-  selectedOrg,
+export const CardList: React.FC<CardListProps> = ({
+  setSelectedCard,
+  selectedCard,
   query,
 }) => {
   const environment = useAppStore((state) => state.environment);
   const { orgQuery } = useOrgSearch(environment, query);
+  const { userQuery } = useUserContactInfoByNin(environment, query);
   const organizations = orgQuery.data ?? [];
+  const users = userQuery.data ? [userQuery.data] : [];
 
   useEffect(() => {
     if (orgQuery.isError) {
@@ -39,17 +42,25 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
     );
   }
 
-  if (organizations.length <= 0 && query.length > 0) {
+  if (organizations.length <= 0 && users.length <= 0 && query.length > 0) {
     return (
       <Alert data-color="info">
-        <Heading level={6}>Ingen organisasjoner funnet</Heading>
+        <Heading level={6}>Ingen organisasjoner eller brukere funnet</Heading>
       </Alert>
     );
   }
 
-  // Default case: render organizations
+  // Default case: render organizations and users
   return (
     <div className={classes.container}>
+      {users.map((user) => (
+        <UserCard
+          key={user.ssnToken}
+          user={user}
+          selectedCard={selectedCard}
+          setSelectedCard={setSelectedCard}
+        />
+      ))}
       {organizations
         .filter(
           (org: Organization) =>
@@ -65,10 +76,10 @@ export const OrganizationList: React.FC<OrganizationListProps> = ({
         )
         .map((org) => (
           <OrganizationCard
-            selectedOrg={selectedOrg}
+            selectedCard={selectedCard}
             key={org.organizationNumber}
             org={org}
-            setSelectedOrg={setSelectedOrg}
+            setSelectedCard={setSelectedCard}
           />
         ))}
     </div>

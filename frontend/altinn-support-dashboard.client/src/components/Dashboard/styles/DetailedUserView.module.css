@@ -1,0 +1,51 @@
+.container {
+  display: flex;
+  flex-grow: 1;
+  gap: 20px;
+  overflow: auto;
+  max-height: 80vh;
+}
+
+.userDetails {
+  flex: 2;
+  padding: 20px;
+  border-radius: 10px;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
+  overflow-x: auto;
+}
+
+.identityCard {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.userInformation {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.reservedTag {
+  font-size: 1rem;
+}
+
+.ssn {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.contactCard {
+  margin: 0.5rem 0 1.5rem 0;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.contactTable {
+  margin-top: 0.5rem;
+}

@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { Textfield, Button, Search } from "@digdir/designsystemet-react";
 import styles from "./styles/TopSearchBarTextfield.module.css";
-import { Organization } from "../../models/models";
+import { SelectedCard } from "../../models/models";
 
 type Props = {
   query: string;
   setQuery: (query: string) => void;
-  setSelectedOrg: (selectedOrg: Organization | null) => void;
+  setSelectedCard: (selectedCard: SelectedCard | null) => void;
 };
 
 export const TopSearchBarTextField: React.FC<Props> = ({
   query,
   setQuery,
-  setSelectedOrg,
+  setSelectedCard,
 }) => {
   const [textFieldValue, setTextFieldValue] = useState(() => {
     if (query != null && query !== "") return query;
@@ -20,7 +20,7 @@ export const TopSearchBarTextField: React.FC<Props> = ({
   });
   const handleSearch = () => {
     if (textFieldValue != query) {
-      setSelectedOrg(null);
+      setSelectedCard(null);
     }
     setQuery(textFieldValue);
   };

@@ -7,6 +7,7 @@ import {
   fetchERoles,
   fetchSsnFromToken,
   fetchNotificationAddresses,
+  fetchUserContactInformationByNin,
 } from "../../src/utils/api";
 
 vi.mock("../../src/utils/utils");
@@ -262,6 +263,60 @@ describe("api", () => {
       await expect(fetchNotificationAddresses("TEST", "123")).rejects.toThrow(
         "Internal Server Error"
       );
+    });
+  });
+
+  describe("fetchUserContactInformationByNin", () => {
+    it("should fetch and return user contact information", async () => {
+      const mockData = {
+        isReserved: false,
+        phoneNumber: "+4799115744",
+        emailAddress: "test@test.no",
+        displayedSocialSecurityNumber: "088469*****",
+        ssnToken: "token-123",
+      };
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: vi.fn().mockResolvedValue(mockData),
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      const result = await fetchUserContactInformationByNin(
+        "TEST",
+        "08846999362"
+      );
+
+      expect(result).toEqual(mockData);
+      expect(utils.authorizedFetch).toHaveBeenCalledWith(
+        expect.stringContaining(
+          "/serviceowner/users/altinn3/contactinformation/08846999362"
+        )
+      );
+    });
+
+    it("should return null on 404", async () => {
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: false,
+        status: 404,
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      const result = await fetchUserContactInformationByNin("TEST", "123");
+
+      expect(result).toBeNull();
+    });
+
+    it("should return null on any other non-ok response", async () => {
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: false,
+        status: 400,
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      const result = await fetchUserContactInformationByNin("TEST", "not-a-nin");
+
+      expect(result).toBeNull();
     });
   });
 });

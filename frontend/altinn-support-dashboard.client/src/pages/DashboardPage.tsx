@@ -1,17 +1,19 @@
 import React from "react";
 import SearchComponent from "../components/TopSearchBar/TopSearchBarComponent";
 import DetailedOrgView from "../components/Dashboard/components/DetailedOrgView";
-import { OrganizationList } from "../components/Dashboard/components/organizations/OrganizationList";
+import DetailedUserView from "../components/Dashboard/components/DetailedUserView";
+import { CardList } from "../components/Dashboard/components/organizations/CardList";
 import { useDashboardStore } from "../stores/DashboardStore";
 import { Button } from "@digdir/designsystemet-react";
 import InformationDialogBox from "../components/InformationDialog/InformationDialogBox";
 import { InformationIcon } from "@navikt/aksel-icons";
+import { isUserContactInfo } from "../models/models";
 import styles from "./styles/DashboardPage.module.css";
 export const DashboardPage: React.FC = () => {
   const query = useDashboardStore((s) => s.query);
   const setQuery = useDashboardStore((s) => s.setQuery);
-  const selectedOrg = useDashboardStore((s) => s.selectedOrg);
-  const setSelectedOrg = useDashboardStore((s) => s.setSelectedOrg);
+  const selectedCard = useDashboardStore((s) => s.selectedCard);
+  const setSelectedCard = useDashboardStore((s) => s.setSelectedCard);
   const dialogRef = React.useRef<HTMLDialogElement>(null);
 
   return (
@@ -28,20 +30,24 @@ export const DashboardPage: React.FC = () => {
       <SearchComponent
         query={query}
         setQuery={setQuery}
-        setSelectedOrg={setSelectedOrg}
+        setSelectedCard={setSelectedCard}
       />
       <div className={styles["dashboard-container"]}>
         <div className={styles["org-list-container"]}>
-          <OrganizationList
-            setSelectedOrg={setSelectedOrg}
-            selectedOrg={selectedOrg}
+          <CardList
+            setSelectedCard={setSelectedCard}
+            selectedCard={selectedCard}
             query={query}
           />
         </div>
 
         <div></div>
         <div className={styles["detailed-org-container"]}>
-          <DetailedOrgView selectedOrg={selectedOrg} />
+          {isUserContactInfo(selectedCard) ? (
+            <DetailedUserView selectedUser={selectedCard} />
+          ) : (
+            <DetailedOrgView selectedOrg={selectedCard} />
+          )}
         </div>
       </div>
     </div>

@@ -46,7 +46,7 @@ vi.mock("@navikt/aksel-icons", () => ({
 }));
 
 describe("OrganizationCard", () => {
-  const mockSetSelectedOrg = vi.fn();
+  const mockSetSelectedCard = vi.fn();
 
   const mockOrg: Organization = {
     name: "Test Organization",
@@ -83,7 +83,7 @@ describe("OrganizationCard", () => {
 
   it("should render organization card with name and org number", () => {
     render(
-      <OrganizationCard org={mockOrg} setSelectedOrg={mockSetSelectedOrg} />,
+      <OrganizationCard org={mockOrg} setSelectedCard={mockSetSelectedCard} />,
     );
 
     expect(screen.getByText(mockOrg.name)).toBeInTheDocument();
@@ -92,23 +92,23 @@ describe("OrganizationCard", () => {
     ).toBeInTheDocument();
   });
 
-  it("should call setSelectedOrg with the org when card is clicked", () => {
+  it("should call setSelectedCard with the org when card is clicked", () => {
     render(
-      <OrganizationCard org={mockOrg} setSelectedOrg={mockSetSelectedOrg} />,
+      <OrganizationCard org={mockOrg} setSelectedCard={mockSetSelectedCard} />,
     );
 
     const card = screen.getByRole("article");
     fireEvent.click(card);
 
-    expect(mockSetSelectedOrg).toHaveBeenCalledWith(mockOrg);
+    expect(mockSetSelectedCard).toHaveBeenCalledWith(mockOrg);
   });
 
   it("should show tinted variant when org is selected", () => {
     render(
       <OrganizationCard
         org={mockOrg}
-        selectedOrg={mockOrg}
-        setSelectedOrg={mockSetSelectedOrg}
+        selectedCard={mockOrg}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -120,8 +120,8 @@ describe("OrganizationCard", () => {
     render(
       <OrganizationCard
         org={mockOrg}
-        selectedOrg={null}
-        setSelectedOrg={mockSetSelectedOrg}
+        selectedCard={null}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -133,7 +133,7 @@ describe("OrganizationCard", () => {
     render(
       <OrganizationCard
         org={mockOrgWithSubUnits}
-        setSelectedOrg={mockSetSelectedOrg}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -144,7 +144,7 @@ describe("OrganizationCard", () => {
 
   it("should not show subunit expand button when org has no subunits", () => {
     render(
-      <OrganizationCard org={mockOrg} setSelectedOrg={mockSetSelectedOrg} />,
+      <OrganizationCard org={mockOrg} setSelectedCard={mockSetSelectedCard} />,
     );
 
     expect(screen.queryByTestId("chevron-up-icon")).not.toBeInTheDocument();
@@ -155,7 +155,7 @@ describe("OrganizationCard", () => {
     render(
       <OrganizationCard
         org={mockOrgWithSubUnits}
-        setSelectedOrg={mockSetSelectedOrg}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -172,7 +172,7 @@ describe("OrganizationCard", () => {
     render(
       <OrganizationCard
         org={mockOrgWithSubUnits}
-        setSelectedOrg={mockSetSelectedOrg}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -184,11 +184,11 @@ describe("OrganizationCard", () => {
     expect(screen.queryByText(mockSubUnits[0].name)).not.toBeInTheDocument();
   });
 
-  it("should call setSelectedOrg with the subunit when subunit card is clicked", () => {
+  it("should call setSelectedCard with the subunit when subunit card is clicked", () => {
     render(
       <OrganizationCard
         org={mockOrgWithSubUnits}
-        setSelectedOrg={mockSetSelectedOrg}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -198,15 +198,15 @@ describe("OrganizationCard", () => {
     const subunitCard = screen.getByText(mockSubUnits[0].name).closest("div");
     fireEvent.click(subunitCard!);
 
-    expect(mockSetSelectedOrg).toHaveBeenCalledWith(mockSubUnits[0]);
+    expect(mockSetSelectedCard).toHaveBeenCalledWith(mockSubUnits[0]);
   });
 
   it("should show tinted variant for selected subunit", () => {
     render(
       <OrganizationCard
         org={mockOrgWithSubUnits}
-        selectedOrg={mockSubUnits[0]}
-        setSelectedOrg={mockSetSelectedOrg}
+        selectedCard={mockSubUnits[0]}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -231,7 +231,7 @@ describe("OrganizationCard", () => {
     render(
       <OrganizationCard
         org={orgWithHeadUnit}
-        setSelectedOrg={mockSetSelectedOrg}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -254,7 +254,7 @@ describe("OrganizationCard", () => {
     render(
       <OrganizationCard
         org={orgWithHeadUnit}
-        setSelectedOrg={mockSetSelectedOrg}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -275,7 +275,7 @@ describe("OrganizationCard", () => {
     ).toBeInTheDocument();
   });
 
-  it("should call setSelectedOrg with the head unit when head unit card is clicked", () => {
+  it("should call setSelectedCard with the head unit when head unit card is clicked", () => {
     const orgWithHeadUnit: Organization = {
       ...mockOrg,
       headUnit: {
@@ -289,7 +289,7 @@ describe("OrganizationCard", () => {
     render(
       <OrganizationCard
         org={orgWithHeadUnit}
-        setSelectedOrg={mockSetSelectedOrg}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -301,7 +301,7 @@ describe("OrganizationCard", () => {
       .closest("div");
     fireEvent.click(headUnitCard!);
 
-    expect(mockSetSelectedOrg).toHaveBeenCalledWith(orgWithHeadUnit.headUnit);
+    expect(mockSetSelectedCard).toHaveBeenCalledWith(orgWithHeadUnit.headUnit);
   });
 
   it("should show tinted variant for selected head unit", () => {
@@ -318,8 +318,8 @@ describe("OrganizationCard", () => {
     render(
       <OrganizationCard
         org={orgWithHeadUnit}
-        selectedOrg={orgWithHeadUnit.headUnit}
-        setSelectedOrg={mockSetSelectedOrg}
+        selectedCard={orgWithHeadUnit.headUnit}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -354,7 +354,7 @@ describe("OrganizationCard", () => {
     render(
       <OrganizationCard
         org={orgWithMixedSubunits}
-        setSelectedOrg={mockSetSelectedOrg}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -370,7 +370,7 @@ describe("OrganizationCard", () => {
     render(
       <OrganizationCard
         org={mockOrgWithSubUnits}
-        setSelectedOrg={mockSetSelectedOrg}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -399,7 +399,7 @@ describe("OrganizationCard", () => {
     render(
       <OrganizationCard
         org={orgWithBoth}
-        setSelectedOrg={mockSetSelectedOrg}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 
@@ -424,7 +424,7 @@ describe("OrganizationCard", () => {
     render(
       <OrganizationCard
         org={orgWithBoth}
-        setSelectedOrg={mockSetSelectedOrg}
+        setSelectedCard={mockSetSelectedCard}
       />,
     );
 

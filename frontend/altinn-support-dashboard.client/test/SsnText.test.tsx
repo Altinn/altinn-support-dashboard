@@ -1,10 +1,7 @@
 import { afterEach, beforeEach, expect, vi, describe, it } from "vitest";
-import { PersonalContactAltinn3 } from "../src/models/models";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import '@testing-library/jest-dom';
-import SsnCell from "../src/components/SsnCell";
-
-
+import SsnText from "../src/components/SsnText";
 
 let mockUnredactedSsn: string | null = null;
 let mockRefetch = vi.fn();
@@ -16,30 +13,8 @@ vi.mock('../src/hooks/hooks', () => ({
     })),
 }));
 
-vi.mock('@digdir/designsystemet-react', () => ({
-    Table: {
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-        Cell: ({ children, onClick, style, title }: any) => (
-            <td
-                onClick={onClick}
-                style={style}
-                title={title}
-                data-testid="table-cell"
-            >
-                {children}
-            </td>
-        ),
-    },
-}));
-
-
-describe('SsnCell', () => {
-    const mockContact: PersonalContactAltinn3 = {
-        nationalIdentityNumber: "12345678901",
-        name: "Test User",
-        phone: "12345678",
-        email: "test@test.no",
-        lastChanged: "2026-01-01T00:00:00Z",
+describe('SsnText', () => {
+    const mockContact = {
         displayedSocialSecurityNumber: "123456*****",
         ssnToken: "mock-token",
     };
@@ -60,40 +35,40 @@ describe('SsnCell', () => {
     });
 
     it('should render with redacted SSN initially', () => {
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
         expect(screen.getByText("123456*****")).toBeInTheDocument();
     });
 
     it('should show "Vis fullt fødselsnummer" title when redacted', () => {
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
-        expect(cell).toHaveAttribute("title", "Vis fullt fødselsnummer");
+        const span = screen.getByText("123456*****");
+        expect(span).toHaveAttribute("title", "Vis fullt fødselsnummer");
     });
 
     it('should apply cursor pointer style', () => {
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
-        expect(cell).toHaveStyle("cursor: pointer");
+        const span = screen.getByText("123456*****");
+        expect(span).toHaveStyle("cursor: pointer");
     });
 
-    it('should render as Table.Cell component', () => {
-        render(<SsnCell contact={mockContact} />);
+    it('should render as a plain span', () => {
+        render(<SsnText contact={mockContact} />);
 
-        expect(screen.getByTestId("table-cell")).toBeInTheDocument();
+        expect(screen.getByText("123456*****").tagName).toBe("SPAN");
     });
 
     it('should call refetch when clicked and no unredacted SSN exists', async () => {
         mockRefetch.mockResolvedValue({});
 
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
+        const span = screen.getByText("123456*****");
 
         await act(async () => {
-            fireEvent.click(cell);
+            fireEvent.click(span);
         });
 
         expect(mockRefetch).toHaveBeenCalledTimes(1);
@@ -102,18 +77,18 @@ describe('SsnCell', () => {
     it('should show unredacted SSN after successful refetch', async () => {
         mockRefetch.mockResolvedValue({});
 
-        const { rerender } = render(<SsnCell contact={mockContact} />);
+        const { rerender } = render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
+        const span = screen.getByText("123456*****");
 
         await act(async () => {
-            fireEvent.click(cell);
+            fireEvent.click(span);
         });
 
         expect(mockRefetch).toHaveBeenCalled();
 
         mockUnredactedSsn = "12345678901";
-        rerender(<SsnCell contact={mockContact} />);
+        rerender(<SsnText contact={mockContact} />);
 
         expect(screen.getByText("12345678901")).toBeInTheDocument();
     });
@@ -124,10 +99,10 @@ describe('SsnCell', () => {
         const testError = new Error("Test error");
         mockRefetch.mockRejectedValue(testError);
 
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
-        fireEvent.click(cell);
+        const span = screen.getByText("123456*****");
+        fireEvent.click(span);
 
         await waitFor(() => {
             expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -144,11 +119,11 @@ describe('SsnCell', () => {
     it('should toggle to show unredacted SSN when clicked and data already exists', async () => {
         mockUnredactedSsn = "12345678901";
 
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
+        const span = screen.getByText("123456*****");
         await act(async () => {
-            fireEvent.click(cell);
+            fireEvent.click(span);
         });
 
         expect(screen.getByText("12345678901")).toBeInTheDocument();
@@ -158,17 +133,18 @@ describe('SsnCell', () => {
     it('should toggle back to redacted SSN when clicked again', async () => {
         mockUnredactedSsn = "12345678901";
 
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
+        let span = screen.getByText("123456*****");
 
         await act(async () => {
-            fireEvent.click(cell);
+            fireEvent.click(span);
         });
         expect(screen.getByText("12345678901")).toBeInTheDocument();
 
+        span = screen.getByText("12345678901");
         await act(async () => {
-            fireEvent.click(cell);
+            fireEvent.click(span);
         });
 
         expect(screen.getByText("123456*****")).toBeInTheDocument();
@@ -177,28 +153,29 @@ describe('SsnCell', () => {
     it('should update title attribute when toggling', async () => {
         mockUnredactedSsn = "12345678901";
 
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
+        let span = screen.getByText("123456*****");
 
-        expect(cell).toHaveAttribute("title", "Vis fullt fødselsnummer");
+        expect(span).toHaveAttribute("title", "Vis fullt fødselsnummer");
 
         await act(async () => {
-            fireEvent.click(cell);
+            fireEvent.click(span);
         });
 
-        expect(cell).toHaveAttribute("title", "Skjul fullt fødselsnummer");
+        span = screen.getByText("12345678901");
+        expect(span).toHaveAttribute("title", "Skjul fullt fødselsnummer");
     });
 
     it('should auto redact SSN after 15 seconds', async () => {
         mockUnredactedSsn = "12345678901";
 
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
+        const span = screen.getByText("123456*****");
 
         await act(async () => {
-            fireEvent.click(cell);
+            fireEvent.click(span);
         });
 
         expect(screen.getByText("12345678901")).toBeInTheDocument();
@@ -213,12 +190,12 @@ describe('SsnCell', () => {
     it('should not auto-redact before 15 seconds', async () => {
         mockUnredactedSsn = "12345678901";
 
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
+        const span = screen.getByText("123456*****");
 
         await act(async () => {
-            fireEvent.click(cell);
+            fireEvent.click(span);
         });
 
         expect(screen.getByText("12345678901")).toBeInTheDocument();
@@ -231,7 +208,7 @@ describe('SsnCell', () => {
     });
 
     it('should not set timeout when SSN is redacted', () => {
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
         expect(vi.getTimerCount()).toBe(0);
         expect(screen.getByText("123456*****")).toBeInTheDocument();
@@ -240,12 +217,12 @@ describe('SsnCell', () => {
     it('should clear timeout on unmount', async () => {
         mockUnredactedSsn = "12345678901";
 
-        const { unmount } = render(<SsnCell contact={mockContact} />);
+        const { unmount } = render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
+        const span = screen.getByText("123456*****");
 
         await act(async () => {
-            fireEvent.click(cell);
+            fireEvent.click(span);
         });
 
         expect(screen.getByText("12345678901")).toBeInTheDocument();
@@ -259,19 +236,20 @@ describe('SsnCell', () => {
     it('should clear existing timeout when toggling redacted state', async () => {
         mockUnredactedSsn = "12345678901";
 
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
+        let span = screen.getByText("123456*****");
 
         await act(async () => {
-            fireEvent.click(cell);
+            fireEvent.click(span);
         });
 
         expect(screen.getByText("12345678901")).toBeInTheDocument();
         expect(vi.getTimerCount()).toBe(1);
 
+        span = screen.getByText("12345678901");
         await act(async () => {
-            fireEvent.click(cell);
+            fireEvent.click(span);
         });
 
         expect(screen.getByText("123456*****")).toBeInTheDocument();
@@ -281,7 +259,7 @@ describe('SsnCell', () => {
     it('should handle missing ssnToken', async () => {
         const contactWithoutToken = { ...mockContact, ssnToken: undefined };
 
-        render(<SsnCell contact={contactWithoutToken} />);
+        render(<SsnText contact={contactWithoutToken} />);
 
         expect(screen.getByText("123456*****")).toBeInTheDocument();
     });
@@ -289,12 +267,12 @@ describe('SsnCell', () => {
     it('should handle null unredactedSsn from hook', async () => {
         mockUnredactedSsn = null;
 
-        render(<SsnCell contact={mockContact} />);
+        render(<SsnText contact={mockContact} />);
 
-        const cell = screen.getByTestId("table-cell");
+        const span = screen.getByText("123456*****");
 
         await act(async () => {
-            fireEvent.click(cell);
+            fireEvent.click(span);
         });
 
         expect(screen.getByText("123456*****")).toBeInTheDocument();
@@ -302,9 +280,8 @@ describe('SsnCell', () => {
     });
 
     it('should handle empty string as environment', () => {
-        render(<SsnCell contact={mockContact} environment="" />);
+        render(<SsnText contact={mockContact} environment="" />);
 
         expect(screen.getByText("123456*****")).toBeInTheDocument();
-    })
-
-})
+    });
+});

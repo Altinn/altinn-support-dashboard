@@ -14,6 +14,7 @@ namespace altinn_support_dashboard.Server.Services;
 public class Altinn3Service : IAltinn3Service
 {
     private readonly IAltinn3ApiClient _client;
+    private readonly IPartyApiService _partyService;
     private readonly IDataBrregService _breggService;
     private readonly JsonSerializerOptions jsonOptions;
     private readonly ISsnTokenService _ssnTokenService;
@@ -23,10 +24,11 @@ public class Altinn3Service : IAltinn3Service
     private readonly IResourceRegistryService _resourceRegistryService;
 
 
-    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IMemoryCache cache, IResourceRegistryService resourceRegistryService)
+    public Altinn3Service(IAltinn3ApiClient altinn3Client, IPartyApiService partyService, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IMemoryCache cache, IResourceRegistryService resourceRegistryService)
     {
         _logger = logger;
         _breggService = dataBrregService;
+        _partyService = partyService;
         _client = altinn3Client;
         _ssnTokenService = ssnTokenService;
         _redactorProvider = redactorProvider;
@@ -237,6 +239,48 @@ public class Altinn3Service : IAltinn3Service
 
         return contactsAltinn3;
 
+    }
+
+    public async Task<UserContactInformationAltinn3?> GetUserContactInformationByNinAltinn3(string nin, string environment)
+    {
+        if (!ValidationService.isValidSsn(nin))
+        {
+            throw new ArgumentException("The National Identity Number is not valid. It must contain exactly 11 digits");
+        }
+
+        var result = await _client.GetUserContactInformationByNin(nin, environment);
+        if (string.IsNullOrEmpty(result)) return null;
+        var contactDto = JsonSerializer.Deserialize<DashboardUserContactPointResponse>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+
+
+        var party = await _partyService.GetPartyFromSsnAsync(nin, environment);
+
+        var contactInformation = new UserContactInformationAltinn3
+        {
+            Name = party?.Name,
+            NationalIdentityNumber = contactDto.NationalIdentityNumber,
+            IsReserved = contactDto.IsReserved,
+            PhoneNumber = contactDto.PhoneNumber,
+            EmailAddress = contactDto.EmailAddress,
+            PhoneNumberLastUpdatedOrVerified = contactDto.PhoneNumberLastUpdatedOrVerified,
+            EmailLastUpdatedOrVerified = contactDto.EmailLastUpdatedOrVerified,
+        };
+
+        try
+        {
+            if (!string.IsNullOrEmpty(contactInformation.NationalIdentityNumber))
+            {
+                contactInformation.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contactInformation.NationalIdentityNumber);
+                contactInformation.SsnToken = _ssnTokenService.GenerateSsnToken(contactInformation.NationalIdentityNumber);
+                contactInformation.NationalIdentityNumber = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error redacting national identity number");
+        }
+
+        return contactInformation;
     }
 
     //helper function to map from altinn3 to 2, temporary (will switch over to altinn3 permenantly in future)
@@ -526,7 +570,11 @@ public class Altinn3Service : IAltinn3Service
         {
             return "urn:altinn:organization:identifier-no";
         }
-        throw new Exception("Not a valid format, needs to be either a orgnumber or ssn");
+        else if(Guid.TryParse(trimmedValued, out _))
+        {
+            return "urn:altinn:person:uuid";
+        }
+        throw new Exception("Not a valid format, needs to be either a orgnumber, ssn or uuid");
     }
 
     private async Task<List<string>> GetAltinn2RoleNamesFromCodes(List<string> roleCodes, string environmentName)

@@ -1,25 +1,25 @@
 import React from "react";
 import { TopSearchBarTextField } from "./TopSearchBarTextField";
 import { Heading } from "@digdir/designsystemet-react";
-import { Organization } from "../../models/models";
+import { SelectedCard } from "../../models/models";
 
 type SearchComponentProps = {
   query: string;
   setQuery: (query: string) => void;
-  setSelectedOrg: (selectedOrg: Organization | null) => void;
+  setSelectedCard: (selectedCard: SelectedCard | null) => void;
 };
 
 const SearchComponent: React.FC<SearchComponentProps> = ({
   query,
   setQuery,
-  setSelectedOrg,
+  setSelectedCard,
 }) => (
   <div>
     <Heading level={1}>Søk etter Organisasjoner</Heading>
     <TopSearchBarTextField
       query={query}
       setQuery={setQuery}
-      setSelectedOrg={setSelectedOrg}
+      setSelectedCard={setSelectedCard}
     />
   </div>
 );
