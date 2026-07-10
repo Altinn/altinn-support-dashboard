@@ -18,7 +18,7 @@ const DetailedUserView: React.FC<DetailedUserViewProps> = ({
             <span>Reservert: {selectedUser.isReserved ? "true" : "false"}</span>
           </Heading>
           <Heading className={styles.userName}>
-            {selectedUser.displayedSocialSecurityNumber ?? "Ukjent bruker"}
+            {selectedUser.name ?? "Ukjent bruker"}
           </Heading>
           <p>Mobilnummer: {selectedUser.phoneNumber ?? "Ikke registrert"}</p>
           <p>E-post: {selectedUser.emailAddress ?? "Ikke registrert"}</p>

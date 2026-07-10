@@ -8,6 +8,7 @@ export interface Organization {
 }
 
 export interface UserContactInformationAltinn3 {
+  name?: string;
   nationalIdentityNumber?: string;
   isReserved: boolean;
   phoneNumber?: string;
@@ -20,7 +21,9 @@ export interface UserContactInformationAltinn3 {
 
 export type SelectedCard = Organization | UserContactInformationAltinn3;
 
-export function isOrganization(card: SelectedCard | null): card is Organization {
+export function isOrganization(
+  card: SelectedCard | null
+): card is Organization {
   return card !== null && "organizationNumber" in card;
 }
 

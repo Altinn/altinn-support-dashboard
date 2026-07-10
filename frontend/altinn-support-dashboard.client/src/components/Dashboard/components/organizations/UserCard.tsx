@@ -4,7 +4,7 @@ import {
   UserContactInformationAltinn3,
   isUserContactInfo,
 } from "../../../../models/models";
-import { Card, Heading } from "@digdir/designsystemet-react";
+import { Card, Heading, Paragraph } from "@digdir/designsystemet-react";
 
 interface UserCardProps {
   user: UserContactInformationAltinn3;
@@ -30,8 +30,11 @@ export const UserCard: React.FC<UserCardProps> = ({
       >
         <div className={classes.cardInfoContainer}>
           <Heading level={6} className={classes.cardHeader}>
-            {user.displayedSocialSecurityNumber ?? "Ukjent bruker"}
+            {user.name ?? "Ukjent bruker"}
           </Heading>
+          <Paragraph variant="short" className={classes.cardHeader}>
+            {user.displayedSocialSecurityNumber ?? "Ukjent nin"}
+          </Paragraph>
         </div>
       </Card>
     </div>
