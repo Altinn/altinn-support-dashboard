@@ -25,7 +25,7 @@ const DetailedUserView: React.FC<DetailedUserViewProps> = ({
           <Heading level={1} className={styles.userInformation}>
             <span>{selectedUser.name ?? "Ukjent bruker"}</span>
           </Heading>
-          <Paragraph className={styles.ssn}>
+          <Paragraph variant="short" className={styles.ssn}>
             <strong>Fødselsnummer: </strong>
             <SsnText contact={selectedUser} environment={environment} />
           </Paragraph>
