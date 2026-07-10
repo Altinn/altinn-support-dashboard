@@ -2,6 +2,7 @@ namespace altinn_support_dashboard.Server.Models;
 
 public class UserContactInformationAltinn3
 {
+    public string? Name { get; set; }
     public string? NationalIdentityNumber { get; set; }
     public bool IsReserved { get; set; }
     public string? PhoneNumber { get; set; }

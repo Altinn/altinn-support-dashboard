@@ -14,6 +14,7 @@ namespace altinn_support_dashboard.Server.Services;
 public class Altinn3Service : IAltinn3Service
 {
     private readonly IAltinn3ApiClient _client;
+    private readonly IPartyApiService _partyService;
     private readonly IDataBrregService _breggService;
     private readonly JsonSerializerOptions jsonOptions;
     private readonly ISsnTokenService _ssnTokenService;
@@ -23,10 +24,11 @@ public class Altinn3Service : IAltinn3Service
     private readonly IResourceRegistryService _resourceRegistryService;
 
 
-    public Altinn3Service(IAltinn3ApiClient altinn3Client, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IMemoryCache cache, IResourceRegistryService resourceRegistryService)
+    public Altinn3Service(IAltinn3ApiClient altinn3Client, IPartyApiService partyService, IDataBrregService dataBrregService, ISsnTokenService ssnTokenService, IRedactorProvider redactorProvider, ILogger<IAltinn3Service> logger, IMemoryCache cache, IResourceRegistryService resourceRegistryService)
     {
         _logger = logger;
         _breggService = dataBrregService;
+        _partyService = partyService;
         _client = altinn3Client;
         _ssnTokenService = ssnTokenService;
         _redactorProvider = redactorProvider;
@@ -250,8 +252,12 @@ public class Altinn3Service : IAltinn3Service
         if (string.IsNullOrEmpty(result)) return null;
         var contactDto = JsonSerializer.Deserialize<DashboardUserContactPointResponse>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
+
+        var party = await _partyService.GetPartyFromSsnAsync(nin, environment);
+
         var contactInformation = new UserContactInformationAltinn3
         {
+            Name = party?.Name,
             NationalIdentityNumber = contactDto.NationalIdentityNumber,
             IsReserved = contactDto.IsReserved,
             PhoneNumber = contactDto.PhoneNumber,
