@@ -19,18 +19,16 @@ const DetailedUserView: React.FC<DetailedUserViewProps> = ({
     <div className={styles.container}>
       {selectedUser && (
         <div className={styles.userDetails}>
-          <Card data-color="neutral" className={styles.identityCard}>
-            <Heading level={1} className={styles.userInformation}>
-              <span>{selectedUser.name ?? "Ukjent bruker"}</span>
-              <Paragraph className={styles.reservedTag}>
-                Reservert: {selectedUser.isReserved ? "Ja" : "Nei"}
-              </Paragraph>
-            </Heading>
-            <Paragraph className={styles.ssn}>
-              Fødselsnummer:{" "}
-              <SsnText contact={selectedUser} environment={environment} />
-            </Paragraph>
-          </Card>
+          <Paragraph className={styles.reservedTag}>
+            Reservert: {selectedUser.isReserved ? "Ja" : "Nei"}
+          </Paragraph>
+          <Heading level={1} className={styles.userInformation}>
+            <span>{selectedUser.name ?? "Ukjent bruker"}</span>
+          </Heading>
+          <Paragraph className={styles.ssn}>
+            <strong>Fødselsnummer: </strong>
+            <SsnText contact={selectedUser} environment={environment} />
+          </Paragraph>
 
           <Card data-color="neutral" className={styles.contactCard}>
             <Heading level={6}>Kontaktinformasjon</Heading>
@@ -60,9 +58,7 @@ const DetailedUserView: React.FC<DetailedUserViewProps> = ({
                     {selectedUser.emailAddress ?? "Ikke registrert"}
                   </Table.Cell>
                   <Table.Cell>
-                    {formatDate(
-                      selectedUser.emailLastUpdatedOrVerified ?? ""
-                    )}
+                    {formatDate(selectedUser.emailLastUpdatedOrVerified ?? "")}
                   </Table.Cell>
                 </Table.Row>
               </Table.Body>
