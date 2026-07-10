@@ -43,7 +43,7 @@
         public Type? Type { get; set; }
         public Enhet? Enhet { get; set; }
         public Person? Person { get; set; }
-        public bool Fratraadt { get; set; }
+        public bool Avregistrert { get; set; }
         public int Rekkefolge { get; set; }
     }
 

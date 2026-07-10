@@ -1,8 +1,18 @@
 import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
 import { NotificationAdresses, PersonalContactAltinn3 } from "../models/models";
 import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
-import { NotificationOrderResponse } from "../models/notificationModels";
-import { Altinn2Role, PolicyRule, Resource, ResourceSearchResult } from "../models/resourceModels";
+import {
+  NotificationAvailabilityRequest,
+  NotificationAvailabilityResponse,
+  NotificationOrderResponse,
+  NotificationShipmentResponse,
+} from "../models/notificationModels";
+import {
+  Altinn2Role,
+  PolicyRule,
+  Resource,
+  ResourceSearchResult,
+} from "../models/resourceModels";
 import { PartyModel } from "../models/PartyModel";
 
 //this file defines which which api endpoints we want to fetch data from
@@ -17,12 +27,9 @@ export const fetchOrganizations = async (
     `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search?query=${encodeURIComponent(trimmedQuery)}`
   );
 
-  if (res.status === 404) {
+  if (!res.ok) {
     return [];
   }
-
-  if (!res.ok)
-    throw new Error((await res.text()) || "Error fetching organizations");
 
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
@@ -114,10 +121,11 @@ export const fetchNotificationAddresses = async (
 };
 
 export const fetchNotificationByOrderId = async (
-  orderId: string
+  orderId: string,
+  environment: string
 ): Promise<NotificationOrderResponse[] | null> => {
   const res = await authorizedFetch(
-    `/api/notifications/orderid/${encodeURIComponent(orderId)}`
+    `/api/${environment}/notifications/orderid/${encodeURIComponent(orderId)}`
   );
 
   if (res.status === 404) return null;
@@ -129,33 +137,80 @@ export const fetchNotificationByOrderId = async (
   return await res.json();
 };
 
+export const fetchNotificationsAdvancedSearch = async (
+  query: string,
+  environment: string,
+  dateFrom?: string,
+  dateTo?: string
+): Promise<NotificationShipmentResponse[] | null> => {
+  const params = new URLSearchParams();
+  if (dateFrom) params.set("from", new Date(dateFrom).toISOString());
+  if (dateTo) {
+    const toDate = new Date(dateTo + "T23:59:59");
+    const now = new Date();
+    params.set("to", (toDate > now ? now : toDate).toISOString());
+  }
+  const paramsString = params.toString() ? `?${params}` : "";
+
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/notifications/future/${encodeURIComponent(query)}${paramsString}`
+  );
+
+  if (res.status === 404) return null;
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching notification by NIN");
+
+  return await res.json();
+};
+
+export const fetchNotificationAvailability = async (
+  environment: string,
+  request: NotificationAvailabilityRequest
+): Promise<NotificationAvailabilityResponse> => {
+  const res = await authorizedPost(
+    `${getBaseUrl(environment)}/notifications/availability`,
+    request
+  );
+
+  if (!res.ok)
+    throw new Error(
+      (await res.text()) || "Error fetching notification availability"
+    );
+
+  return await res.json();
+};
+
 export const fetchResources = async (
   environment: string,
   query: string
 ): Promise<ResourceSearchResult[]> => {
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/resource/search?resourceTitle=${encodeURIComponent(query)}`,
+    `${getBaseUrl(environment)}/resource/search?resourceTitle=${encodeURIComponent(query)}`
   );
 
   if (res.status === 404) return [];
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching resources");
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching resources");
 
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
-}
+};
 
 export const fetchResourceByIdentifier = async (
   environment: string,
-  identifier: string,
+  identifier: string
 ): Promise<Resource | null> => {
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/resource/${encodeURIComponent(identifier)}`,
+    `${getBaseUrl(environment)}/resource/${encodeURIComponent(identifier)}`
   );
 
   if (res.status === 404) return null;
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching resource by identifier");
+  if (!res.ok)
+    throw new Error(
+      (await res.text()) || "Error fetching resource by identifier"
+    );
   return await res.json();
-}
+};
 
 export const fetchResourcePolicyRules = async (
   environment: string,
@@ -165,13 +220,19 @@ export const fetchResourcePolicyRules = async (
     `${getBaseUrl(environment)}/resource/${encodeURIComponent(identifier)}/policy/rules`
   );
   if (res.status === 404) return [];
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching policy rules");
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching policy rules");
   const data = await res.json();
   return Array.isArray(data) ? data : [];
-}
-export const fetchRoleDefinitions = async (environment: string): Promise<Altinn2Role[]> => {
-  const res = await authorizedFetch(`${getBaseUrl(environment)}/serviceowner/rolesList`);
-  if (!res.ok) throw new Error((await res.text()) || "Error fetching role definitions");
+};
+export const fetchRoleDefinitions = async (
+  environment: string
+): Promise<Altinn2Role[]> => {
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/rolesList`
+  );
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching role definitions");
   return await res.json();
 };
 
@@ -179,12 +240,17 @@ export const fetchInternalIds = async (
   query: string,
   environment: string
 ): Promise<PartyModel> => {
-  const digits = query.replace(/\s/g, "");
-  if (digits.length === 11) return fetchInternalIdsFromSsn(digits, environment);
-  if (digits.length === 9) return fetchInternalIdsFromOrg(digits, environment);
-  throw new Error(
-    "Identifikatoren må være 9 siffer (org.nr.) eller 11 siffer (fødselsnummer)"
+  const strippedQuery = query.replace(/\s/g, "");
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/parties/lookup/${strippedQuery}`
   );
+  if (res.status === 404) {
+    throw new Error("Not found");
+  }
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
+  return await res.json();
 };
 
 export const fetchInternalIdsFromOrg = async (

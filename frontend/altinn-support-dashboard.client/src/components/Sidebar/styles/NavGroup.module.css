@@ -1,0 +1,54 @@
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.groupButtonReset {
+  border: none;
+  background: none;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+}
+
+.chevron {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+
+.chevronOpen {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.groupChildren {
+  display: grid;
+  grid-template-rows: minmax(0, 0fr);
+  overflow: hidden;
+  transition:
+    grid-template-rows 0.25s ease,
+    overflow 0.25s allow-discrete;
+}
+
+.groupChildrenOpen {
+  grid-template-rows: minmax(0, 1fr);
+  overflow: visible;
+}
+
+.groupChildrenInner {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  margin-left: 8px;
+  padding-left: 20px;
+  padding-top: 4px;
+  border-left: 2px solid rgba(158, 158, 158, 0.5);
+}
+.groupChildrenInnerCollapsed {
+  margin-left: 0;
+  padding-left: 0;
+}

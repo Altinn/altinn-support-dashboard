@@ -3,6 +3,9 @@ export function getBaseUrl(environment?: string): string {
   if (environment === "TT02" || environment === "PROD") {
     return `/api/${environment === "TT02" ? "TT02" : "Production"}`;
   }
+  if (environment === "mock") {
+    return "/api/mock";
+  }
   return "/api";
 }
 export async function authorizedFetch(

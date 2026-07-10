@@ -120,6 +120,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             {
                 throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
             }
+            _logger.LogDebug(responseBody);
             return responseBody;
 
         }
@@ -251,12 +252,19 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
     }
 
-    public async Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, string environmentName)
+    public async Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, List<string>? AnyOfResourceIds, string environmentName)
     {
 
         var client = _clients[environmentName];
 
         var requestUrl = $"accessmanagement/api/v1/resourceowner/authorizedparties?includeAltinn3=true&includeResources=true&includeAccessPackages=true";
+        if (AnyOfResourceIds != null && AnyOfResourceIds.Count > 0)
+        {
+            foreach (string resourceId in AnyOfResourceIds)
+            {
+                requestUrl += $"&anyOfResourceIds={resourceId}";
+            }
+        }
 
 
         string jsonPayload = JsonSerializer.Serialize(dto);
@@ -291,6 +299,21 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         {
             return string.Empty;
         }
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        return responseBody;
+    }
+
+    public async Task<string> GetAccessPackagesList(string environmentName)
+    {
+        var client = _clients[environmentName];
+        var requestUrl = $"accessmanagement/api/v1/meta/info/accesspackages/export";
+
+        var response = await client.GetAsync(requestUrl);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");

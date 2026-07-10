@@ -14,7 +14,7 @@ namespace altinn_support_dashboard.Server.Services
         private readonly IDataBrregClient _client;
         private readonly IPartyApiService _partyService;
         private readonly JsonSerializerOptions jsonOptions;
-        private readonly List<string> _validEnvironmentNames = new List<string> { "Production", "TT02" };
+        private readonly List<string> _validEnvironmentNames = new List<string> { "Production", "TT02", "mock" };
 
         public DataBrregService(IDataBrregClient client, IPartyApiService partyApiService)
         {

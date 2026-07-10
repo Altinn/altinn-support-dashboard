@@ -146,10 +146,10 @@ public class AltinnPartyTT02ControllerTests
     {
         var uuid = "11111111-1111-1111-1111-111111111111";
         _mockPartyApiService
-            .Setup(x => x.GetPartyFromUuidAsync(uuid, Env))
+            .Setup(x => x.GetPartyByUuidAsync(uuid, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = uuid, PartyId = 3, Name = "Test Party" });
 
-        var result = await _controller.GetPartyUuid(uuid);
+        var result = await _controller.GetPartyByUuid(uuid);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -159,12 +159,12 @@ public class AltinnPartyTT02ControllerTests
     {
         var uuid = "11111111-1111-1111-1111-111111111111";
         _mockPartyApiService
-            .Setup(x => x.GetPartyFromUuidAsync(uuid, Env))
+            .Setup(x => x.GetPartyByUuidAsync(uuid, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = uuid, PartyId = 3 });
 
-        await _controller.GetPartyUuid(uuid);
+        await _controller.GetPartyByUuid(uuid);
 
-        _mockPartyApiService.Verify(x => x.GetPartyFromUuidAsync(uuid, Env), Times.Once);
+        _mockPartyApiService.Verify(x => x.GetPartyByUuidAsync(uuid, Env), Times.Once);
     }
 }
 
@@ -308,10 +308,10 @@ public class AltinnPartyProductionControllerTests
     {
         var uuid = "11111111-1111-1111-1111-111111111111";
         _mockPartyApiService
-            .Setup(x => x.GetPartyFromUuidAsync(uuid, Env))
+            .Setup(x => x.GetPartyByUuidAsync(uuid, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = uuid, PartyId = 3, Name = "Test Party" });
 
-        var result = await _controller.GetPartyUuid(uuid);
+        var result = await _controller.GetPartyByUuid(uuid);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -321,11 +321,11 @@ public class AltinnPartyProductionControllerTests
     {
         var uuid = "11111111-1111-1111-1111-111111111111";
         _mockPartyApiService
-            .Setup(x => x.GetPartyFromUuidAsync(uuid, Env))
+            .Setup(x => x.GetPartyByUuidAsync(uuid, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = uuid, PartyId = 3 });
 
-        await _controller.GetPartyUuid(uuid);
+        await _controller.GetPartyByUuid(uuid);
 
-        _mockPartyApiService.Verify(x => x.GetPartyFromUuidAsync(uuid, Env), Times.Once);
+        _mockPartyApiService.Verify(x => x.GetPartyByUuidAsync(uuid, Env), Times.Once);
     }
 }

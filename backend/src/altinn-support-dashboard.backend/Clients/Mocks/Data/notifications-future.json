@@ -1,0 +1,27 @@
+[
+  {
+    "shipmentId": "00000000-0000-0000-0000-000000000001",
+    "creatorName": "digdir",
+    "resourceId": "mock-resource-id",
+    "sendersReference": "mock-ref-001",
+    "requestedSendTime": "2024-06-01T12:00:00",
+    "notificationChannel": "SmsAndEmail",
+    "notificationType": "Notification",
+    "deliveryAttempts": [
+      {
+        "nationalIdentityNumber": "13896895898",
+        "channel": "Email",
+        "emailAddress": "test@digdir.no",
+        "result": "Succeeded",
+        "resultTime": "2024-06-01T12:01:00"
+      },
+      {
+        "nationalIdentityNumber": "13896895898",
+        "channel": "Sms",
+        "mobileNumber": "99999999",
+        "result": "Failed",
+        "resultTime": "2024-06-01T12:01:00"
+      }
+    ]
+  }
+]

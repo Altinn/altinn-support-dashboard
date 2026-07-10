@@ -94,6 +94,9 @@ public class PartyApiServiceTests
         _mockClient
         .Setup(x => x.GetParty(It.IsAny<string>(), false, It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
+        _mockClient
+        .Setup(x => x.GetPartyWithUserInformationByUuid(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync(@"{ ""user"": { ""userId"": 123 } }");
 
         var result = await _service.GetPartyFromSsnAsync(validSsn, Env);
 
@@ -144,7 +147,7 @@ public class PartyApiServiceTests
     }
 
     [Fact]
-    public async Task GetPartyFromUuidAsync_ReturnsPartyModel_WhenUuidIsValid()
+    public async Task GetPartyByUuidAsync_ReturnsPartyModel_WhenUuidIsValid()
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
         var mockResponse = @"{
@@ -157,15 +160,18 @@ public class PartyApiServiceTests
         _mockClient
         .Setup(x => x.GetPartyByUuid(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
+        _mockClient
+        .Setup(x => x.GetPartyWithUserInformationByUuid(It.IsAny<string>(), It.IsAny<string>()))
+        .ReturnsAsync(@"{ ""user"": { ""userId"": 123 } }");
 
-        var result = await _service.GetPartyFromUuidAsync(validUuid, Env);
+        var result = await _service.GetPartyByUuidAsync(validUuid, Env);
 
         Assert.NotNull(result);
         Assert.IsType<PartyModel>(result);
     }
 
     [Fact]
-    public async Task GetPartyFromUuidAsync_ThrowsException_WhenPartyIsNull()
+    public async Task GetPartyByUuidAsync_ThrowsException_WhenPartyIsNull()
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
         var mockResponse = "null";
@@ -174,11 +180,11 @@ public class PartyApiServiceTests
         .Setup(x => x.GetPartyByUuid(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        await Assert.ThrowsAsync<Exception>(async () => await _service.GetPartyFromUuidAsync(validUuid, Env));
+        await Assert.ThrowsAsync<Exception>(async () => await _service.GetPartyByUuidAsync(validUuid, Env));
     }
 
     [Fact]
-    public async Task GetPartyFromUuidAsync_ThrowsJsonException_WhenJsonIsInvalid()
+    public async Task GetPartyByUuidAsync_ThrowsJsonException_WhenJsonIsInvalid()
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
         var mockResponse = @"{ invalid json }";
@@ -187,11 +193,11 @@ public class PartyApiServiceTests
         .Setup(x => x.GetPartyByUuid(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromUuidAsync(validUuid, Env));
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyByUuidAsync(validUuid, Env));
     }
 
     [Fact]
-    public async Task GetPartyFromUuidAsync_ThrowsJsonException_WhenMissingRequiredProperty()
+    public async Task GetPartyByUuidAsync_ThrowsJsonException_WhenMissingRequiredProperty()
     {
         var validUuid = "11111111-1111-1111-1111-111111111111";
         var mockResponse = @"{
@@ -203,7 +209,7 @@ public class PartyApiServiceTests
         .Setup(x => x.GetPartyByUuid(It.IsAny<string>(), It.IsAny<string>()))
         .ReturnsAsync(mockResponse);
 
-        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyFromUuidAsync(validUuid, Env));
+        await Assert.ThrowsAsync<JsonException>(async () => await _service.GetPartyByUuidAsync(validUuid, Env));
     }
 
     [Fact]

@@ -55,7 +55,7 @@ export interface ErRole {
   type: ErType;
   person: person;
   enhet?: enhet;
-  fratraadt: boolean;
+  avregistrert: boolean;
   rekkefolge?: number;
 }
 
@@ -88,8 +88,7 @@ export interface ErRoleTableItem {
   type: ErType;
   enhet?: enhet;
   person?: person;
-  fratraadt: boolean;
-
+  avregistrert: boolean;
   groupType: ErType;
 }
 

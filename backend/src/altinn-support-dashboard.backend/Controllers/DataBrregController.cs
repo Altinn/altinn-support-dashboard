@@ -125,6 +125,6 @@ public class ER_Roller_APIController : ControllerBase
 
     private bool IsValidEnvironment(string environmentName)
     {
-        return environmentName == "TT02" || environmentName == "Production";
+        return environmentName == "TT02" || environmentName == "Production" || MockUtils.IsMock(environmentName);
     }
 }

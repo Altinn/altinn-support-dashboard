@@ -1,0 +1,17 @@
+{
+  "organisasjonsnummer": "310110914",
+  "navn": "Digitaliseringsdirektoratet",
+  "organisasjonsform": { "kode": "ORGL", "beskrivelse": "Organisasjonsledd" },
+  "hjemmeside": "https://www.digdir.no",
+  "epostadresse": "post@digdir.no",
+  "registreringsdatoEnhetsregisteret": "2008-01-01",
+  "aktivitet": ["Offentlig administrasjon"],
+  "forretningsadresse": {
+    "adresse": ["Grev Wedels plass 9"],
+    "postnummer": "0151",
+    "poststed": "OSLO",
+    "kommune": "OSLO",
+    "kommunenummer": "0301",
+    "land": "Norge"
+  }
+}

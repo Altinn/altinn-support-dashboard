@@ -1,0 +1,13 @@
+[
+  {
+    "organizationNumber": "310110914",
+    "nationalIdentityNumber": "13896895898",
+    "name": "Test Testesen",
+    "email": "test@digdir.no",
+    "phone": "99999999",
+    "lastChanged": "2024-01-15T10:00:00",
+    "resourceIncludeList": [
+      "urn:altinn:resource:app_ttd_storage-end-to-end"
+    ]
+  }
+]

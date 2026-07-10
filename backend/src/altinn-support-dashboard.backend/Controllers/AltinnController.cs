@@ -23,6 +23,16 @@ namespace AltinnSupportDashboard.Controllers
 
 
     [ApiController]
+    [Authorize(AzureRoles.Authenticated)]
+    [Route("api/mock/serviceowner")]
+    public class AltinnMockController : AltinnBaseController
+    {
+        public AltinnMockController(IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration) : base(altinn3Service, "mock", ssnTokenService, telemetryService, configuration)
+        {
+        }
+    }
+
+    [ApiController]
     [Authorize(AzureRoles.TT02)]
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
@@ -237,7 +247,7 @@ namespace AltinnSupportDashboard.Controllers
         [HttpPost("organizations/altinn3/roles")]
         public async Task<IActionResult> PostRolesAndRightsAltinn3([FromBody] RolesAndRightsRequest request)
         {
-            var result = await _altinn3Service.GetRolesAndRightsAltinn3(request, environmentName);
+            var result = await _altinn3Service.GetRolesAndRightsAltinn3(request, null, environmentName);
 
             return Ok(result);
         }

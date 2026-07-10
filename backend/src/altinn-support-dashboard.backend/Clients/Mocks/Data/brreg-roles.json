@@ -1,0 +1,20 @@
+{
+  "rollegrupper": [
+    {
+      "type": { "kode": "STYR", "beskrivelse": "Styret" },
+      "sistEndret": "2020-01-01",
+      "roller": [
+        {
+          "type": { "kode": "DAGL", "beskrivelse": "Daglig leder" },
+          "person": {
+            "fodselsdato": "1985-06-15",
+            "navn": { "fornavn": "Test", "mellomnavn": null, "etternavn": "Testesen" },
+            "erDoed": false
+          },
+          "avregistrert": false,
+          "rekkefolge": 1
+        }
+      ]
+    }
+  ]
+}

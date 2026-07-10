@@ -69,7 +69,7 @@ describe('formatRolePersonInfo', () => {
                     navn: { fornavn: "Ole", mellomnavn: null, etternavn: "Hansen" },
                 erDoed: false
                 },
-                fratraadt: false
+                avregistrert: false
             }]
         };
         expect(formatRolePersonInfo(role)).toBe('Ole Hansen');
@@ -86,7 +86,7 @@ describe('formatRolePersonInfo', () => {
                     navn: { fornavn: "Ole", mellomnavn: null, etternavn: "Hansen" },
                     erDoed: true
                 },
-                fratraadt: false
+                avregistrert: false
             }]
         };
         expect(formatRolePersonInfo(role)).toBe('Ole Hansen (Død)');
@@ -109,7 +109,7 @@ describe('formatRolePersonInfo', () => {
                 type: { kode: "DAGL", beskrivelse: "Daglig leder" },
                 //eslint-disable-next-line @typescript-eslint/no-explicit-any
                 person: undefined as any,
-                fratraadt: false
+                avregistrert: false
             }]
         };
         expect(formatRolePersonInfo(role)).toBe('');
@@ -160,7 +160,7 @@ describe('formatRoleDescription', () => {
                     navn: { fornavn: "Ole", mellomnavn: null, etternavn: "Hansen" },
                     erDoed: false
                 },
-                fratraadt: false
+                avregistrert: false
             }]
         };
         expect(formatRoleDescription(role)).toBe('Daglig leder: Ole Hansen');
@@ -177,7 +177,7 @@ describe('formatRoleDescription', () => {
                     navn: { fornavn: "Ole", mellomnavn: null, etternavn: "Hansen" },
                     erDoed: true
                 },
-                fratraadt: false
+                avregistrert: false
             }]
         };
         expect(formatRoleDescription(role)).toBe('Daglig leder: Ole Hansen (Død)');
@@ -204,7 +204,7 @@ describe('formatRoleDescription', () => {
                     navn: { fornavn: "Ole", mellomnavn: null, etternavn: "Hansen" },
                     erDoed: false
                 },
-                fratraadt: false
+                avregistrert: false
             }]
         };
         expect(formatRoleDescription(role)).toBe(': Ole Hansen');

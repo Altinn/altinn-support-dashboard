@@ -76,12 +76,15 @@ public class Altinn3Service : IAltinn3Service
     public async Task<List<OrgPartyInfoDto>> GetOrganizationspartyInfo(List<int> partyIds, string environment)
     {
         var result = await _client.GetOrganizationsPartyInfoByPartyId(partyIds, environment);
+        if (string.IsNullOrEmpty(result)) return [];
         var parties = JsonSerializer.Deserialize<List<OrgPartyInfoDto>>(result, jsonOptions) ?? throw new Exception("Error deserializing");
         return parties;
     }
 
     public async Task<List<Organization>> GetOrganizationsByOrgNumbers(List<string> orgNumbers, string environment)
     {
+        if (orgNumbers.Count == 0) return [];
+
         var identifiers = await GetOrganizationsIdentifiers(orgNumbers, environment);
         var parties = await GetOrganizationspartyInfo(identifiers.Select((i) => i.PartyId).ToList(), environment);
         List<Organization> organizations = [];
@@ -182,6 +185,7 @@ public class Altinn3Service : IAltinn3Service
             Phone = contact.Phone,
             Email = contact.Email,
             LastChanged = contact.LastChanged,
+            ResourceIncludeList = contact.ResourceIncludeList
         }).ToList();
 
         foreach (var contact in contacts)
@@ -250,7 +254,9 @@ public class Altinn3Service : IAltinn3Service
                 MobileNumber = contact.Phone,
                 SocialSecurityNumber = contact.NationalIdentityNumber,
                 MobileNumberChanged = contact.LastChanged,
-                EMailAddressChanged = contact.LastChanged
+                EMailAddressChanged = contact.LastChanged,
+                ResourceIncludeList = contact.ResourceIncludeList
+
             };
 
             contacts.Add(newContact);
@@ -299,7 +305,7 @@ public class Altinn3Service : IAltinn3Service
         return notificationAddresses;
     }
 
-    public async Task<RolesAndRightsDto> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRightsRequest, string environment)
+    public async Task<RolesAndRightsDto> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRightsRequest, List<string>? anyOfResourceIds, string environment, bool convertNames = true)
     {
         var ssn = _ssnTokenService.GetSsnFromToken(rolesAndRightsRequest.Value);
 
@@ -322,7 +328,7 @@ public class Altinn3Service : IAltinn3Service
         List<AuthorizedPartyDto> rolesAndRightsResponse = [];
         try
         {
-            var result = await _client.GetRolesAndRightsAltinn3(rolesAndRightsRequest, environment);
+            var result = await _client.GetRolesAndRightsAltinn3(rolesAndRightsRequest, anyOfResourceIds, environment);
 
             if (!string.IsNullOrWhiteSpace(result))
             {
@@ -339,7 +345,7 @@ public class Altinn3Service : IAltinn3Service
         var allParties = rolesAndRightsResponse
             .Concat(rolesAndRightsResponse.SelectMany(r => r.Subunits ?? []))
             .ToList();
-        var match = allParties.FirstOrDefault(r => r.OrganizationNumber == partyFilterValue);
+        var match = allParties.FirstOrDefault(r => r.OrganizationNumber == partyFilterValue || r.PersonId == partyFilterValue);
         RolesAndRightsDto roles = match != null
             ? new RolesAndRightsDto
             {
@@ -353,39 +359,46 @@ public class Altinn3Service : IAltinn3Service
             : new RolesAndRightsDto { OrganizationNumber = partyFilterValue ?? "" };
 
 
-        //TODO: add new roles mapping to get rolesname from meta endpoinup
-        var authorizedRoles = roles.AuthorizedRoles;
-        if (authorizedRoles != null && authorizedRoles.Count >= 1)
+        if (convertNames)
         {
-            try
-            {
-                var roleNames = await GetAltinn2RoleNamesFromCodes(authorizedRoles, environment);
-                if (roleNames != null)
-                {
-                    roles.AuthorizedRoles = roleNames;
-                }
-            }
-            catch (Exception e) { _logger.LogError($"Error converting roleNames: {e}"); }
-
-        }
-
-
-
-        if (roles.AuthorizedResources != null && roles.AuthorizedResources.Count >= 1)
-        {
-            //Sets resources to name to be more readable
-            var authorizedResources = roles.AuthorizedResources;
-            if (authorizedResources != null && authorizedResources.Count >= 1)
+            var authorizedRoles = roles.AuthorizedRoles;
+            if (authorizedRoles != null && authorizedRoles.Count >= 1)
             {
                 try
                 {
-                    var resourceNames = await GetResourceNamesFromCodes(authorizedResources, environment);
+                    var roleNames = await GetAltinn2RoleNamesFromCodes(authorizedRoles, environment);
+                    if (roleNames != null)
+                    {
+                        roles.AuthorizedRoles = roleNames;
+                    }
+                }
+                catch (Exception e) { _logger.LogError($"Error converting roleNames: {e}"); }
+            }
+
+            if (roles.AuthorizedResources != null && roles.AuthorizedResources.Count >= 1)
+            {
+                try
+                {
+                    var resourceNames = await GetResourceNamesFromCodes(roles.AuthorizedResources, environment);
                     if (resourceNames != null)
                     {
                         roles.AuthorizedResources = resourceNames;
                     }
                 }
-                catch (Exception e) { _logger.LogError($"Error converting roleNames: {e}"); }
+                catch (Exception e) { _logger.LogError($"Error converting resourceNames: {e}"); }
+            }
+
+            if (roles.AuthorizedAccessPackages != null && roles.AuthorizedAccessPackages.Count >= 1)
+            {
+                try
+                {
+                    var accessPackageNames = await GetAccessPackageNamesFromUrns(roles.AuthorizedAccessPackages, environment);
+                    if (accessPackageNames != null)
+                    {
+                        roles.AuthorizedAccessPackages = accessPackageNames;
+                    }
+                }
+                catch (Exception e) { _logger.LogError($"Error converting accessPackageNames: {e}");}
             }
         }
         return roles;
@@ -427,6 +440,81 @@ public class Altinn3Service : IAltinn3Service
         }) ?? throw new Exception("Cache returned null");
     }
 
+    public async Task<NotificationAvailabilityResponse> GetNotificationAvailabilityForResourceAsync(NotificationAvailabilityRequest request, string environment)
+    {
+
+        var personalContacts = await GetPersonalContactsByOrgAltinn3(request.OrganizationNumber, environment);
+
+        //personalContacts have their NationalIdentityNumber redacted and replaced with an SsnToken, so we decrypt both sides to compare
+        var ssn = _ssnTokenService.GetSsnFromToken(request.NationalIdentityNumber);
+        if (string.IsNullOrWhiteSpace(ssn))
+        {
+            ssn = request.NationalIdentityNumber.Replace(" ", ""); //If the subject isn't a token, use it as is
+        }
+
+        var matchingContact = personalContacts.FirstOrDefault(p => p.SsnToken != null && _ssnTokenService.GetSsnFromToken(p.SsnToken) == ssn);
+        // If the person has no contact information setup they wont be contacted
+
+
+        var hasContactInformation = false;
+        if (matchingContact != null)
+        {
+            hasContactInformation = true;
+        }
+
+        var resourcePolicyRules = await _resourceRegistryService.GetResourcePolicyRules(environment, request.ResourceId);
+
+
+        RolesAndRightsRequest rolesAndRightsRequest = new RolesAndRightsRequest
+        {
+            Value = request.NationalIdentityNumber,
+            Type = getTypeFromValue(request.NationalIdentityNumber),
+            PartyFilter = [new PartyFilter {
+                Value = request.OrganizationNumber,
+                Type = getTypeFromValue(request.OrganizationNumber)
+                }
+            ]
+        };
+        var rightsResponse = await GetRolesAndRightsAltinn3(rolesAndRightsRequest, [request.ResourceId], environment, false);
+
+
+
+        //resourceregistry doesnt use the prefix so we have to strip it
+        const string ResourceUrnPrefix = "urn:altinn:resource:";
+        List<string> strippedResourceIncludeList = [];
+        if (matchingContact?.ResourceIncludeList != null)
+        {
+            foreach (var resourceId in matchingContact.ResourceIncludeList)
+            {
+                var stripped = resourceId.StartsWith(ResourceUrnPrefix, StringComparison.OrdinalIgnoreCase)
+                    ? resourceId[ResourceUrnPrefix.Length..]
+                    : resourceId;
+                strippedResourceIncludeList.Add(stripped);
+            }
+        }
+
+        var rulesForAction = resourcePolicyRules?
+        .Where(r => r.Action?.Value?.Equals(request.ActionOnResource, StringComparison.OrdinalIgnoreCase) == true)
+        .ToList() ?? [];
+
+        var hasAccessToResource = rulesForAction.Any(rule =>
+            rule.Subject?.Any(subject =>
+                rightsResponse.AuthorizedRoles?.Contains(subject.Value ?? "", StringComparer.OrdinalIgnoreCase) == true ||
+                rightsResponse.AuthorizedAccessPackages?.Contains(subject.Value ?? "", StringComparer.OrdinalIgnoreCase) == true ||
+                rightsResponse.AuthorizedResources?.Contains(subject.Value ?? "", StringComparer.OrdinalIgnoreCase) == true
+            ) == true
+        );
+
+        return new NotificationAvailabilityResponse
+        {
+            HasAccessToResourceForOrg = hasAccessToResource,
+            InResourceIncludeList = hasContactInformation && (strippedResourceIncludeList.Count == 0 || strippedResourceIncludeList.Contains(request.ResourceId)),
+            HasContactInformationForOrg = hasContactInformation,
+        };
+
+    }
+
+
     private string getTypeFromValue(string value)
     {
         string trimmedValued = value.Replace(" ", "");
@@ -460,6 +548,33 @@ public class Altinn3Service : IAltinn3Service
             }
         }
         return roleNames;
+    }
+
+    public async Task<List<AccessPackageDto>> GetAccessPackagesList(string environmentName)
+    {
+        return await _cache.GetOrCreateAsync<List<AccessPackageDto>>($"accessPackagesList_{environmentName}", async entry =>
+        {
+            var result = await _client.GetAccessPackagesList(environmentName);
+            var groups = JsonSerializer.Deserialize<List<AccessPackageGroupDto>>(result, jsonOptions)
+                ?? throw new Exception("Failed to deserialize access packages list for caching");
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1);
+            return groups
+                .SelectMany(g => g.Areas ?? [])
+                .SelectMany(a => a.Packages ?? [])
+                .ToList();
+        }) ?? throw new Exception("Cache returned null");
+    }
+
+    private async Task<List<string>> GetAccessPackageNamesFromUrns(List<string> urns, string environmentName)
+    {
+        const string accessPackageUrnPrefix = "urn:altinn:accesspackage:";
+        var packages = await GetAccessPackagesList(environmentName);
+        return urns.Select(urn =>
+        {
+            var match = packages.FirstOrDefault(p =>
+                string.Equals(p.Urn?.Replace(accessPackageUrnPrefix, ""), urn, StringComparison.OrdinalIgnoreCase));
+            return match?.Name ?? urn;
+        }).ToList();
     }
 
 }

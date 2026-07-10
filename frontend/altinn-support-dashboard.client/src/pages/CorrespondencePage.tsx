@@ -1,4 +1,4 @@
-import { Checkbox, Heading, Label } from "@digdir/designsystemet-react";
+import { Checkbox, Heading, Label, Select } from "@digdir/designsystemet-react";
 import classes from "./styles/CorrespondencePage.module.css";
 import { useState } from "react";
 import {
@@ -56,6 +56,9 @@ export const CorrespondencePage = () => {
     setConfirmationNeeded(bool);
     setLocalStorageValue("confirmationNeeded", JSON.stringify(bool));
   };
+
+  const [attachmentType, setAttachmentType] = useState<"txt" | "zip">("txt");
+
   return (
     <div>
       <Heading className={classes.heading} level={1} data-size="sm">
@@ -118,6 +121,11 @@ export const CorrespondencePage = () => {
             SelectedDateTime={selectedDateTime}
             SetSelectedDateTime={setSelectedDateTime}
           />
+          <Label>Vedleggstype</Label>
+          <Select value={attachmentType} onChange={(e) => setAttachmentType(e.target.value as "txt" | "zip")}>
+            <Select.Option value="txt">.txt</Select.Option>
+            <Select.Option value="zip">.zip</Select.Option>
+          </Select>
           <CorrespondenceButton
             resourceType={resourceType}
             dueDate={selectedDateTime}
@@ -127,6 +135,7 @@ export const CorrespondencePage = () => {
             body={body}
             confirmationNeeded={confirmationNeeded}
             notificationChannel={notificationChannel}
+            attachmentType={attachmentType}
             setResponseMessage={setResponseMessage}
           />
         </div>

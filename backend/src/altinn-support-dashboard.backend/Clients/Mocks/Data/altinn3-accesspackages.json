@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Allment",
+    "areas": [
+      {
+        "name": "Skatt, avgift, regnskap og toll",
+        "packages": [
+          {
+            "name": "Skattenæring",
+            "urn": "urn:altinn:accesspackage:skatt-naering",
+            "description": "Denne tilgangspakken gir fullmakter til tjenester knyttet til skattenæring."
+          }
+        ]
+      },
+      {
+        "name": "Personal og lønn",
+        "packages": [
+          {
+            "name": "Lønn og personalarbeid",
+            "urn": "urn:altinn:accesspackage:lonn-og-personalarbeid",
+            "description": "Denne tilgangspakken gir fullmakter til tjenester knyttet til lønn og personalarbeid."
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -10,7 +10,9 @@ import {
   fetchERoles,
   fetchInternalIds,
   fetchNotificationAddresses,
+  fetchNotificationAvailability,
   fetchNotificationByOrderId,
+  fetchNotificationsAdvancedSearch,
   fetchOrganizations,
   fetchPersonalContacts,
   fetchResourceByIdentifier,
@@ -20,6 +22,10 @@ import {
   fetchRolesForOrg,
   fetchSsnFromToken,
 } from "../utils/api";
+import {
+  NotificationAvailabilityRequest,
+  NotificationAvailabilityResponse,
+} from "../models/notificationModels";
 import {
   CorrespondenceResponse,
   CorrespondenceUploadRequest,
@@ -162,16 +168,44 @@ export function useInternalIdLookup(query: string, environment: string) {
   });
 }
 
-export function useNotifications(orderId: string) {
+export function useNotifications(orderId: string, environment: string) {
   const notificationQuery = useQuery({
-    queryKey: ["notifications", orderId],
-    queryFn: () => fetchNotificationByOrderId(orderId),
+    queryKey: ["notifications", orderId, environment],
+    queryFn: () => fetchNotificationByOrderId(orderId, environment),
     enabled: !!orderId,
     retry: false,
     staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
   return notificationQuery;
+}
+
+export function useNotificationsAdvanced(
+  query: string,
+  environment: string,
+  dateFrom?: string,
+  dateTo?: string
+) {
+  return useQuery({
+    queryKey: ["notificationsByNin", query, environment, dateFrom, dateTo],
+    queryFn: () =>
+      fetchNotificationsAdvancedSearch(query, environment, dateFrom, dateTo),
+    enabled: query.length > 0,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useNotificationAvailability() {
+  return useMutation<
+    NotificationAvailabilityResponse,
+    Error,
+    { environment: string; request: NotificationAvailabilityRequest }
+  >({
+    mutationFn: ({ environment, request }) =>
+      fetchNotificationAvailability(environment, request),
+  });
 }
 
 export function useResourceSearch(environment: string, query: string) {
@@ -186,7 +220,10 @@ export function useResourceSearch(environment: string, query: string) {
   return { resourceQuery };
 }
 
-export function useResourceWithPolicies(environment: string, identifier?: string) {
+export function useResourceWithPolicies(
+  environment: string,
+  identifier?: string
+) {
   const resourceQuery = useQuery<Resource | null, Error>({
     queryKey: ["resource", environment, identifier],
     queryFn: () => fetchResourceByIdentifier(environment, identifier!),
@@ -196,7 +233,7 @@ export function useResourceWithPolicies(environment: string, identifier?: string
     refetchOnWindowFocus: false,
   });
 
-    const policyRulesQuery = useQuery<PolicyRule[], Error>({
+  const policyRulesQuery = useQuery<PolicyRule[], Error>({
     queryKey: ["policyRules", environment, identifier],
     queryFn: () => fetchResourcePolicyRules(environment, identifier!),
     enabled: !!identifier,

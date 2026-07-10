@@ -18,7 +18,7 @@ describe("NotificationOrderSummary", () => {
     it("should render order details", () => {
         render(<NotificationCard order={baseOrder} />);
 
-        expect(screen.getByText("Order id: abc-123")).toBeInTheDocument();
+        expect(screen.getByText("Shipment id: abc-123")).toBeInTheDocument();
         expect(screen.getByText("Avsenders referanse: ref-456")).toBeInTheDocument();
         expect(screen.getByText("Generert: 3")).toBeInTheDocument();
         expect(screen.getByText("Vellykket: 2")).toBeInTheDocument();

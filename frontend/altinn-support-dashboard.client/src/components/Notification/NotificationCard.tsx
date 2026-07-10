@@ -20,7 +20,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ order }) => {
       <Heading level={2} data-size="xs">
         {getType()}
       </Heading>
-      <Paragraph>Order id: {order.orderId}</Paragraph>
+      <Paragraph>Shipment id: {order.orderId}</Paragraph>
       <Paragraph>Avsenders referanse: {order.sendersReference}</Paragraph>
       <Paragraph>Generert: {order.generated}</Paragraph>
       <Paragraph>Vellykket: {order.succeeded}</Paragraph>
