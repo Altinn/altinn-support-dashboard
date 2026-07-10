@@ -4,7 +4,7 @@ public class RolesAndRightsDto
 {
     public string? Name { get; set; }
     public required string OrganizationNumber { get; set; }
-    public string[]? AuthorizedAccessPackages { get; set; }
+    public List<string>? AuthorizedAccessPackages { get; set; }
     public List<string>? AuthorizedResources { get; set; }
     public List<string>? AuthorizedRoles { get; set; }
     public List<AuthorizedInstanceDto>? AuthorizedInstances { get; set; }

@@ -56,6 +56,11 @@ public class MockAltinn3ApiClient(Altinn3ApiClient inner) : IAltinn3ApiClient
         MockUtils.IsMock(environmentName)
             ? Task.FromResult(MockUtils.Read("altinn3-altinn2-roles.json"))
             : inner.GetAltinn2RolesList(environmentName);
+    public Task<string> GetAccessPackagesList(string environmentName) =>
+    MockUtils.IsMock(environmentName)
+        ? Task.FromResult(MockUtils.Read("altinn3-accesspackages.json"))
+        : inner.GetAccessPackagesList(environmentName);
+
 }
 
 

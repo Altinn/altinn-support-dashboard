@@ -5,7 +5,7 @@ public class AuthorizedPartyDto
     public string? Name { get; set; }
     public string? OrganizationNumber { get; set; }
     public string? PersonId { get; set; }
-    public string[]? AuthorizedAccessPackages { get; set; }
+    public List<string>? AuthorizedAccessPackages { get; set; }
     public List<string>? AuthorizedResources { get; set; }
     public List<string>? AuthorizedRoles { get; set; }
     public List<AuthorizedInstanceDto>? AuthorizedInstances { get; set; }
