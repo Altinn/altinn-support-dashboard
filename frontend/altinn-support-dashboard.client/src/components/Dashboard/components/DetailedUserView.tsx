@@ -1,9 +1,9 @@
 import React from "react";
 import { Card, Heading, Paragraph, Table } from "@digdir/designsystemet-react";
 import { UserContactInformationAltinn3 } from "../../../models/models";
-import { formatDate } from "../utils/dateUtils";
 import { useAppStore } from "../../../stores/Appstore";
 import SsnText from "../../SsnText";
+import UserContactInfoTableRow from "./UserContactInfoTableRow";
 import styles from "../styles/DetailedUserView.module.css";
 
 interface DetailedUserViewProps {
@@ -41,26 +41,18 @@ const DetailedUserView: React.FC<DetailedUserViewProps> = ({
                 </Table.Row>
               </Table.Head>
               <Table.Body>
-                <Table.Row>
-                  <Table.Cell>Mobilnummer</Table.Cell>
-                  <Table.Cell>
-                    {selectedUser.phoneNumber ?? "Ikke registrert"}
-                  </Table.Cell>
-                  <Table.Cell>
-                    {formatDate(
-                      selectedUser.phoneNumberLastUpdatedOrVerified ?? ""
-                    )}
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.Cell>E-post</Table.Cell>
-                  <Table.Cell>
-                    {selectedUser.emailAddress ?? "Ikke registrert"}
-                  </Table.Cell>
-                  <Table.Cell>
-                    {formatDate(selectedUser.emailLastUpdatedOrVerified ?? "")}
-                  </Table.Cell>
-                </Table.Row>
+                <UserContactInfoTableRow
+                  label="Mobilnummer"
+                  value={selectedUser.phoneNumber}
+                  lastUpdatedOrVerified={
+                    selectedUser.phoneNumberLastUpdatedOrVerified
+                  }
+                />
+                <UserContactInfoTableRow
+                  label="E-post"
+                  value={selectedUser.emailAddress}
+                  lastUpdatedOrVerified={selectedUser.emailLastUpdatedOrVerified}
+                />
               </Table.Body>
             </Table>
           </Card>
