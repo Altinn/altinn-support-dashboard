@@ -387,6 +387,19 @@ public class Altinn3Service : IAltinn3Service
                 }
                 catch (Exception e) { _logger.LogError($"Error converting resourceNames: {e}"); }
             }
+
+            if (roles.AuthorizedAccessPackages != null && roles.AuthorizedAccessPackages.Count >= 1)
+            {
+                try
+                {
+                    var accessPackageNames = await GetAccessPackageNamesFromUrns(roles.AuthorizedAccessPackages, environment);
+                    if (accessPackageNames != null)
+                    {
+                        roles.AuthorizedAccessPackages = accessPackageNames;
+                    }
+                }
+                catch (Exception e) { _logger.LogError($"Error converting accessPackageNames: {e}");}
+            }
         }
         return roles;
     }
@@ -535,6 +548,33 @@ public class Altinn3Service : IAltinn3Service
             }
         }
         return roleNames;
+    }
+
+    public async Task<List<AccessPackageDto>> GetAccessPackagesList(string environmentName)
+    {
+        return await _cache.GetOrCreateAsync<List<AccessPackageDto>>($"accessPackagesList_{environmentName}", async entry =>
+        {
+            var result = await _client.GetAccessPackagesList(environmentName);
+            var groups = JsonSerializer.Deserialize<List<AccessPackageGroupDto>>(result, jsonOptions)
+                ?? throw new Exception("Failed to deserialize access packages list for caching");
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1);
+            return groups
+                .SelectMany(g => g.Areas ?? [])
+                .SelectMany(a => a.Packages ?? [])
+                .ToList();
+        }) ?? throw new Exception("Cache returned null");
+    }
+
+    private async Task<List<string>> GetAccessPackageNamesFromUrns(List<string> urns, string environmentName)
+    {
+        const string accessPackageUrnPrefix = "urn:altinn:accesspackage:";
+        var packages = await GetAccessPackagesList(environmentName);
+        return urns.Select(urn =>
+        {
+            var match = packages.FirstOrDefault(p =>
+                string.Equals(p.Urn?.Replace(accessPackageUrnPrefix, ""), urn, StringComparison.OrdinalIgnoreCase));
+            return match?.Name ?? urn;
+        }).ToList();
     }
 
 }
