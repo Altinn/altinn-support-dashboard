@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "@digdir/designsystemet-react";
-import { PersonalContactAltinn3 } from "../models/models";
 import { useSsnFromToken } from "../hooks/hooks";
 
-interface SsnCellProps {
-  contact: PersonalContactAltinn3;
+interface SsnTextProps {
+  contact: {
+    ssnToken?: string;
+    displayedSocialSecurityNumber?: string;
+  };
   environment?: string;
 }
 
-const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
+const SsnText: React.FC<SsnTextProps> = ({ contact, environment }) => {
   const [isRedacted, setIsRedacted] = useState(true);
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -44,7 +45,7 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
   }, [isRedacted, unredactedSsn]);
 
   return (
-    <Table.Cell
+    <span
       onClick={handleClick}
       style={{ cursor: "pointer" }}
       title={
@@ -54,8 +55,8 @@ const SsnCell: React.FC<SsnCellProps> = ({ contact, environment }) => {
       {!isRedacted && unredactedSsn
         ? unredactedSsn
         : contact.displayedSocialSecurityNumber}
-    </Table.Cell>
+    </span>
   );
 };
 
-export default SsnCell;
+export default SsnText;

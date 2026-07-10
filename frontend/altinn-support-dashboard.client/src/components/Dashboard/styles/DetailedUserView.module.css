@@ -15,14 +15,37 @@
   overflow-x: auto;
 }
 
+.identityCard {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+  box-shadow: var(--ds-shadow-sm);
+}
+
 .userInformation {
-  font-size: 1rem;
+  font-size: 2rem;
   display: flex;
-  gap: 1.5rem;
   align-items: center;
+  gap: 1.5rem;
   flex-wrap: wrap;
 }
 
-.userName {
-  font-size: 2rem;
+.reservedTag {
+  font-size: 1rem;
+}
+
+.ssn {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.contactCard {
+  margin: 0.5rem 0 1.5rem 0;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.contactTable {
+  margin-top: 0.5rem;
 }
