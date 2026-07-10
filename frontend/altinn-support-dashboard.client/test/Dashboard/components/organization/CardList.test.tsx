@@ -23,7 +23,7 @@ vi.mock(
     OrganizationCard: ({ org }: any) => (
       <div data-testid={`org-card-${org.organizationNumber}`}>{org.name}</div>
     ),
-  }),
+  })
 );
 
 vi.mock(
@@ -35,7 +35,7 @@ vi.mock(
         {user.displayedSocialSecurityNumber}
       </div>
     ),
-  }),
+  })
 );
 
 vi.mock("@digdir/designsystemet-react", () => ({
@@ -58,9 +58,8 @@ vi.mock("@digdir/designsystemet-react", () => ({
   },
 }));
 
-const { useOrgSearch, useUserContactInfoByNin } = await import(
-  "../../../../src/hooks/hooks"
-);
+const { useOrgSearch, useUserContactInfoByNin } =
+  await import("../../../../src/hooks/hooks");
 const { useAppStore } = await import("../../../../src/stores/Appstore");
 const { showPopup } = await import("../../../../src/components/Popup");
 
@@ -120,7 +119,7 @@ describe("CardList", () => {
         setSelectedCard={mockSetSelectedCard}
         selectedCard={null}
         query="test"
-      />,
+      />
     );
 
     expect(screen.getByRole("progressbar")).toBeInTheDocument();
@@ -138,12 +137,12 @@ describe("CardList", () => {
         setSelectedCard={mockSetSelectedCard}
         selectedCard={null}
         query="test"
-      />,
+      />
     );
 
     expect(screen.getByRole("alert")).toBeInTheDocument();
     expect(
-      screen.getByText("Ingen organisasjoner eller brukere funnet"),
+      screen.getByText("Ingen organisasjoner eller brukere funnet")
     ).toBeInTheDocument();
   });
 
@@ -158,7 +157,7 @@ describe("CardList", () => {
         setSelectedCard={mockSetSelectedCard}
         selectedCard={null}
         query=""
-      />,
+      />
     );
 
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
@@ -170,7 +169,7 @@ describe("CardList", () => {
         setSelectedCard={mockSetSelectedCard}
         selectedCard={null}
         query="test"
-      />,
+      />
     );
 
     expect(screen.getByTestId("org-card-111111111")).toBeInTheDocument();
@@ -191,8 +190,8 @@ describe("CardList", () => {
     ];
     orgsWithSubunits[0] = {
       ...orgsWithSubunits[0],
-      //eslint-disable-next-line @typescript-eslint/no-explicit-any
       subUnits: [{ organizationNumber: "333333333" }],
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -210,7 +209,7 @@ describe("CardList", () => {
         setSelectedCard={mockSetSelectedCard}
         selectedCard={null}
         query="test"
-      />,
+      />
     );
 
     expect(screen.getByTestId("org-card-111111111")).toBeInTheDocument();
@@ -234,7 +233,7 @@ describe("CardList", () => {
         setSelectedCard={mockSetSelectedCard}
         selectedCard={null}
         query="08846999362"
-      />,
+      />
     );
 
     expect(screen.getByTestId("user-card-token-123")).toBeInTheDocument();
@@ -249,7 +248,7 @@ describe("CardList", () => {
         setSelectedCard={mockSetSelectedCard}
         selectedCard={null}
         query="test"
-      />,
+      />
     );
 
     expect(screen.queryByTestId(/user-card-/)).not.toBeInTheDocument();
@@ -275,7 +274,7 @@ describe("CardList", () => {
         setSelectedCard={mockSetSelectedCard}
         selectedCard={null}
         query="08846999362"
-      />,
+      />
     );
 
     expect(screen.getByTestId("user-card-token-123")).toBeInTheDocument();
@@ -298,13 +297,13 @@ describe("CardList", () => {
         setSelectedCard={mockSetSelectedCard}
         selectedCard={null}
         query="test"
-      />,
+      />
     );
 
     await waitFor(() => {
       expect(showPopup).toHaveBeenCalledWith(
         "Failed to fetch organizations",
-        "error",
+        "error"
       );
     });
   });
@@ -325,7 +324,7 @@ describe("CardList", () => {
         setSelectedCard={mockSetSelectedCard}
         selectedCard={null}
         query="test"
-      />,
+      />
     );
 
     await waitFor(() => {
