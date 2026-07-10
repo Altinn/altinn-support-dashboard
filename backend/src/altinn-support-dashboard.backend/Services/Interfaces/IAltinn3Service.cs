@@ -23,6 +23,7 @@ public interface IAltinn3Service
     Task<List<NotificationAddressDto>> GetNotificationAddressesByEmailAltinn3(string email, string environment);
 
     Task<RolesAndRightsDto> GetRolesAndRightsAltinn3(RolesAndRightsRequest rolesAndRights, List<string>? anyOfResourceIds, string environment, bool convertNames = true);
+    Task<List<AuthorizedPartyIdentifiersDto>> GetAuthorizedPartyIdentifiersAltinn3(string nin, string environment);
     Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName);
     Task<List<Altinn2RoleDto>> GetAltinn2RolesList(string environmentName);
     Task<NotificationAvailabilityResponse> GetNotificationAvailabilityForResourceAsync(NotificationAvailabilityRequest request, string environment);

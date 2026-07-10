@@ -448,6 +448,33 @@ public class Altinn3Service : IAltinn3Service
         return roles;
     }
 
+    public async Task<List<AuthorizedPartyIdentifiersDto>> GetAuthorizedPartyIdentifiersAltinn3(string nin, string environment)
+    {
+        var ssn = _ssnTokenService.GetSsnFromToken(nin);
+        if (string.IsNullOrWhiteSpace(ssn))
+        {
+            ssn = nin.Replace(" ", ""); //If the subject isn't a token, use it as is
+        }
+        var type = getTypeFromValue(ssn);
+
+        var result = await _client.GetAuthorizedParties(ssn, type, environment);
+        if (string.IsNullOrWhiteSpace(result)) return [];
+
+        var authorizedParties = JsonSerializer.Deserialize<List<AuthorizedPartyDto>>(result, jsonOptions) ?? [];
+
+        var allParties = authorizedParties
+            .Concat(authorizedParties.SelectMany(p => p.Subunits ?? []))
+            .Where(p => p.AuthorizedAccessPackages != null && p.AuthorizedAccessPackages.Count > 0)
+            .ToList();
+
+        return allParties.Select(p => new AuthorizedPartyIdentifiersDto
+        {
+            OrganizationNumber = p.OrganizationNumber,
+            NationalIdentityNumber = p.PersonId,
+            Name = p.Name ?? "",
+        }).ToList();
+    }
+
     public async Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName)
     {
         List<ResourceDetailsDto> resourceList = await _resourceRegistryService.GetResourceList(environmentName);

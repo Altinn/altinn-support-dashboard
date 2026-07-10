@@ -264,6 +264,14 @@ namespace AltinnSupportDashboard.Controllers
             return Ok(result);
         }
 
+        [HttpGet("altinn3/authorizedparties/{nin}")]
+        public async Task<IActionResult> GetAuthorizedPartyIdentifiersAltinn3([FromRoute] string nin)
+        {
+            var result = await _altinn3Service.GetAuthorizedPartyIdentifiersAltinn3(nin, environmentName);
+
+            return Ok(result);
+        }
+
         [HttpPost("organizations/altinn3/identifiers")]
         public async Task<IActionResult> PostOrganizationsIdentifiers([FromBody] OrgNumbersRequestDto request)
         {
