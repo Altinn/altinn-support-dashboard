@@ -2,7 +2,7 @@ import { beforeEach, describe, vi, it, expect } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import '@testing-library/jest-dom';
 import ContactsTable from "../../../../src/components/Dashboard/components/contacts/ContactsTable";
-import { PersonalContactAltinn3, SelectedOrg } from "../../../../src/models/models";
+import { Organization, PersonalContactAltinn3 } from "../../../../src/models/models";
 
 // Mock data that we'll modify in tests
 let mockContactsData: PersonalContactAltinn3[] = [];
@@ -48,10 +48,10 @@ vi.mock('../../../../src/components/Dashboard/components/contacts/ContactInfoCel
     ),
 }));
 
-vi.mock('../../../../src/components/SsnCell', () => ({
+vi.mock('../../../../src/components/SsnText', () => ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     default: ({ contact }: any) => (
-        <td data-testid="ssn-cell">{contact.nationalIdentityNumber}</td>
+        <span data-testid="ssn-text">{contact.nationalIdentityNumber}</span>
     ),
 }));
 
@@ -103,9 +103,11 @@ vi.mock('@digdir/designsystemet-react', () => ({
 
 describe('ContactsTable', () => {
     const mockSetSelectedContact = vi.fn();
-    const mockSelectedOrg: SelectedOrg = {
-        OrganizationNumber: "123456789",
-        Name: "Test Org",
+    const mockSelectedOrg: Organization = {
+        organizationNumber: "123456789",
+        name: "Test Org",
+        unitType: "AS",
+        isDeleted: false,
     };
 
     const mockContacts: PersonalContactAltinn3[] = [
@@ -372,7 +374,7 @@ describe('ContactsTable', () => {
         expect(contactInfoCells).toHaveLength(4); // both contacts have phone and email
     });
 
-    it('should render SsnCell component', () => {
+    it('should render SsnText component', () => {
         render(
             <ContactsTable
                 searchQuery=""
@@ -381,8 +383,8 @@ describe('ContactsTable', () => {
              />
         );
 
-        const ssnCells = screen.getAllByTestId('ssn-cell');
-        expect(ssnCells).toHaveLength(2);
+        const ssnTexts = screen.getAllByTestId('ssn-text');
+        expect(ssnTexts).toHaveLength(2);
     });
 
     it('should handle contacts with missing fields', () => {

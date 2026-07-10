@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { TopSearchBarTextField } from "../../src/components/TopSearchBar/TopSearchBarTextField";
 import { userEvent } from "@testing-library/user-event/dist/cjs/setup/index.js";
 
@@ -13,7 +13,7 @@ describe('TopSearchBarTextField', () => {
             <TopSearchBarTextField
                 query = ""
                 setQuery = {() => {}}
-                setSelectedOrg = {() => {}}
+                setSelectedCard = {() => {}}
             />
         );
 
@@ -25,7 +25,7 @@ describe('TopSearchBarTextField', () => {
             <TopSearchBarTextField
                 query = "Test Query"
                 setQuery = {() => {}}
-                setSelectedOrg = {() => {}}
+                setSelectedCard = {() => {}}
             />
         );
 
@@ -35,12 +35,12 @@ describe('TopSearchBarTextField', () => {
     it('should call onChange when input value changes', async () => {
         const user = userEvent.setup();
         const mockSetQuery = vi.fn();
-        const mockSetSelectedOrg = vi.fn();
+        const mockSetSelectedCard = vi.fn();
         render(
             <TopSearchBarTextField
                 query = ""
                 setQuery = {mockSetQuery}
-                setSelectedOrg = {mockSetSelectedOrg}
+                setSelectedCard = {mockSetSelectedCard}
             />
         );
 
@@ -60,7 +60,7 @@ describe('TopSearchBarTextField', () => {
             <TopSearchBarTextField
                 query = "To Be Cleared"
                 setQuery = {mockSetQuery}
-                setSelectedOrg = {() => {}}
+                setSelectedCard = {() => {}}
             />
         );
 
@@ -74,12 +74,12 @@ describe('TopSearchBarTextField', () => {
     it('should trigger search when search button is clicked', async () => {
         const user = userEvent.setup();
         const mockSetQuery = vi.fn();
-        const mockSetSelectedOrg = vi.fn();
+        const mockSetSelectedCard = vi.fn();
         render(
             <TopSearchBarTextField
                 query = ""
                 setQuery = {mockSetQuery}
-                setSelectedOrg = {mockSetSelectedOrg}
+                setSelectedCard = {mockSetSelectedCard}
             />
         );
 
@@ -92,15 +92,15 @@ describe('TopSearchBarTextField', () => {
         expect(mockSetQuery).toHaveBeenCalledWith('Search Query');
     });
 
-    it('should call setSelectedOrg with null when query changes', async () => {
+    it('should call setSelectedCard with null when query changes', async () => {
         const user = userEvent.setup();
         const mockSetQuery = vi.fn();
-        const mockSetSelectedOrg = vi.fn();
+        const mockSetSelectedCard = vi.fn();
         render(
             <TopSearchBarTextField
                 query = "Initial Query"
                 setQuery = {mockSetQuery}
-                setSelectedOrg = {mockSetSelectedOrg}
+                setSelectedCard = {mockSetSelectedCard}
             />
         );
 
@@ -111,7 +111,7 @@ describe('TopSearchBarTextField', () => {
         await user.type(input, 'Different Query');
         await user.click(searchButton);
 
-        expect(mockSetSelectedOrg).toHaveBeenCalledWith(null);
+        expect(mockSetSelectedCard).toHaveBeenCalledWith(null);
     });
 
     it('should not trigger search on non-Enter key press', async () => {
@@ -122,7 +122,7 @@ describe('TopSearchBarTextField', () => {
             <TopSearchBarTextField
                 query = ""
                 setQuery = {mockSetQuery}
-                setSelectedOrg = {() => {}}
+                setSelectedCard = {() => {}}
             />
         );
 
@@ -134,16 +134,16 @@ describe('TopSearchBarTextField', () => {
         expect(mockSetQuery).not.toHaveBeenCalled();
     });
 
-    it('should not call setSelectedOrg when query is unchanged', async () => {
+    it('should not call setSelectedCard when query is unchanged', async () => {
         const user = userEvent.setup();
         const mockSetQuery = vi.fn();
-        const mockSetSelectedOrg = vi.fn();
+        const mockSetSelectedCard = vi.fn();
 
         render(
             <TopSearchBarTextField
                 query = "Same Query"
                 setQuery = {mockSetQuery}
-                setSelectedOrg = {mockSetSelectedOrg}
+                setSelectedCard = {mockSetSelectedCard}
             />
         );
 
@@ -154,7 +154,7 @@ describe('TopSearchBarTextField', () => {
         await user.type(input, 'Same Query');
         await user.click(searchButton);
 
-        expect(mockSetSelectedOrg).not.toHaveBeenCalled();
+        expect(mockSetSelectedCard).not.toHaveBeenCalled();
 
     });
 })
