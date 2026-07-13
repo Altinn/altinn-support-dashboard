@@ -14,10 +14,12 @@ import SsnText from "../../SsnText";
 
 interface UserAuthorizedPartiesListProps {
   ssnToken?: string;
+  onSelectParty: (party: AuthorizedPartyIdentifiers) => void;
 }
 
 const UserAuthorizedPartiesList: React.FC<UserAuthorizedPartiesListProps> = ({
   ssnToken,
+  onSelectParty,
 }) => {
   const environment = useAppStore((state) => state.environment);
   const partiesQuery = useAuthorizedParties(environment, ssnToken);
@@ -31,7 +33,7 @@ const UserAuthorizedPartiesList: React.FC<UserAuthorizedPartiesListProps> = ({
           <Table.Row>
             <Table.HeaderCell>Navn</Table.HeaderCell>
             <Table.HeaderCell>Org.nr/Fødselsnummer</Table.HeaderCell>
-            <Table.HeaderCell></Table.HeaderCell>
+            <Table.HeaderCell>Roller</Table.HeaderCell>
           </Table.Row>
         </Table.Head>
         <Table.Body>
@@ -54,8 +56,12 @@ const UserAuthorizedPartiesList: React.FC<UserAuthorizedPartiesListProps> = ({
                     </Table.Cell>
                   )}
                   <Table.Cell className={styles.buttonCell}>
-                    <Button data-color="accent" variant="primary">
-                      Se roller
+                    <Button
+                      data-color="accent"
+                      variant="primary"
+                      onClick={() => onSelectParty(party)}
+                    >
+                      Vis
                     </Button>
                   </Table.Cell>
                 </Table.Row>
