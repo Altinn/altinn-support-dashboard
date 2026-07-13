@@ -298,11 +298,11 @@ export const fetchAuthorizedParties = async (
     `${getBaseUrl(environment)}/serviceowner/altinn3/authorizedparties/${encodeURIComponent(nin)}`
   );
 
-  if (res.status === 404) return [];
+  if (res.status === 404) {
+    return [];
+  }
   if (!res.ok)
-    throw new Error(
-      (await res.text()) || "Error fetching authorized parties"
-    );
+    throw new Error((await res.text()) || "Error fetching authorized parties");
 
   const data = await res.json();
   return Array.isArray(data) ? data : [data];

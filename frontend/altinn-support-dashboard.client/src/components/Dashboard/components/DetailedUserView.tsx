@@ -58,9 +58,7 @@ const DetailedUserView: React.FC<DetailedUserViewProps> = ({
             </Table>
           </Card>
 
-          <UserAuthorizedPartiesList
-            nationalIdentityNumber={selectedUser.nationalIdentityNumber}
-          />
+          <UserAuthorizedPartiesList ssnToken={selectedUser.ssnToken} />
         </div>
       )}
     </div>

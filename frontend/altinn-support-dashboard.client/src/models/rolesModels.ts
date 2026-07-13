@@ -25,5 +25,7 @@ export interface PartyFilter {
 export interface AuthorizedPartyIdentifiers {
   organizationNumber?: string;
   nationalIdentityNumber?: string;
+  displayedSocialSecurityNumber?: string;
+  ssnToken?: string;
   name: string;
 }

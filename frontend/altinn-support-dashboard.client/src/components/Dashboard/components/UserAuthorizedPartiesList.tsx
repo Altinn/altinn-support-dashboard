@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Card,
   Table,
@@ -9,31 +8,20 @@ import {
 } from "@digdir/designsystemet-react";
 import { useAppStore } from "../../../stores/Appstore";
 import { useAuthorizedParties } from "../../../hooks/hooks";
-import { setLocalStorageValue } from "../../ManualRoleSearch/utils/storageUtils";
 import styles from "../styles/UserAuthorizedPartiesList.module.css";
 import { AuthorizedPartyIdentifiers } from "../../../models/rolesModels";
+import SsnText from "../../SsnText";
 
 interface UserAuthorizedPartiesListProps {
-  nationalIdentityNumber?: string;
+  ssnToken?: string;
 }
 
 const UserAuthorizedPartiesList: React.FC<UserAuthorizedPartiesListProps> = ({
-  nationalIdentityNumber,
+  ssnToken,
 }) => {
   const environment = useAppStore((state) => state.environment);
-  const navigate = useNavigate();
-  const partiesQuery = useAuthorizedParties(
-    environment,
-    nationalIdentityNumber
-  );
+  const partiesQuery = useAuthorizedParties(environment, ssnToken);
   const parties = partiesQuery.data ?? [];
-
-  const handleShowRoles = (reportee?: string) => {
-    if (!nationalIdentityNumber || !reportee) return;
-    setLocalStorageValue("rollehaver", nationalIdentityNumber);
-    setLocalStorageValue("rollegiver", reportee);
-    navigate("/manualrolesearch");
-  };
 
   return (
     <Card data-color="neutral" className={styles.partiesCard}>
@@ -50,21 +38,23 @@ const UserAuthorizedPartiesList: React.FC<UserAuthorizedPartiesListProps> = ({
           {parties.length > 0 ? (
             parties.map((party: AuthorizedPartyIdentifiers, index: number) => {
               const identifier =
-                party.organizationNumber ?? party.nationalIdentityNumber;
+                party.organizationNumber ?? party.displayedSocialSecurityNumber;
               return (
                 <Table.Row key={`${identifier}-${index}`}>
                   <Table.Cell className={styles.tableCell}>
                     {party.name}
                   </Table.Cell>
-                  <Table.Cell className={styles.tableCell}>
-                    {identifier}
-                  </Table.Cell>
+                  {party.organizationNumber ? (
+                    <Table.Cell className={styles.tableCell}>
+                      {identifier}
+                    </Table.Cell>
+                  ) : (
+                    <Table.Cell className={styles.tableCell}>
+                      <SsnText contact={party} environment={environment} />
+                    </Table.Cell>
+                  )}
                   <Table.Cell className={styles.buttonCell}>
-                    <Button
-                      data-color="accent"
-                      variant="primary"
-                      onClick={() => handleShowRoles(identifier)}
-                    >
+                    <Button data-color="accent" variant="primary">
                       Se roller
                     </Button>
                   </Table.Cell>

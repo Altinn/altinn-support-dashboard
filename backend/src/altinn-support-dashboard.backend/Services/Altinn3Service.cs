@@ -467,11 +467,30 @@ public class Altinn3Service : IAltinn3Service
             .Where(p => p.AuthorizedAccessPackages != null && p.AuthorizedAccessPackages.Count > 0)
             .ToList();
 
-        return allParties.Select(p => new AuthorizedPartyIdentifiersDto
+        return allParties.Select(p =>
         {
-            OrganizationNumber = p.OrganizationNumber,
-            NationalIdentityNumber = p.PersonId,
-            Name = p.Name ?? "",
+            var dto = new AuthorizedPartyIdentifiersDto
+            {
+                OrganizationNumber = p.OrganizationNumber,
+                NationalIdentityNumber = p.PersonId,
+                Name = p.Name ?? "",
+            };
+
+            if (!string.IsNullOrEmpty(dto.NationalIdentityNumber))
+            {
+                try
+                {
+                    dto.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(dto.NationalIdentityNumber);
+                    dto.SsnToken = _ssnTokenService.GenerateSsnToken(dto.NationalIdentityNumber);
+                    dto.NationalIdentityNumber = null;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error redacting national identity number");
+                }
+            }
+
+            return dto;
         }).ToList();
     }
 
