@@ -17,6 +17,32 @@ vi.mock("../../../src/components/SsnText", () => ({
   ),
 }));
 
+vi.mock(
+  "../../../src/components/Dashboard/components/UserAuthorizedPartiesList",
+  () => ({
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    default: ({ onSelectParty }: any) => (
+      <div data-testid="user-authorized-parties-list">
+        <button
+          onClick={() => onSelectParty({ name: "Test Party" })}
+        >
+          Vis
+        </button>
+      </div>
+    ),
+  }),
+);
+
+vi.mock("../../../src/components/Dashboard/components/RoleDetailsUser", () => ({
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  RoleDetailsUser: ({ selectedParty, onBack }: any) => (
+    <div data-testid="role-details-user">
+      RoleDetailsUser: {selectedParty.name}
+      <button onClick={onBack}>Back</button>
+    </div>
+  ),
+}));
+
 vi.mock("@digdir/designsystemet-react", () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Heading: ({ children, level, className, ...props }: any) => {
