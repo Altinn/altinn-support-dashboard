@@ -37,15 +37,3 @@
   font-size: 1rem;
   margin-top: 0.5rem;
 }
-
-.contactCard {
-  margin: 0.5rem 0 1.5rem 0;
-  padding: 1rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--ds-shadow-sm);
-}
-
-.contactTable {
-  margin-top: 0.5rem;
-}

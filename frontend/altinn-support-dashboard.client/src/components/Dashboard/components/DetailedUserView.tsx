@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Card, Heading, Paragraph, Table } from "@digdir/designsystemet-react";
+import { Heading, Paragraph } from "@digdir/designsystemet-react";
 import { UserContactInformationAltinn3 } from "../../../models/models";
 import { AuthorizedPartyIdentifiers } from "../../../models/rolesModels";
 import { useAppStore } from "../../../stores/Appstore";
 import SsnText from "../../SsnText";
-import UserContactInfoTableRow from "./UserContactInfoTableRow";
+import UserContactTable from "./UserContactTable";
 import UserAuthorizedPartiesList from "./UserAuthorizedPartiesList";
 import { RoleDetailsUser } from "./RoleDetailsUser";
 import styles from "../styles/DetailedUserView.module.css";
@@ -47,34 +47,7 @@ const DetailedUserView: React.FC<DetailedUserViewProps> = ({
                 <SsnText contact={selectedUser} environment={environment} />
               </Paragraph>
 
-              <Card data-color="neutral" className={styles.contactCard}>
-                <Heading level={6}>Kontaktinformasjon</Heading>
-                <Table border className={styles.contactTable}>
-                  <Table.Head>
-                    <Table.Row>
-                      <Table.HeaderCell>Type</Table.HeaderCell>
-                      <Table.HeaderCell>Verdi</Table.HeaderCell>
-                      <Table.HeaderCell>Sist endret/bekreftet</Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Head>
-                  <Table.Body>
-                    <UserContactInfoTableRow
-                      label="Mobilnummer"
-                      value={selectedUser.phoneNumber}
-                      lastUpdatedOrVerified={
-                        selectedUser.phoneNumberLastUpdatedOrVerified
-                      }
-                    />
-                    <UserContactInfoTableRow
-                      label="E-post"
-                      value={selectedUser.emailAddress}
-                      lastUpdatedOrVerified={
-                        selectedUser.emailLastUpdatedOrVerified
-                      }
-                    />
-                  </Table.Body>
-                </Table>
-              </Card>
+              <UserContactTable selectedUser={selectedUser} />
 
               <UserAuthorizedPartiesList
                 ssnToken={selectedUser.ssnToken}
