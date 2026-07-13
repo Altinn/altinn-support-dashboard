@@ -482,7 +482,6 @@ public class Altinn3Service : IAltinn3Service
                 {
                     dto.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(dto.NationalIdentityNumber);
                     dto.SsnToken = _ssnTokenService.GenerateSsnToken(dto.NationalIdentityNumber);
-                    dto.NationalIdentityNumber = null;
                 }
                 catch (Exception ex)
                 {

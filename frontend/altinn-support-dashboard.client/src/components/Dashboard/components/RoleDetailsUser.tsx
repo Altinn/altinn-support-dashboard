@@ -1,9 +1,7 @@
 import { Button, Heading, Card } from "@digdir/designsystemet-react";
 import styles from "../styles/RoleDetailsUser.module.css";
 import RoleTable from "../../ManualRoleSearch/RoleTable";
-import {
-  AuthorizedPartyIdentifiers,
-} from "../../../models/rolesModels";
+import { AuthorizedPartyIdentifiers } from "../../../models/rolesModels";
 import { UserContactInformationAltinn3 } from "../../../models/models";
 
 interface RoleDetailsUserProps {
@@ -21,7 +19,8 @@ export const RoleDetailsUser: React.FC<RoleDetailsUserProps> = ({
     onBack();
   };
 
-  const reportee = selectedParty.organizationNumber ?? selectedParty.ssnToken;
+  const reportee =
+    selectedParty.organizationNumber ?? selectedParty.nationalIdentityNumber;
 
   return (
     <Card data-color="neutral" className={styles.Container}>
