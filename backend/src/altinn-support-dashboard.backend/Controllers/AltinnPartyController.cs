@@ -102,7 +102,7 @@ namespace altinn_support_dashboard.Server.Controllers
         [HttpGet("parties/lookup/{value}")]
         public async Task<IActionResult> GetPartyByValue([FromRoute] string value)
         {
-            if (Guid.TryParse(value, out _))
+            if (ValidationService.IsValidGuid(value))
             {
                 var result = await _service.GetPartyByUuidAsync(value, _environmentName);
                 if (result == null)
@@ -132,7 +132,7 @@ namespace altinn_support_dashboard.Server.Controllers
                 return Ok(result);
             }
 
-            if (value.All(char.IsDigit) && value.Length == 8)
+            if (ValidationService.IsValidPartyId(value))
             {
                 var result = await _service.GetPartyByIdAsync(value, _environmentName);
                 if (result == null)

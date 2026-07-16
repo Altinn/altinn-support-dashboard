@@ -21,6 +21,25 @@ namespace altinn_support_dashboard.Server.Utils
             return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
 
+        public static bool IsValidGuid(string guid)
+        {
+            if (Guid.TryParse(guid, out _))
+            {
+                return true;
+            }
+            return false;
+
+        }
+
+        public static bool IsValidPartyId(string partyId)
+        {
+            if (partyId.All(char.IsDigit) && partyId.Length == 8)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static bool IsValidSubjectOrReportee(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
