@@ -19,8 +19,7 @@ export const RoleDetailsUser: React.FC<RoleDetailsUserProps> = ({
     onBack();
   };
 
-  const reportee =
-    selectedParty.organizationNumber ?? selectedParty.nationalIdentityNumber;
+  const reportee = selectedParty.organizationNumber ?? selectedParty.ssnToken;
 
   return (
     <Card data-color="neutral" className={styles.Container}>
