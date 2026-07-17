@@ -345,4 +345,38 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         return responseBody;
     }
 
+    public async Task<string> GetMaskinportenDelegations(string? supplierOrg, string? consumerOrg, string? scope, string environmentName)
+    {
+        var client = _clients[environmentName];
+
+        var query = HttpUtility.ParseQueryString(string.Empty);
+        if (!string.IsNullOrEmpty(supplierOrg))
+        {
+            query.Add("supplierOrg", supplierOrg);
+        }
+        if (!string.IsNullOrEmpty(consumerOrg))
+        {
+            query.Add("consumerOrg", consumerOrg);
+        }
+        if (!string.IsNullOrEmpty(scope))
+        {
+            query.Add("scope", scope);
+        }
+
+        var requestUrl = $"accessmanagement/api/v1/maskinporten/delegations?{query}";
+
+        var response = await client.GetAsync(requestUrl);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return string.Empty;
+        }
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        return responseBody;
+    }
+
 }

@@ -284,5 +284,12 @@ namespace AltinnSupportDashboard.Controllers
             var result = await _altinn3Service.GetAltinn2RolesList(environmentName);
             return Ok(result);
         }
+
+        [HttpGet("maskinporten/delegations")]
+        public async Task<IActionResult> GetMaskinportenDelegations([FromQuery] string? supplierOrg, [FromQuery] string? consumerOrg, [FromQuery] string? scope)
+        {
+            var result = await _altinn3Service.GetMaskinportenDelegations(supplierOrg, consumerOrg, scope, environmentName);
+            return Ok(result);
+        }
     }
 }

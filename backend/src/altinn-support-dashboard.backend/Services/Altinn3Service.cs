@@ -625,4 +625,9 @@ public class Altinn3Service : IAltinn3Service
         }).ToList();
     }
 
+    public async Task<string> GetMaskinportenDelegations(string? supplierOrg, string? consumerOrg, string? scope, string environmentName)
+    {
+        return await _client.GetMaskinportenDelegations(supplierOrg, consumerOrg, scope, environmentName);
+    }
+
 }

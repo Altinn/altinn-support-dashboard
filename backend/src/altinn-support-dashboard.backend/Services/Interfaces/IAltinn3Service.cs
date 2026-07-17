@@ -26,6 +26,7 @@ public interface IAltinn3Service
     Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName);
     Task<List<Altinn2RoleDto>> GetAltinn2RolesList(string environmentName);
     Task<NotificationAvailabilityResponse> GetNotificationAvailabilityForResourceAsync(NotificationAvailabilityRequest request, string environment);
+    Task<string> GetMaskinportenDelegations(string? supplierOrg, string? consumerOrg, string? scope, string environmentName);
 
 }
 

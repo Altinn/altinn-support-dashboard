@@ -61,6 +61,11 @@ public class MockAltinn3ApiClient(Altinn3ApiClient inner) : IAltinn3ApiClient
         ? Task.FromResult(MockUtils.Read("altinn3-accesspackages.json"))
         : inner.GetAccessPackagesList(environmentName);
 
+    public Task<string> GetMaskinportenDelegations(string? supplierOrg, string? consumerOrg, string? scope, string environmentName) =>
+        MockUtils.IsMock(environmentName)
+            ? Task.FromResult(MockUtils.Read("altinn3-maskinporten-delegations.json"))
+            : inner.GetMaskinportenDelegations(supplierOrg, consumerOrg, scope, environmentName);
+
 }
 
 
