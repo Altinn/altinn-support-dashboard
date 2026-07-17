@@ -360,12 +360,12 @@ public class Altinn3Service : IAltinn3Service
         }
 
         rolesAndRightsRequest.Value = ssn;
-        rolesAndRightsRequest.Type = getTypeFromValue(ssn);
+        rolesAndRightsRequest.Type = GetTypeFromValue(ssn);
 
         foreach (PartyFilter party in rolesAndRightsRequest.PartyFilter)
         {
             party.Value = party.Value.Replace(" ", "");
-            party.Type = getTypeFromValue(party.Value);
+            party.Type = GetTypeFromValue(party.Value);
         }
 
         //the client response
@@ -453,9 +453,9 @@ public class Altinn3Service : IAltinn3Service
         var ssn = _ssnTokenService.GetSsnFromToken(nin);
         if (string.IsNullOrWhiteSpace(ssn))
         {
-            ssn = nin.Replace(" ", ""); //If the subject isn't a token, use it as is
+            ssn = nin.Replace(" ", string.Empty); //If the subject isn't a token, use it as is
         }
-        var type = getTypeFromValue(ssn);
+        var type = GetTypeFromValue(ssn);
 
         var result = await _client.GetAuthorizedParties(ssn, type, environment);
         if (string.IsNullOrWhiteSpace(result)) return [];
@@ -472,16 +472,15 @@ public class Altinn3Service : IAltinn3Service
             var dto = new AuthorizedPartyIdentifiersDto
             {
                 OrganizationNumber = p.OrganizationNumber,
-                NationalIdentityNumber = p.PersonId,
                 Name = p.Name ?? "",
             };
 
-            if (!string.IsNullOrEmpty(dto.NationalIdentityNumber))
+            if (!string.IsNullOrEmpty(p.PersonId))
             {
                 try
                 {
-                    dto.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(dto.NationalIdentityNumber);
-                    dto.SsnToken = _ssnTokenService.GenerateSsnToken(dto.NationalIdentityNumber);
+                    dto.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(p.PersonId);
+                    dto.SsnToken = _ssnTokenService.GenerateSsnToken(p.PersonId);
                 }
                 catch (Exception ex)
                 {
@@ -557,10 +556,10 @@ public class Altinn3Service : IAltinn3Service
         RolesAndRightsRequest rolesAndRightsRequest = new RolesAndRightsRequest
         {
             Value = request.NationalIdentityNumber,
-            Type = getTypeFromValue(request.NationalIdentityNumber),
+            Type = GetTypeFromValue(request.NationalIdentityNumber),
             PartyFilter = [new PartyFilter {
                 Value = request.OrganizationNumber,
-                Type = getTypeFromValue(request.OrganizationNumber)
+                Type = GetTypeFromValue(request.OrganizationNumber)
                 }
             ]
         };
@@ -604,7 +603,7 @@ public class Altinn3Service : IAltinn3Service
     }
 
 
-    private string getTypeFromValue(string value)
+    private string GetTypeFromValue(string value)
     {
         string trimmedValued = value.Replace(" ", "");
         if (ValidationService.isValidSsn(trimmedValued))
