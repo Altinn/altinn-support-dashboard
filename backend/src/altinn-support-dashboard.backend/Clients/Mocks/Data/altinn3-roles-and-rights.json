@@ -12,6 +12,9 @@
       "skatt-naering",
       "lonn-og-personalarbeid"
     ],
+    "authorizedInstances": [
+      "Instance1"
+    ]
     "subunits": []
   }
 ]
