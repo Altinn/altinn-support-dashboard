@@ -264,10 +264,10 @@ namespace AltinnSupportDashboard.Controllers
             return Ok(result);
         }
 
-        [HttpGet("altinn3/authorizedparties/{nin}")]
-        public async Task<IActionResult> GetAuthorizedPartyIdentifiersAltinn3([FromRoute] string nin)
+        [HttpGet("altinn3/authorizedparties")]
+        public async Task<IActionResult> GetAuthorizedPartyIdentifiersAltinn3([FromHeader] string nationalIdentityNumber)
         {
-            var result = await _altinn3Service.GetAuthorizedPartyIdentifiersAltinn3(nin, environmentName);
+            var result = await _altinn3Service.GetAuthorizedPartyIdentifiersAltinn3(nationalIdentityNumber, environmentName);
 
             return Ok(result);
         }

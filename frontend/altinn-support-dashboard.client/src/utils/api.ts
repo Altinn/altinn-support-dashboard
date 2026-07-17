@@ -294,8 +294,10 @@ export const fetchAuthorizedParties = async (
   environment: string,
   nin: string
 ): Promise<AuthorizedPartyIdentifiers[]> => {
+  const options: RequestInit = { headers: { NationalIdentityNumber: nin } };
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/altinn3/authorizedparties/${encodeURIComponent(nin)}`
+    `${getBaseUrl(environment)}/serviceowner/altinn3/authorizedparties`,
+    options
   );
 
   if (res.status === 404) {
@@ -305,6 +307,7 @@ export const fetchAuthorizedParties = async (
     throw new Error((await res.text()) || "Error fetching authorized parties");
 
   const data = await res.json();
+
   return Array.isArray(data) ? data : [data];
 };
 
