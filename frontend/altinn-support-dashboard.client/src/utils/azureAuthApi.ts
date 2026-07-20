@@ -10,7 +10,7 @@ export const fetchAuthDetails = async (): Promise<authDetails> => {
     }
 
     return (await res.json()) as authDetails;
-  } catch (err) {
+  } catch {
     return { isLoggedIn: false, name: "", azureAuthActive: true, roles: [] };
   }
 };
