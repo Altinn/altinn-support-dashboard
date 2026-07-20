@@ -6,14 +6,14 @@ import React from 'react';
 
 vi.mock('../../src/components/InformationDialog/InformationDialogContent', () => ({
     default: () => {
-        //eslint-disable-next-line @typescript-eslint/no-var-requires
+        //eslint-disable-next-line @typescript-eslint/no-require-imports
         const React = require('react');
         return React.createElement('div', { 'data-testid': 'information-dialog-content' }, 'Mocked InformationDialogContent');
     },
 }));
 
 vi.mock('@digdir/designsystemet-react', () => {
-    //eslint-disable-next-line @typescript-eslint/no-var-requires
+    //eslint-disable-next-line @typescript-eslint/no-require-imports
     const React = require('react');
     return {
         Dialog: React.forwardRef((props: unknown, ref: unknown) => {
