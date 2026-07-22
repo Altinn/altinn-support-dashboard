@@ -5,18 +5,18 @@ import {
   Select,
   Label,
 } from "@digdir/designsystemet-react";
-import styles from "../styles/RoleDetails.module.css";
+import styles from "../styles/RoleDetailsOrg.module.css";
 import RoleTable from "../../ManualRoleSearch/RoleTable";
 import { Organization, PersonalContactAltinn3 } from "../../../models/models";
 import { useState } from "react";
 
-interface RoleDetailsProps {
+interface RoleDetailsOrgProps {
   selectedContact: PersonalContactAltinn3;
   selectedOrg: Organization;
   onBack: () => void;
 }
 
-export const RoleDetails: React.FC<RoleDetailsProps> = ({
+export const RoleDetailsOrg: React.FC<RoleDetailsOrgProps> = ({
   selectedContact,
   selectedOrg,
   onBack,

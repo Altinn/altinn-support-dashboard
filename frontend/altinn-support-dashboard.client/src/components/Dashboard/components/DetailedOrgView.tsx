@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Heading } from "@digdir/designsystemet-react";
 import ERRolesTable from "./ERRolesTable";
-import { RoleDetails } from "./RoleDetails";
+import { RoleDetailsOrg } from "./RoleDetailsOrg";
 import ContactsSearchBar from "./contacts/ContactsSearchBar";
 import ContactsTable from "./contacts/ContactsTable";
 import { useOrgDetails } from "../../../hooks/hooks";
@@ -85,7 +85,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
               <ERRolesTable selectedOrg={selectedOrg} />
             </>
           ) : (
-            <RoleDetails
+            <RoleDetailsOrg
               selectedContact={selectedContact}
               selectedOrg={selectedOrg}
               onBack={() => {

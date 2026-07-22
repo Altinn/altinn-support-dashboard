@@ -1,5 +1,5 @@
 import { beforeEach, describe, it, vi, expect } from "vitest";
-import { RoleDetails } from "../../../src/components/Dashboard/components/RoleDetails";
+import { RoleDetailsOrg } from "../../../src/components/Dashboard/components/RoleDetailsOrg";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Organization, PersonalContactAltinn3 } from "../../../src/models/models";
 
@@ -35,7 +35,7 @@ vi.mock("../../../src/components/ManualRoleSearch/RoleTable", () => ({
   ),
 }));
 
-describe('RoleDetails', () => {
+describe('RoleDetailsOrg', () => {
   const mockContact: PersonalContactAltinn3 = {
     orgNr: "123456789",
     nationalIdentityNumber: "98765432101",
@@ -61,7 +61,7 @@ describe('RoleDetails', () => {
 
   it('should render contact name in heading', () => {
     render(
-      <RoleDetails
+      <RoleDetailsOrg
         selectedContact={mockContact}
         selectedOrg={mockOrg}
         onBack={mockOnBack}
@@ -73,7 +73,7 @@ describe('RoleDetails', () => {
 
   it('should render back button', () => {
     render(
-      <RoleDetails
+      <RoleDetailsOrg
         selectedContact={mockContact}
         selectedOrg={mockOrg}
         onBack={mockOnBack}
@@ -85,7 +85,7 @@ describe('RoleDetails', () => {
 
   it('should call onBack when back button is clicked', () => {
     render(
-      <RoleDetails
+      <RoleDetailsOrg
         selectedContact={mockContact}
         selectedOrg={mockOrg}
         onBack={mockOnBack}
@@ -99,7 +99,7 @@ describe('RoleDetails', () => {
 
   it('should render RoleTable with correct props', () => {
     render(
-      <RoleDetails
+      <RoleDetailsOrg
         selectedContact={mockContact}
         selectedOrg={mockOrg}
         onBack={mockOnBack}
@@ -115,7 +115,7 @@ describe('RoleDetails', () => {
 
   it('should render Card component', () => {
     const { container } = render(
-      <RoleDetails
+      <RoleDetailsOrg
         selectedContact={mockContact}
         selectedOrg={mockOrg}
         onBack={mockOnBack}
@@ -129,7 +129,7 @@ describe('RoleDetails', () => {
     const contactWithoutName = { ...mockContact, name: "" };
 
     render(
-      <RoleDetails
+      <RoleDetailsOrg
         selectedContact={contactWithoutName}
         selectedOrg={mockOrg}
         onBack={mockOnBack}
@@ -141,7 +141,7 @@ describe('RoleDetails', () => {
 
   it('should disable select when there is only one option', () => {
     render(
-      <RoleDetails
+      <RoleDetailsOrg
         selectedContact={mockContact}
         selectedOrg={mockOrg}
         onBack={mockOnBack}
@@ -158,7 +158,7 @@ describe('RoleDetails', () => {
     };
 
     render(
-      <RoleDetails
+      <RoleDetailsOrg
         selectedContact={mockContact}
         selectedOrg={orgWithHeadUnit}
         onBack={mockOnBack}
@@ -179,7 +179,7 @@ describe('RoleDetails', () => {
     };
 
     render(
-      <RoleDetails
+      <RoleDetailsOrg
         selectedContact={mockContact}
         selectedOrg={orgWithSubUnits}
         onBack={mockOnBack}
@@ -200,7 +200,7 @@ describe('RoleDetails', () => {
     };
 
     render(
-      <RoleDetails
+      <RoleDetailsOrg
         selectedContact={mockContact}
         selectedOrg={orgWithSubUnits}
         onBack={mockOnBack}
@@ -212,3 +212,4 @@ describe('RoleDetails', () => {
     expect(screen.getByTestId('role-table')).toHaveAttribute('data-reportee', '111111111');
   });
 });
+

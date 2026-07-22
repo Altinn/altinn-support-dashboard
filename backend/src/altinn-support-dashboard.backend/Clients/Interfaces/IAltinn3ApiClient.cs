@@ -9,6 +9,7 @@ public interface IAltinn3ApiClient
     Task<string> GetNotificationAddressesByPhone(string phoneNumber, string environmentName);
     Task<string> GetNotificationAddressesByEmail(string email, string environmentName);
     Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, List<string>? AnyOfResourceIds, string environmentName);
+    Task<string> GetAuthorizedParties(string value, string type, string environmentName);
     Task<string> GetOrganizationIdentifiers(List<string> orgNumbers, string environmentName);
     Task<string> GetOrganizationsPartyInfoByPartyId(List<int> partyIds, string environmentName);
     Task<string> GetAltinn2RolesList(string environmentName);

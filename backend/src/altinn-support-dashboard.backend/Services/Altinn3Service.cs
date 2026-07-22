@@ -360,12 +360,12 @@ public class Altinn3Service : IAltinn3Service
         }
 
         rolesAndRightsRequest.Value = ssn;
-        rolesAndRightsRequest.Type = getTypeFromValue(ssn);
+        rolesAndRightsRequest.Type = GetTypeFromValue(ssn);
 
         foreach (PartyFilter party in rolesAndRightsRequest.PartyFilter)
         {
             party.Value = party.Value.Replace(" ", "");
-            party.Type = getTypeFromValue(party.Value);
+            party.Type = GetTypeFromValue(party.Value);
         }
 
         //the client response
@@ -442,10 +442,54 @@ public class Altinn3Service : IAltinn3Service
                         roles.AuthorizedAccessPackages = accessPackageNames;
                     }
                 }
-                catch (Exception e) { _logger.LogError($"Error converting accessPackageNames: {e}");}
+                catch (Exception e) { _logger.LogError($"Error converting accessPackageNames: {e}"); }
             }
         }
         return roles;
+    }
+
+    public async Task<List<AuthorizedPartyIdentifiersDto>> GetAuthorizedPartyIdentifiersAltinn3(string nin, string environment)
+    {
+        var ssn = _ssnTokenService.GetSsnFromToken(nin);
+        if (string.IsNullOrWhiteSpace(ssn))
+        {
+            ssn = nin.Replace(" ", string.Empty); //If the subject isn't a token, use it as is
+        }
+        var type = GetTypeFromValue(ssn);
+
+        var result = await _client.GetAuthorizedParties(ssn, type, environment);
+        if (string.IsNullOrWhiteSpace(result)) return [];
+
+        var authorizedParties = JsonSerializer.Deserialize<List<AuthorizedPartyDto>>(result, jsonOptions) ?? [];
+
+        var allParties = authorizedParties
+            .Concat(authorizedParties.SelectMany(p => p.Subunits ?? []))
+            .Where(p => p.AuthorizedAccessPackages != null && p.AuthorizedAccessPackages.Count > 0)
+            .ToList();
+
+        return allParties.Select(p =>
+        {
+            var dto = new AuthorizedPartyIdentifiersDto
+            {
+                OrganizationNumber = p.OrganizationNumber,
+                Name = p.Name ?? "",
+            };
+
+            if (!string.IsNullOrEmpty(p.PersonId))
+            {
+                try
+                {
+                    dto.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(p.PersonId);
+                    dto.SsnToken = _ssnTokenService.GenerateSsnToken(p.PersonId);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error redacting national identity number");
+                }
+            }
+
+            return dto;
+        }).ToList();
     }
 
     public async Task<List<string>> GetResourceNamesFromCodes(List<string> resourceCodes, string environmentName)
@@ -512,10 +556,10 @@ public class Altinn3Service : IAltinn3Service
         RolesAndRightsRequest rolesAndRightsRequest = new RolesAndRightsRequest
         {
             Value = request.NationalIdentityNumber,
-            Type = getTypeFromValue(request.NationalIdentityNumber),
+            Type = GetTypeFromValue(request.NationalIdentityNumber),
             PartyFilter = [new PartyFilter {
                 Value = request.OrganizationNumber,
-                Type = getTypeFromValue(request.OrganizationNumber)
+                Type = GetTypeFromValue(request.OrganizationNumber)
                 }
             ]
         };
@@ -559,7 +603,7 @@ public class Altinn3Service : IAltinn3Service
     }
 
 
-    private string getTypeFromValue(string value)
+    private string GetTypeFromValue(string value)
     {
         string trimmedValued = value.Replace(" ", "");
         if (ValidationService.isValidSsn(trimmedValued))
@@ -570,7 +614,7 @@ public class Altinn3Service : IAltinn3Service
         {
             return "urn:altinn:organization:identifier-no";
         }
-        else if(Guid.TryParse(trimmedValued, out _))
+        else if (Guid.TryParse(trimmedValued, out _))
         {
             return "urn:altinn:person:uuid";
         }

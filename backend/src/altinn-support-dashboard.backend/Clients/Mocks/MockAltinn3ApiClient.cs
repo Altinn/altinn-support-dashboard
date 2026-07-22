@@ -42,6 +42,11 @@ public class MockAltinn3ApiClient(Altinn3ApiClient inner) : IAltinn3ApiClient
             ? Task.FromResult(MockUtils.Read("altinn3-roles-and-rights.json"))
             : inner.GetRolesAndRightsAltinn3(dto, anyOfResourceIds, environmentName);
 
+    public Task<string> GetAuthorizedParties(string value, string type, string environmentName) =>
+        MockUtils.IsMock(environmentName)
+            ? Task.FromResult(MockUtils.Read("altinn3-roles-and-rights.json"))
+            : inner.GetAuthorizedParties(value, type, environmentName);
+
     public Task<string> GetOrganizationIdentifiers(List<string> orgNumbers, string environmentName) =>
         MockUtils.IsMock(environmentName)
             ? Task.FromResult(MockUtils.Read("altinn3-organization-identifiers.json"))

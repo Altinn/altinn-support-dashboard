@@ -308,6 +308,36 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         return responseBody;
     }
+    public async Task<string> GetAuthorizedParties(string value, string type, string environmentName)
+    {
+        var client = _clients[environmentName];
+
+        var requestUrl = "accessmanagement/api/v1/resourceowner/authorizedparties?includeAltinn2=true&includeAltinn3=true&includeRoles=false&includeAccessPackages=true&includeResources=true&includeInstances=true";
+
+        var dto = new RolesAndRightsRequest
+        {
+            Value = value,
+            Type = type,
+            PartyFilter = []
+        };
+
+        string jsonPayload = JsonSerializer.Serialize(dto);
+        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+        var response = await client.PostAsync(requestUrl, content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return string.Empty;
+        }
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+        return responseBody;
+    }
+
     public async Task<string> GetAltinn2RolesList(string environmentName)
     {
 
