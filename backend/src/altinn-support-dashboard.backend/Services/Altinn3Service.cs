@@ -365,6 +365,16 @@ public class Altinn3Service : IAltinn3Service
         foreach (PartyFilter party in rolesAndRightsRequest.PartyFilter)
         {
             party.Value = party.Value.Replace(" ", "");
+
+            if (ValidationService.IsValidSsnToken(party.Value))
+            {
+                var partySsn = _ssnTokenService.GetSsnFromToken(party.Value);
+                if (!string.IsNullOrWhiteSpace(partySsn))
+                {
+                    party.Value = partySsn;
+                }
+            }
+
             party.Type = GetTypeFromValue(party.Value);
         }
 
