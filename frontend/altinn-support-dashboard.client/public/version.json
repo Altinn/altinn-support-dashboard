@@ -1,14 +1,11 @@
 {
-  "version": "4.5",
-  "releaseDate": "2026-06-18",
+  "version": "4.6",
+  "releaseDate": "2026-07-23",
   "changes": [
     {
-      "title": "Ressurssøk og siste finpuss før altinn2 stenges ned",
-      "description": "Ressurssøk som gir lik informasjon som tjenesteoversikten har blitt lagt til og siste avhengigheter til altinn2 har blitt fjernet.",
-      "details": [
-        "Fjernet siste avhengigheter til altinn2",
-        "Ressurssøk funksjonalitet lagt til"
-      ]
+      "title": "Bruker informasjon søk!",
+      "description": "Det er nå mulig å søke etter personer på oppslagsiden. Per nå så må man søke med fødselsnummer, men det kommer til å komme muligheter for å søke på tlf og email som i org. På denne siden så finner du informasjon om kontaktinformasjon personen har oppgitt som privatperson, og alle enheter/personer personen har tilganger til i altinn",
+      "details": ["Ny bruker søk funksjonalitet"]
     }
   ]
 }
