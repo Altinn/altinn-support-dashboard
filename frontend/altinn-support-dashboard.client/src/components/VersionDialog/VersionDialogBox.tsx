@@ -4,6 +4,7 @@ import type { VersionInfo } from "../../hooks/useVersionCheck";
 import VersionDialogTitle from "./VersionDialogTitle";
 import VersionDialogContent from "./VersionDialogContent";
 import VersionDialogButton from "./VersionDialogButton";
+import styles from "./styles/VersionDialogBox.module.css";
 
 interface VersionDialogBoxProps {
   versionInfo: VersionInfo | null;
@@ -22,6 +23,7 @@ const VersionDialogBox: React.FC<VersionDialogBoxProps> = ({
       open={open}
       onClose={onClose}
       aria-labelledby="version-dialog-title"
+      className={styles.dialogBox}
     >
       <VersionDialogTitle versionInfo={versionInfo} />
       <VersionDialogContent versionInfo={versionInfo} />

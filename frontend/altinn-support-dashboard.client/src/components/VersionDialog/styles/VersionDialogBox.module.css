@@ -1,0 +1,5 @@
+.dialogBox {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+}
