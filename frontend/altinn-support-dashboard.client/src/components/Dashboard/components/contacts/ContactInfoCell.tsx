@@ -25,7 +25,7 @@ const ContactInfoCell: React.FC<ContactInfoCellProps> = ({
     if (contact?.replace(/\s/g, "").toLowerCase() === userInput.toLowerCase()) {
       setIsBold(true);
     }
-  }, [userInput]);
+  }, [contact, userInput]);
   return (
     <div>
       {contactLastChanged && (

@@ -123,7 +123,7 @@ export const OrgNumberField: React.FC<OrgNumberFieldProps> = ({
         previousOrgNumber.current = "";
       }
     }
-  }, [value, fetchOrgDetails]); // value trengs her for å reagere på endringer
+  }, [value, fetchOrgDetails, success]); // value trengs her for å reagere på endringer
 
   // Handle reset form
   const handleReset = () => {
