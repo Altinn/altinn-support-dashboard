@@ -84,6 +84,36 @@ public class NotificationsController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("future/partytId/{partyId}")]
+    public async Task<IActionResult> GetFutureNotificationsByPartyId(
+        [FromRoute] string environmentName,
+        [FromRoute] string partyId,
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to)
+    {
+        if (!ValidationService.IsValidPartyId(partyId))
+        {
+            return BadRequest("Not a valid PartyId");
+        }
+        var response = await _service.GetFutureNotificationsByPartyId(partyId, from, to, environmentName);
+        return Ok(response);
+    }
+
+    [HttpGet("future/partyUuid/{partyId}")]
+    public async Task<IActionResult> GetFutureNotificationsByPartyUuid(
+        [FromRoute] string environmentName,
+        [FromRoute] string partyUuid,
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to)
+    {
+        if (!ValidationService.IsValidGuid(partyUuid))
+        {
+            return BadRequest("Not in a valid Guid format");
+        }
+        var response = await _service.GetFutureNotificationsByPartyUuid(partyUuid, from, to, environmentName);
+        return Ok(response);
+    }
+
     [HttpGet("future/{query}")]
     public async Task<IActionResult> GetFutureNofifications([FromRoute] string environmentName,
         [FromRoute] string query,
@@ -99,7 +129,17 @@ public class NotificationsController : ControllerBase
         {
             return await GetFutureNotificationsByNin(environmentName, query, from, to);
         }
-        return BadRequest("Not a valid nin or org number");
+
+        if (ValidationService.IsValidPartyId(query))
+        {
+            return await GetFutureNotificationsByPartyId(environmentName, query, from, to);
+        }
+
+        if (ValidationService.IsValidGuid(query))
+        {
+            return await GetFutureNotificationsByPartyUuid(environmentName, query, from, to);
+        }
+        return BadRequest("Not a valid nin, org number, partyid or partyuuid");
     }
 
     [HttpPost("availability")]
