@@ -11,7 +11,6 @@ import {
 } from "react-router-dom";
 import { useVersionCheck } from "../hooks/useVersionCheck";
 import { DashboardPage } from "../pages/DashboardPage";
-import SignOutPage from "../pages/SignOutPage";
 import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
 import SettingsPage from "../pages/SettingsPage";
 import { CorrespondencePage } from "../pages/CorrespondencePage";
@@ -84,11 +83,10 @@ const App: React.FC = () => {
                   path="/identifier-conversion"
                   element={<IdentifierConversionPage />}
                 />
-                <Route 
+                <Route
                   path="/resourcesearch"
-                  element={<ResourceSearchPage/>}
+                  element={<ResourceSearchPage />}
                 />
-                <Route path="/signout" element={<SignOutPage />} />
               </Route>
             </Routes>
           </main>

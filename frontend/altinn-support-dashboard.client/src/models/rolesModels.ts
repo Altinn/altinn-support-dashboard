@@ -21,3 +21,10 @@ export interface RolesAndRightsRequest {
 export interface PartyFilter {
   value: string;
 }
+
+export interface AuthorizedPartyIdentifiers {
+  organizationNumber?: string;
+  displayedSocialSecurityNumber?: string;
+  ssnToken?: string;
+  name: string;
+}

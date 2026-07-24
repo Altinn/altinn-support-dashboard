@@ -5,7 +5,7 @@ import InformationDialogContent from "../../src/components/InformationDialog/Inf
 
 //Mocking designsystemet components used in InformationDialogContent, so the test works
 vi.mock('@digdir/designsystemet-react', () => {
-    //eslint-disable-next-line @typescript-eslint/no-var-requires
+    //eslint-disable-next-line @typescript-eslint/no-require-imports
     const React = require('react');
     return {
         Dialog: {

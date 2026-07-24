@@ -1,0 +1,9 @@
+namespace Models.altinn3Dtos;
+
+public class AuthorizedPartyIdentifiersDto
+{
+    public string? OrganizationNumber { get; set; }
+    public string? DisplayedSocialSecurityNumber { get; set; }
+    public string? SsnToken { get; set; }
+    public required string Name { get; set; }
+}

@@ -264,6 +264,19 @@ namespace AltinnSupportDashboard.Controllers
             return Ok(result);
         }
 
+        [HttpGet("altinn3/authorizedparties")]
+        public async Task<IActionResult> GetAuthorizedPartyIdentifiersAltinn3([FromHeader] string nationalIdentityNumber)
+        {
+            if (ValidationService.isValidSsn(nationalIdentityNumber) || ValidationService.IsValidSsnToken(nationalIdentityNumber))
+            {
+                var result = await _altinn3Service.GetAuthorizedPartyIdentifiersAltinn3(nationalIdentityNumber, environmentName);
+
+                return Ok(result);
+            }
+            return BadRequest("Not valid national Identity Number");
+
+        }
+
         [HttpPost("organizations/altinn3/identifiers")]
         public async Task<IActionResult> PostOrganizationsIdentifiers([FromBody] OrgNumbersRequestDto request)
         {

@@ -7,6 +7,7 @@ import {
 import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
+  fetchAuthorizedParties,
   fetchERoles,
   fetchInternalIds,
   fetchNotificationAddresses,
@@ -33,7 +34,11 @@ import {
 } from "../models/correspondenceModels";
 import { sendCorrespondence } from "../utils/correspondenceApi";
 import { toast } from "react-toastify";
-import { RolesAndRights, RolesAndRightsRequest } from "../models/rolesModels";
+import {
+  AuthorizedPartyIdentifiers,
+  RolesAndRights,
+  RolesAndRightsRequest,
+} from "../models/rolesModels";
 import { Altinn2Role, PolicyRule, Resource } from "../models/resourceModels";
 
 export function useUserDetails() {
@@ -74,6 +79,17 @@ export function useOrgSearch(environment: string, query: string) {
   return {
     orgQuery,
   };
+}
+
+export function useAuthorizedParties(environment: string, nin?: string) {
+  return useQuery<AuthorizedPartyIdentifiers[], Error>({
+    queryKey: ["authorizedParties", environment, nin],
+    queryFn: () => fetchAuthorizedParties(environment, nin!),
+    enabled: !!nin,
+    retry: false,
+    staleTime: 2 * 60 * 1000, // fresh for 2 minutes
+    refetchOnWindowFocus: false,
+  });
 }
 
 export function useUserContactInfoByNin(environment: string, nin: string) {
@@ -150,7 +166,7 @@ export const useSsnFromToken = (environment: string, ssnToken?: string) => {
   return useQuery({
     queryKey: ["ssn", environment, ssnToken],
     queryFn: () => fetchSsnFromToken(environment, ssnToken!),
-    enabled: false && !!ssnToken, // only run if ssnToken exists and manuallyenabled
+    enabled: !!ssnToken, // only run if ssnToken exists
     staleTime: 0, // always refetch to ensure ssn is fresh
   });
 };

@@ -18,9 +18,9 @@ vi.mock("../../../src/components/Dashboard/components/ERRolesTable", () => ({
   ),
 }));
 
-vi.mock("../../../src/components/Dashboard/components/RoleDetails", () => ({
+vi.mock("../../../src/components/Dashboard/components/RoleDetailsOrg", () => ({
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  RoleDetails: ({ selectedContact, onBack }: any) => (
+  RoleDetailsOrg: ({ selectedContact, onBack }: any) => (
     <div data-testid="role-details">
       RoleDetails: {selectedContact.name}
       <button onClick={onBack}>Back</button>
