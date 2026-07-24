@@ -679,9 +679,11 @@ public class Altinn3Service : IAltinn3Service
         }).ToList();
     }
 
-    public async Task<string> GetMaskinportenDelegations(string? supplierOrg, string? consumerOrg, string? scope, string environmentName)
+    public async Task<List<MaskinportenDelegationDto>> GetMaskinportenDelegations(string? supplierOrg, string? consumerOrg, string? scope, string environmentName)
     {
-        return await _client.GetMaskinportenDelegations(supplierOrg, consumerOrg, scope, environmentName);
+        var result = await _client.GetMaskinportenDelegations(supplierOrg, consumerOrg, scope, environmentName);
+        return JsonSerializer.Deserialize<List<MaskinportenDelegationDto>>(result)
+            ?? throw new Exception("Failed to deserialize maskinporten delegations");
     }
 
 }
