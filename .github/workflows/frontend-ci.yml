@@ -31,10 +31,10 @@ jobs:
         working-directory: ./frontend/altinn-support-dashboard.client
         # package.json: "typecheck": "tsc --noEmit"
 
-      - name: ESLint check
+      - name: Oxlint check
         run: npm run lint
         working-directory: ./frontend/altinn-support-dashboard.client
-        # package.json: "lint": "eslint . --ext .ts,.tsx"
+        # package.json: "lint": "oxlint . --report-unused-disable-directives --max-warnings 0"
 
 
         #Tests and coverage report
