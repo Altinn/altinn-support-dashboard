@@ -3,7 +3,6 @@ import { useDashboardStore } from "../../../../stores/DashboardStore";
 import { Tooltip, Label } from "@digdir/designsystemet-react";
 
 import { formatDate } from "../../utils/dateUtils";
-import { useEffect, useState } from "react";
 import classes from "../../styles/ContactInfoCell.module.css";
 
 interface ContactInfoCellProps {
