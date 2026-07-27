@@ -9,6 +9,7 @@ namespace altinn_support_dashboard.Server.Services;
 public class NotificationsService : INotificationsService
 {
     private readonly INotificationsClient _client;
+    private readonly IPartyApiService _partyService;
     private readonly ILogger<INotificationsService> _logger;
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
@@ -16,8 +17,9 @@ public class NotificationsService : INotificationsService
         PropertyNameCaseInsensitive = true
     };
 
-    public NotificationsService(INotificationsClient client, ILogger<INotificationsService> logger)
+    public NotificationsService(INotificationsClient client, IPartyApiService partyService, ILogger<INotificationsService> logger)
     {
+        _partyService = partyService;
         _client = client;
         _logger = logger;
     }
@@ -32,6 +34,38 @@ public class NotificationsService : INotificationsService
     {
         var result = await _client.GetFutureNotificationsByOrgNr(orgNr, from, to, environmentName);
         return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+    }
+
+    public async Task<List<FutureNotificationDto>> GetFutureNotificationsByPartyId(string partyId, DateTime? from, DateTime? to, string environmentName)
+    {
+
+        var party = await _partyService.GetPartyByIdAsync(partyId, environmentName);
+        if (party?.OrgNumber != null)
+        {
+            return await GetFutureNotificationsByOrgNr(party.OrgNumber, from, to, environmentName);
+        }
+        else if (party?.Ssn != null)
+        {
+            return await GetFutureNotificationsByNin(party.Ssn, from, to, environmentName);
+        }
+
+        throw new Exception("no org or person found for given partyId");
+    }
+
+    public async Task<List<FutureNotificationDto>> GetFutureNotificationsByPartyUuid(string partyUuid, DateTime? from, DateTime? to, string environmentName)
+    {
+
+        var party = await _partyService.GetPartyByUuidAsync(partyUuid, environmentName);
+        if (party?.OrgNumber != null)
+        {
+            return await GetFutureNotificationsByOrgNr(party.OrgNumber, from, to, environmentName);
+        }
+        else if (party?.Ssn != null)
+        {
+            return await GetFutureNotificationsByNin(party.Ssn, from, to, environmentName);
+        }
+
+        throw new Exception("no org or person found for given partyUuid");
     }
 
     public async Task<NotificationOrderResponseDto> GetEmailNotificationsByOrderId(string orderId, string environmentName)

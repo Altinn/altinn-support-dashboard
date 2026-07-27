@@ -9,5 +9,7 @@ public interface INotificationsService
     Task<List<NotificationOrderResponseDto>> GetAllNotificationsByOrderId(string orderId, string environmentName);
     Task<List<FutureNotificationDto>> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to, string environmentName);
     Task<List<FutureNotificationDto>> GetFutureNotificationsByOrgNr(string orgNr, DateTime? from, DateTime? to, string environmentName);
+    Task<List<FutureNotificationDto>> GetFutureNotificationsByPartyId(string partyId, DateTime? from, DateTime? to, string environmentName);
+    Task<List<FutureNotificationDto>> GetFutureNotificationsByPartyUuid(string partyUuid, DateTime? from, DateTime? to, string environmentName);
 
 }

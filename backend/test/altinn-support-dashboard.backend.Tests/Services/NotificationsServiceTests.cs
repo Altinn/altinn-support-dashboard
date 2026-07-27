@@ -8,6 +8,7 @@ using Xunit;
 public class NotificationsServiceTests
 {
     private readonly Mock<INotificationsClient> _clientMock;
+    private readonly Mock<IPartyApiService> _partyServiceMock;
     private readonly NotificationsService _service;
 
     private const string EnvironmentName = "TT02";
@@ -39,8 +40,9 @@ public class NotificationsServiceTests
     public NotificationsServiceTests()
     {
         _clientMock = new Mock<INotificationsClient>();
+        _partyServiceMock = new Mock<IPartyApiService>();
         var logger = Mock.Of<ILogger<INotificationsService>>();
-        _service = new NotificationsService(_clientMock.Object, logger);
+        _service = new NotificationsService(_clientMock.Object, _partyServiceMock.Object, logger);
     }
 
     [Fact]
