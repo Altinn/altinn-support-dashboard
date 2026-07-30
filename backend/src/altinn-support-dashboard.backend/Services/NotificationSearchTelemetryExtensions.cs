@@ -4,13 +4,13 @@ using System.Text;
 
 namespace altinn_support_dashboard.Server.Services;
 
-public static class NotificationsSearchTelemetryExtensions
+public static class NotificationSearchTelemetryExtensions
 {
     private const string FeatureArea = "notifications";
 
     public static void TrackOrderIdSearch(this ITelemetryService telemetry, string channel, string orderId, string userId, string environment)
     {
-        telemetry.TrackSearch(FeatureArea, $"order.Id{channel}", userId, environment, new Dictionary<string, string> { { "orderId", orderId } });
+        telemetry.TrackSearch(FeatureArea, $"orderId.{channel}", userId, environment, new Dictionary<string, string> { { "orderId", orderId } });
     }
 
     public static void TrackNinSearch(this ITelemetryService telemetry, string nin, string userId, string environment)

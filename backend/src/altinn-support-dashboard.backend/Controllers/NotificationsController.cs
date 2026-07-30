@@ -112,6 +112,9 @@ public class NotificationsController : ControllerBase
         {
             return BadRequest("Not a valid PartyId");
         }
+
+        _telemetryService.TrackPartyIdSearch(partyId, CurrentUserId, environmentName);
+
         var response = await _service.GetFutureNotificationsByPartyId(partyId, from, to, environmentName);
         return Ok(response);
     }
@@ -127,6 +130,9 @@ public class NotificationsController : ControllerBase
         {
             return BadRequest("Not in a valid Guid format");
         }
+
+        _telemetryService.TrackPartyUuidSearch(partyUuid, CurrentUserId, environmentName);
+        
         var response = await _service.GetFutureNotificationsByPartyUuid(partyUuid, from, to, environmentName);
         return Ok(response);
     }
