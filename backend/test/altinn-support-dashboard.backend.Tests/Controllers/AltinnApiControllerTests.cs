@@ -7,6 +7,8 @@ using Models.altinn3Dtos;
 using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.IdentityModel.Abstractions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace altinn_support_dashboard.backend.Tests.Controllers
 {
@@ -27,7 +29,19 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var mockSection = new Mock<IConfigurationSection>();
             mockSection.Setup(s => s.GetChildren()).Returns(new List<IConfigurationSection>());
             _mockConfiguration.Setup(c => c.GetSection("LoggingConfiguration:TrackedEnvironments")).Returns(mockSection.Object);
-            _controller = new AltinnTT02Controller(_mockServiceAltinn3.Object, _mockSsnTokenService.Object, _mockTelemetryService.Object, _mockConfiguration.Object);
+            _controller = new AltinnTT02Controller(_mockServiceAltinn3.Object, _mockSsnTokenService.Object, _mockTelemetryService.Object, _mockConfiguration.Object)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext
+                    {
+                        User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                        {
+                            new Claim(ClaimTypes.Name, "test-user")
+                        }, "TestAuth"))
+                    }
+                }
+            };
         }
 
         [Fact]
@@ -144,6 +158,44 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var exception = Assert.Throws<Exception>(() => _controller.GetSsnFromToken(invalidToken));
 
             Assert.Equal("Invalid or expired SSN token.", exception.Message);
+        }
+
+        [Fact]
+        public async Task GetOrganizationAltinn3_TracksSearch_WithOrgNumber()
+        {
+            var orgNumber = "123456789";
+            _mockServiceAltinn3
+                .Setup(x => x.GetOrganizationByOrgNoAltinn3(orgNumber, "TT02"))
+                .ReturnsAsync(new Organization { OrganizationNumber = orgNumber});
+
+            await _controller.GetOrganizationAltinn3(orgNumber);
+
+            _mockTelemetryService.Verify(t => t.TrackSearch(
+                "oppslag",
+                "orgNumber",
+                It.IsAny<string>(),
+                "TT02",
+                It.Is<IDictionary<string, string>>(d => d["orgNumber"] == orgNumber)),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task GetOrganizationFromEmailAltinn3_TracksSearch_WithEmail()
+        {
+            var email = "test@test";
+            _mockServiceAltinn3
+                .Setup(x => x.GetOrganizationsByEmailAltinn3(email, "TT02"))
+                .ReturnsAsync(new List<Organization>());
+
+            await _controller.GetOrganizationsFromEmailAltinn3(email);
+
+            _mockTelemetryService.Verify(t => t.TrackSearch(
+                "oppslag",
+                "email",
+                It.IsAny<string>(),
+                "TT02",
+                It.Is<IDictionary<string,string>>(d => d["email"] == email)),
+                Times.Once);
         }
     }
 }
