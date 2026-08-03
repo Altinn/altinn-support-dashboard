@@ -182,7 +182,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [Fact]
         public async Task GetOrganizationFromEmailAltinn3_TracksSearch_WithEmail()
         {
-            var email = "test@test";
+            var email = "test@test.no";
             _mockServiceAltinn3
                 .Setup(x => x.GetOrganizationsByEmailAltinn3(email, "TT02"))
                 .ReturnsAsync(new List<Organization>());
@@ -196,6 +196,55 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 "TT02",
                 It.Is<IDictionary<string,string>>(d => d["email"] == email)),
                 Times.Once);
+        }
+
+        [Fact]
+        public async Task GetOrganizationFromEmailAltinn3_DoesNotTrackSearch_WhenEmailIsInvalid()
+        {
+            var result = await _controller.GetOrganizationsFromEmailAltinn3("invalid-email");
+
+            Assert.IsType<BadRequestObjectResult>(result);
+            _mockTelemetryService.Verify(t => t.TrackSearch(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<IDictionary<string, string>>()),
+                Times.Never);
+        }
+
+        [Fact]
+        public async Task GetOrganizationFromPhoneAltinn3_TracksSearch_WithPhoneNumber()
+        {
+            var phoneNumber = "12345678";
+            _mockServiceAltinn3
+                .Setup(x => x.GetOrganizationsByPhoneAltinn3(phoneNumber, "TT02"))
+                .ReturnsAsync(new List<Organization>());
+            
+            await _controller.GetOrganizationsFromPhoneAltinn3(phoneNumber);
+
+            _mockTelemetryService.Verify(t => t.TrackSearch(
+                "oppslag",
+                "phoneNumber",
+                It.IsAny<string>(),
+                "TT02",
+                It.Is<IDictionary<string, string>>(d => d["phoneNumber"] == phoneNumber)),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task GetOrganizationsFromPhoneAltinn3_DoesNotTrackSearch_WhenPhoneNumberIsInvalid()
+        {
+            var result = await _controller.GetOrganizationsFromPhoneAltinn3("invalid-phone");
+
+            Assert.IsType<BadRequestObjectResult>(result);
+            _mockTelemetryService.Verify(t => t.TrackSearch(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<IDictionary<string, string>>()),
+                Times.Never);
         }
     }
 }
