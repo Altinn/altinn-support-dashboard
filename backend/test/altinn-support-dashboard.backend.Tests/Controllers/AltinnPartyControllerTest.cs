@@ -3,6 +3,8 @@ using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace altinn_support_dashboard.backend.Tests.Controllers;
 
@@ -10,12 +12,23 @@ public class AltinnPartyTT02ControllerTests
 {
     private readonly Mock<IPartyApiService> _mockPartyApiService;
     private readonly AltinnPartyTT02Controller _controller;
+    private readonly Mock<ITelemetryService> _mockTelemetryService;
     private const string Env = "TT02";
 
     public AltinnPartyTT02ControllerTests()
     {
         _mockPartyApiService = new Mock<IPartyApiService>();
-        _controller = new AltinnPartyTT02Controller(_mockPartyApiService.Object);
+        _mockTelemetryService = new Mock<ITelemetryService>();
+        _controller = new AltinnPartyTT02Controller(_mockPartyApiService.Object, _mockTelemetryService.Object)
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, "test-user") }, "TestAuth"))
+                }
+            }
+        };
     }
 
     [Fact]
@@ -172,12 +185,23 @@ public class AltinnPartyProductionControllerTests
 {
     private readonly Mock<IPartyApiService> _mockPartyApiService;
     private readonly AltinnPartyProductionController _controller;
+    private readonly Mock<ITelemetryService> _mockTelemetryService;
     private const string Env = "Production";
 
     public AltinnPartyProductionControllerTests()
     {
         _mockPartyApiService = new Mock<IPartyApiService>();
-        _controller = new AltinnPartyProductionController(_mockPartyApiService.Object);
+        _mockTelemetryService = new Mock<ITelemetryService>();
+        _controller = new AltinnPartyProductionController(_mockPartyApiService.Object, _mockTelemetryService.Object)
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, "test-user") }, "TestAuth"))
+                }
+            }
+        };
     }
 
     [Fact]
