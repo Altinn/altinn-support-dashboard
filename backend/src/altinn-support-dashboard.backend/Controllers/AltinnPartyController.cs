@@ -5,6 +5,7 @@ using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Security;
+using altinn_support_dashboard.Server.Services;
 
 namespace altinn_support_dashboard.Server.Controllers
 {
@@ -13,7 +14,8 @@ namespace altinn_support_dashboard.Server.Controllers
     [Route("api/TT02")]
     public class AltinnPartyTT02Controller : AltinnPartyBaseController
     {
-        public AltinnPartyTT02Controller(IPartyApiService service) : base(service, "TT02") { }
+        public AltinnPartyTT02Controller(IPartyApiService service, ITelemetryService telemetryService) 
+            : base(service, "TT02", telemetryService) { }
     }
 
     [ApiController]
@@ -21,7 +23,8 @@ namespace altinn_support_dashboard.Server.Controllers
     [Route("api/Production")]
     public class AltinnPartyProductionController : AltinnPartyBaseController
     {
-        public AltinnPartyProductionController(IPartyApiService service) : base(service, "Production") { }
+        public AltinnPartyProductionController(IPartyApiService service, ITelemetryService telemetryService) 
+            : base(service, "Production", telemetryService) { }
     }
 
     [Authorize(AzureRoles.Authenticated)]
@@ -30,16 +33,22 @@ namespace altinn_support_dashboard.Server.Controllers
     {
         private readonly IPartyApiService _service;
         private readonly string _environmentName;
+        private readonly ITelemetryService _telemetryService;
 
-        protected AltinnPartyBaseController(IPartyApiService service, string environmentName)
+        protected AltinnPartyBaseController(IPartyApiService service, string environmentName, ITelemetryService telemetryService)
         {
             _service = service;
             _environmentName = environmentName;
+            _telemetryService = telemetryService;
         }
+
+        private string CurrentUserId => User.Identity?.Name ?? "Unknown";
 
         [HttpGet("parties/lookup/org/{orgNumber}")]
         public async Task<IActionResult> GetPartyOrg([FromRoute] string orgNumber)
         {
+            _telemetryService.TrackPartyOrgLookup(orgNumber, CurrentUserId, _environmentName);
+
             var result = await _service.GetPartyFromOrgAsync(orgNumber, _environmentName);
             if (result == null)
             {
@@ -51,6 +60,8 @@ namespace altinn_support_dashboard.Server.Controllers
         [HttpGet("parties/lookup/ssn/{ssn}")]
         public async Task<IActionResult> GetPartySsn([FromRoute] string ssn)
         {
+            _telemetryService.TrackPartySsnLookup(ssn, CurrentUserId, _environmentName);
+
             var result = await _service.GetPartyFromSsnAsync(ssn, _environmentName);
             if (result == null)
             {
@@ -80,6 +91,7 @@ namespace altinn_support_dashboard.Server.Controllers
         [HttpGet("parties/lookup/uuid/{Uuid}")]
         public async Task<IActionResult> GetPartyByUuid([FromRoute] string Uuid)
         {
+            _telemetryService.TrackPartyUuidLookup(Uuid, CurrentUserId, _environmentName);
             var result = await _service.GetPartyByUuidAsync(Uuid, _environmentName);
             if (result == null)
             {
@@ -91,6 +103,7 @@ namespace altinn_support_dashboard.Server.Controllers
         [HttpGet("parties/lookup/partyId/{partyId}")]
         public async Task<IActionResult> GetPartyByPartyId([FromRoute] string partyId)
         {
+            _telemetryService.TrackPartyIdLookup(partyId, CurrentUserId, _environmentName);
             var result = await _service.GetPartyByIdAsync(partyId, _environmentName);
             if (result == null)
             {
@@ -104,6 +117,7 @@ namespace altinn_support_dashboard.Server.Controllers
         {
             if (ValidationService.IsValidGuid(value))
             {
+                _telemetryService.TrackPartyUuidLookup(value, CurrentUserId, _environmentName);
                 var result = await _service.GetPartyByUuidAsync(value, _environmentName);
                 if (result == null)
                 {
@@ -114,6 +128,7 @@ namespace altinn_support_dashboard.Server.Controllers
 
             if (ValidationService.isValidSsn(value))
             {
+                _telemetryService.TrackPartySsnLookup(value, CurrentUserId, _environmentName);
                 var result = await _service.GetPartyFromSsnAsync(value, _environmentName);
                 if (result == null)
                 {
@@ -124,6 +139,7 @@ namespace altinn_support_dashboard.Server.Controllers
 
             if (ValidationService.IsValidOrgNumberV2(value))
             {
+                _telemetryService.TrackPartyOrgLookup(value, CurrentUserId, _environmentName);
                 var result = await _service.GetPartyFromOrgAsync(value, _environmentName);
                 if (result == null)
                 {
@@ -134,6 +150,7 @@ namespace altinn_support_dashboard.Server.Controllers
 
             if (ValidationService.IsValidPartyId(value))
             {
+                _telemetryService.TrackPartyIdLookup(value, CurrentUserId, _environmentName);
                 var result = await _service.GetPartyByIdAsync(value, _environmentName);
                 if (result == null)
                 {
