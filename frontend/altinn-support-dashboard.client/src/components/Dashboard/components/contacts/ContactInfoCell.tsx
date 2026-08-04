@@ -3,7 +3,6 @@ import { useDashboardStore } from "../../../../stores/DashboardStore";
 import { Tooltip, Label } from "@digdir/designsystemet-react";
 
 import { formatDate } from "../../utils/dateUtils";
-import { useEffect, useState } from "react";
 import classes from "../../styles/ContactInfoCell.module.css";
 
 interface ContactInfoCellProps {
@@ -17,15 +16,14 @@ const ContactInfoCell: React.FC<ContactInfoCellProps> = ({
 }) => {
   const userInput = useDashboardStore((s) => s.query.replace(/\s/g, ""));
 
-  const [isBold, setIsBold] = useState<boolean>(false);
 
   //outlines if searchquery is part of the cell
 
-  useEffect(() => {
-    if (contact?.replace(/\s/g, "").toLowerCase() === userInput.toLowerCase()) {
-      setIsBold(true);
-    }
-  }, [contact, userInput]);
+  const isBold =
+    !!contact &&
+    userInput.length > 0 &&
+    contact.replace(/\s/g, "").toLowerCase().includes(userInput.toLowerCase());
+
   return (
     <div>
       {contactLastChanged && (
