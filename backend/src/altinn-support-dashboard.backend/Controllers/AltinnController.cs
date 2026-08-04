@@ -5,6 +5,7 @@ using altinn_support_dashboard.Server.Utils;
 using Security;
 using Microsoft.Extensions.Compliance.Redaction;
 using Models.altinn3Dtos;
+using altinn_support_dashboard.Server.Services;
 
 namespace AltinnSupportDashboard.Controllers
 {
@@ -104,6 +105,7 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("organizations/altinn3/organizations/{orgnumber}")]
         public async Task<IActionResult> GetOrganizationAltinn3([FromRoute] string orgnumber)
         {
+            _telemetryService.TrackOrgNumberSearch(orgnumber, User.Identity?.Name ?? "unknown", environmentName);
 
             var result = await _altinn3Service.GetOrganizationByOrgNoAltinn3(orgnumber, environmentName);
             return Ok(result);
@@ -127,6 +129,9 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("phonenumber is invalid");
             }
+
+            _telemetryService.TrackPhoneSearch(phonenumber, User.Identity?.Name ?? "unknown", environmentName);
+
             var result = await _altinn3Service.GetOrganizationsByPhoneAltinn3(phonenumber, environmentName);
 
             return Ok(result);
@@ -140,6 +145,9 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("Email is invalid");
             }
+
+            _telemetryService.TrackEmailSearch(email, User.Identity?.Name ?? "unknown", environmentName);
+
             var result = await _altinn3Service.GetOrganizationsByEmailAltinn3(email, environmentName);
 
             return Ok(result);
@@ -193,6 +201,9 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("The National Identity Number is not valid. It must contain exactly 11 digits");
             }
+
+            _telemetryService.TrackSsnSearch(nin, User.Identity?.Name ?? "unknown", environmentName);
+
             var result = await _altinn3Service.GetUserContactInformationByNinAltinn3(nin, environmentName);
 
             return Ok(result);

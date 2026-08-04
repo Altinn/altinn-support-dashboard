@@ -52,7 +52,9 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
         <Textfield
           label={searchType === "shipmentId" ? "Shipment-ID" : "Avansert søk"}
           placeholder={
-            searchType === "shipmentId" ? "Shipment-ID" : "Nin, orgnr"
+            searchType === "shipmentId"
+              ? "Shipment-ID"
+              : "Nin, orgnr, partyid, partyuuid"
           }
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}

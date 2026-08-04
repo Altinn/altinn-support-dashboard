@@ -1,3 +1,4 @@
+using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -17,12 +18,16 @@ public class NotificationsController : ControllerBase
 
     private readonly INotificationsService _service;
     private readonly IAltinn3Service _altinn3Service;
+    private readonly ITelemetryService _telemetryService;
 
-    public NotificationsController(INotificationsService service, IAltinn3Service altinn3Service)
+    public NotificationsController(INotificationsService service, IAltinn3Service altinn3Service, ITelemetryService telemetryService)
     {
         _service = service;
         _altinn3Service = altinn3Service;
+        _telemetryService = telemetryService;
     }
+
+    private string CurrentUserId => User.Identity?.Name ?? "unknown";
 
     [HttpGet("orderid/email/{orderId}")]
     public async Task<IActionResult> GetEmailNotificationsByOrderId([FromRoute] string environmentName, string orderId)
@@ -50,6 +55,8 @@ public class NotificationsController : ControllerBase
         if (!ValidationService.IsValidNotificationOrderId(orderId))
             return BadRequest(InvalidOrderIdMessage);
 
+        _telemetryService.TrackOrderIdSearch(orderId, CurrentUserId, environmentName);
+
         var response = await _service.GetAllNotificationsByOrderId(orderId, environmentName);
         return Ok(response);
     }
@@ -65,6 +72,9 @@ public class NotificationsController : ControllerBase
         {
             return BadRequest("Not a valid nin");
         }
+
+        _telemetryService.TrackNinSearch(nin, CurrentUserId, environmentName);
+
         var response = await _service.GetFutureNotificationsByNin(nin, from, to, environmentName);
         return Ok(response);
     }
@@ -80,7 +90,46 @@ public class NotificationsController : ControllerBase
         {
             return BadRequest("Not a valid Organization number");
         }
+
+        _telemetryService.TrackOrgNrSearch(orgNr, CurrentUserId, environmentName);
+        
         var response = await _service.GetFutureNotificationsByOrgNr(orgNr, from, to, environmentName);
+        return Ok(response);
+    }
+
+    [HttpGet("future/partytId/{partyId}")]
+    public async Task<IActionResult> GetFutureNotificationsByPartyId(
+        [FromRoute] string environmentName,
+        [FromRoute] string partyId,
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to)
+    {
+        if (!ValidationService.IsValidPartyId(partyId))
+        {
+            return BadRequest("Not a valid PartyId");
+        }
+
+        _telemetryService.TrackPartyIdSearch(partyId, CurrentUserId, environmentName);
+
+        var response = await _service.GetFutureNotificationsByPartyId(partyId, from, to, environmentName);
+        return Ok(response);
+    }
+
+    [HttpGet("future/partyUuid/{partyId}")]
+    public async Task<IActionResult> GetFutureNotificationsByPartyUuid(
+        [FromRoute] string environmentName,
+        [FromRoute] string partyUuid,
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to)
+    {
+        if (!ValidationService.IsValidGuid(partyUuid))
+        {
+            return BadRequest("Not in a valid Guid format");
+        }
+
+        _telemetryService.TrackPartyUuidSearch(partyUuid, CurrentUserId, environmentName);
+        
+        var response = await _service.GetFutureNotificationsByPartyUuid(partyUuid, from, to, environmentName);
         return Ok(response);
     }
 
@@ -99,7 +148,17 @@ public class NotificationsController : ControllerBase
         {
             return await GetFutureNotificationsByNin(environmentName, query, from, to);
         }
-        return BadRequest("Not a valid nin or org number");
+
+        if (ValidationService.IsValidPartyId(query))
+        {
+            return await GetFutureNotificationsByPartyId(environmentName, query, from, to);
+        }
+
+        if (ValidationService.IsValidGuid(query))
+        {
+            return await GetFutureNotificationsByPartyUuid(environmentName, query, from, to);
+        }
+        return BadRequest("Not a valid nin, org number, partyid or partyuuid");
     }
 
     [HttpPost("availability")]
