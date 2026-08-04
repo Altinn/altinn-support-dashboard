@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using AltinnSupportDashboard.Controllers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.notifications;
 using Moq;
@@ -16,12 +18,26 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         private readonly NotificationsController _controller;
         private readonly Mock<INotificationsService> _serviceMock;
         private readonly Mock<IAltinn3Service> _altinn3ServiceMock;
+        private readonly Mock<ITelemetryService> _telemetryServiceMock;
 
         public NotificationsControllerTests()
         {
             _serviceMock = new Mock<INotificationsService>();
             _altinn3ServiceMock = new Mock<IAltinn3Service>();
-            _controller = new NotificationsController(_serviceMock.Object, _altinn3ServiceMock.Object);
+            _telemetryServiceMock = new Mock<ITelemetryService>();
+            _controller = new NotificationsController(_serviceMock.Object, _altinn3ServiceMock.Object, _telemetryServiceMock.Object)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext
+                    {
+                        User = new System.Security.Claims.ClaimsPrincipal(new ClaimsIdentity(new[]
+                        {
+                            new Claim(ClaimTypes.Name, "test-user")
+                        }, "TestAuth"))
+                    }
+                }
+            };
         }
 
         [Fact]
@@ -176,6 +192,44 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 .ThrowsAsync(new Exception("Service failure"));
 
             await Assert.ThrowsAsync<Exception>(() => _controller.GetFutureNotificationsByNin(EnvironmentName, "12345678901", null, null));
+        }
+
+        [Fact]
+        public async Task GetAllNotificationsByOrderId_TracksSearch_WithOrderId()
+        {
+            _serviceMock.Setup(s => s.GetAllNotificationsByOrderId(ValidOrderId, EnvironmentName))
+                .ReturnsAsync(new List<NotificationOrderResponseDto>
+                {
+                    new() { OrderId = ValidOrderId, SendersReference = "ref", Generated = 1, Succeeded = 1, Notifications = [] }
+                });
+
+            await _controller.GetAllNotificationsByOrderId(EnvironmentName, ValidOrderId);
+
+            _telemetryServiceMock.Verify(t => t.TrackSearch(
+                "notifications",
+                "orderId",
+                It.IsAny<string>(),
+                EnvironmentName,
+                It.Is<IDictionary<string, string>>(d => d["orderId"] == ValidOrderId)),
+                Times.Once);
+            }
+
+        [Fact]
+        public async Task GetFutureNotificationsByNin_TracksSearch_WithHashedNin_NotRawNin()
+        {
+            const string nin = "12345678901";
+            _serviceMock.Setup(S => S.GetFutureNotificationsByNin(nin, null, null, EnvironmentName))
+                .ReturnsAsync(new List<FutureNotificationDto>());
+            
+            await _controller.GetFutureNotificationsByNin(EnvironmentName, nin, null, null);
+
+            _telemetryServiceMock.Verify(t => t.TrackSearch(
+                "notifications",
+                "nin",
+                It.IsAny<String>(),
+                EnvironmentName,
+                It.Is<IDictionary<string, string>>(d => d.ContainsKey("ninHash") && !d.Values.Contains(nin))),
+                Times.Once);
         }
     }
 }
