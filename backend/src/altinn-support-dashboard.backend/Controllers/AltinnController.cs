@@ -201,6 +201,9 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("The National Identity Number is not valid. It must contain exactly 11 digits");
             }
+
+            _telemetryService.TrackSsnSearch(nin, User.Identity?.Name ?? "unknown", environmentName);
+
             var result = await _altinn3Service.GetUserContactInformationByNinAltinn3(nin, environmentName);
 
             return Ok(result);

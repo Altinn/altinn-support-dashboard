@@ -246,5 +246,38 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 It.IsAny<IDictionary<string, string>>()),
                 Times.Never);
         }
+
+        [Fact]
+        public async Task GetUserContactInformationByNinAltinn3_TracksSearch_WithHashedNin_NotRawNin()
+        {
+            const string nin = "12345678901";
+            _mockServiceAltinn3
+                .Setup(x => x.GetUserContactInformationByNinAltinn3(nin, "TT02"))
+                .ReturnsAsync(new UserContactInformationAltinn3());
+
+            await _controller.GetUserContactInformationByNinAltinn3(nin);
+
+            _mockTelemetryService.Verify(t => t.TrackSearch(
+                "oppslag",
+                "ssn",
+                It.IsAny<string>(),
+                "TT02",
+                It.Is<IDictionary<string, string>>(d => d.ContainsKey("ssnHash") && !d.Values.Contains(nin))),
+                Times.Once);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("not-a-nin")]
+        [InlineData("123")]
+        public async Task GetUserContactInformationByNinAltinn3_DoesNotTrackSearch_WhenNinIsInvalid(string invalidNin)
+        {
+            var result = await _controller.GetUserContactInformationByNinAltinn3(invalidNin);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+            _mockTelemetryService.Verify(t => t.TrackSearch(
+                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()),
+                Times.Never);
+        }
     }
 }

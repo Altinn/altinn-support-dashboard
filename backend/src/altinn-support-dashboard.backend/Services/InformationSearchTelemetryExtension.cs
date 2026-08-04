@@ -2,7 +2,7 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 
 namespace altinn_support_dashboard.Server.Services;
 
-public static class OppslagSearchTelemetryExtensions
+public static class InformationSearchTelemetryExtensions
 {
     private const string FeatureArea = "oppslag";
 
@@ -22,5 +22,12 @@ public static class OppslagSearchTelemetryExtensions
     {
         telemetry.TrackSearch(FeatureArea, "phoneNumber", userId, environment,
         new Dictionary<string, string> { { "phoneNumber", phoneNumber} });
+    }
+
+    public static void TrackSsnSearch(this ITelemetryService telemetry, string ssn, string userId, string environment)
+    {
+        var ssnHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(ssn)));
+        telemetry.TrackSearch(FeatureArea, "ssn", userId, environment,
+        new Dictionary<string, string> { { "ssnHash", ssnHash} });
     }
 }
