@@ -34,8 +34,6 @@ public class NotificationsController : ControllerBase
     {
         if (!ValidationService.IsValidNotificationOrderId(orderId))
             return BadRequest(InvalidOrderIdMessage);
-        
-        _telemetryService.TrackOrderIdSearch("email", orderId, CurrentUserId, environmentName);
 
         var response = await _service.GetEmailNotificationsByOrderId(orderId, environmentName);
         return Ok(response);
@@ -46,8 +44,6 @@ public class NotificationsController : ControllerBase
     {
         if (!ValidationService.IsValidNotificationOrderId(orderId))
             return BadRequest(InvalidOrderIdMessage);
-
-        _telemetryService.TrackOrderIdSearch("sms", orderId, CurrentUserId, environmentName);
 
         var response = await _service.GetSmsNotificationsByOrderId(orderId, environmentName);
         return Ok(response);

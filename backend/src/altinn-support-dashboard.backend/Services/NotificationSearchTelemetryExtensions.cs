@@ -10,7 +10,7 @@ public static class NotificationSearchTelemetryExtensions
 
     public static void TrackOrderIdSearch(this ITelemetryService telemetry, string channel, string orderId, string userId, string environment)
     {
-        telemetry.TrackSearch(FeatureArea, $"orderId.{channel}", userId, environment, new Dictionary<string, string> { { "orderId", orderId } });
+        telemetry.TrackSearch(FeatureArea, "orderId", userId, environment, new Dictionary<string, string> { { "orderId", orderId } });
     }
 
     public static void TrackNinSearch(this ITelemetryService telemetry, string nin, string userId, string environment)
