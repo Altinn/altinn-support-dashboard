@@ -34,7 +34,7 @@ public class TelemetryService : ITelemetryService
         });
     }
 
-     public void TrackSearch(string featureArea, string searchType, string userId, string environment, IDictionary<string, string>? extra = null)
+    public void TrackSearch(string featureArea, string searchType, string userId, string environment, IDictionary<string, string>? extra = null)
     {
         var properties = new Dictionary<string, string>
         {
