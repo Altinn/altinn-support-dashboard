@@ -33,4 +33,25 @@ public class TelemetryService : ITelemetryService
             { "ssnHash", ssnHash }
         });
     }
+
+    public void TrackSearch(string featureArea, string searchType, string userId, string environment, IDictionary<string, string>? extra = null)
+    {
+        var properties = new Dictionary<string, string>
+        {
+            { "featureArea", featureArea},
+            { "searchType", searchType },
+            { "userId", userId },
+            { "environment", environment }
+        };
+
+        if (extra != null)
+        {
+            foreach (var kvp in extra)
+            {
+                properties[kvp.Key] = kvp.Value;
+            }
+        }
+
+        _telemetryClient?.TrackEvent("search", properties);
+    }
 }
