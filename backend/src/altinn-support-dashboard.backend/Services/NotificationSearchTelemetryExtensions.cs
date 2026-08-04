@@ -8,7 +8,7 @@ public static class NotificationSearchTelemetryExtensions
 {
     private const string FeatureArea = "notifications";
 
-    public static void TrackOrderIdSearch(this ITelemetryService telemetry, string channel, string orderId, string userId, string environment)
+    public static void TrackOrderIdSearch(this ITelemetryService telemetry, string orderId, string userId, string environment)
     {
         telemetry.TrackSearch(FeatureArea, "orderId", userId, environment, new Dictionary<string, string> { { "orderId", orderId } });
     }

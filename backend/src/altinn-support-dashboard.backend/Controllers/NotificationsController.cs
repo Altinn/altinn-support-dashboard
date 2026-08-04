@@ -55,7 +55,7 @@ public class NotificationsController : ControllerBase
         if (!ValidationService.IsValidNotificationOrderId(orderId))
             return BadRequest(InvalidOrderIdMessage);
 
-        _telemetryService.TrackOrderIdSearch("all", orderId, CurrentUserId, environmentName);
+        _telemetryService.TrackOrderIdSearch(orderId, CurrentUserId, environmentName);
 
         var response = await _service.GetAllNotificationsByOrderId(orderId, environmentName);
         return Ok(response);

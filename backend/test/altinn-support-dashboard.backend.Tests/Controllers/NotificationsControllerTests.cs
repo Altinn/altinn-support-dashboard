@@ -195,22 +195,24 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetEmailNotificationsByOrderId_TrackSearch_WithOrderId()
+        public async Task GetAllNotificationsByOrderId_TracksSearch_WithOrderId()
         {
-            _serviceMock.Setup(s => s.GetEmailNotificationsByOrderId(ValidOrderId, EnvironmentName))
-                .ReturnsAsync(new NotificationOrderResponseDto { OrderId = ValidOrderId, SendersReference = "ref", Generated
-                = 1, Succeeded = 1, Notifications = []});
-            
-            await _controller.GetEmailNotificationsByOrderId(EnvironmentName, ValidOrderId);
+            _serviceMock.Setup(s => s.GetAllNotificationsByOrderId(ValidOrderId, EnvironmentName))
+                .ReturnsAsync(new List<NotificationOrderResponseDto>
+                {
+                    new() { OrderId = ValidOrderId, SendersReference = "ref", Generated = 1, Succeeded = 1, Notifications = [] }
+                });
+
+            await _controller.GetAllNotificationsByOrderId(EnvironmentName, ValidOrderId);
 
             _telemetryServiceMock.Verify(t => t.TrackSearch(
                 "notifications",
-                "orderId.email",
+                "orderId",
                 It.IsAny<string>(),
                 EnvironmentName,
                 It.Is<IDictionary<string, string>>(d => d["orderId"] == ValidOrderId)),
                 Times.Once);
-        }
+            }
 
         [Fact]
         public async Task GetFutureNotificationsByNin_TracksSearch_WithHashedNin_NotRawNin()
