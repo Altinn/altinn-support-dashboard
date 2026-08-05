@@ -381,6 +381,45 @@ public class AltinnPartyTT02ControllerTests
             Times.Never);
     }
 
+    [Fact]
+    public async Task GetPartyByUuid_TrackSearch_WithUuid()
+    {
+        var uuid = "11111111-1111-1111-1111-111111111111";
+        _mockPartyApiService
+            .Setup(x => x.GetPartyByUuidAsync(uuid, Env))
+            .ReturnsAsync(new PartyModel { PartyUuid = uuid, PartyId = 3 });
+        
+        await _controller.GetPartyByUuid(uuid);
+
+        _mockTelemetryService.Verify(t => t.TrackSearch(
+            "internalIdLookup",
+            "uuid",
+            It.IsAny<string>(),
+            Env,
+            It.Is<IDictionary<string, string>>(d => d["uuid"] == uuid)),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task GetPartySsn_ReturnsNotFound_AndStillTracksSearch_WhenPartyDoesNotExist()
+    {
+        var ssn = "11111111111";
+        _mockPartyApiService
+            .Setup(x => x.GetPartyFromSsnAsync(ssn, Env))
+            .ReturnsAsync((PartyModel)null);
+
+        var result = await _controller.GetPartySsn(ssn);
+
+        Assert.IsType<NotFoundResult>(result);
+
+        _mockTelemetryService.Verify(t => t.TrackSearch(
+            "internalIdLookup",
+            "ssn",
+            It.IsAny<string>(),
+            Env,
+            It.Is<IDictionary<string, string>>(d => d.ContainsKey("ssnHash") && !d.Values.Contains(ssn))),
+            Times.Once);
+    }
 }
 
 public class AltinnPartyProductionControllerTests
