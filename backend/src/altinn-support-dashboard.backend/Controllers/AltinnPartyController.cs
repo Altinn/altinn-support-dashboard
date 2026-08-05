@@ -42,7 +42,7 @@ namespace altinn_support_dashboard.Server.Controllers
             _telemetryService = telemetryService;
         }
 
-        private string CurrentUserId => User.Identity?.Name ?? "Unknown";
+        private string CurrentUserId => User.Identity?.Name ?? "unknown";
 
         [HttpGet("parties/lookup/org/{orgNumber}")]
         public async Task<IActionResult> GetPartyOrg([FromRoute] string orgNumber)

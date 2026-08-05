@@ -180,7 +180,7 @@ public class AltinnPartyTT02ControllerTests
         _mockPartyApiService.Verify(x => x.GetPartyByUuidAsync(uuid, Env), Times.Once);
     }
 
-        [Fact]
+    [Fact]
     public async Task GetPartyOrg_TracksSearch_WithOrgNumber()
     {
         var orgNumber = "123456789";
