@@ -8,8 +8,29 @@ import { showPopup } from "../components/Popup";
 import { useAppStore } from "../stores/Appstore";
 import NotificationShipmentCard from "../components/Notification/NIN-search/NotificationShipmentCard";
 import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
+import NotificationFilterDropdown from "../components/Notification/NotificationFilterDropdown";
 
 type SearchType = "shipmentId" | "advanced";
+
+function usePersistedArray(key: string) {
+  const [value, setValue] = useState<string[]>(() => {
+    const saved = sessionStorage.getItem(key);
+    return saved ? JSON.parse(saved) : [];
+  });
+  useEffect(() => {
+    sessionStorage.setItem(key, JSON.stringify(value));
+  }, [key, value]);
+  return [value, setValue] as const;
+}
+
+const toggleValue = (
+  setter: React.Dispatch<React.SetStateAction<string[]>>,
+  value: string,
+) => {
+  setter((prev) =>
+    prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+  );
+}
 
 export const NotificationPage = () => {
   const environment = useAppStore((state) => state.environment);
@@ -26,19 +47,16 @@ export const NotificationPage = () => {
   const [dateTo, setDateTo] = useState(
     () => sessionStorage.getItem("notif_dateTo") || ""
   );
-  const [selectedCreators, setSelectedCreators] = useState<string[]>(() => {
-    const saved = sessionStorage.getItem("notif_selectedCreators");
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [isCreatorFilterOpen, setIsCreatorFilterOpen] = useState(false);
+  
+  const [selectedCreators, setSelectedCreators] = usePersistedArray("notif_selectedCreators");
+  const  [selectedChannels, setSelectedChannels] = usePersistedArray("notif_selectedChannels");
+  const [selectedResults, setSelectedResults] = usePersistedArray("notif_selectedResults");
 
   useEffect(() => { sessionStorage.setItem("notif_searchType", searchType); }, [searchType]);
   useEffect(() => { sessionStorage.setItem("notif_searchValue", searchValue); }, [searchValue]);
   useEffect(() => { sessionStorage.setItem("notif_dateFrom", dateFrom); }, [dateFrom]);
   useEffect(() => { sessionStorage.setItem("notif_dateTo", dateTo); }, [dateTo]);
-  useEffect(() => {
-    sessionStorage.setItem("notif_selectedCreators", JSON.stringify(selectedCreators));
-  }, [selectedCreators]);
+
 
   const orderQuery = useNotifications(
     searchType === "shipmentId" ? searchValue : "",
@@ -65,22 +83,41 @@ export const NotificationPage = () => {
     return Array.from(names).sort();
   }, [ninQuery.data]);
 
+  const channelNames = useMemo(() => {
+    const values = new Set<string>();
+    ninQuery.data?.forEach((shipment) => { if (shipment.notificationChannel) values.add(shipment.notificationChannel); });
+    return Array.from(values).sort();
+  }, [ninQuery.data]);
+
+  const ResultNames = useMemo(() => {
+    const values = new Set<string>();
+    ninQuery.data?.forEach((shipment) =>
+      shipment.deliveryAttempts.forEach((attempt) => { if (attempt.result) values.add(attempt.result); })
+    );
+    return Array.from(values).sort();
+  }, [ninQuery.data]);
+
   useEffect(() => {
     if (!ninQuery.data) return;
-    setSelectedCreators((prev) => prev.filter((creator) => creatorNames.includes(creator)));
-  }, [creatorNames, ninQuery.data]);
+    setSelectedCreators((prev) => prev.filter((value) => creatorNames.includes(value)));
+    setSelectedChannels((prev) => prev.filter((value) => channelNames.includes(value)));
+    setSelectedResults((prev) => prev.filter((value) => ResultNames.includes(value)));
+  }, [ninQuery.data, creatorNames, channelNames, ResultNames]);
 
   const filteredShipments = useMemo(() => {
     if (!ninQuery.data) return ninQuery.data;
-    if (selectedCreators.length === 0) return ninQuery.data;
-    return ninQuery.data.filter((shipment) => shipment.creatorName ? selectedCreators.includes(shipment.creatorName) : false);
-  }, [ninQuery.data, selectedCreators]);
+    return ninQuery.data.filter((shipment) => {
+      if (selectedCreators.length > 0 && !(shipment.creatorName && selectedCreators.includes(shipment.creatorName))) return false;
+      if (selectedChannels.length > 0 && !(shipment.notificationChannel && selectedChannels.includes(shipment.notificationChannel))) return false;
+      if (selectedResults.length > 0 && !shipment.deliveryAttempts.some((attempt) => attempt.result && selectedResults.includes(attempt.result))) return false;
+      return true;
+    })
+  }, [ninQuery.data, selectedCreators, selectedChannels, selectedResults]);
 
-  const toggleCreator = (name: string) => {
-    setSelectedCreators((prev) =>
-      prev.includes(name) ? prev.filter((creator) => creator !== name) : [...prev, name]
-    );
-  };
+  const hasActiveFilters = 
+    selectedCreators.length > 0 || 
+    selectedChannels.length > 0 || 
+    selectedResults.length > 0;
 
   return (
     <div className={style.container}>
@@ -115,32 +152,25 @@ export const NotificationPage = () => {
       />
 
       {searchType === "advanced" && creatorNames.length > 0 && (
-        <div className={style.creatorFilter}>
-          <Dropdown.TriggerContext>
-            <Dropdown.Trigger>
-              Filter by creator
-              {selectedCreators.length > 0 ? ` (${selectedCreators.length})` : ""}
-              {isCreatorFilterOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
-            </Dropdown.Trigger>
-            <Dropdown
-              data-size="sm"
-              placement="bottom-start"
-              onOpen={() => setIsCreatorFilterOpen(true)}
-              onClose={() => setIsCreatorFilterOpen(false)}
-            >
-              <Dropdown.List>
-                {creatorNames.map((name) => (
-                  <Dropdown.Item key={name}>
-                    <Checkbox
-                      label={name}
-                      checked={selectedCreators.includes(name)}
-                      onChange={() => toggleCreator(name)}
-                    />
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.List>
-            </Dropdown>
-          </Dropdown.TriggerContext>
+        <div className={style.filterRow}>
+          <NotificationFilterDropdown
+            label="Creator"
+            options={creatorNames}
+            selected={selectedCreators}
+            onToggle={(value) => toggleValue(setSelectedCreators, value )}
+          />
+          <NotificationFilterDropdown
+            label="Channel"
+            options={channelNames}
+            selected={selectedChannels}
+            onToggle={(value) => toggleValue(setSelectedChannels, value )}
+          />
+          <NotificationFilterDropdown
+            label="Result"
+            options={ResultNames}
+            selected={selectedResults}
+            onToggle={(value) => toggleValue(setSelectedResults, value )}
+          />         
         </div>
       )}
 
