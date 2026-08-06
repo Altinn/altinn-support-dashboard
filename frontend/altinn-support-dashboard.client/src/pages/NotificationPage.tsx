@@ -114,7 +114,17 @@ export const NotificationPage = () => {
     setSelectedChannels((prev) => prev.filter((value) => channelNames.includes(value)));
     setSelectedResults((prev) => prev.filter((value) => resultNames.includes(value)));
     setSelectedResources((prev) => prev.filter((value) => resourceIds.includes(value)));
-  }, [ninQuery.data, creatorNames, channelNames, resultNames, resourceIds]);
+  }, [
+    ninQuery.data, 
+    creatorNames, 
+    channelNames, 
+    resultNames, 
+    resourceIds,
+    setSelectedCreators,
+    setSelectedChannels,
+    setSelectedResults,
+    setSelectedResources
+  ]);
 
   const filteredShipments = useMemo(() => {
     if (!ninQuery.data) return ninQuery.data;
