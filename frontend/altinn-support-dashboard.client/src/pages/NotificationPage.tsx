@@ -63,7 +63,6 @@ export const NotificationPage = () => {
     sessionStorage.setItem("notif_sendersReferenceFilter", sendersReferenceFilter); 
   }, [sendersReferenceFilter]);
 
-
   const orderQuery = useNotifications(
     searchType === "shipmentId" ? searchValue : "",
     environment
@@ -95,7 +94,7 @@ export const NotificationPage = () => {
     return Array.from(values).sort();
   }, [ninQuery.data]);
 
-  const ResultNames = useMemo(() => {
+  const resultNames = useMemo(() => {
     const values = new Set<string>();
     ninQuery.data?.forEach((shipment) =>
       shipment.deliveryAttempts.forEach((attempt) => { if (attempt.result) values.add(attempt.result); })
@@ -113,9 +112,9 @@ export const NotificationPage = () => {
     if (!ninQuery.data) return;
     setSelectedCreators((prev) => prev.filter((value) => creatorNames.includes(value)));
     setSelectedChannels((prev) => prev.filter((value) => channelNames.includes(value)));
-    setSelectedResults((prev) => prev.filter((value) => ResultNames.includes(value)));
+    setSelectedResults((prev) => prev.filter((value) => resultNames.includes(value)));
     setSelectedResources((prev) => prev.filter((value) => resourceIds.includes(value)));
-  }, [ninQuery.data, creatorNames, channelNames, ResultNames, resourceIds]);
+  }, [ninQuery.data, creatorNames, channelNames, resultNames, resourceIds]);
 
   const filteredShipments = useMemo(() => {
     if (!ninQuery.data) return ninQuery.data;
@@ -185,7 +184,7 @@ export const NotificationPage = () => {
           />
           <NotificationFilterDropdown
             label="Result"
-            options={ResultNames}
+            options={resultNames}
             selected={selectedResults}
             onToggle={(value) => toggleValue(setSelectedResults, value )}
           /> 
