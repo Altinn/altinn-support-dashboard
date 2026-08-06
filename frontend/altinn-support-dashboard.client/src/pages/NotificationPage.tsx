@@ -139,13 +139,6 @@ export const NotificationPage = () => {
     })
   }, [ninQuery.data, selectedCreators, selectedChannels, selectedResults, selectedResources, sendersReferenceFilter]);
 
-  const hasActiveFilters = 
-    selectedCreators.length > 0 || 
-    selectedChannels.length > 0 || 
-    selectedResults.length > 0 ||
-    selectedResources.length > 0 ||
-    sendersReferenceFilter.trim().length > 0;
-
   return (
     <div className={style.container}>
       <Heading level={1} data-size="sm" className={style.heading}>
