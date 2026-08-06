@@ -15,3 +15,7 @@
   align-items: flex-end;
   margin-bottom: 1rem;
 }
+
+.sendersReferenceFilter {
+  min-width: 25rem;
+}

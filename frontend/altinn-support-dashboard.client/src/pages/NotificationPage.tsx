@@ -1,4 +1,4 @@
-import { Alert, Checkbox, Dropdown, Heading, Skeleton, ToggleGroup } from "@digdir/designsystemet-react";
+import { Alert, Checkbox, Dropdown, Heading, Skeleton, Textfield, ToggleGroup } from "@digdir/designsystemet-react";
 import { useEffect, useMemo, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
 import { useNotifications, useNotificationsAdvanced } from "../hooks/hooks";
@@ -51,11 +51,18 @@ export const NotificationPage = () => {
   const [selectedCreators, setSelectedCreators] = usePersistedArray("notif_selectedCreators");
   const  [selectedChannels, setSelectedChannels] = usePersistedArray("notif_selectedChannels");
   const [selectedResults, setSelectedResults] = usePersistedArray("notif_selectedResults");
+  const [selectedResources, setSelectedResources] = usePersistedArray("notif_selectedResources");
+  const [sendersReferenceFilter, setSendersReferenceFilter] = useState(
+    () => sessionStorage.getItem("notif_sendersReferenceFilter") || ""
+  );
 
   useEffect(() => { sessionStorage.setItem("notif_searchType", searchType); }, [searchType]);
   useEffect(() => { sessionStorage.setItem("notif_searchValue", searchValue); }, [searchValue]);
   useEffect(() => { sessionStorage.setItem("notif_dateFrom", dateFrom); }, [dateFrom]);
   useEffect(() => { sessionStorage.setItem("notif_dateTo", dateTo); }, [dateTo]);
+  useEffect(() => {
+    sessionStorage.setItem("notif_sendersReferenceFilter", sendersReferenceFilter); 
+  }, [sendersReferenceFilter]);
 
 
   const orderQuery = useNotifications(
@@ -97,27 +104,39 @@ export const NotificationPage = () => {
     return Array.from(values).sort();
   }, [ninQuery.data]);
 
+  const resourceIds = useMemo(() => {
+    const values = new Set<string>();
+    ninQuery.data?.forEach((shipment) => { if (shipment.resourceId) values.add(shipment.resourceId); });
+    return Array.from(values).sort();
+  }, [ninQuery.data]);
+
   useEffect(() => {
     if (!ninQuery.data) return;
     setSelectedCreators((prev) => prev.filter((value) => creatorNames.includes(value)));
     setSelectedChannels((prev) => prev.filter((value) => channelNames.includes(value)));
     setSelectedResults((prev) => prev.filter((value) => ResultNames.includes(value)));
-  }, [ninQuery.data, creatorNames, channelNames, ResultNames]);
+    setSelectedResources((prev) => prev.filter((value) => resourceIds.includes(value)));
+  }, [ninQuery.data, creatorNames, channelNames, ResultNames, resourceIds]);
 
   const filteredShipments = useMemo(() => {
     if (!ninQuery.data) return ninQuery.data;
+    const reference = sendersReferenceFilter.trim().toLowerCase();
     return ninQuery.data.filter((shipment) => {
       if (selectedCreators.length > 0 && !(shipment.creatorName && selectedCreators.includes(shipment.creatorName))) return false;
       if (selectedChannels.length > 0 && !(shipment.notificationChannel && selectedChannels.includes(shipment.notificationChannel))) return false;
       if (selectedResults.length > 0 && !shipment.deliveryAttempts.some((attempt) => attempt.result && selectedResults.includes(attempt.result))) return false;
+      if (selectedResources.length > 0 && !(shipment.resourceId && selectedResources.includes(shipment.resourceId))) return false;
+      if (reference && !(shipment.sendersReference && shipment.sendersReference.toLowerCase().includes(reference))) return false;
       return true;
     })
-  }, [ninQuery.data, selectedCreators, selectedChannels, selectedResults]);
+  }, [ninQuery.data, selectedCreators, selectedChannels, selectedResults, selectedResources, sendersReferenceFilter]);
 
   const hasActiveFilters = 
     selectedCreators.length > 0 || 
     selectedChannels.length > 0 || 
-    selectedResults.length > 0;
+    selectedResults.length > 0 ||
+    selectedResources.length > 0 ||
+    sendersReferenceFilter.trim().length > 0;
 
   return (
     <div className={style.container}>
@@ -170,7 +189,20 @@ export const NotificationPage = () => {
             options={ResultNames}
             selected={selectedResults}
             onToggle={(value) => toggleValue(setSelectedResults, value )}
-          />         
+          /> 
+          <NotificationFilterDropdown
+            label="Resource"
+            options={resourceIds}
+            selected={selectedResources}
+            onToggle={(value) => toggleValue(setSelectedResources, value )}
+          />
+          <Textfield
+            label=""
+            placeholder="Filter by sender's reference"
+            value={sendersReferenceFilter}
+            onChange={(e) => setSendersReferenceFilter(e.target.value)}
+            className={style.sendersReferenceFilter}
+          />
         </div>
       )}
 
@@ -190,6 +222,8 @@ export const NotificationPage = () => {
         <Alert data-color="info">
           {ninQuery.data.length === 0
             ? "No shipments found."
+            : hasActiveFilters
+            ? "No shipments found for the selected filter(s)."
             : "No shipments found for the selected creator(s)."}
         </Alert>
       )}
