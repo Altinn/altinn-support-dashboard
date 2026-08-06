@@ -1,4 +1,4 @@
-import { Alert, Checkbox, Dropdown, Heading, Skeleton, Textfield, ToggleGroup } from "@digdir/designsystemet-react";
+import { Alert, Heading, Skeleton, Textfield, ToggleGroup } from "@digdir/designsystemet-react";
 import { useEffect, useMemo, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
 import { useNotifications, useNotificationsAdvanced } from "../hooks/hooks";
@@ -7,7 +7,6 @@ import style from "./styles/NotificationPage.module.css";
 import { showPopup } from "../components/Popup";
 import { useAppStore } from "../stores/Appstore";
 import NotificationShipmentCard from "../components/Notification/NIN-search/NotificationShipmentCard";
-import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
 import NotificationFilterDropdown from "../components/Notification/NotificationFilterDropdown";
 
 type SearchType = "shipmentId" | "advanced";
@@ -197,8 +196,7 @@ export const NotificationPage = () => {
             onToggle={(value) => toggleValue(setSelectedResources, value )}
           />
           <Textfield
-            label=""
-            placeholder="Filter by sender's reference"
+            label="Sender's reference"
             value={sendersReferenceFilter}
             onChange={(e) => setSendersReferenceFilter(e.target.value)}
             className={style.sendersReferenceFilter}
@@ -222,9 +220,8 @@ export const NotificationPage = () => {
         <Alert data-color="info">
           {ninQuery.data.length === 0
             ? "No shipments found."
-            : hasActiveFilters
-            ? "No shipments found for the selected filter(s)."
-            : "No shipments found for the selected creator(s)."}
+            : "No shipments found for the selected filter(s)."
+          }
         </Alert>
       )}
 
