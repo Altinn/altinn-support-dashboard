@@ -1,4 +1,4 @@
-import { Alert, Heading, Skeleton, Textfield, ToggleGroup } from "@digdir/designsystemet-react";
+import { Alert, Heading, Skeleton, ToggleGroup } from "@digdir/designsystemet-react";
 import { useEffect, useMemo, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
 import { useNotifications, useNotificationsAdvanced } from "../hooks/hooks";
@@ -41,17 +41,11 @@ export const NotificationPage = () => {
   const  [selectedChannels, setSelectedChannels] = usePersistedArray("notif_selectedChannels");
   const [selectedResults, setSelectedResults] = usePersistedArray("notif_selectedResults");
   const [selectedResources, setSelectedResources] = usePersistedArray("notif_selectedResources");
-  const [sendersReferenceFilter, setSendersReferenceFilter] = useState(
-    () => sessionStorage.getItem("notif_sendersReferenceFilter") || ""
-  );
 
   useEffect(() => { sessionStorage.setItem("notif_searchType", searchType); }, [searchType]);
   useEffect(() => { sessionStorage.setItem("notif_searchValue", searchValue); }, [searchValue]);
   useEffect(() => { sessionStorage.setItem("notif_dateFrom", dateFrom); }, [dateFrom]);
   useEffect(() => { sessionStorage.setItem("notif_dateTo", dateTo); }, [dateTo]);
-  useEffect(() => {
-    sessionStorage.setItem("notif_sendersReferenceFilter", sendersReferenceFilter); 
-  }, [sendersReferenceFilter]);
 
   const orderQuery = useNotifications(
     searchType === "shipmentId" ? searchValue : "",
@@ -120,7 +114,6 @@ export const NotificationPage = () => {
 
   const filteredShipments = useMemo(() => {
     if (!advancedQuery.data) return advancedQuery.data;
-    const reference = sendersReferenceFilter.trim().toLowerCase();
     return advancedQuery.data.filter((shipment) => {
       if (selectedCreators.length > 0 && !(shipment.creatorName && selectedCreators.includes(shipment.creatorName))) return false;
       if ((selectedChannels.length > 0 || selectedResults.length > 0 ) && 
@@ -130,10 +123,9 @@ export const NotificationPage = () => {
       )) return false;
       if (selectedResults.length > 0 && !shipment.deliveryAttempts.some((attempt) => attempt.result && selectedResults.includes(attempt.result))) return false;
       if (selectedResources.length > 0 && !(shipment.resourceId && selectedResources.includes(shipment.resourceId))) return false;
-      if (reference && !(shipment.sendersReference && shipment.sendersReference.toLowerCase().includes(reference))) return false;
       return true;
     })
-  }, [advancedQuery.data, selectedCreators, selectedChannels, selectedResults, selectedResources, sendersReferenceFilter]);
+  }, [advancedQuery.data, selectedCreators, selectedChannels, selectedResults, selectedResources]);
 
   return (
     <div className={style.container}>
