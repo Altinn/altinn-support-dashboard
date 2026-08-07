@@ -22,6 +22,7 @@ import {
   ResourceSearchResult,
 } from "../models/resourceModels";
 import { PartyModel } from "../models/PartyModel";
+import { MaskinportenDelegation } from "../models/delegationModels";
 
 //this file defines which which api endpoints we want to fetch data from
 
@@ -308,6 +309,29 @@ export const fetchAuthorizedParties = async (
 
   const data = await res.json();
 
+  return Array.isArray(data) ? data : [data];
+};
+
+export const fetchMaskinportenDelegations = async (
+  environment: string,
+  supplierOrg: string,
+  consumerOrg: string,
+  scope?: string
+): Promise<MaskinportenDelegation[]> => {
+  const params = new URLSearchParams();
+  params.set("supplierOrg", supplierOrg);
+  params.set("consumerOrg", consumerOrg);
+  if (scope) params.set("scope", scope);
+
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/maskinporten/delegations?${params}`
+  );
+
+  if (res.status === 404) return [];
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching delegations");
+
+  const data = await res.json();
   return Array.isArray(data) ? data : [data];
 };
 
