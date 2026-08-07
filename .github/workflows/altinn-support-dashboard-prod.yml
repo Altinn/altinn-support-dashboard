@@ -7,8 +7,28 @@ on:
   workflow_dispatch:
 
 jobs:
+  snapshot-rollback:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Snapshot last deployment to prod-rollback
+        run: |
+          git fetch origin
+          if git show-ref --verify --quiet refs/remotes/origin/prod-current; then
+            git push origin origin/prod-current:refs/heads/prod-rollback --force
+          else
+            echo "No existing prod-current branch yet; nothing to snapshot."
+          fi
+
   build:
     runs-on: ubuntu-latest
+    needs: snapshot-rollback
 
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
@@ -59,3 +79,15 @@ jobs:
           app-name: 'altinn-support-dashboard-prod'
           slot-name: 'Production'
           package: .
+
+  update-current:
+    runs-on: ubuntu-latest
+    needs: deploy-to-prod
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Advance prod-current to this deployment
+        run: git push origin HEAD:refs/heads/prod-current --force
