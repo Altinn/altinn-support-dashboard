@@ -57,14 +57,14 @@ export const NotificationPage = () => {
     searchType === "shipmentId" ? searchValue : "",
     environment
   );
-  const ninQuery = useNotificationsAdvanced(
+  const advancedQuery = useNotificationsAdvanced(
     searchType === "advanced" ? searchValue : "",
     environment,
     dateFrom || undefined,
     dateTo || undefined
   );
 
-  const activeQuery = searchType === "shipmentId" ? orderQuery : ninQuery;
+  const activeQuery = searchType === "shipmentId" ? orderQuery : advancedQuery;
 
   useEffect(() => {
     if (activeQuery?.isError) {
@@ -74,40 +74,40 @@ export const NotificationPage = () => {
 
   const creatorNames = useMemo(() => {
     const names = new Set<string>();
-    ninQuery.data?.forEach((shipment) => { if (shipment.creatorName) names.add(shipment.creatorName); });
+    advancedQuery.data?.forEach((shipment) => { if (shipment.creatorName) names.add(shipment.creatorName); });
     return Array.from(names).sort();
-  }, [ninQuery.data]);
+  }, [advancedQuery.data]);
 
   const channelNames = useMemo(() => {
     const values = new Set<string>();
-    ninQuery.data?.forEach((shipment) => 
+    advancedQuery.data?.forEach((shipment) => 
       shipment.deliveryAttempts.forEach((attempt) => { if (attempt.channel) values.add(attempt.channel); })
     );
     return Array.from(values).sort();
-  }, [ninQuery.data]);
+  }, [advancedQuery.data]);
 
   const resultNames = useMemo(() => {
     const values = new Set<string>();
-    ninQuery.data?.forEach((shipment) =>
+    advancedQuery.data?.forEach((shipment) =>
       shipment.deliveryAttempts.forEach((attempt) => { if (attempt.result) values.add(attempt.result); })
     );
     return Array.from(values).sort();
-  }, [ninQuery.data]);
+  }, [advancedQuery.data]);
 
   const resourceIds = useMemo(() => {
     const values = new Set<string>();
-    ninQuery.data?.forEach((shipment) => { if (shipment.resourceId) values.add(shipment.resourceId); });
+    advancedQuery.data?.forEach((shipment) => { if (shipment.resourceId) values.add(shipment.resourceId); });
     return Array.from(values).sort();
-  }, [ninQuery.data]);
+  }, [advancedQuery.data]);
 
   useEffect(() => {
-    if (!ninQuery.data) return;
+    if (!advancedQuery.data) return;
     setSelectedCreators((prev) => prev.filter((value) => creatorNames.includes(value)));
     setSelectedChannels((prev) => prev.filter((value) => channelNames.includes(value)));
     setSelectedResults((prev) => prev.filter((value) => resultNames.includes(value)));
     setSelectedResources((prev) => prev.filter((value) => resourceIds.includes(value)));
   }, [
-    ninQuery.data, 
+    advancedQuery.data, 
     creatorNames, 
     channelNames, 
     resultNames, 
@@ -119,9 +119,9 @@ export const NotificationPage = () => {
   ]);
 
   const filteredShipments = useMemo(() => {
-    if (!ninQuery.data) return ninQuery.data;
+    if (!advancedQuery.data) return advancedQuery.data;
     const reference = sendersReferenceFilter.trim().toLowerCase();
-    return ninQuery.data.filter((shipment) => {
+    return advancedQuery.data.filter((shipment) => {
       if (selectedCreators.length > 0 && !(shipment.creatorName && selectedCreators.includes(shipment.creatorName))) return false;
       if ((selectedChannels.length > 0 || selectedResults.length > 0 ) && 
         !shipment.deliveryAttempts.some((attempt) =>
@@ -133,7 +133,7 @@ export const NotificationPage = () => {
       if (reference && !(shipment.sendersReference && shipment.sendersReference.toLowerCase().includes(reference))) return false;
       return true;
     })
-  }, [ninQuery.data, selectedCreators, selectedChannels, selectedResults, selectedResources, sendersReferenceFilter]);
+  }, [advancedQuery.data, selectedCreators, selectedChannels, selectedResults, selectedResources, sendersReferenceFilter]);
 
   return (
     <div className={style.container}>
@@ -208,9 +208,9 @@ export const NotificationPage = () => {
         <Alert data-color="info">No shipments found.</Alert>
       )}
 
-      {!ninQuery.isFetching && !ninQuery.isError && searchType === "advanced" && ninQuery.data && filteredShipments?.length === 0 && (
+      {!advancedQuery.isFetching && !advancedQuery.isError && searchType === "advanced" && advancedQuery.data && filteredShipments?.length === 0 && (
         <Alert data-color="info">
-          {ninQuery.data.length === 0
+          {advancedQuery.data.length === 0
             ? "No shipments found."
             : "No shipments found for the selected filter(s)."
           }
