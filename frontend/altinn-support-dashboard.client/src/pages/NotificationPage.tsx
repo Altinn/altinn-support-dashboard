@@ -8,19 +8,9 @@ import { showPopup } from "../components/Popup";
 import { useAppStore } from "../stores/Appstore";
 import NotificationShipmentCard from "../components/Notification/NIN-search/NotificationShipmentCard";
 import NotificationFilterDropdown from "../components/Notification/NotificationFilterDropdown";
+import usePersistedArray from "../hooks/usePersistedArray";
 
 type SearchType = "shipmentId" | "advanced";
-
-function usePersistedArray(key: string) {
-  const [value, setValue] = useState<string[]>(() => {
-    const saved = sessionStorage.getItem(key);
-    return saved ? JSON.parse(saved) : [];
-  });
-  useEffect(() => {
-    sessionStorage.setItem(key, JSON.stringify(value));
-  }, [key, value]);
-  return [value, setValue] as const;
-}
 
 const toggleValue = (
   setter: React.Dispatch<React.SetStateAction<string[]>>,
