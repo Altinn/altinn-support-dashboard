@@ -7,14 +7,17 @@ import { colorMap } from "../notificationColorMap";
 type NotificationShipemntCardProps = {
     shipment: NotificationShipmentResponse
     selectedResults?: string[]
+    selectedChannels?: string[]
 };
 
 const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
     shipment,
     selectedResults = [],
+    selectedChannels = [],
 }) => {
-    const deliveryAttempts = (shipment.deliveryAttempts ?? []).filter(
-        (attempt) => selectedResults.length === 0 || (attempt.result && selectedResults.includes(attempt.result))
+    const deliveryAttempts = (shipment.deliveryAttempts ?? []).filter((attempt) => 
+        (selectedResults.length === 0 || (attempt.result && selectedResults.includes(attempt.result))) &&
+        (selectedChannels.length === 0 || (attempt.channel && selectedChannels.includes(attempt.channel)))
     )
     return(
         <Card data-color="neutral" className={styles.card}>

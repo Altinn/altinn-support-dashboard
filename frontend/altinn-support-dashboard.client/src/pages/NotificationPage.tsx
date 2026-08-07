@@ -90,7 +90,9 @@ export const NotificationPage = () => {
 
   const channelNames = useMemo(() => {
     const values = new Set<string>();
-    ninQuery.data?.forEach((shipment) => { if (shipment.notificationChannel) values.add(shipment.notificationChannel); });
+    ninQuery.data?.forEach((shipment) => 
+      shipment.deliveryAttempts.forEach((attempt) => { if (attempt.channel) values.add(attempt.channel); })
+    );
     return Array.from(values).sort();
   }, [ninQuery.data]);
 
@@ -131,7 +133,11 @@ export const NotificationPage = () => {
     const reference = sendersReferenceFilter.trim().toLowerCase();
     return ninQuery.data.filter((shipment) => {
       if (selectedCreators.length > 0 && !(shipment.creatorName && selectedCreators.includes(shipment.creatorName))) return false;
-      if (selectedChannels.length > 0 && !(shipment.notificationChannel && selectedChannels.includes(shipment.notificationChannel))) return false;
+      if ((selectedChannels.length > 0 || selectedResults.length > 0 ) && 
+        !shipment.deliveryAttempts.some((attempt) =>
+          (selectedChannels.length === 0 || (attempt.channel && selectedChannels.includes(attempt.channel))) &&
+          (selectedResults.length === 0 || (attempt.result && selectedResults.includes(attempt.result)))
+      )) return false;
       if (selectedResults.length > 0 && !shipment.deliveryAttempts.some((attempt) => attempt.result && selectedResults.includes(attempt.result))) return false;
       if (selectedResources.length > 0 && !(shipment.resourceId && selectedResources.includes(shipment.resourceId))) return false;
       if (reference && !(shipment.sendersReference && shipment.sendersReference.toLowerCase().includes(reference))) return false;
@@ -197,12 +203,6 @@ export const NotificationPage = () => {
             selected={selectedResources}
             onToggle={(value) => toggleValue(setSelectedResources, value )}
           />
-          <Textfield
-            label="Sender's reference"
-            value={sendersReferenceFilter}
-            onChange={(e) => setSendersReferenceFilter(e.target.value)}
-            className={style.sendersReferenceFilter}
-          />
         </div>
       )}
 
@@ -236,7 +236,7 @@ export const NotificationPage = () => {
 
       {searchType === "advanced" &&
         filteredShipments?.map((shipment, i) => (
-          <NotificationShipmentCard key={i} shipment={shipment} selectedResults={selectedResults} />
+          <NotificationShipmentCard key={i} shipment={shipment} selectedResults={selectedResults} selectedChannels = {selectedChannels} />
         ))}
     </div>
   );
