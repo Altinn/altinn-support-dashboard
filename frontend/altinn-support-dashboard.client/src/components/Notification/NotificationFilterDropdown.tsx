@@ -1,6 +1,7 @@
 import { Checkbox, Dropdown } from "@digdir/designsystemet-react";
 import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
 import { useState } from "react";
+import style from "./styles/NotificationFilterDropdown.module.css";
 
 
 
@@ -31,10 +32,11 @@ const NotificationFilterDropdown: React.FC<NotificationFilterDropdownProps> = ({
                 placement="bottom-start"
                 onOpen={() => setIsOpen(true)}
                 onClose={() => setIsOpen(false)}
+                className={style.dropdown}
             >
-                <Dropdown.List>
+                <Dropdown.List className={style.list}>
                     {options.map((option) => (
-                        <Dropdown.Item key={option}>
+                        <Dropdown.Item key={option} className={style.item}>
                             <Checkbox
                                 label={option}
                                 checked={selected.includes(option)}
