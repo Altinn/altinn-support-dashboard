@@ -236,7 +236,7 @@ export const NotificationPage = () => {
 
       {searchType === "advanced" &&
         filteredShipments?.map((shipment, i) => (
-          <NotificationShipmentCard key={i} shipment={shipment} />
+          <NotificationShipmentCard key={i} shipment={shipment} selectedResults={selectedResults} />
         ))}
     </div>
   );
