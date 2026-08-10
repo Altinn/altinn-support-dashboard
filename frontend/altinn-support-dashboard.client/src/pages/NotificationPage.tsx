@@ -9,6 +9,7 @@ import { useAppStore } from "../stores/Appstore";
 import NotificationShipmentCard from "../components/Notification/NIN-search/NotificationShipmentCard";
 import NotificationFilterDropdown from "../components/Notification/NotificationFilterDropdown";
 import usePersistedArray from "../hooks/usePersistedArray";
+import { collectUnique } from "../utils/utils";
 
 type SearchType = "shipmentId" | "advanced";
 
@@ -66,33 +67,17 @@ export const NotificationPage = () => {
     }
   }, [activeQuery]);
 
-  const creatorNames = useMemo(() => {
-    const names = new Set<string>();
-    advancedQuery.data?.forEach((shipment) => { if (shipment.creatorName) names.add(shipment.creatorName); });
-    return Array.from(names).sort();
-  }, [advancedQuery.data]);
-
-  const channelNames = useMemo(() => {
-    const values = new Set<string>();
-    advancedQuery.data?.forEach((shipment) => 
-      shipment.deliveryAttempts.forEach((attempt) => { if (attempt.channel) values.add(attempt.channel); })
-    );
-    return Array.from(values).sort();
-  }, [advancedQuery.data]);
-
-  const resultNames = useMemo(() => {
-    const values = new Set<string>();
-    advancedQuery.data?.forEach((shipment) =>
-      shipment.deliveryAttempts.forEach((attempt) => { if (attempt.result) values.add(attempt.result); })
-    );
-    return Array.from(values).sort();
-  }, [advancedQuery.data]);
-
-  const resourceIds = useMemo(() => {
-    const values = new Set<string>();
-    advancedQuery.data?.forEach((shipment) => { if (shipment.resourceId) values.add(shipment.resourceId); });
-    return Array.from(values).sort();
-  }, [advancedQuery.data]);
+  const [creatorNames, channelNames, resultNames, resourceIds] = useMemo(
+    () =>
+      collectUnique(
+        advancedQuery.data,
+        (shipment) => shipment.creatorName,
+        (shipment) => shipment.deliveryAttempts.map((attempt) => attempt.channel),
+        (shipment) => shipment.deliveryAttempts.map((attempt) => attempt.result),
+        (shipment) => shipment.resourceId,
+      ),
+    [advancedQuery.data]
+  );
 
   useEffect(() => {
     if (!advancedQuery.data) return;

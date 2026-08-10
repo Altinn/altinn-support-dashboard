@@ -74,6 +74,22 @@ export function capitalizeFirstCharacter(word: string) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
+export function collectUnique<T>(
+  items: T[] | null | undefined,
+  ...extractors: Array<(item: T) => string | (string | undefined)[] | undefined>
+): string[][] {
+  const sets = extractors.map(() => new Set<string>());
+  items?.forEach((item) => {
+    extractors.forEach((extract, i) => {
+      const value = extract(item);
+      if (!value) return;
+      if (Array.isArray(value)) value.forEach((v) => v && sets[i].add(v));
+      else sets[i].add(value);
+    });
+  });
+  return sets.map((s) => Array.from(s).sort());
+}
+
 export function filterUserClaims(user: any, claimType: string) {
   return user.user_claims.find(
     (claim: { typ: string; val: string }) => claim.typ === claimType
