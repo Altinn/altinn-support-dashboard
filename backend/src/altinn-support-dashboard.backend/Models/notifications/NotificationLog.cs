@@ -2,13 +2,13 @@ namespace Models.notifications;
 
 public class NotificationLog
 {
-    public required string notificationId { get; set; }
-    public required string dialogId { get; set; }
-    public required string transmissionId { get; set; }
-    public required string type { get; set; }
-    public required string channel { get; set; }
-    public required string destination { get; set; }
-    public required string status { get; set; }
-    public required DateTime requestedSendTime { get; set; }
-    public required DateTime lastUpdateTime { get; set; }
+    public required string NotificationId { get; set; }
+    public required string DialogId { get; set; }
+    public required string TransmissionId { get; set; }
+    public required string Type { get; set; }
+    public required string Channel { get; set; }
+    public required string Destination { get; set; }
+    public required string Status { get; set; }
+    public required DateTime RequestedSendTime { get; set; }
+    public required DateTime LastUpdateTime { get; set; }
 }

@@ -34,4 +34,13 @@ public static class NotificationSearchTelemetryExtensions
     {
         telemetry.TrackSearch(FeatureArea, "partyUuid", userId, environment, new Dictionary<string, string> { { "partyUuid", partyUuid } });
     }
+
+    public static void TrackNotificationLogSearch(this ITelemetryService telemetry, string? dialogId, string? transimissionId, string userId, string environment)
+    {
+        var extra = new Dictionary<string, string>();
+        if (dialogId != null) extra.Add("dialogId", dialogId);
+        if (transimissionId != null) extra.Add("transmissionId", transimissionId);
+
+        telemetry.TrackSearch(FeatureArea, "notificationLog", userId, environment, extra);
+    }
 }
