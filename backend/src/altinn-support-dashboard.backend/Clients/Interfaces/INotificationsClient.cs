@@ -4,5 +4,4 @@ public interface INotificationsClient
     Task<string> GetSmsNotificationsByOrderId(string orderId, string environmentName);
     Task<string> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to, string environmentName);
     Task<string> GetFutureNotificationsByOrgNr(string orgNr, DateTime? from, DateTime? to, string environmentName);
-    Task<string> GetNotificationLog(string? dialogId, string? transmissionId, string environmentName);
 }
