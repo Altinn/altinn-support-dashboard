@@ -13,6 +13,7 @@ import {
   fetchNotificationAddresses,
   fetchNotificationAvailability,
   fetchNotificationByOrderId,
+  fetchNotificationLog,
   fetchNotificationsAdvancedSearch,
   fetchOrganizations,
   fetchPersonalContacts,
@@ -280,6 +281,21 @@ export function useRoleDefinitions(environment: string) {
     queryKey: ["roleDefinitions", environment],
     queryFn: () => fetchRoleDefinitions(environment),
     staleTime: 24 * 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useNotificationLog(
+  dialogId: string,
+  transmissionId: string,
+  environment: string
+) {
+  return useQuery({
+    queryKey: ["notificationLog", dialogId, transmissionId, environment],
+    queryFn: () => fetchNotificationLog(environment, dialogId, transmissionId),
+    enabled: !!dialogId || !!transmissionId,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 }

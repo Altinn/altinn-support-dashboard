@@ -87,6 +87,9 @@ const App: React.FC = () => {
                   path="/resourcesearch"
                   element={<ResourceSearchPage />}
                 />
+                <Route
+                  path="/notification-log"
+                />
               </Route>
             </Routes>
           </main>

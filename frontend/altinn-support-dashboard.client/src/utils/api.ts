@@ -12,6 +12,7 @@ import {
 import {
   NotificationAvailabilityRequest,
   NotificationAvailabilityResponse,
+  NotificationLog,
   NotificationOrderResponse,
   NotificationShipmentResponse,
 } from "../models/notificationModels";
@@ -323,3 +324,22 @@ export const fetchInternalIdsFromSsn = async (
 
   return await res.json();
 };
+
+export const  fetchNotificationLog = async (
+  environment: string,
+  dialogId?: string,
+  transmissionId?: string
+): Promise<NotificationLog[]> => {
+  const params = new URLSearchParams();
+  if (dialogId) params.append("dialogId", dialogId);
+  if(transmissionId) params.append("transmissionId", transmissionId);
+
+  const res = await fetch(
+    `${getBaseUrl(environment)}/notifications/log?${params.toString()}`
+  );
+
+  if (!res.ok){
+    throw new Error((await res.text()) || "Error fetching notification log");
+  }
+  return res.json();
+}
