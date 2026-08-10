@@ -474,7 +474,7 @@ public class Altinn3Service : IAltinn3Service
 
         var allParties = authorizedParties
             .Concat(authorizedParties.SelectMany(p => p.Subunits ?? []))
-            .Where(p => p.AuthorizedAccessPackages != null && p.AuthorizedAccessPackages.Count > 0)
+            .Where(p => (p.AuthorizedAccessPackages != null && p.AuthorizedAccessPackages.Count > 0) || (p.AuthorizedRoles != null && p.AuthorizedRoles.Count > 0) || (p.AuthorizedResources != null && p.AuthorizedResources.Count > 0))
             .ToList();
 
         return allParties.Select(p =>
