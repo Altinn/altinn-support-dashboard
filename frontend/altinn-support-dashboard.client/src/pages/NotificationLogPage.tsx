@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppStore } from "../stores/Appstore"
 
 
@@ -10,4 +10,12 @@ export const NotificationLogPage = () => {
         () => sessionStorage.getItem("notif_log_dialogId") || ""
     );
     
+    const [transmissionIs, setTransmissionId] = useState(
+        () => sessionStorage.getItem("notif_log_transmissionId") || ""
+    );
+
+    const [submittedDialogId, setSubmittedDialogId] = useState("");
+    const [submittedTransmissionId, setSubmittedTransmissionId] = useState("");
+
+    useEffect(() => { sessionStorage})
 }
