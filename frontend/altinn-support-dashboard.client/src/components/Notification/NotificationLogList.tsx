@@ -18,5 +18,21 @@ const NotificationLogList: React.FC<NotificationLogListProps> = ({ entries }) =>
             <Table.HeaderCell>Ønsket sendetidspunkt</Table.HeaderCell>
             <Table.HeaderCell>Sist oppdatert</Table.HeaderCell>
         </Table.Head>
+        <Table.Body>
+            {entries.map((e) => (
+                <Table.Row key= {e.notificationId}>
+                    <Table.Cell>{e.dialogId}</Table.Cell>
+                    <Table.Cell>{e.transmissionId}</Table.Cell>
+                    <Table.Cell>{e.type}</Table.Cell>
+                    <Table.Cell>{e.channel}</Table.Cell>
+                    <Table.Cell>{e.destination}</Table.Cell>
+                    <Table.Cell>{e.status}</Table.Cell>
+                    <Table.Cell>{new Date(e.requestedSendTime).toLocaleString()}</Table.Cell>
+                    <Table.Cell>{new Date(e.lastUpdateTime).toLocaleString()}</Table.Cell>
+                </Table.Row>
+            ))}
+        </Table.Body>
     </Table>
-)
+);
+
+export default NotificationLogList;
