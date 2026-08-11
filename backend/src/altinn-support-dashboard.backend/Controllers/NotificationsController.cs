@@ -170,7 +170,7 @@ public class NotificationsController : ControllerBase
 
     [HttpGet("log")]
     public async Task<IActionResult> GetNotificationLog(
-        [FromRoute] string environmenName,
+        [FromRoute] string environmentName,
         [FromQuery] string? dialogId,
         [FromQuery] string? transmissionId)
     {
@@ -189,9 +189,9 @@ public class NotificationsController : ControllerBase
             return BadRequest("transmissionId is not a valid guid");
         }
 
-        _telemetryService.TrackNotificationLogSearch(dialogId, transmissionId, CurrentUserId, environmenName);
+        _telemetryService.TrackNotificationLogSearch(dialogId, transmissionId, CurrentUserId, environmentName);
 
-        var response = await _service.GetNotificationLogsAsync(dialogId, transmissionId, environmenName);
+        var response = await _service.GetNotificationLogsAsync(dialogId, transmissionId, environmentName);
         return Ok(response);
     }
 }
