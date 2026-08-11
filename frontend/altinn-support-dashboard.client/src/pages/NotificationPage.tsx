@@ -1,4 +1,4 @@
-import { Alert, Checkbox, Dropdown, Heading, Skeleton, ToggleGroup } from "@digdir/designsystemet-react";
+import { Alert, Heading, Skeleton, ToggleGroup } from "@digdir/designsystemet-react";
 import { useEffect, useMemo, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
 import { useNotifications, useNotificationsAdvanced } from "../hooks/hooks";
@@ -7,9 +7,20 @@ import style from "./styles/NotificationPage.module.css";
 import { showPopup } from "../components/Popup";
 import { useAppStore } from "../stores/Appstore";
 import NotificationShipmentCard from "../components/Notification/NIN-search/NotificationShipmentCard";
-import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
+import NotificationFilterDropdown from "../components/Notification/NotificationFilterDropdown";
+import usePersistedArray from "../hooks/usePersistedArray";
+import { collectUnique } from "../utils/utils";
 
 type SearchType = "shipmentId" | "advanced";
+
+const toggleValue = (
+  setter: React.Dispatch<React.SetStateAction<string[]>>,
+  value: string,
+) => {
+  setter((prev) =>
+    prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+  );
+}
 
 export const NotificationPage = () => {
   const environment = useAppStore((state) => state.environment);
@@ -26,32 +37,29 @@ export const NotificationPage = () => {
   const [dateTo, setDateTo] = useState(
     () => sessionStorage.getItem("notif_dateTo") || ""
   );
-  const [selectedCreators, setSelectedCreators] = useState<string[]>(() => {
-    const saved = sessionStorage.getItem("notif_selectedCreators");
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [isCreatorFilterOpen, setIsCreatorFilterOpen] = useState(false);
+  
+  const [selectedCreators, setSelectedCreators] = usePersistedArray("notif_selectedCreators");
+  const  [selectedChannels, setSelectedChannels] = usePersistedArray("notif_selectedChannels");
+  const [selectedResults, setSelectedResults] = usePersistedArray("notif_selectedResults");
+  const [selectedResources, setSelectedResources] = usePersistedArray("notif_selectedResources");
 
   useEffect(() => { sessionStorage.setItem("notif_searchType", searchType); }, [searchType]);
   useEffect(() => { sessionStorage.setItem("notif_searchValue", searchValue); }, [searchValue]);
   useEffect(() => { sessionStorage.setItem("notif_dateFrom", dateFrom); }, [dateFrom]);
   useEffect(() => { sessionStorage.setItem("notif_dateTo", dateTo); }, [dateTo]);
-  useEffect(() => {
-    sessionStorage.setItem("notif_selectedCreators", JSON.stringify(selectedCreators));
-  }, [selectedCreators]);
 
   const orderQuery = useNotifications(
     searchType === "shipmentId" ? searchValue : "",
     environment
   );
-  const ninQuery = useNotificationsAdvanced(
+  const advancedQuery = useNotificationsAdvanced(
     searchType === "advanced" ? searchValue : "",
     environment,
     dateFrom || undefined,
     dateTo || undefined
   );
 
-  const activeQuery = searchType === "shipmentId" ? orderQuery : ninQuery;
+  const activeQuery = searchType === "shipmentId" ? orderQuery : advancedQuery;
 
   useEffect(() => {
     if (activeQuery?.isError) {
@@ -59,28 +67,50 @@ export const NotificationPage = () => {
     }
   }, [activeQuery]);
 
-  const creatorNames = useMemo(() => {
-    const names = new Set<string>();
-    ninQuery.data?.forEach((shipment) => { if (shipment.creatorName) names.add(shipment.creatorName); });
-    return Array.from(names).sort();
-  }, [ninQuery.data]);
+  const [creatorNames, channelNames, resultNames, resourceIds] = useMemo(
+    () =>
+      collectUnique(
+        advancedQuery.data,
+        (shipment) => shipment.creatorName,
+        (shipment) => shipment.deliveryAttempts.map((attempt) => attempt.channel),
+        (shipment) => shipment.deliveryAttempts.map((attempt) => attempt.result),
+        (shipment) => shipment.resourceId,
+      ),
+    [advancedQuery.data]
+  );
 
   useEffect(() => {
-    if (!ninQuery.data) return;
-    setSelectedCreators((prev) => prev.filter((creator) => creatorNames.includes(creator)));
-  }, [creatorNames, ninQuery.data]);
+    if (!advancedQuery.data) return;
+    setSelectedCreators((prev) => prev.filter((value) => creatorNames.includes(value)));
+    setSelectedChannels((prev) => prev.filter((value) => channelNames.includes(value)));
+    setSelectedResults((prev) => prev.filter((value) => resultNames.includes(value)));
+    setSelectedResources((prev) => prev.filter((value) => resourceIds.includes(value)));
+  }, [
+    advancedQuery.data, 
+    creatorNames, 
+    channelNames, 
+    resultNames, 
+    resourceIds,
+    setSelectedCreators,
+    setSelectedChannels,
+    setSelectedResults,
+    setSelectedResources
+  ]);
 
   const filteredShipments = useMemo(() => {
-    if (!ninQuery.data) return ninQuery.data;
-    if (selectedCreators.length === 0) return ninQuery.data;
-    return ninQuery.data.filter((shipment) => shipment.creatorName ? selectedCreators.includes(shipment.creatorName) : false);
-  }, [ninQuery.data, selectedCreators]);
-
-  const toggleCreator = (name: string) => {
-    setSelectedCreators((prev) =>
-      prev.includes(name) ? prev.filter((creator) => creator !== name) : [...prev, name]
-    );
-  };
+    if (!advancedQuery.data) return advancedQuery.data;
+    return advancedQuery.data.filter((shipment) => {
+      if (selectedCreators.length > 0 && !(shipment.creatorName && selectedCreators.includes(shipment.creatorName))) return false;
+      if ((selectedChannels.length > 0 || selectedResults.length > 0 ) && 
+        !shipment.deliveryAttempts.some((attempt) =>
+          (selectedChannels.length === 0 || (attempt.channel && selectedChannels.includes(attempt.channel))) &&
+          (selectedResults.length === 0 || (attempt.result && selectedResults.includes(attempt.result)))
+      )) return false;
+      if (selectedResults.length > 0 && !shipment.deliveryAttempts.some((attempt) => attempt.result && selectedResults.includes(attempt.result))) return false;
+      if (selectedResources.length > 0 && !(shipment.resourceId && selectedResources.includes(shipment.resourceId))) return false;
+      return true;
+    })
+  }, [advancedQuery.data, selectedCreators, selectedChannels, selectedResults, selectedResources]);
 
   return (
     <div className={style.container}>
@@ -115,32 +145,31 @@ export const NotificationPage = () => {
       />
 
       {searchType === "advanced" && creatorNames.length > 0 && (
-        <div className={style.creatorFilter}>
-          <Dropdown.TriggerContext>
-            <Dropdown.Trigger>
-              Filter by creator
-              {selectedCreators.length > 0 ? ` (${selectedCreators.length})` : ""}
-              {isCreatorFilterOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
-            </Dropdown.Trigger>
-            <Dropdown
-              data-size="sm"
-              placement="bottom-start"
-              onOpen={() => setIsCreatorFilterOpen(true)}
-              onClose={() => setIsCreatorFilterOpen(false)}
-            >
-              <Dropdown.List>
-                {creatorNames.map((name) => (
-                  <Dropdown.Item key={name}>
-                    <Checkbox
-                      label={name}
-                      checked={selectedCreators.includes(name)}
-                      onChange={() => toggleCreator(name)}
-                    />
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.List>
-            </Dropdown>
-          </Dropdown.TriggerContext>
+        <div className={style.filterRow}>
+          <NotificationFilterDropdown
+            label="Creator"
+            options={creatorNames}
+            selected={selectedCreators}
+            onToggle={(value) => toggleValue(setSelectedCreators, value )}
+          />
+          <NotificationFilterDropdown
+            label="Channel"
+            options={channelNames}
+            selected={selectedChannels}
+            onToggle={(value) => toggleValue(setSelectedChannels, value )}
+          />
+          <NotificationFilterDropdown
+            label="Result"
+            options={resultNames}
+            selected={selectedResults}
+            onToggle={(value) => toggleValue(setSelectedResults, value )}
+          /> 
+          <NotificationFilterDropdown
+            label="Resource"
+            options={resourceIds}
+            selected={selectedResources}
+            onToggle={(value) => toggleValue(setSelectedResources, value )}
+          />
         </div>
       )}
 
@@ -156,11 +185,12 @@ export const NotificationPage = () => {
         <Alert data-color="info">No shipments found.</Alert>
       )}
 
-      {!ninQuery.isFetching && !ninQuery.isError && searchType === "advanced" && ninQuery.data && filteredShipments?.length === 0 && (
+      {!advancedQuery.isFetching && !advancedQuery.isError && searchType === "advanced" && advancedQuery.data && filteredShipments?.length === 0 && (
         <Alert data-color="info">
-          {ninQuery.data.length === 0
+          {advancedQuery.data.length === 0
             ? "No shipments found."
-            : "No shipments found for the selected creator(s)."}
+            : "No shipments found for the selected filter(s)."
+          }
         </Alert>
       )}
 
@@ -173,7 +203,7 @@ export const NotificationPage = () => {
 
       {searchType === "advanced" &&
         filteredShipments?.map((shipment, i) => (
-          <NotificationShipmentCard key={i} shipment={shipment} />
+          <NotificationShipmentCard key={i} shipment={shipment} selectedResults={selectedResults} selectedChannels = {selectedChannels} />
         ))}
     </div>
   );

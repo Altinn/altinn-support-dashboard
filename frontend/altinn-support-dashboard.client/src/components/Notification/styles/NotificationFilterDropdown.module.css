@@ -1,0 +1,15 @@
+
+.list {
+    width: max-content;
+    max-width: 90vw;
+}
+
+.item {
+    white-space: nowrap;
+}
+
+
+.dropdown {
+    width: max-content;
+    max-width: 90vw;
+}
