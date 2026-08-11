@@ -74,20 +74,19 @@ export function capitalizeFirstCharacter(word: string) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
+export function uniqueSorted<T>(
+  items: T[] | null | undefined,
+  extract: (item: T) => string | (string | undefined)[] | undefined
+): string[] {
+  const values = (items ?? []).flatMap((item) => extract(item) ?? []);
+  return Array.from(new Set(values.filter(Boolean))).sort() as string[];
+}
+
 export function collectUnique<T>(
   items: T[] | null | undefined,
   ...extractors: Array<(item: T) => string | (string | undefined)[] | undefined>
 ): string[][] {
-  const sets = extractors.map(() => new Set<string>());
-  items?.forEach((item) => {
-    extractors.forEach((extract, i) => {
-      const value = extract(item);
-      if (!value) return;
-      if (Array.isArray(value)) value.forEach((v) => v && sets[i].add(v));
-      else sets[i].add(value);
-    });
-  });
-  return sets.map((s) => Array.from(s).sort());
+  return extractors.map((extract) => uniqueSorted(items, extract));
 }
 
 export function filterUserClaims(user: any, claimType: string) {
