@@ -4,6 +4,7 @@ import { useNotificationLog } from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
 import { Alert, Button, Heading, Textfield } from "@digdir/designsystemet-react";
 import NotificationLogList from "../components/Notification/NotificationLogList";
+import style from "./styles/NotificationLogPage.module.css";
 
 
 
@@ -42,20 +43,23 @@ export const NotificationLogPage = () => {
             <Heading level={1} data-size="sm">
                 Varslingslogg
             </Heading>
-
-            <Textfield
-                label="Dialog-ID"
-                value={dialogId}
-                onChange={(e) => setDialogId(e.target.value)}
-            />
-            <Textfield
-                label="Transmission-ID"
-                value={transmissionId}
-                onChange={(e) => setTransmissionId(e.target.value)}
-            />
-            <Button onClick={handleSubmit} disabled={!dialogId && !transmissionId}>
-                Søk
-            </Button>
+            <div className={style.searchRow}>
+                <Textfield
+                    label="Dialog-ID"
+                    value={dialogId}
+                    onChange={(e) => setDialogId(e.target.value)}
+                    className={style.searchField}
+                />
+                <Textfield
+                    label="Transmission-ID"
+                    value={transmissionId}
+                    onChange={(e) => setTransmissionId(e.target.value)}
+                    className={style.searchField}
+                /> 
+                <Button onClick={handleSubmit} disabled={!dialogId && !transmissionId} className={style.searchButton}>
+                    Søk
+                </Button>   
+            </div>
 
             {!logQuery.isFetching && !logQuery.isError && logQuery.data?.length === 0 && (
                 <Alert data-color="info">No log entries found</Alert>
