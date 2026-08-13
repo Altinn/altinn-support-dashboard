@@ -179,12 +179,12 @@ public class NotificationsController : ControllerBase
             return BadRequest("At least one of dialogId or transmissionId must be provided");
         }
 
-        if (dialogId != null && !ValidationService.IsValidGuid(dialogId))
+        if (!string.IsNullOrEmpty(dialogId) && !ValidationService.IsValidGuid(dialogId))
         {
             return BadRequest("dialogId is not a valid guid");
         }
 
-        if (transmissionId != null && !ValidationService.IsValidGuid(transmissionId))
+        if (!string.IsNullOrEmpty(transmissionId) && !ValidationService.IsValidGuid(transmissionId))
         {
             return BadRequest("transmissionId is not a valid guid");
         }

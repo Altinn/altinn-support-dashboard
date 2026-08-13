@@ -19,8 +19,12 @@ export const NotificationLogPage = () => {
         () => sessionStorage.getItem("notif_log_transmissionId") || ""
     );
 
-    const [submittedDialogId, setSubmittedDialogId] = useState("");
-    const [submittedTransmissionId, setSubmittedTransmissionId] = useState("");
+    const [submittedDialogId, setSubmittedDialogId] = useState(
+        () => sessionStorage.getItem("notif_log_dialogId") || ""
+    );
+    const [submittedTransmissionId, setSubmittedTransmissionId] = useState(
+        () => sessionStorage.getItem("notif_log_transmissionId") || ""
+    );
 
     useEffect(() => { sessionStorage.setItem("notif_log_dialogId", dialogId); }, [dialogId]);
     useEffect(() => { sessionStorage.setItem("notif_log_transmissionId", transmissionId); }, [transmissionId]);
@@ -38,6 +42,12 @@ export const NotificationLogPage = () => {
         setSubmittedTransmissionId(transmissionId);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" && (dialogId || transmissionId)) {
+            handleSubmit()
+        }
+    };
+
     return (
         <div>
             <Heading level={1} data-size="sm">
@@ -48,12 +58,14 @@ export const NotificationLogPage = () => {
                     label="Dialog-ID"
                     value={dialogId}
                     onChange={(e) => setDialogId(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     className={style.searchField}
                 />
                 <Textfield
                     label="Transmission-ID"
                     value={transmissionId}
                     onChange={(e) => setTransmissionId(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     className={style.searchField}
                 /> 
                 <Button onClick={handleSubmit} disabled={!dialogId && !transmissionId} className={style.searchButton}>

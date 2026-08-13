@@ -334,7 +334,7 @@ export const  fetchNotificationLog = async (
   if (dialogId) params.append("dialogId", dialogId);
   if(transmissionId) params.append("transmissionId", transmissionId);
 
-  const res = await fetch(
+  const res = await authorizedFetch(
     `${getBaseUrl(environment)}/notifications/log?${params.toString()}`
   );
 
