@@ -38,14 +38,17 @@ export const NotificationLogPage = () => {
     }, [logQuery.isError, logQuery.error]);
 
     const handleSubmit = () => {
-        setSubmittedDialogId(dialogId);
-        setSubmittedTransmissionId(transmissionId);
+        const trimmedDialogId = dialogId.trim();
+        const trimmedTransmissionId = transmissionId.trim();
+
+        setSubmittedDialogId(trimmedDialogId);
+        setSubmittedTransmissionId(trimmedTransmissionId);
         sessionStorage.setItem("notif_log_submittedDialogId", dialogId);
         sessionStorage.setItem("notif_log_submittedTransmissionId", transmissionId);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter" && (dialogId || transmissionId)) {
+        if (e.key === "Enter" && (dialogId.trim() || transmissionId.trim())) {
             handleSubmit()
         }
     };
@@ -70,7 +73,7 @@ export const NotificationLogPage = () => {
                     onKeyDown={handleKeyDown}
                     className={style.searchField}
                 /> 
-                <Button onClick={handleSubmit} disabled={!dialogId && !transmissionId} className={style.searchButton}>
+                <Button onClick={handleSubmit} disabled={!dialogId.trim() && !transmissionId.trim()} className={style.searchButton}>
                     Søk
                 </Button>   
             </div>
