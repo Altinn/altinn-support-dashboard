@@ -10,6 +10,7 @@ import {
   fetchAuthorizedParties,
   fetchERoles,
   fetchInternalIds,
+  fetchMaskinportenDelegations,
   fetchNotificationAddresses,
   fetchNotificationAvailability,
   fetchNotificationByOrderId,
@@ -41,6 +42,7 @@ import {
   RolesAndRightsRequest,
 } from "../models/rolesModels";
 import { Altinn2Role, PolicyRule, Resource } from "../models/resourceModels";
+import { MaskinportenDelegation } from "../models/delegationModels";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -274,6 +276,23 @@ export function useResourceWithPolicies(
   });
 
   return { resourceQuery, policyRulesQuery };
+}
+
+export function useMaskinportenDelegations(
+  environment: string,
+  supplierOrg?: string,
+  consumerOrg?: string,
+  scope?: string
+) {
+  return useQuery<MaskinportenDelegation[], Error>({
+    queryKey: ["maskinportenDelegations", environment, supplierOrg, consumerOrg, scope],
+    queryFn: () =>
+      fetchMaskinportenDelegations(environment, supplierOrg!, consumerOrg!, scope),
+    enabled: !!supplierOrg && !!consumerOrg,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 }
 
 export function useRoleDefinitions(environment: string) {

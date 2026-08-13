@@ -6,12 +6,21 @@ import { colorMap } from "../notificationColorMap";
 
 type NotificationShipemntCardProps = {
     shipment: NotificationShipmentResponse
+    selectedResults?: string[]
+    selectedChannels?: string[]
 };
 
 const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
-    shipment
-}) => (
-    <Card data-color="neutral" className={styles.card}>
+    shipment,
+    selectedResults = [],
+    selectedChannels = [],
+}) => {
+    const deliveryAttempts = (shipment.deliveryAttempts ?? []).filter((attempt) => 
+        (selectedResults.length === 0 || (attempt.result && selectedResults.includes(attempt.result))) &&
+        (selectedChannels.length === 0 || (attempt.channel && selectedChannels.includes(attempt.channel)))
+    )
+    return(
+        <Card data-color="neutral" className={styles.card}>
         <Paragraph className={styles.paragraph}><strong>Shipment Id:</strong> {shipment.shipmentId}</Paragraph>
         <Paragraph className={styles.paragraph}><strong>Creator name:</strong> {shipment.creatorName}</Paragraph>
         <Paragraph className={styles.paragraph}><strong>Senders reference:</strong> {shipment.sendersReference}</Paragraph>
@@ -30,7 +39,7 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
                 </Table.Row>
             </Table.Head>
             <Table.Body>
-                {(shipment.deliveryAttempts ?? []).map((attempt, index) => (
+                {deliveryAttempts.map((attempt, index) => (
                     <Table.Row key={index}>
                         <Table.Cell>{attempt.channel === "email" ? "E-post" : "SMS"}</Table.Cell>
                         <Table.Cell>{attempt.emailAddress ?? attempt.mobileNumber}</Table.Cell>
@@ -50,6 +59,7 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
             </Table.Body>
         </Table>
     </Card>
-)
+    )
+}
 
 export default NotificationShipmentCard;

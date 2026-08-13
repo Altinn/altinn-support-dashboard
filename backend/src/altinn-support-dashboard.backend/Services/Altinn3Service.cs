@@ -474,7 +474,7 @@ public class Altinn3Service : IAltinn3Service
 
         var allParties = authorizedParties
             .Concat(authorizedParties.SelectMany(p => p.Subunits ?? []))
-            .Where(p => p.AuthorizedAccessPackages != null && p.AuthorizedAccessPackages.Count > 0)
+            .Where(p => (p.AuthorizedAccessPackages != null && p.AuthorizedAccessPackages.Count > 0) || (p.AuthorizedRoles != null && p.AuthorizedRoles.Count > 0) || (p.AuthorizedResources != null && p.AuthorizedResources.Count > 0))
             .ToList();
 
         return allParties.Select(p =>
@@ -677,6 +677,13 @@ public class Altinn3Service : IAltinn3Service
                 string.Equals(p.Urn?.Replace(accessPackageUrnPrefix, ""), urn, StringComparison.OrdinalIgnoreCase));
             return match?.Name ?? urn;
         }).ToList();
+    }
+
+    public async Task<List<MaskinportenDelegationDto>> GetMaskinportenDelegations(string? supplierOrg, string? consumerOrg, string? scope, string environmentName)
+    {
+        var result = await _client.GetMaskinportenDelegations(supplierOrg, consumerOrg, scope, environmentName);
+        return JsonSerializer.Deserialize<List<MaskinportenDelegationDto>>(result)
+            ?? throw new Exception("Failed to deserialize maskinporten delegations");
     }
 
 }
