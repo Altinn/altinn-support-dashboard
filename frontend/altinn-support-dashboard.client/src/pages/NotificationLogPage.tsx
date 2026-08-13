@@ -20,10 +20,10 @@ export const NotificationLogPage = () => {
     );
 
     const [submittedDialogId, setSubmittedDialogId] = useState(
-        () => sessionStorage.getItem("notif_log_dialogId") || ""
+        () => sessionStorage.getItem("notif_log_submittedDialogId") || ""
     );
     const [submittedTransmissionId, setSubmittedTransmissionId] = useState(
-        () => sessionStorage.getItem("notif_log_transmissionId") || ""
+        () => sessionStorage.getItem("notif_log_submittedTransmissionId") || ""
     );
 
     useEffect(() => { sessionStorage.setItem("notif_log_dialogId", dialogId); }, [dialogId]);
@@ -40,6 +40,8 @@ export const NotificationLogPage = () => {
     const handleSubmit = () => {
         setSubmittedDialogId(dialogId);
         setSubmittedTransmissionId(transmissionId);
+        sessionStorage.setItem("notif_log_submittedDialogId", dialogId);
+        sessionStorage.setItem("notif_log_submittedTransmissionId", transmissionId);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
