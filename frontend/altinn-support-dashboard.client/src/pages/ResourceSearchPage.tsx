@@ -5,16 +5,22 @@ import {ResourceSearchSearchBar} from "../components/ResourceSearch/ResourceSear
 import { ResourceSearchList } from "../components/ResourceSearch/ResourceSearchList";
 import styles from "./styles/ResourceSearchPage.module.css"
 import ResourceSearchDetailedView from "../components/ResourceSearch/ResourceSearchDetailedView";
+import { useResourceSearchStore } from "../stores/ResourceSearchStore";
 
 
 export const ResourceSearchPage = () => {
-  const [query, setQuery] = useState("");
-  const [selectedResource, setSelectedResource] =
-    useState<ResourceSearchResult | null>(null);
-  
-  const [onlyDelegable, setOnlyDelegable] = useState(false);
-  const [onlyVisible, setOnlyVisible] = useState(false);
-  const [onlyAltinnApp, setOnlyAltinnApp] = useState(false);
+  const query = useResourceSearchStore((s) => s.query);
+  const setQuery = useResourceSearchStore((s) => s.setQuery);
+  const textFieldValue = useResourceSearchStore((s) => s.textFieldValue);
+  const setTextFieldValue = useResourceSearchStore((s) => s.setTextFieldValue);
+  const selectedResource = useResourceSearchStore((s) => s.selectedResource);
+  const setSelectedResource = useResourceSearchStore((s) => s.setSelectedResource);
+  const onlyDelegable = useResourceSearchStore((s) => s.onlyDelegable);
+  const setOnlyDelegable = useResourceSearchStore((s) => s.setOnlyDelegable);
+  const onlyVisible = useResourceSearchStore((s) => s.onlyVisible);
+  const setOnlyVisible = useResourceSearchStore((s) => s.setOnlyVisible);
+  const onlyAltinnApp = useResourceSearchStore((s) => s.onlyAltinnApp);
+  const setOnlyAltinnApp = useResourceSearchStore((s) => s.setAltinnApp);
 
   return (
     <div className={styles.pageContainer}>
