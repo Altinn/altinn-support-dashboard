@@ -8,7 +8,7 @@ public class DialogDto
 	public required ServiceResourceDto ServiceResource { get; set; }
 	public required ServiceOwnerDto ServiceOwner { get; set; }
 	public required List<ResourceNameDto> Title { get; set; }
-	public required List<ResourceNameDto> NonSensetiveTitle { get; set; }
+	public List<ResourceNameDto>? NonSensetiveTitle { get; set; }
 
 }
 
