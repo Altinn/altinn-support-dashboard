@@ -26,7 +26,8 @@ public class DialogportenClient : IDialogportenClient
     public async Task<string> GetDialogById(string urn, string environmentName)
     {
         var client = _clients[environmentName];
-        var response = await client.GetAsync($"/api/v1/serviceowner/dialoglookup?instanceRef={urn}");
+        _logger.LogDebug(urn);
+        var response = await client.GetAsync($"dialogporten/api/v1/serviceowner/dialoglookup?instanceRef={urn}");
         var responseBody = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
@@ -39,5 +40,4 @@ public class DialogportenClient : IDialogportenClient
 
         return responseBody;
     }
-
 }
