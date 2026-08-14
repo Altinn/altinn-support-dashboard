@@ -14,7 +14,7 @@ export const ResourceSearchPage = () => {
   
   const [onlyDelegable, setOnlyDelegable] = useState(false);
   const [onlyVisible, setOnlyVisible] = useState(false);
-  const [onlyAltinnApp, setOnlyAltinnApp] = useState(true);
+  const [onlyAltinnApp, setOnlyAltinnApp] = useState(false);
 
   return (
     <div className={styles.pageContainer}>
