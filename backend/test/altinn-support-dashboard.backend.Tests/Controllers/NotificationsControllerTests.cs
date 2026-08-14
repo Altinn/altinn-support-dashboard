@@ -13,6 +13,8 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
     {
         private const string ValidOrderId = "dec90ca7-4f8d-410f-96ed-666fe019c946";
         private const string OtherValidOrderId = "11111111-2222-3333-4444-555555555555";
+        private const string ValidDialogId = "aaaaaaaa-1111-2222-3333-444444444444";
+        private const string ValidTransmissionId = "bbbbbbbb-1111-2222-3333-444444444444";
         private const string EnvironmentName = "TT02";
 
         private readonly NotificationsController _controller;
@@ -230,6 +232,94 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 EnvironmentName,
                 It.Is<IDictionary<string, string>>(d => d.ContainsKey("ninHash") && !d.Values.Contains(nin))),
                 Times.Once);
+        }
+
+        [Fact]
+        public async Task GetNotificationLog_ReturnsOk_WithServiceResult()
+        {
+            var response = new List<NotificationLog>
+            {
+                new()
+                {
+                    NotificationId = "id-1",
+                    DialogId = ValidDialogId,
+                    TransmissionId = ValidTransmissionId,
+                    Type = "Email",
+                    Channel = "Email",
+                    Destination = "test@test.no",
+                    Status = "Sent",
+                    RequestedSendTime = DateTime.UtcNow,
+                    LastUpdateTime = DateTime.UtcNow
+                }
+            };
+
+            _serviceMock.Setup(s => s.GetNotificationLogsAsync(ValidDialogId, "", EnvironmentName))
+                .ReturnsAsync(response);
+
+            var result = await _controller.GetNotificationLog(EnvironmentName, ValidDialogId, "");
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(response, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetNotificationLog_CallsService_WithCorrectParameters()
+        {
+            _serviceMock.Setup(s => s.GetNotificationLogsAsync(ValidDialogId, ValidTransmissionId, EnvironmentName))
+                .ReturnsAsync([]);
+
+            await _controller.GetNotificationLog(EnvironmentName, ValidDialogId, ValidTransmissionId);
+
+            _serviceMock.Verify(s => s.GetNotificationLogsAsync(ValidDialogId, ValidTransmissionId, EnvironmentName));
+        }
+
+        [Fact]
+        public async Task GetNotificationLog_ReturnsBadRequest_WhenNeitherIdIsProvided()
+        {
+            var result = await _controller.GetNotificationLog(EnvironmentName, "", "");
+
+            Assert.IsType<BadRequestObjectResult>(result);
+            _serviceMock.Verify(s => s.GetNotificationLogsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Theory]
+        [InlineData("not-a-guid")]
+        [InlineData("dec90ca74f8d410f96ed666fe019c94")]
+        public async Task GetNotificationLog_ReturnsBadRequest_WhenDialogIdIsNotGuid(string dialogId)
+        {
+            var result = await _controller.GetNotificationLog(EnvironmentName, dialogId, "");
+
+            Assert.IsType<BadRequestObjectResult>(result);
+            _serviceMock.Verify(s => s.GetNotificationLogsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetNotificationLog_ReturnsBadRequest_WhenTransmissionIdIsNotGuid()
+        {
+            var result = await _controller.GetNotificationLog(EnvironmentName, "", "not-a-guid");
+
+            Assert.IsType<BadRequestObjectResult>(result);
+            _serviceMock.Verify(s => s.GetNotificationLogsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetNotificationLog_AllowsEmptyDialogId_WhenTransmissionIdIsValid()
+        {
+            _serviceMock.Setup(s => s.GetNotificationLogsAsync("", ValidTransmissionId, EnvironmentName)).ReturnsAsync([]);
+
+            var result = await _controller.GetNotificationLog(EnvironmentName, "", ValidTransmissionId);
+
+            Assert.IsType<OkObjectResult>(result);
+            _serviceMock.Verify(s => s.GetNotificationLogsAsync("", ValidTransmissionId, EnvironmentName), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetNotificationLog_PropogatesException_WhenServiceThrows()
+        {
+            _serviceMock.Setup(s => s.GetNotificationLogsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ThrowsAsync(new Exception("Seervice failure"));
+
+            await Assert.ThrowsAsync<Exception>(() => _controller.GetNotificationLog(EnvironmentName, ValidDialogId, ""));
         }
     }
 }
