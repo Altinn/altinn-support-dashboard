@@ -5,14 +5,19 @@ import styles from "./CopyableField.module.css";
 
 interface CopyableFieldProps {
   label: string;
-  value: string;
+  displayValue: string;
+  copyValue?: string;
 }
 
-const CopyableField: React.FC<CopyableFieldProps> = ({ label, value }) => {
+const CopyableField: React.FC<CopyableFieldProps> = ({
+  label,
+  displayValue,
+  copyValue,
+}) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(value);
+    await navigator.clipboard.writeText(copyValue ?? displayValue);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -20,7 +25,8 @@ const CopyableField: React.FC<CopyableFieldProps> = ({ label, value }) => {
   return (
     <div className={styles.row}>
       <Paragraph className={styles.text}>
-        <strong>{label}:</strong> <span className={styles.value}>{value}</span>
+        <strong>{label}:</strong>{" "}
+        <span className={styles.value}>{displayValue}</span>
       </Paragraph>
       <Button
         variant="tertiary"

@@ -38,7 +38,6 @@ function buildUrn(idType: IdType, value: string): string | null {
     case "correspondence":
       return `urn:altinn:correspondence-id:${trimmedValue}`;
     case "instance":
-      if (!/^[1-9]\d*\/.+$/.test(trimmedValue)) return null;
       return `urn:altinn:instance-id:${trimmedValue}`;
   }
 }
@@ -48,6 +47,10 @@ const placeholderByType: Record<IdType, string> = {
   correspondence: "uuid",
   instance: "partyId/uuid",
 };
+
+function extractIdFromUrn(urn: string): string {
+  return urn.replace(/^urn:altinn:[^:]+:/, "");
+}
 
 const DialogLookupPage: React.FC = () => {
   const environment = useAppStore((state) => state.environment);
@@ -112,10 +115,14 @@ const DialogLookupPage: React.FC = () => {
 
       {data && (
         <Card className={styles.result}>
-          <CopyableField label="Dialog ID" value={data.dialogId} />
+          <CopyableField label="Dialog ID" displayValue={data.dialogId} />
           <Divider className={styles.resultDivider} />
 
-          <CopyableField label="Instance ref" value={data.instanceRef} />
+          <CopyableField
+            label="Instance ref"
+            displayValue={data.instanceRef}
+            copyValue={extractIdFromUrn(data.instanceRef)}
+          />
 
           <Divider className={styles.resultDivider} />
 

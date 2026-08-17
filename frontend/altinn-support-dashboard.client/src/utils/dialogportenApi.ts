@@ -6,7 +6,7 @@ export const fetchDialogByUrn = async (
   urn: string
 ): Promise<DialogDto> => {
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/dialogporten/dialog/${encodeURIComponent(urn)}`
+    `${getBaseUrl(environment)}/dialogporten/dialog/${urn}`
   );
 
   if (res.status === 404) throw new Error("Fant ingen dialog med denne IDen");
