@@ -1,31 +1,20 @@
 import React, { useState } from "react";
 import { Textfield, Button, Search, Checkbox } from "@digdir/designsystemet-react";
-import { ResourceSearchResult } from "../../models/resourceModels";
 import classes from "./styles/ResourceSearchSearchBar.module.css"
+import { useResourceSearchStore } from "../../stores/ResourceSearchStore";
 
-type ResourceSearchSearchBarProps = {
-  query: string;
-  setQuery: (query: string) => void;
-  setSelectedResource: (resource: ResourceSearchResult | null) => void;
-  onlyDelegable: boolean;
-  setOnlyDelegable: (value: boolean) => void;
-  onlyVisible: boolean;
-  setOnlyVisible: (value: boolean) => void;
-  onlyAltinnApp: boolean;
-  setOnlyAltinnApp: (value: boolean) => void;
-};
+export const ResourceSearchSearchBar: React.FC = ()  => {
 
-export const ResourceSearchSearchBar: React.FC<ResourceSearchSearchBarProps> = ({
-  query,
-  setQuery,
-  setSelectedResource,
-  onlyDelegable,
-  setOnlyDelegable,
-  onlyVisible,
-  setOnlyVisible,
-  onlyAltinnApp,
-  setOnlyAltinnApp
-}) => {
+  const query = useResourceSearchStore((s) => s.query);
+  const setQuery = useResourceSearchStore((s) => s.setQuery);
+  const setSelectedResource = useResourceSearchStore((s) => s.setSelectedResource);
+  const onlyDelegable = useResourceSearchStore((s) => s.onlyDelegable);
+  const setOnlyDelegable = useResourceSearchStore((s) => s.setOnlyDelegable);
+  const onlyVisible = useResourceSearchStore((s) => s.onlyVisible);
+  const setOnlyVisible = useResourceSearchStore((s) => s.setOnlyVisible)
+  const onlyAltinnApp = useResourceSearchStore((s) => s.onlyAltinnApp);
+  const setOnlyAltinnApp = useResourceSearchStore((s) => s.setOnlyAltinnApp);
+
   const [textFieldValue, setTextFieldValue] = useState(query)
 
   const handleSearch = () => {
