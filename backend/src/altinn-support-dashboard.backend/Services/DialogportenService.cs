@@ -20,11 +20,17 @@ public class DialogportenService : IDialogportenService
         _logger = logger;
     }
 
-    public async Task<DialogDto> GetDialogById(string urn, string environment)
+    public async Task<DialogDto> GetDialogById(string urn, string environment, bool includeTitle)
     {
 
         string result = await _client.GetDialogById(urn, environment);
         DialogDto dialog = JsonSerializer.Deserialize<DialogDto>(result, _jsonOptions) ?? throw new Exception("Error serializing dialog payload");
+
+        //Title may include sensetive information
+        if (!includeTitle)
+        {
+            dialog.Title = null;
+        }
 
         return dialog;
     }

@@ -1,6 +1,7 @@
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models.dialogporten;
 using Security;
 
 namespace AltinnSupportDashboard.Controllers;
@@ -23,7 +24,15 @@ public class DialogportenController : ControllerBase
     [HttpGet("dialog/{urn}")]
     public async Task<IActionResult> GetEmailNotificationsByOrderId([FromRoute] string environmentName, [FromRoute] string urn)
     {
-        var response = await _service.GetDialogById(urn, environmentName);
+        DialogDto response;
+        if (User.IsInRole(AzureRoles.DialogportenAdmin))
+        {
+            response = await _service.GetDialogById(urn, environmentName, true);
+        }
+        else
+        {
+            response = await _service.GetDialogById(urn, environmentName, false);
+        }
         return Ok(response);
     }
 }
