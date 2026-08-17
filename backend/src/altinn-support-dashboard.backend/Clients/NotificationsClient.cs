@@ -130,4 +130,37 @@ public class NotificationsClient : INotificationsClient
 
         return responseBody;
     }
+
+    public async Task<string> GetNotificationLog(string? dialogId, string? transmissionId, string environmentName)
+    {
+        var client = _clients[environmentName];
+        var query = new List<string>();
+
+        if (!string.IsNullOrEmpty(dialogId))
+        {
+            query.Add($"dialogId={Uri.EscapeDataString(dialogId)}");
+        }
+        if (!string.IsNullOrEmpty(transmissionId))
+        {
+            query.Add($"transmissionId={Uri.EscapeDataString(transmissionId)}");
+        }
+        var url = "notifications/api/v1/future/log";
+        if (query.Count > 0)
+        {
+            url += "?" + string.Join("&", query);
+        }
+
+        var response = await client.GetAsync(url);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException(
+                $"Api request failed with status code {response.StatusCode}: {responseBody}",
+                inner: null,
+                statusCode: response.StatusCode);
+        }
+
+        return responseBody;
+    }
 }
