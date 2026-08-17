@@ -36,6 +36,21 @@ public class NotificationsServiceTests
             }
         ]
         """;
+    private const string ValidNotificationLogJson = """
+        [
+            {
+                "notificationId": "00000000-0000-0000-0000-000000000001",
+                "dialogId": "00000000-0000-0000-0000-000000000002",
+                "transmissionId": "00000000-0000-0000-0000-000000000003",
+                "type": "Email",
+                "channel": "Email",
+                "destination": "test@test.no",
+                "status": "Sent",
+                "requestedSendTime": "2026-08-01T10:00:00Z",
+                "lastUpdateTime": "2026-08-01T10:05:00Z"
+            }
+        ]
+    """;
 
     public NotificationsServiceTests()
     {
@@ -231,5 +246,57 @@ public class NotificationsServiceTests
             .ReturnsAsync("null");
 
         await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByNin("12345678901", null, null, EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetNotificationLogsAsync_ReturnsDeserializedResponse_WhenClientSucceeds()
+    {
+        _clientMock.Setup(c => c.GetNotificationLog(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(ValidNotificationLogJson);
+        
+        var result = await _service.GetNotificationLogsAsync("00000000-0000-0000-0000-000000000002", "", EnvironmentName);
+
+        Assert.Single(result);
+        Assert.Equal("Sent", result[0].Status);
+    }
+
+    [Fact]
+    public async Task GetNotificationLogsAsync_DelegatesToClient_WithCorrectParameters()
+    {
+        const string dialogId = "00000000-0000-0000-0000-000000000002";
+        const string transmissionId = "00000000-0000-0000-0000-000000000003";
+        _clientMock.Setup(c => c.GetNotificationLog(dialogId, transmissionId, EnvironmentName))
+            .ReturnsAsync(ValidNotificationLogJson);
+        
+        await _service.GetNotificationLogsAsync(dialogId, transmissionId, EnvironmentName);
+
+        _clientMock.Verify(c => c.GetNotificationLog(dialogId, transmissionId, EnvironmentName), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetNotificationLogsAsync_ThrowsException_WhenClientThrows()
+    {
+        _clientMock.Setup(c => c.GetNotificationLog(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ThrowsAsync(new Exception("API request failed"));
+
+        await Assert.ThrowsAsync<Exception>(() => _service.GetNotificationLogsAsync("dialog-1", "", EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetNotificationLogsAsync_ThrowsJsonException_WhenResponseIsInvalidJson()
+    {
+        _clientMock.Setup(c => c.GetNotificationLog(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync("not-valid-json");
+
+        await Assert.ThrowsAsync<JsonException>(() => _service.GetNotificationLogsAsync("dialog-1", "", EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetNotificationLogsAsync_ThrowsException_WhenResponseDeserializesToNull()
+    {
+        _clientMock.Setup(C => C.GetNotificationLog(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(() => _service.GetNotificationLogsAsync("dialog-1", "", EnvironmentName));
     }
 }

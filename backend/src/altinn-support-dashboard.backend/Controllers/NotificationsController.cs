@@ -167,4 +167,31 @@ public class NotificationsController : ControllerBase
         var result = await _altinn3Service.GetNotificationAvailabilityForResourceAsync(request, environmentName);
         return Ok(result);
     }
+
+    [HttpGet("log")]
+    public async Task<IActionResult> GetNotificationLog(
+        [FromRoute] string environmentName,
+        [FromQuery] string? dialogId,
+        [FromQuery] string? transmissionId)
+    {
+        if (string.IsNullOrEmpty(dialogId) && string.IsNullOrEmpty(transmissionId))
+        {
+            return BadRequest("At least one of dialogId or transmissionId must be provided");
+        }
+
+        if (!string.IsNullOrEmpty(dialogId) && !ValidationService.IsValidGuid(dialogId))
+        {
+            return BadRequest("dialogId is not a valid guid");
+        }
+
+        if (!string.IsNullOrEmpty(transmissionId) && !ValidationService.IsValidGuid(transmissionId))
+        {
+            return BadRequest("transmissionId is not a valid guid");
+        }
+
+        _telemetryService.TrackNotificationLogSearch(dialogId, transmissionId, CurrentUserId, environmentName);
+
+        var response = await _service.GetNotificationLogsAsync(dialogId, transmissionId, environmentName);
+        return Ok(response);
+    }
 }
