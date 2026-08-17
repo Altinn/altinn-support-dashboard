@@ -1,6 +1,4 @@
 import { Heading } from "@digdir/designsystemet-react"
-import { useState } from "react"
-import { ResourceSearchResult } from "../models/resourceModels";
 import {ResourceSearchSearchBar} from "../components/ResourceSearch/ResourceSearchSearchBar";
 import { ResourceSearchList } from "../components/ResourceSearch/ResourceSearchList";
 import styles from "./styles/ResourceSearchPage.module.css"
@@ -20,7 +18,7 @@ export const ResourceSearchPage = () => {
   const onlyVisible = useResourceSearchStore((s) => s.onlyVisible);
   const setOnlyVisible = useResourceSearchStore((s) => s.setOnlyVisible);
   const onlyAltinnApp = useResourceSearchStore((s) => s.onlyAltinnApp);
-  const setOnlyAltinnApp = useResourceSearchStore((s) => s.setAltinnApp);
+  const setOnlyAltinnApp = useResourceSearchStore((s) => s.setOnlyAltinnApp);
 
   return (
     <div className={styles.pageContainer}>
@@ -30,6 +28,8 @@ export const ResourceSearchPage = () => {
       <ResourceSearchSearchBar
         query={query}
         setQuery={setQuery}
+        textFieldValue={textFieldValue}
+        setTextFieldValue={setTextFieldValue}
         setSelectedResource={setSelectedResource}
         onlyDelegable={onlyDelegable}
         setOnlyDelegable={setOnlyDelegable}

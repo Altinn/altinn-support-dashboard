@@ -12,5 +12,5 @@ export interface ResourceSearchState {
     setSelectedResource: (r: ResourceSearchResult | null) => void;
     setOnlyDelegable: (v: boolean) => void;
     setOnlyVisible: (v: boolean) => void;
-    setAltinnApp: (v: boolean) => void;
+    setOnlyAltinnApp: (v: boolean) => void;
 }

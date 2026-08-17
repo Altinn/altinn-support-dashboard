@@ -13,5 +13,5 @@ export const useResourceSearchStore = create<ResourceSearchState>((set) => ({
     setSelectedResource: (r) => set({ selectedResource: r}),
     setOnlyDelegable: (v) => set({ onlyDelegable: v}),
     setOnlyVisible: (v) => set({ onlyVisible: v}),
-    setAltinnApp: (v) => set({ onlyAltinnApp: v})
+    setOnlyAltinnApp: (v) => set({ onlyAltinnApp: v})
 }));
