@@ -9,8 +9,6 @@ import { useResourceSearchStore } from "../stores/ResourceSearchStore";
 export const ResourceSearchPage = () => {
   const query = useResourceSearchStore((s) => s.query);
   const setQuery = useResourceSearchStore((s) => s.setQuery);
-  const textFieldValue = useResourceSearchStore((s) => s.textFieldValue);
-  const setTextFieldValue = useResourceSearchStore((s) => s.setTextFieldValue);
   const selectedResource = useResourceSearchStore((s) => s.selectedResource);
   const setSelectedResource = useResourceSearchStore((s) => s.setSelectedResource);
   const onlyDelegable = useResourceSearchStore((s) => s.onlyDelegable);
@@ -28,8 +26,6 @@ export const ResourceSearchPage = () => {
       <ResourceSearchSearchBar
         query={query}
         setQuery={setQuery}
-        textFieldValue={textFieldValue}
-        setTextFieldValue={setTextFieldValue}
         setSelectedResource={setSelectedResource}
         onlyDelegable={onlyDelegable}
         setOnlyDelegable={setOnlyDelegable}
