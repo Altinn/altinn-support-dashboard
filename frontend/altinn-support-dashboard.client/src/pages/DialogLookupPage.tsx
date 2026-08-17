@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Button,
   Card,
+  Divider,
   Heading,
   Paragraph,
   Search,
@@ -112,11 +113,23 @@ const DialogLookupPage: React.FC = () => {
       {data && (
         <Card className={styles.result}>
           <CopyableField label="Dialog ID" value={data.dialogId} />
+          <Divider className={styles.resultDivider} />
+
           <CopyableField label="Instance ref" value={data.instanceRef} />
+
+          <Divider className={styles.resultDivider} />
 
           <Paragraph>
             <strong>Party:</strong> {data.party}
           </Paragraph>
+          <Divider className={styles.resultDivider} />
+
+          <Paragraph>
+            <strong>Tittel:</strong> {title}
+          </Paragraph>
+
+          <Divider className={styles.resultDivider} />
+
           <Paragraph>
             <strong>Tjenesteressurs:</strong>{" "}
             {resourceName
@@ -124,15 +137,13 @@ const DialogLookupPage: React.FC = () => {
               : data.serviceResource.id}
           </Paragraph>
 
+          <Divider className={styles.resultDivider} />
+
           <Paragraph>
             <strong>Tjenesteeier:</strong>{" "}
             {ownerName
               ? `${ownerName} — ${data.serviceOwner.code} (${data.serviceOwner.orgNumber})`
               : `${data.serviceOwner.code} (${data.serviceOwner.orgNumber})`}
-          </Paragraph>
-
-          <Paragraph>
-            <strong>Tittel:</strong> {title}
           </Paragraph>
         </Card>
       )}
