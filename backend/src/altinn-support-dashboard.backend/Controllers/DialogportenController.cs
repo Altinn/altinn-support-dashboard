@@ -27,7 +27,6 @@ public class DialogportenController : ControllerBase
     [HttpGet("dialog/{*urn}")]
     public async Task<IActionResult> GetEmailNotificationsByOrderId([FromRoute] string environmentName, [FromRoute] string urn)
     {
-        _logger.LogDebug(urn);
         if (!ValidationService.IsValidDialogInput(urn))
         {
             return BadRequest("The input needs to be in the format 	urn:altinn:dialog-id:{uuid}, urn:altinn:correspondence-id:{uuid}, urn:altinn:instance-id:{partyId}/{uuid} ");
