@@ -17,6 +17,7 @@ import { CorrespondencePage } from "../pages/CorrespondencePage";
 import { NotificationPage } from "../pages/NotificationPage";
 import { NotificationAvailabilityPage } from "../pages/NotificationAvailabilityPage";
 import IdentifierConversionPage from "../pages/IdentifierConversionPage";
+import DialogLookupPage from "../pages/DialogLookupPage";
 import { useAppStore } from "../stores/Appstore";
 import PrivateRoutes from "./PrivateRoutes";
 import { ToastContainer } from "react-toastify";
@@ -83,6 +84,7 @@ const App: React.FC = () => {
                   path="/identifier-conversion"
                   element={<IdentifierConversionPage />}
                 />
+                <Route path="/dialog-lookup" element={<DialogLookupPage />} />
                 <Route
                   path="/resourcesearch"
                   element={<ResourceSearchPage />}
