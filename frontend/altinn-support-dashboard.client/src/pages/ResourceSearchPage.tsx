@@ -24,7 +24,7 @@ export const ResourceSearchPage = () => {
     () => sessionStorage.getItem("resource_search_onlyDelegable") === "true"
   );
   const [onlyVisible, setOnlyVisible] = useState(
-    () => sessionStorage.getItem("resource_search_onlyVisble") === "true"
+    () => sessionStorage.getItem("resource_search_onlyVisible") === "true"
   );
   const [onlyAltinnApp, setOnlyAltinnApp] = useState(
     () => sessionStorage.getItem("resource_search_onlyAltinnApp") === "true"
@@ -43,7 +43,7 @@ export const ResourceSearchPage = () => {
   }, [onlyDelegable]);
 
   useEffect(() => {
-    sessionStorage.setItem("resource_search_onlyVisibile", String(onlyVisible));
+    sessionStorage.setItem("resource_search_onlyVisible", String(onlyVisible));
   }, [onlyVisible]);
 
   useEffect(() => {
