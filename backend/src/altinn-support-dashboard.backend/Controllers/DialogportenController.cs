@@ -32,7 +32,7 @@ public class DialogportenController : ControllerBase
             return BadRequest("The input needs to be in the format 	urn:altinn:dialog-id:{uuid}, urn:altinn:correspondence-id:{uuid}, urn:altinn:instance-id:{partyId}/{uuid} ");
         }
 
-        DialogDto response;
+        DialogDto? response;
         if (User.IsInRole(AzureRoles.DialogportenAdmin))
         {
             response = await _service.GetDialogById(urn, environmentName, true);
@@ -40,6 +40,10 @@ public class DialogportenController : ControllerBase
         else
         {
             response = await _service.GetDialogById(urn, environmentName, false);
+        }
+        if (response == null)
+        {
+            return NotFound();
         }
         return Ok(response);
     }

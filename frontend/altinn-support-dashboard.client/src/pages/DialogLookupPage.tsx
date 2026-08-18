@@ -15,18 +15,10 @@ import { useAppStore } from "../stores/Appstore";
 import { useDialogLookup } from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
 import CopyableField from "../components/CopyableField/CopyableField";
-import { ResourceName } from "../models/dialogModels";
+import { extractIdFromUrn, getLocalizedValue } from "../utils/utils";
 import styles from "./styles/DialogLookupPage.module.css";
 
 type IdType = "dialog" | "correspondence" | "instance";
-
-function getLocalizedValue(
-  list: ResourceName[] | null | undefined,
-  lang = "nb"
-): string | undefined {
-  if (!list || list.length === 0) return undefined;
-  return (list.find((entry) => entry.languageCode === lang) ?? list[0]).value;
-}
 
 function buildUrn(idType: IdType, value: string): string | null {
   const trimmedValue = value.trim();
@@ -48,15 +40,18 @@ const placeholderByType: Record<IdType, string> = {
   instance: "partyId/uuid",
 };
 
-function extractIdFromUrn(urn: string): string {
-  return urn.replace(/^urn:altinn:[^:]+:/, "");
-}
-
 const DialogLookupPage: React.FC = () => {
   const environment = useAppStore((state) => state.environment);
-  const [idType, setIdType] = useState<IdType>("dialog");
-  const [input, setInput] = useState("");
-  const [submittedUrn, setSubmittedUrn] = useState("");
+  const [idType, setIdType] = useState<IdType>(() => {
+    const stored = sessionStorage.getItem("dialogLookup.idType");
+    return (stored as IdType) || "dialog";
+  });
+  const [input, setInput] = useState(
+    () => sessionStorage.getItem("dialogLookup.input") || ""
+  );
+  const [submittedUrn, setSubmittedUrn] = useState(
+    () => sessionStorage.getItem("dialogLookup.submittedUrn") || ""
+  );
 
   const { data, isLoading, isError, error } = useDialogLookup(
     submittedUrn,
@@ -69,8 +64,21 @@ const DialogLookupPage: React.FC = () => {
 
   const urn = buildUrn(idType, input);
 
+  const handleIdTypeChange = (value: IdType) => {
+    setIdType(value);
+    sessionStorage.setItem("dialogLookup.idType", value);
+  };
+
+  const handleInputChange = (value: string) => {
+    setInput(value);
+    sessionStorage.setItem("dialogLookup.input", value);
+  };
+
   const handleSearch = () => {
-    if (urn) setSubmittedUrn(urn);
+    if (urn) {
+      setSubmittedUrn(urn);
+      sessionStorage.setItem("dialogLookup.submittedUrn", urn);
+    }
   };
 
   const title =
@@ -90,7 +98,7 @@ const DialogLookupPage: React.FC = () => {
         <Select
           className={styles.idTypeSelect}
           value={idType}
-          onChange={(e) => setIdType(e.target.value as IdType)}
+          onChange={(e) => handleIdTypeChange(e.target.value as IdType)}
         >
           <SelectOption value="dialog">Dialog ID</SelectOption>
           <SelectOption value="correspondence">Correspondence ID</SelectOption>
@@ -102,7 +110,7 @@ const DialogLookupPage: React.FC = () => {
           label=""
           placeholder={placeholderByType[idType]}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => handleInputChange(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
         <Button onClick={handleSearch} disabled={!urn} variant="primary">

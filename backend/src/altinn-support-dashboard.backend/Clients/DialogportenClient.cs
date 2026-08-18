@@ -1,3 +1,4 @@
+using System.Net;
 using altinn_support_dashboard.Server.Models;
 using Microsoft.Extensions.Options;
 
@@ -30,6 +31,11 @@ public class DialogportenClient : IDialogportenClient
         var response = await client.GetAsync($"dialogporten/api/v1/serviceowner/dialoglookup?instanceRef={urn}");
         var responseBody = await response.Content.ReadAsStringAsync();
 
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return "";
+
+        }
         if (!response.IsSuccessStatusCode)
         {
             throw new HttpRequestException(
