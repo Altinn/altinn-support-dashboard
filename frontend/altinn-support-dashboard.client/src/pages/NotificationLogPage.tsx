@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAppStore } from "../stores/Appstore"
 import { useNotificationLog } from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
-import { Alert, Button, Heading, Textfield } from "@digdir/designsystemet-react";
+import { Alert, Button, Heading, Paragraph, Textfield } from "@digdir/designsystemet-react";
 import NotificationLogList from "../components/Notification/NotificationLogList";
 import style from "./styles/NotificationLogPage.module.css";
 
@@ -77,6 +77,9 @@ export const NotificationLogPage = () => {
                     Søk
                 </Button>   
             </div>
+            <Paragraph data-size="sm" className={style.searchCaption}>
+                Du trenger kun å fylle ut en av feltene for å søke
+            </Paragraph>
 
             {!logQuery.isFetching && !logQuery.isError && logQuery.data?.length === 0 && (
                 <Alert data-color="info">No log entries found</Alert>
