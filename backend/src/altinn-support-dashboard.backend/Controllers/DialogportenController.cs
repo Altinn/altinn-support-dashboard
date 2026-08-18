@@ -16,12 +16,14 @@ public class DialogportenController : ControllerBase
     private readonly IDialogportenService _service;
     private readonly ITelemetryService _telemetryService;
     private readonly ILogger<DialogportenController> _logger;
+    private readonly IAuthorizationService _authorizationService;
 
-    public DialogportenController(IDialogportenService service, ITelemetryService telemetryService, ILogger<DialogportenController> logger)
+    public DialogportenController(IDialogportenService service, ITelemetryService telemetryService, ILogger<DialogportenController> logger, IAuthorizationService authorizationService)
     {
         _logger = logger;
         _service = service;
         _telemetryService = telemetryService;
+        _authorizationService = authorizationService;
     }
 
     [HttpGet("dialog/{*urn}")]
@@ -32,15 +34,9 @@ public class DialogportenController : ControllerBase
             return BadRequest("The input needs to be in the format 	urn:altinn:dialog-id:{uuid}, urn:altinn:correspondence-id:{uuid}, urn:altinn:instance-id:{partyId}/{uuid} ");
         }
 
-        DialogDto? response;
-        if (User.IsInRole(AzureRoles.DialogportenAdmin))
-        {
-            response = await _service.GetDialogById(urn, environmentName, true);
-        }
-        else
-        {
-            response = await _service.GetDialogById(urn, environmentName, false);
-        }
+        var authResult = await _authorizationService.AuthorizeAsync(User, AzureRoles.DialogportenAdmin);
+
+        DialogDto? response = await _service.GetDialogById(urn, environmentName, authResult.Succeeded);
         if (response == null)
         {
             return NotFound();
