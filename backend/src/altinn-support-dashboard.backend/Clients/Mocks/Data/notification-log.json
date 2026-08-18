@@ -1,0 +1,13 @@
+[
+    {
+        "notificationId": "00000000-0000-0000-0000-000000000001",
+        "dialogId": "00000000-0000-0000-0000-000000000002",
+        "transmissionId": "00000000-0000-0000-0000-000000000003",
+        "type": "Email",
+        "channel": "Email",
+        "destination": "test@test.no",
+        "status": "Sent",
+        "requestedSendTime": "2026-08-01T10:00:00Z",
+        "lastUpdateTime": "2026-08-01T10:05:00Z"
+    }
+]

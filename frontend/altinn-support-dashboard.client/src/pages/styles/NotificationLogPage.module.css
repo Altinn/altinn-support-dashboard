@@ -1,0 +1,17 @@
+
+.searchRow {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+}
+
+.searchField {
+    flex: 1;
+    min-width: 0;
+    max-width: 30rem;
+}
+
+.searchButton {
+    flex-shrink: 0;
+}

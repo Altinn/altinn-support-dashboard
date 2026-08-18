@@ -114,4 +114,10 @@ public class NotificationsService : INotificationsService
         return results;
     }
 
+    public async Task<List<NotificationLog>> GetNotificationLogsAsync(string? dialogId, string? transmissionId, string environmentName)
+    {
+        var result = await _client.GetNotificationLog(dialogId, transmissionId, environmentName);
+        return JsonSerializer.Deserialize<List<NotificationLog>>(result, _jsonOptions) ?? throw new Exception("Error deserializing notification logs response");
+    }
+
 }
