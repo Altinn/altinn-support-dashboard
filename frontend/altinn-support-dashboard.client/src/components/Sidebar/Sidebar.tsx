@@ -20,6 +20,7 @@ import {
   TerminalIcon,
   CheckmarkCircleIcon,
   ChatElipsisIcon,
+  BulletListIcon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -165,6 +166,12 @@ const Sidebar: React.FC = () => {
                   to="/notification-availability"
                   title="Varslingskontroll"
                   icon={<CheckmarkCircleIcon className={classes.icons} />}
+                  isCollapsed={isCollapsed}
+                />
+                <NavItem
+                  to="/notification-log"
+                  title="Varslingslogg"
+                  icon={<BulletListIcon className={classes.icons} />}
                   isCollapsed={isCollapsed}
                 />
               </NavGroup>

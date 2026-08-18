@@ -19,4 +19,9 @@ public class MockNotificationsClient(NotificationsClient inner) : INotifications
         MockUtils.IsMock(environmentName)
             ? Task.FromResult(MockUtils.Read("notifications-future.json"))
             : inner.GetFutureNotificationsByOrgNr(orgNr, from, to, environmentName);
+
+    public Task<string> GetNotificationLog(string? dialogId, string? transmissionId, string environmentName) =>
+        MockUtils.IsMock(environmentName)
+            ? Task.FromResult(MockUtils.Read("notification-log.json"))
+            : inner.GetNotificationLog(dialogId, transmissionId, environmentName);
 }
