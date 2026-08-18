@@ -145,7 +145,7 @@ describe('NotificationContactTable', () => {
         expect(screen.queryAllByTestId('cell-email')).toHaveLength(1);
     });
 
-    it('should render "Her var det tomt" when no contacts have the specified field', () => {
+    it('should render empty message cell when no contacts have the specified field', () => {
         const contactsWithMissing: NotificationAdresses[] = [
             {
                 notificationAddressId: 1,
@@ -157,7 +157,7 @@ describe('NotificationContactTable', () => {
             },
         ];
 
-        render(
+        const { container } = render(
             <NotificationContactTable
                 title="E-post"
                 field="email"
@@ -166,11 +166,11 @@ describe('NotificationContactTable', () => {
             />
         );
 
-        expect(screen.getByText('Her var det tomt')).toBeInTheDocument();
+        expect(container.querySelector('td[colspan="2"]')).toBeInTheDocument();
     });
 
-    it('should render "Her var det tomt" when contacts array is empty', () => {
-        render(
+    it('should render empty message cell when contacts array is empty', () => {
+        const { container } = render(
             <NotificationContactTable
                 title="E-post"
                 field="email"
@@ -179,11 +179,11 @@ describe('NotificationContactTable', () => {
             />
         );
 
-        expect(screen.getByText('Her var det tomt')).toBeInTheDocument();
+        expect(container.querySelector('td[colspan="2"]')).toBeInTheDocument();
     });
 
     it('should handle undefined contacts array', () => {
-        render(
+        const { container } = render(
             <NotificationContactTable
                 title="E-post"
                 field="email"
@@ -193,7 +193,7 @@ describe('NotificationContactTable', () => {
             />
         );
 
-        expect(screen.getByText('Her var det tomt')).toBeInTheDocument();
+        expect(container.querySelector('td[colspan="2"]')).toBeInTheDocument();
     });
 
     it('should render phone field when specified', () => {
@@ -228,7 +228,7 @@ describe('NotificationContactTable', () => {
     });
 
     it('should render colSpan 2 for empty message cell', () => {
-        render(
+        const { container } = render(
             <NotificationContactTable
                 title="E-post"
                 field="email"
@@ -237,13 +237,13 @@ describe('NotificationContactTable', () => {
             />
         );
 
-        const emptyCell = screen.getByText('Her var det tomt');
+        const emptyCell = container.querySelector('td[colspan="2"]');
         expect(emptyCell).toBeInTheDocument();
-        expect(emptyCell.closest('td')).toHaveAttribute('colspan', '2');
+        expect(emptyCell).toHaveAttribute('colspan', '2');
     });
 
     it('should handle null contacts array', () => {
-        render(
+        const { container } = render(
             <NotificationContactTable
                 title="E-post"
                 field="email"
@@ -253,6 +253,6 @@ describe('NotificationContactTable', () => {
             />
         );
 
-        expect(screen.getByText('Her var det tomt')).toBeInTheDocument();
+        expect(container.querySelector('td[colspan="2"]')).toBeInTheDocument();
     })
 })

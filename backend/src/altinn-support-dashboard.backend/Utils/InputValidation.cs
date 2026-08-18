@@ -31,6 +31,36 @@ namespace altinn_support_dashboard.Server.Utils
 
         }
 
+        public static bool IsValidDialogInput(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            const string correspondencePrefix = "urn:altinn:correspondence-id:";
+            const string dialogPrefix = "urn:altinn:dialog-id:";
+            const string instancePrefix = "urn:altinn:instance-id:";
+
+            if (value.StartsWith(correspondencePrefix, StringComparison.Ordinal))
+            {
+                return IsValidGuid(value[correspondencePrefix.Length..]);
+            }
+
+            if (value.StartsWith(dialogPrefix, StringComparison.Ordinal))
+            {
+                return IsValidGuid(value[dialogPrefix.Length..]);
+            }
+
+            if (value.StartsWith(instancePrefix, StringComparison.Ordinal))
+            {
+                var parts = value[instancePrefix.Length..].Split('/');
+                return parts.Length == 2 && int.TryParse(parts[0], out var partyId) && partyId > 0 && IsValidGuid(parts[1]);
+            }
+
+            return false;
+        }
+
         public static bool IsValidPartyId(string partyId)
         {
             if (partyId.All(char.IsDigit) && partyId.Length == 8)

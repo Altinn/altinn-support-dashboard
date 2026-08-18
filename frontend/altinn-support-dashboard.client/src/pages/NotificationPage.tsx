@@ -1,4 +1,9 @@
-import { Alert, Heading, Skeleton, ToggleGroup } from "@digdir/designsystemet-react";
+import {
+  Alert,
+  Heading,
+  Skeleton,
+  ToggleGroup,
+} from "@digdir/designsystemet-react";
 import { useEffect, useMemo, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
 import { useNotifications, useNotificationsAdvanced } from "../hooks/hooks";
@@ -15,12 +20,12 @@ type SearchType = "shipmentId" | "advanced";
 
 const toggleValue = (
   setter: React.Dispatch<React.SetStateAction<string[]>>,
-  value: string,
+  value: string
 ) => {
   setter((prev) =>
     prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
   );
-}
+};
 
 export const NotificationPage = () => {
   const environment = useAppStore((state) => state.environment);
@@ -37,16 +42,32 @@ export const NotificationPage = () => {
   const [dateTo, setDateTo] = useState(
     () => sessionStorage.getItem("notif_dateTo") || ""
   );
-  
-  const [selectedCreators, setSelectedCreators] = usePersistedArray("notif_selectedCreators");
-  const  [selectedChannels, setSelectedChannels] = usePersistedArray("notif_selectedChannels");
-  const [selectedResults, setSelectedResults] = usePersistedArray("notif_selectedResults");
-  const [selectedResources, setSelectedResources] = usePersistedArray("notif_selectedResources");
 
-  useEffect(() => { sessionStorage.setItem("notif_searchType", searchType); }, [searchType]);
-  useEffect(() => { sessionStorage.setItem("notif_searchValue", searchValue); }, [searchValue]);
-  useEffect(() => { sessionStorage.setItem("notif_dateFrom", dateFrom); }, [dateFrom]);
-  useEffect(() => { sessionStorage.setItem("notif_dateTo", dateTo); }, [dateTo]);
+  const [selectedCreators, setSelectedCreators] = usePersistedArray(
+    "notif_selectedCreators"
+  );
+  const [selectedChannels, setSelectedChannels] = usePersistedArray(
+    "notif_selectedChannels"
+  );
+  const [selectedResults, setSelectedResults] = usePersistedArray(
+    "notif_selectedResults"
+  );
+  const [selectedResources, setSelectedResources] = usePersistedArray(
+    "notif_selectedResources"
+  );
+
+  useEffect(() => {
+    sessionStorage.setItem("notif_searchType", searchType);
+  }, [searchType]);
+  useEffect(() => {
+    sessionStorage.setItem("notif_searchValue", searchValue);
+  }, [searchValue]);
+  useEffect(() => {
+    sessionStorage.setItem("notif_dateFrom", dateFrom);
+  }, [dateFrom]);
+  useEffect(() => {
+    sessionStorage.setItem("notif_dateTo", dateTo);
+  }, [dateTo]);
 
   const orderQuery = useNotifications(
     searchType === "shipmentId" ? searchValue : "",
@@ -72,45 +93,88 @@ export const NotificationPage = () => {
       collectUnique(
         advancedQuery.data,
         (shipment) => shipment.creatorName,
-        (shipment) => shipment.deliveryAttempts.map((attempt) => attempt.channel),
-        (shipment) => shipment.deliveryAttempts.map((attempt) => attempt.result),
-        (shipment) => shipment.resourceId,
+        (shipment) =>
+          shipment.deliveryAttempts.map((attempt) => attempt.channel),
+        (shipment) =>
+          shipment.deliveryAttempts.map((attempt) => attempt.result),
+        (shipment) => shipment.resourceId
       ),
     [advancedQuery.data]
   );
 
   useEffect(() => {
     if (!advancedQuery.data) return;
-    setSelectedCreators((prev) => prev.filter((value) => creatorNames.includes(value)));
-    setSelectedChannels((prev) => prev.filter((value) => channelNames.includes(value)));
-    setSelectedResults((prev) => prev.filter((value) => resultNames.includes(value)));
-    setSelectedResources((prev) => prev.filter((value) => resourceIds.includes(value)));
+    setSelectedCreators((prev) =>
+      prev.filter((value) => creatorNames.includes(value))
+    );
+    setSelectedChannels((prev) =>
+      prev.filter((value) => channelNames.includes(value))
+    );
+    setSelectedResults((prev) =>
+      prev.filter((value) => resultNames.includes(value))
+    );
+    setSelectedResources((prev) =>
+      prev.filter((value) => resourceIds.includes(value))
+    );
   }, [
-    advancedQuery.data, 
-    creatorNames, 
-    channelNames, 
-    resultNames, 
+    advancedQuery.data,
+    creatorNames,
+    channelNames,
+    resultNames,
     resourceIds,
     setSelectedCreators,
     setSelectedChannels,
     setSelectedResults,
-    setSelectedResources
+    setSelectedResources,
   ]);
 
   const filteredShipments = useMemo(() => {
     if (!advancedQuery.data) return advancedQuery.data;
     return advancedQuery.data.filter((shipment) => {
-      if (selectedCreators.length > 0 && !(shipment.creatorName && selectedCreators.includes(shipment.creatorName))) return false;
-      if ((selectedChannels.length > 0 || selectedResults.length > 0 ) && 
-        !shipment.deliveryAttempts.some((attempt) =>
-          (selectedChannels.length === 0 || (attempt.channel && selectedChannels.includes(attempt.channel))) &&
-          (selectedResults.length === 0 || (attempt.result && selectedResults.includes(attempt.result)))
-      )) return false;
-      if (selectedResults.length > 0 && !shipment.deliveryAttempts.some((attempt) => attempt.result && selectedResults.includes(attempt.result))) return false;
-      if (selectedResources.length > 0 && !(shipment.resourceId && selectedResources.includes(shipment.resourceId))) return false;
+      if (
+        selectedCreators.length > 0 &&
+        !(
+          shipment.creatorName &&
+          selectedCreators.includes(shipment.creatorName)
+        )
+      )
+        return false;
+      if (
+        (selectedChannels.length > 0 || selectedResults.length > 0) &&
+        !shipment.deliveryAttempts.some(
+          (attempt) =>
+            (selectedChannels.length === 0 ||
+              (attempt.channel &&
+                selectedChannels.includes(attempt.channel))) &&
+            (selectedResults.length === 0 ||
+              (attempt.result && selectedResults.includes(attempt.result)))
+        )
+      )
+        return false;
+      if (
+        selectedResults.length > 0 &&
+        !shipment.deliveryAttempts.some(
+          (attempt) =>
+            attempt.result && selectedResults.includes(attempt.result)
+        )
+      )
+        return false;
+      if (
+        selectedResources.length > 0 &&
+        !(
+          shipment.resourceId && selectedResources.includes(shipment.resourceId)
+        )
+      )
+        return false;
       return true;
-    })
-  }, [advancedQuery.data, selectedCreators, selectedChannels, selectedResults, selectedResources]);
+    });
+  }, [
+    advancedQuery.data,
+    selectedCreators,
+    selectedChannels,
+    selectedResults,
+    selectedResources,
+  ]);
 
   return (
     <div className={style.container}>
@@ -150,25 +214,25 @@ export const NotificationPage = () => {
             label="Creator"
             options={creatorNames}
             selected={selectedCreators}
-            onToggle={(value) => toggleValue(setSelectedCreators, value )}
+            onToggle={(value) => toggleValue(setSelectedCreators, value)}
           />
           <NotificationFilterDropdown
             label="Channel"
             options={channelNames}
             selected={selectedChannels}
-            onToggle={(value) => toggleValue(setSelectedChannels, value )}
+            onToggle={(value) => toggleValue(setSelectedChannels, value)}
           />
           <NotificationFilterDropdown
             label="Result"
             options={resultNames}
             selected={selectedResults}
-            onToggle={(value) => toggleValue(setSelectedResults, value )}
-          /> 
+            onToggle={(value) => toggleValue(setSelectedResults, value)}
+          />
           <NotificationFilterDropdown
             label="Resource"
             options={resourceIds}
             selected={selectedResources}
-            onToggle={(value) => toggleValue(setSelectedResources, value )}
+            onToggle={(value) => toggleValue(setSelectedResources, value)}
           />
         </div>
       )}
@@ -181,18 +245,24 @@ export const NotificationPage = () => {
         </>
       )}
 
-      {!orderQuery.isFetching && !orderQuery.isError && searchType === "shipmentId" && orderQuery.data?.length === 0 && (
-        <Alert data-color="info">No shipments found.</Alert>
-      )}
+      {!orderQuery.isFetching &&
+        !orderQuery.isError &&
+        searchType === "shipmentId" &&
+        orderQuery.data?.length === 0 && (
+          <Alert data-color="info">No shipments found.</Alert>
+        )}
 
-      {!advancedQuery.isFetching && !advancedQuery.isError && searchType === "advanced" && advancedQuery.data && filteredShipments?.length === 0 && (
-        <Alert data-color="info">
-          {advancedQuery.data.length === 0
-            ? "No shipments found."
-            : "No shipments found for the selected filter(s)."
-          }
-        </Alert>
-      )}
+      {!advancedQuery.isFetching &&
+        !advancedQuery.isError &&
+        searchType === "advanced" &&
+        advancedQuery.data &&
+        filteredShipments?.length === 0 && (
+          <Alert data-color="info">
+            {advancedQuery.data.length === 0
+              ? "No shipments found."
+              : "No shipments found for the selected filter(s)."}
+          </Alert>
+        )}
 
       {/* Filters out the notifications with 0 (shows only email if sms was 0 f.ex.) */}
       {/* Different result view based on what type of search it is */}
@@ -203,7 +273,12 @@ export const NotificationPage = () => {
 
       {searchType === "advanced" &&
         filteredShipments?.map((shipment, i) => (
-          <NotificationShipmentCard key={i} shipment={shipment} selectedResults={selectedResults} selectedChannels = {selectedChannels} />
+          <NotificationShipmentCard
+            key={i}
+            shipment={shipment}
+            selectedResults={selectedResults}
+            selectedChannels={selectedChannels}
+          />
         ))}
     </div>
   );

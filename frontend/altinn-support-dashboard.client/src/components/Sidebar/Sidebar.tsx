@@ -19,6 +19,7 @@ import {
   FilesIcon,
   TerminalIcon,
   CheckmarkCircleIcon,
+  ChatElipsisIcon,
   BulletListIcon,
 } from "@navikt/aksel-icons";
 
@@ -132,6 +133,21 @@ const Sidebar: React.FC = () => {
                 icon={<ArrowRightLeftIcon className={classes.icons} />}
                 isCollapsed={isCollapsed}
               />
+            )}
+            {hasDeveloperRole && (
+              <NavGroup
+                title="Dialogporten"
+                icon={<ChatElipsisIcon className={classes.icons} />}
+                isCollapsed={isCollapsed}
+                paths={["/dialog-lookup"]}
+              >
+                <NavItem
+                  to="/dialog-lookup"
+                  title="Dialog-oppslag"
+                  icon={<ChatElipsisIcon className={classes.icons} />}
+                  isCollapsed={isCollapsed}
+                />
+              </NavGroup>
             )}
             {hasInternalOrExternalCoreRoles && (
               <NavGroup
