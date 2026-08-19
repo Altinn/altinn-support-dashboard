@@ -20,6 +20,8 @@ import {
   TerminalIcon,
   CheckmarkCircleIcon,
   BulletListIcon,
+  ChatElipsisIcon,
+  Chat2Icon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -132,6 +134,22 @@ const Sidebar: React.FC = () => {
                 icon={<ArrowRightLeftIcon className={classes.icons} />}
                 isCollapsed={isCollapsed}
               />
+            )}
+            {hasDeveloperRole && (
+              <NavGroup 
+                title="DialogPorten"
+                icon={<ChatElipsisIcon className={classes.icons} />}
+                isCollapsed={isCollapsed}
+                paths={["dialog-details"]}
+              >
+                
+                <NavItem
+                  to="/dialog-details"
+                  title="Dialog-detaljer"
+                  icon={<Chat2Icon className={classes.icons}/>}
+                  isCollapsed={isCollapsed}
+                />
+              </NavGroup>
             )}
             {hasInternalOrExternalCoreRoles && (
               <NavGroup
