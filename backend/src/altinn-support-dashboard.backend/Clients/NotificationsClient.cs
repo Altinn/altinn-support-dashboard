@@ -63,6 +63,18 @@ public class NotificationsClient : INotificationsClient
         return await GetFutureNofifications(url, "NationalIdentityNumber", nin, from, to, environmentName);
     }
 
+    public async Task<string> GetFutureNofificationsByPhoneNumber(string phoneNumber, DateTime? from, DateTime? to, string environmentName)
+    {
+        var url = "notifications/api/v1/future/dashboard/recipients/notifications/phonenumber";
+        return await GetFutureNofifications(url, "PhoneNumber", phoneNumber, from, to, environmentName);
+    }
+
+    public async Task<string> GetFutureNofificationsByEmail(string email, DateTime? from, DateTime? to, string environmentName)
+    {
+        var url = "notifications/api/v1/future/dashboard/recipients/notifications/email";
+        return await GetFutureNofifications(url, "Email", email, from, to, environmentName);
+    }
+
     public async Task<string> GetFutureNotificationsByOrgNr(string orgNr, DateTime? from, DateTime? to, string environmentName)
     {
         var url = "notifications/api/v1/future/dashboard/recipients/notifications/orgnumber";
