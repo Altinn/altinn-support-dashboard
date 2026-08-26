@@ -27,7 +27,7 @@ public class DialogportenController : ControllerBase
     }
 
     [HttpGet("dialog/{*urn}")]
-    public async Task<IActionResult> GetEmailNotificationsByOrderId([FromRoute] string environmentName, [FromRoute] string urn)
+    public async Task<IActionResult> GetDialogByUrn([FromRoute] string environmentName, [FromRoute] string urn)
     {
         if (!ValidationService.IsValidDialogInput(urn))
         {
@@ -36,7 +36,7 @@ public class DialogportenController : ControllerBase
 
         var authResult = await _authorizationService.AuthorizeAsync(User, AzureRoles.DialogportenAdmin);
 
-        DialogDto? response = await _service.GetDialogById(urn, environmentName, authResult.Succeeded);
+        DialogDto? response = await _service.GetDialogByUrn(urn, environmentName, authResult.Succeeded);
         if (response == null)
         {
             return NotFound();

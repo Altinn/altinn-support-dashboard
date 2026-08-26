@@ -24,7 +24,7 @@ public class DialogportenClient : IDialogportenClient
         _clients.Add(environmentName, client);
     }
 
-    public async Task<string> GetDialogById(string urn, string environmentName)
+    public async Task<string> GetDialogByUrn(string urn, string environmentName)
     {
         var client = _clients[environmentName];
         var response = await client.GetAsync($"dialogporten/api/v1/serviceowner/dialoglookup?instanceRef={urn}");
