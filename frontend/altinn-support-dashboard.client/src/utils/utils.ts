@@ -1,4 +1,6 @@
 /* eslint-disable */
+import { ResourceName } from "../models/dialogModels";
+
 export function getBaseUrl(environment?: string): string {
   if (environment === "TT02" || environment === "PROD") {
     return `/api/${environment === "TT02" ? "TT02" : "Production"}`;
@@ -72,6 +74,18 @@ export const getFormattedDateTime = (date: Date) => {
 
 export function capitalizeFirstCharacter(word: string) {
   return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+export function extractIdFromUrn(urn: string): string {
+  return urn.replace(/^urn:altinn:[^:]+:/, "");
+}
+
+export function getLocalizedValue(
+  list: ResourceName[] | null | undefined,
+  lang = "nb"
+): string | undefined {
+  if (!list || list.length === 0) return undefined;
+  return (list.find((entry) => entry.languageCode === lang) ?? list[0]).value;
 }
 
 export function uniqueSorted<T>(

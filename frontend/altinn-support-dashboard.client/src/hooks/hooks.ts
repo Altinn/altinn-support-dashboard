@@ -35,6 +35,8 @@ import {
   CorrespondenceUploadRequest,
 } from "../models/correspondenceModels";
 import { sendCorrespondence } from "../utils/correspondenceApi";
+import { fetchDialogByUrn } from "../utils/dialogportenApi";
+import { DialogDto } from "../models/dialogModels";
 import { toast } from "react-toastify";
 import {
   AuthorizedPartyIdentifiers,
@@ -289,6 +291,17 @@ export function useMaskinportenDelegations(
     queryFn: () =>
       fetchMaskinportenDelegations(environment, supplierOrg!, consumerOrg!, scope),
     enabled: !!supplierOrg && !!consumerOrg,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useDialogLookup(urn: string, environment: string) {
+  return useQuery<DialogDto, Error>({
+    queryKey: ["dialogLookup", environment, urn],
+    queryFn: () => fetchDialogByUrn(environment, urn),
+    enabled: !!urn && !!environment,
     retry: false,
     staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,

@@ -136,14 +136,19 @@ const Sidebar: React.FC = () => {
               />
             )}
             {hasDeveloperRole && (
-              <NavGroup 
-                title="DialogPorten"
+              <NavGroup
+                title="Dialogporten"
                 icon={<ChatElipsisIcon className={classes.icons} />}
                 isCollapsed={isCollapsed}
-                paths={["dialog-details"]}
+                paths={["/dialog-lookup"]}
               >
-                
                 <NavItem
+                  to="/dialog-lookup"
+                  title="Dialog-oppslag"
+                  icon={<ChatElipsisIcon className={classes.icons} />}
+                  isCollapsed={isCollapsed}
+                />
+               <NavItem
                   to="/dialog-details"
                   title="Dialog-detaljer"
                   icon={<Chat2Icon className={classes.icons}/>}
