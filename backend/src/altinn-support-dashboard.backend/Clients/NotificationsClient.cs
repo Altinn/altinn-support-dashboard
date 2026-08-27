@@ -69,7 +69,7 @@ public class NotificationsClient : INotificationsClient
         return await GetFutureNotifications(url, "PhoneNumber", phoneNumber, from, to, environmentName);
     }
 
-    public async Task<string> GetFutureNofificationsByEmail(string email, DateTime? from, DateTime? to, string environmentName)
+    public async Task<string> GetFutureNotificationsByEmail(string email, DateTime? from, DateTime? to, string environmentName)
     {
         var url = "notifications/api/v1/future/dashboard/recipients/notifications/email";
         return await GetFutureNotifications(url, "Email", email, from, to, environmentName);

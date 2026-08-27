@@ -108,6 +108,8 @@ public class NotificationsController : ControllerBase
         {
             return BadRequest("Not a valid Phonenumber");
         }
+        _telemetryService.TrackPhoneNumberNotificationSearch(phonenumber, CurrentUserId, environmentName);
+
 
         var response = await _service.GetFutureNotificationsByPhoneNumber(phonenumber, from, to, environmentName);
         return Ok(response);
@@ -124,6 +126,7 @@ public class NotificationsController : ControllerBase
         {
             return BadRequest("Not a valid email");
         }
+        _telemetryService.TrackEmailNotificationSearch(email, CurrentUserId, environmentName);
 
         var response = await _service.GetFutureNotificationsByEmail(email, from, to, environmentName);
         return Ok(response);
