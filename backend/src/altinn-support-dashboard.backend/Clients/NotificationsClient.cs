@@ -60,27 +60,27 @@ public class NotificationsClient : INotificationsClient
     public async Task<string> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to, string environmentName)
     {
         var url = "notifications/api/v1/future/dashboard/recipients/notifications/nin";
-        return await GetFutureNofifications(url, "NationalIdentityNumber", nin, from, to, environmentName);
+        return await GetFutureNotifications(url, "NationalIdentityNumber", nin, from, to, environmentName);
     }
 
-    public async Task<string> GetFutureNofificationsByPhoneNumber(string phoneNumber, DateTime? from, DateTime? to, string environmentName)
+    public async Task<string> GetFutureNotificationsByPhoneNumber(string phoneNumber, DateTime? from, DateTime? to, string environmentName)
     {
         var url = "notifications/api/v1/future/dashboard/recipients/notifications/phonenumber";
-        return await GetFutureNofifications(url, "PhoneNumber", phoneNumber, from, to, environmentName);
+        return await GetFutureNotifications(url, "PhoneNumber", phoneNumber, from, to, environmentName);
     }
 
     public async Task<string> GetFutureNofificationsByEmail(string email, DateTime? from, DateTime? to, string environmentName)
     {
         var url = "notifications/api/v1/future/dashboard/recipients/notifications/email";
-        return await GetFutureNofifications(url, "Email", email, from, to, environmentName);
+        return await GetFutureNotifications(url, "Email", email, from, to, environmentName);
     }
 
     public async Task<string> GetFutureNotificationsByOrgNr(string orgNr, DateTime? from, DateTime? to, string environmentName)
     {
         var url = "notifications/api/v1/future/dashboard/recipients/notifications/orgnumber";
-        return await GetFutureNofifications(url, "OrganizationNumber", orgNr, from, to, environmentName);
+        return await GetFutureNotifications(url, "OrganizationNumber", orgNr, from, to, environmentName);
     }
-    private async Task<string> GetFutureNofifications(string url, string headerName, string headerValue, DateTime? from, DateTime? to, string environmentName)
+    private async Task<string> GetFutureNotifications(string url, string headerName, string headerValue, DateTime? from, DateTime? to, string environmentName)
     {
 
         var client = _clients[environmentName];
