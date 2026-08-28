@@ -6,5 +6,5 @@ namespace altinn_support_dashboard.Server.Services.Interfaces;
 public interface IDialogportenService
 {
     Task<DialogDto?> GetDialogByUrn(string urn, string environment, bool includeTitle);
-
+    Task<string?> GetDialogDetails(string dialogId, string environment);
 }

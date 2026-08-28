@@ -37,4 +37,6 @@ public class DialogportenService : IDialogportenService
 
         return dialog;
     }
+
+    public async Task<string?> GetDialogDetails
 }
