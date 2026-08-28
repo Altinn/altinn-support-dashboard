@@ -28,7 +28,7 @@ public class MockNotificationsClient(NotificationsClient inner) : INotifications
     public Task<string> GetFutureNotificationsByEmail(string email, DateTime? from, DateTime? to, string environmentName) =>
         MockUtils.IsMock(environmentName)
             ? Task.FromResult(MockUtils.Read("notifications-future.json"))
-            : inner.GetFutureNotificationsByPhoneNumber(email, from, to, environmentName);
+            : inner.GetFutureNotificationsByEmail(email, from, to, environmentName);
 
 
     public Task<string> GetNotificationLog(string? dialogId, string? transmissionId, string environmentName) =>
