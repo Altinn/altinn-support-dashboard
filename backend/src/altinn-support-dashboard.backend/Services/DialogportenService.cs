@@ -38,5 +38,9 @@ public class DialogportenService : IDialogportenService
         return dialog;
     }
 
-    public async Task<string?> GetDialogDetails
+    public async Task<string?> GetDialogDetails(string dialogId, string environment)
+    {
+        string result = await _client.GetDialogDetails(dialogId, environment);
+        return result == string.Empty ? null : result;
+    }
 }

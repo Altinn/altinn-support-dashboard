@@ -25,3 +25,9 @@ export interface DialogDto {
   title: ResourceName[] | null;
   nonSensitiveTitle: ResourceName[] | null;
 }
+
+export interface DialogDetails {
+  id: string;
+  deletedAt?: string | null;
+  [key: string]: unknown;
+}
