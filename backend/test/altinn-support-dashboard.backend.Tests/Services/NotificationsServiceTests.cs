@@ -248,6 +248,136 @@ public class NotificationsServiceTests
         await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByNin("12345678901", null, null, EnvironmentName));
     }
 
+    // --- GetFutureNotificationsByPhoneNumber ---
+
+    [Fact]
+    public async Task GetFutureNotificationsByPhoneNumber_ReturnsDeserializedResponse_WhenClientSucceeds()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByPhoneNumber(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
+            .ReturnsAsync(ValidFutureNotificationsJson);
+
+        var result = await _service.GetFutureNotificationsByPhoneNumber("+4712345678", null, null, EnvironmentName);
+
+        Assert.Single(result);
+        Assert.Equal("test-creator", result[0].CreatorName);
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByPhoneNumber_DelegatesToClient_WithCorrectParameters()
+    {
+        var from = new DateTime(2024, 1, 1);
+        var to = new DateTime(2024, 2, 1);
+        _clientMock.Setup(c => c.GetFutureNotificationsByPhoneNumber("+4712345678", from, to, EnvironmentName))
+            .ReturnsAsync(ValidFutureNotificationsJson);
+
+        await _service.GetFutureNotificationsByPhoneNumber("+4712345678", from, to, EnvironmentName);
+
+        _clientMock.Verify(c => c.GetFutureNotificationsByPhoneNumber("+4712345678", from, to, EnvironmentName), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByPhoneNumber_PrependsNorwayCountryCode_WhenPhoneNumberHasNoPlusPrefix()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByPhoneNumber("+4712345678", null, null, EnvironmentName))
+            .ReturnsAsync(ValidFutureNotificationsJson);
+
+        await _service.GetFutureNotificationsByPhoneNumber("12345678", null, null, EnvironmentName);
+
+        _clientMock.Verify(c => c.GetFutureNotificationsByPhoneNumber("+4712345678", null, null, EnvironmentName), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByPhoneNumber_DoesNotModifyPhoneNumber_WhenItAlreadyHasPlusPrefix()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByPhoneNumber("+4612345678", null, null, EnvironmentName))
+            .ReturnsAsync(ValidFutureNotificationsJson);
+
+        await _service.GetFutureNotificationsByPhoneNumber("+4612345678", null, null, EnvironmentName);
+
+        _clientMock.Verify(c => c.GetFutureNotificationsByPhoneNumber("+4612345678", null, null, EnvironmentName), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByPhoneNumber_ThrowsException_WhenClientThrows()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByPhoneNumber(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
+            .ThrowsAsync(new Exception("API request failed"));
+
+        await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByPhoneNumber("12345678", null, null, EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByPhoneNumber_ThrowsJsonException_WhenResponseIsInvalidJson()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByPhoneNumber(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
+            .ReturnsAsync("not-valid-json");
+
+        await Assert.ThrowsAsync<JsonException>(() => _service.GetFutureNotificationsByPhoneNumber("12345678", null, null, EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByPhoneNumber_ThrowsException_WhenResponseDeserializesToNull()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByPhoneNumber(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
+            .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByPhoneNumber("12345678", null, null, EnvironmentName));
+    }
+
+    // --- GetFutureNotificationsByEmail ---
+
+    [Fact]
+    public async Task GetFutureNotificationsByEmail_ReturnsDeserializedResponse_WhenClientSucceeds()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByEmail(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
+            .ReturnsAsync(ValidFutureNotificationsJson);
+
+        var result = await _service.GetFutureNotificationsByEmail("test@test.no", null, null, EnvironmentName);
+
+        Assert.Single(result);
+        Assert.Equal("test-creator", result[0].CreatorName);
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByEmail_DelegatesToClient_WithCorrectParameters()
+    {
+        var from = new DateTime(2024, 1, 1);
+        var to = new DateTime(2024, 2, 1);
+        _clientMock.Setup(c => c.GetFutureNotificationsByEmail("test@test.no", from, to, EnvironmentName))
+            .ReturnsAsync(ValidFutureNotificationsJson);
+
+        await _service.GetFutureNotificationsByEmail("test@test.no", from, to, EnvironmentName);
+
+        _clientMock.Verify(c => c.GetFutureNotificationsByEmail("test@test.no", from, to, EnvironmentName), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByEmail_ThrowsException_WhenClientThrows()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByEmail(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
+            .ThrowsAsync(new Exception("API request failed"));
+
+        await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByEmail("test@test.no", null, null, EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByEmail_ThrowsJsonException_WhenResponseIsInvalidJson()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByEmail(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
+            .ReturnsAsync("not-valid-json");
+
+        await Assert.ThrowsAsync<JsonException>(() => _service.GetFutureNotificationsByEmail("test@test.no", null, null, EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByEmail_ThrowsException_WhenResponseDeserializesToNull()
+    {
+        _clientMock.Setup(c => c.GetFutureNotificationsByEmail(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
+            .ReturnsAsync("null");
+
+        await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByEmail("test@test.no", null, null, EnvironmentName));
+    }
+
     [Fact]
     public async Task GetNotificationLogsAsync_ReturnsDeserializedResponse_WhenClientSucceeds()
     {
