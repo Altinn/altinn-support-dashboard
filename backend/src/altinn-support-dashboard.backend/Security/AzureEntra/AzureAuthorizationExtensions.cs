@@ -81,8 +81,8 @@ public static class AzureAuthorizationExtensions
                 else p.RequireAssertion(_ => true);
             }).AddPolicy(AzureRoles.DialogportenAdmin, p =>
             {
-                if (enabled) p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.DialogportenAdmin));
-                else p.RequireAssertion(_ => true);
+                //Always required
+                p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.DialogportenAdmin));
             })
             .AddPolicy(AzureRoles.Production, p =>
             {
