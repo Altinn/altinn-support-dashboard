@@ -92,11 +92,45 @@ public class NotificationsController : ControllerBase
         }
 
         _telemetryService.TrackOrgNrSearch(orgNr, CurrentUserId, environmentName);
-        
+
         var response = await _service.GetFutureNotificationsByOrgNr(orgNr, from, to, environmentName);
         return Ok(response);
     }
 
+    [HttpGet("future/phonenumber/{phonenumber}")]
+    public async Task<IActionResult> GetFutureNotificationsByPhoneNumber(
+        [FromRoute] string environmentName,
+        [FromRoute] string phonenumber,
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to)
+    {
+        if (!ValidationService.IsValidPhoneNumber(phonenumber))
+        {
+            return BadRequest("Not a valid Phonenumber");
+        }
+        _telemetryService.TrackPhoneNumberNotificationSearch(phonenumber, CurrentUserId, environmentName);
+
+
+        var response = await _service.GetFutureNotificationsByPhoneNumber(phonenumber, from, to, environmentName);
+        return Ok(response);
+    }
+
+    [HttpGet("future/email/{email}")]
+    public async Task<IActionResult> GetFutureNotificationsByEmail(
+        [FromRoute] string environmentName,
+        [FromRoute] string email,
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to)
+    {
+        if (!ValidationService.IsValidEmail(email))
+        {
+            return BadRequest("Not a valid email");
+        }
+        _telemetryService.TrackEmailNotificationSearch(email, CurrentUserId, environmentName);
+
+        var response = await _service.GetFutureNotificationsByEmail(email, from, to, environmentName);
+        return Ok(response);
+    }
     [HttpGet("future/partytId/{partyId}")]
     public async Task<IActionResult> GetFutureNotificationsByPartyId(
         [FromRoute] string environmentName,
@@ -128,7 +162,7 @@ public class NotificationsController : ControllerBase
         }
 
         _telemetryService.TrackPartyUuidSearch(partyUuid, CurrentUserId, environmentName);
-        
+
         var response = await _service.GetFutureNotificationsByPartyUuid(partyUuid, from, to, environmentName);
         return Ok(response);
     }
@@ -147,6 +181,16 @@ public class NotificationsController : ControllerBase
         if (ValidationService.isValidSsn(query))
         {
             return await GetFutureNotificationsByNin(environmentName, query, from, to);
+        }
+
+        if (ValidationService.IsValidEmail(query))
+        {
+            return await GetFutureNotificationsByEmail(environmentName, query, from, to);
+        }
+
+        if (ValidationService.IsValidPhoneNumber(query))
+        {
+            return await GetFutureNotificationsByPhoneNumber(environmentName, query, from, to);
         }
 
         if (ValidationService.IsValidPartyId(query))

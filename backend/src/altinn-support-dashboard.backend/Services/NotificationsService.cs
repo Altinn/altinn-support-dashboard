@@ -36,6 +36,24 @@ public class NotificationsService : INotificationsService
         return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
     }
 
+    public async Task<List<FutureNotificationDto>> GetFutureNotificationsByPhoneNumber(string phoneNumber, DateTime? from, DateTime? to, string environmentName)
+    {
+        if (!phoneNumber.StartsWith('+'))
+        {
+            phoneNumber = "+47" + phoneNumber;
+        }
+
+        var result = await _client.GetFutureNotificationsByPhoneNumber(phoneNumber, from, to, environmentName);
+        return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+    }
+
+    public async Task<List<FutureNotificationDto>> GetFutureNotificationsByEmail(string email, DateTime? from, DateTime? to, string environmentName)
+    {
+        var result = await _client.GetFutureNotificationsByEmail(email, from, to, environmentName);
+        return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+    }
+
+
     public async Task<List<FutureNotificationDto>> GetFutureNotificationsByPartyId(string partyId, DateTime? from, DateTime? to, string environmentName)
     {
 

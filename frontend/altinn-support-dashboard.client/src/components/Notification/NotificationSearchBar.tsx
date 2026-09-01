@@ -54,7 +54,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
           placeholder={
             searchType === "shipmentId"
               ? "Shipment-ID"
-              : "Nin, orgnr, partyid, partyuuid"
+              : "Nin,orgnr,email,tlf,partyid,partyuuid"
           }
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}

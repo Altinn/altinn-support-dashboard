@@ -196,6 +196,148 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             await Assert.ThrowsAsync<Exception>(() => _controller.GetFutureNotificationsByNin(EnvironmentName, "12345678901", null, null));
         }
 
+        // --- GetFutureNotificationsByPhoneNumber ---
+
+        [Fact]
+        public async Task GetFutureNotificationsByPhoneNumber_ReturnsOk_WithServiceResult()
+        {
+            var response = new List<FutureNotificationDto>
+            {
+                new() { CreatorName = "test-creator", RequestedSendTime = DateTime.UtcNow }
+            };
+            _serviceMock.Setup(s => s.GetFutureNotificationsByPhoneNumber("12345678", null, null, EnvironmentName)).ReturnsAsync(response);
+
+            var result = await _controller.GetFutureNotificationsByPhoneNumber(EnvironmentName, "12345678", null, null);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(response, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetFutureNotificationsByPhoneNumber_CallsService_WithCorrectParameters()
+        {
+            var from = new DateTime(2024, 1, 1);
+            var to = new DateTime(2024, 2, 1);
+            _serviceMock.Setup(s => s.GetFutureNotificationsByPhoneNumber("12345678", from, to, EnvironmentName))
+                .ReturnsAsync([]);
+
+            await _controller.GetFutureNotificationsByPhoneNumber(EnvironmentName, "12345678", from, to);
+
+            _serviceMock.Verify(s => s.GetFutureNotificationsByPhoneNumber("12345678", from, to, EnvironmentName), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetFutureNotificationsByPhoneNumber_PropagatesException_WhenServiceThrows()
+        {
+            _serviceMock.Setup(s => s.GetFutureNotificationsByPhoneNumber(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
+                .ThrowsAsync(new Exception("Service failure"));
+
+            await Assert.ThrowsAsync<Exception>(() => _controller.GetFutureNotificationsByPhoneNumber(EnvironmentName, "12345678", null, null));
+        }
+
+        [Theory]
+        [InlineData("123-4567")]
+        [InlineData("phone123")]
+        [InlineData("++4712345678")]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task GetFutureNotificationsByPhoneNumber_ReturnsBadRequest_WhenPhoneNumberIsInvalid(string phonenumber)
+        {
+            var result = await _controller.GetFutureNotificationsByPhoneNumber(EnvironmentName, phonenumber, null, null);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+            _serviceMock.Verify(s => s.GetFutureNotificationsByPhoneNumber(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetFutureNotificationsByPhoneNumber_TracksSearch_WithPhoneNumber()
+        {
+            const string phoneNumber = "12345678";
+            _serviceMock.Setup(s => s.GetFutureNotificationsByPhoneNumber(phoneNumber, null, null, EnvironmentName))
+                .ReturnsAsync(new List<FutureNotificationDto>());
+
+            await _controller.GetFutureNotificationsByPhoneNumber(EnvironmentName, phoneNumber, null, null);
+
+            _telemetryServiceMock.Verify(t => t.TrackSearch(
+                "notifications",
+                "phoneNumber",
+                It.IsAny<string>(),
+                EnvironmentName,
+                It.Is<IDictionary<string, string>>(d => d["phoneNumber"] == phoneNumber)),
+                Times.Once);
+        }
+
+        // --- GetFutureNotificationsByEmail ---
+
+        [Fact]
+        public async Task GetFutureNotificationsByEmail_ReturnsOk_WithServiceResult()
+        {
+            var response = new List<FutureNotificationDto>
+            {
+                new() { CreatorName = "test-creator", RequestedSendTime = DateTime.UtcNow }
+            };
+            _serviceMock.Setup(s => s.GetFutureNotificationsByEmail("test@test.no", null, null, EnvironmentName)).ReturnsAsync(response);
+
+            var result = await _controller.GetFutureNotificationsByEmail(EnvironmentName, "test@test.no", null, null);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(response, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetFutureNotificationsByEmail_CallsService_WithCorrectParameters()
+        {
+            var from = new DateTime(2024, 1, 1);
+            var to = new DateTime(2024, 2, 1);
+            _serviceMock.Setup(s => s.GetFutureNotificationsByEmail("test@test.no", from, to, EnvironmentName))
+                .ReturnsAsync([]);
+
+            await _controller.GetFutureNotificationsByEmail(EnvironmentName, "test@test.no", from, to);
+
+            _serviceMock.Verify(s => s.GetFutureNotificationsByEmail("test@test.no", from, to, EnvironmentName), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetFutureNotificationsByEmail_PropagatesException_WhenServiceThrows()
+        {
+            _serviceMock.Setup(s => s.GetFutureNotificationsByEmail(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
+                .ThrowsAsync(new Exception("Service failure"));
+
+            await Assert.ThrowsAsync<Exception>(() => _controller.GetFutureNotificationsByEmail(EnvironmentName, "test@test.no", null, null));
+        }
+
+        [Theory]
+        [InlineData("invalid-email")]
+        [InlineData("test@.com")]
+        [InlineData("test@test")]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task GetFutureNotificationsByEmail_ReturnsBadRequest_WhenEmailIsInvalid(string email)
+        {
+            var result = await _controller.GetFutureNotificationsByEmail(EnvironmentName, email, null, null);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+            _serviceMock.Verify(s => s.GetFutureNotificationsByEmail(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetFutureNotificationsByEmail_TracksSearch_WithEmail()
+        {
+            const string email = "test@test.no";
+            _serviceMock.Setup(s => s.GetFutureNotificationsByEmail(email, null, null, EnvironmentName))
+                .ReturnsAsync(new List<FutureNotificationDto>());
+
+            await _controller.GetFutureNotificationsByEmail(EnvironmentName, email, null, null);
+
+            _telemetryServiceMock.Verify(t => t.TrackSearch(
+                "notifications",
+                "email",
+                It.IsAny<string>(),
+                EnvironmentName,
+                It.Is<IDictionary<string, string>>(d => d["email"] == email)),
+                Times.Once);
+        }
+
         [Fact]
         public async Task GetAllNotificationsByOrderId_TracksSearch_WithOrderId()
         {

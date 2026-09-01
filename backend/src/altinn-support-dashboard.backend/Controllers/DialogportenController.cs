@@ -1,3 +1,4 @@
+using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +42,7 @@ public class DialogportenController : ControllerBase
         {
             return NotFound();
         }
+        _telemetryService.TrackDialogSearchByUrn(urn, User.Identity?.Name ?? "unknown", environmentName);
         return Ok(response);
     }
 
