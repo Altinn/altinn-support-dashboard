@@ -1,12 +1,10 @@
 import { Card, Heading, Spinner, Textfield } from "@digdir/designsystemet-react"
 import styles from "./styles/DialogDetailsLookupPage.module.css";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo,  useState } from "react";
 import { useAppStore } from "../stores/Appstore";
-import { useDialogDetails } from "../hooks/hooks";
+import { useDialogDetails} from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
-
-
-type SearchMode = "highlight" | "filter";
+import { useTextHighlightSearch } from "../hooks/useTextHighlightSearch";
 
 
 export const DialogDetailsLookupPage = () => {
@@ -21,11 +19,6 @@ export const DialogDetailsLookupPage = () => {
     }, [isError, error]);
 
     const jsonText = useMemo(() => JSON.stringify(response ?? {}, null, 2), [response]);
-    const lines = useMemo(() => jsonText.split("\n"), [jsonText]);
-
-    const [searchTerm, setSearchTerm] = useState("");
-    const [currentMatch, setCurrentMatch] = useState(0);
-    const matchRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
     const handleSearch = () => {
         if (input.trim()) setSubmittedId(input.trim());
@@ -38,58 +31,18 @@ export const DialogDetailsLookupPage = () => {
             ]
         : [];
     
-        const totalMatches = useMemo(() => {
-            if (!searchTerm) return 0;
-            const term = searchTerm.toLowerCase();
-            const lower = jsonText.toLowerCase();
-            let count = 0;
-            let idx = lower.indexOf(term);
-            while (idx !== -1) {
-                count ++;
-                idx = lower.indexOf(term, idx + term.length);
-            }
-            return count;
-        }, [jsonText, searchTerm]);
-
-        matchRefs.current = [];
-
-        const renderLine = (line: string, lineIndex: number) => {
-            if (!searchTerm)  {
-                return <span>{line}</span>
-            }
-
-            const term = searchTerm.toLowerCase();
-            const lower = line.toLowerCase();
-            const parts: React.ReactNode[] = [];
-            let cursor = 0;
-            let idx = lower.indexOf(term);
-
-            while (idx !== -1) {
-                parts.push(line.slice(cursor, idx));
-                const matchIndex = matchRefs.current.length;
-                matchRefs.current.push(null);
-                parts.push(
-                    <span
-                        key={`${lineIndex}-${idx}`}
-                        ref={(el) => { matchRefs.current[matchIndex] = el; }}
-                        className={matchIndex === currentMatch ? styles.matchActive : styles.match}
-                    >
-                        {line.slice(idx, idx + term.length)}
-                    </span>
-                );
-                cursor = idx + term.length;
-                idx = lower.indexOf(term, cursor);
-            }
-            parts.push(line.slice(cursor));
-            return <span>{parts}</span>
-        }
-
-        const goToMatch = (direction: 1 | -1) => {
-            if  (totalMatches === 0) return true;
-            const next = (currentMatch + direction + totalMatches) % totalMatches;
-            setCurrentMatch(next);
-            matchRefs.current[next]?.scrollIntoView({ block: "center", behavior: "smooth"});
-        };
+        const {
+        lines,
+        searchTerm,
+        setSearchTerm,
+        totalMatches,
+        currentMatch,
+        renderLine,
+        goToMatch,
+    } = useTextHighlightSearch(jsonText,  {
+        matchClassName: styles.match,
+        matchActiveClassName: styles.matchActive,
+    });
 
         return (
             <div>
@@ -123,7 +76,6 @@ export const DialogDetailsLookupPage = () => {
                                     value={searchTerm}
                                     onChange={(e) => {
                                         setSearchTerm(e.target.value);
-                                        setCurrentMatch(0);
                                     }}
                                 />
                                 {searchTerm && (
