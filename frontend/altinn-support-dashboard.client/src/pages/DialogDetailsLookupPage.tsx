@@ -10,8 +10,12 @@ import { ClipboardCheckmarkIcon, ClipboardIcon } from "@navikt/aksel-icons";
 
 export const DialogDetailsLookupPage = () => {
     const environment = useAppStore((state) => state.environment);
-    const [input, setInput] = useState("");
-    const [submittedId, setSubmittedId] = useState("");
+    const [input, setInput] = useState(
+        () => sessionStorage.getItem("dialogDeatilsLookup.input") || ""
+    );
+    const [submittedId, setSubmittedId] = useState(
+        () => sessionStorage.getItem("dialogDetailsLookup.submittedId") || ""
+    );
     const [copied, setCopied] = useState(false);
 
     const { data: response, isLoading, isError, error } = useDialogDetails(submittedId, environment);
@@ -22,9 +26,18 @@ export const DialogDetailsLookupPage = () => {
 
     const jsonText = useMemo(() => JSON.stringify(response ?? {}, null, 2), [response]);
 
+    const handleInputChange = (value: string) => {
+        setInput(value);
+        sessionStorage.setItem("dialogDeatilsLookup.input", value);
+    };
+
     const handleSearch = () => {
-        if (input.trim()) setSubmittedId(input.trim());
-    }
+        const trimmed = input.trim();
+        if (trimmed) {
+            setSubmittedId(trimmed);
+            sessionStorage.setItem("dialogDetailsLookup.submittedId", trimmed);
+        }
+    };
 
     const handleCopyJson = async () => {
         await navigator.clipboard.writeText(jsonText);
@@ -60,7 +73,7 @@ export const DialogDetailsLookupPage = () => {
                     <Textfield
                         label="Dialog-ID"
                         value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={(e) => handleInputChange(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                     />
                 </div>
