@@ -18,6 +18,8 @@ public class DialogportenControllerTests
     private const string ValidDialogUrn = "urn:altinn:dialog-id:11111111-1111-1111-1111-111111111111";
     private const string ValidCorrespondenceUrn = "urn:altinn:correspondence-id:11111111-1111-1111-1111-111111111111";
     private const string ValidInstanceUrn = "urn:altinn:instance-id:12345678/11111111-1111-1111-1111-111111111111";
+    private const string ValidDialogId = "11111111-1111-1111-1111-111111111111";
+    private const string DetailsJson = """{"dialogId":"d1","raw":"payload"}""";
 
     private readonly DialogportenController _controller;
     private readonly Mock<IDialogportenService> _serviceMock;
@@ -161,4 +163,74 @@ public class DialogportenControllerTests
 
         await Assert.ThrowsAsync<Exception>(() => _controller.GetDialogByUrn(EnvironmentName, ValidDialogUrn));
     }
+
+    [Theory]
+[InlineData("")]
+[InlineData("   ")]
+[InlineData("not-a-guid")]
+[InlineData("11111111-1111-1111-1111-11111111111")]
+public async Task GetDialogDetails_ReturnsBadRequest_WhenDialogIdIsInvalid(string dialogId)
+{
+    var result = await _controller.GetDialogDetails(EnvironmentName, dialogId);
+
+    Assert.IsType<BadRequestObjectResult>(result);
+    _serviceMock.Verify(s => s.GetDialogDetails(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+    _authorizationServiceMock.Verify(a => a.AuthorizeAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<object>(), It.IsAny<string>()), Times.Never);
+}
+
+[Fact]
+public async Task GetDialogDetails_ReturnsForbid_WhenNotAuthorized()
+{
+    SetupAuthorization(false);
+
+    var result = await _controller.GetDialogDetails(EnvironmentName, ValidDialogId);
+
+    Assert.IsType<ForbidResult>(result);
+    _serviceMock.Verify(s => s.GetDialogDetails(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+}
+
+[Fact]
+public async Task GetDialogDetails_ReturnsNotFound_WhenServiceReturnsNull()
+{
+    SetupAuthorization(true);
+    _serviceMock.Setup(s => s.GetDialogDetails(ValidDialogId, EnvironmentName)).ReturnsAsync((string?)null);
+
+    var result = await _controller.GetDialogDetails(EnvironmentName, ValidDialogId);
+
+    Assert.IsType<NotFoundResult>(result);
+}
+
+[Fact]
+public async Task GetDialogDetails_ReturnsJsonContent_WhenAuthorizedAndFound()
+{
+    SetupAuthorization(true);
+    _serviceMock.Setup(s => s.GetDialogDetails(ValidDialogId, EnvironmentName)).ReturnsAsync(DetailsJson);
+
+    var result = await _controller.GetDialogDetails(EnvironmentName, ValidDialogId);
+
+    var contentResult = Assert.IsType<ContentResult>(result);
+    Assert.Equal(DetailsJson, contentResult.Content);
+    Assert.Equal("application/json", contentResult.ContentType);
+}
+
+[Fact]
+public async Task GetDialogDetails_ChecksAuthorization_WithDialogportenAdminPolicy()
+{
+    SetupAuthorization(true);
+    _serviceMock.Setup(s => s.GetDialogDetails(ValidDialogId, EnvironmentName)).ReturnsAsync(DetailsJson);
+
+    await _controller.GetDialogDetails(EnvironmentName, ValidDialogId);
+
+    _authorizationServiceMock.Verify(a => a.AuthorizeAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<object>(), AzureRoles.DialogportenAdmin), Times.Once);
+}
+
+[Fact]
+public async Task GetDialogDetails_PropagatesException_WhenServiceThrows()
+{
+    SetupAuthorization(true);
+    _serviceMock.Setup(s => s.GetDialogDetails(It.IsAny<string>(), It.IsAny<string>()))
+        .ThrowsAsync(new Exception("Service failure"));
+
+    await Assert.ThrowsAsync<Exception>(() => _controller.GetDialogDetails(EnvironmentName, ValidDialogId));
+}
 }

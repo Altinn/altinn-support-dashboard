@@ -36,6 +36,13 @@ if (!HTMLElement.prototype.hidePopover) {
   HTMLElement.prototype.hidePopover = () => {};
 }
 
+// jsdom doesn't implement the Web Animations API, which @digdir/designsystemet-react's
+// Spinner needs for useSynchronizedAnimation
+if (typeof document.getAnimations !== "function") {
+  document.getAnimations = () => [];
+}
+
+
 if (typeof globalThis.requestAnimationFrame === "undefined") {
   globalThis.requestAnimationFrame = (callback) =>
     setTimeout(callback, 0) as unknown as number;
