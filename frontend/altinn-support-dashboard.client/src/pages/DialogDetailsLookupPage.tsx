@@ -1,16 +1,18 @@
-import { Card, Heading, Spinner, Textfield } from "@digdir/designsystemet-react"
+import { Button, Card, Heading, Spinner, Textfield } from "@digdir/designsystemet-react"
 import styles from "./styles/DialogDetailsLookupPage.module.css";
 import { useEffect, useMemo,  useState } from "react";
 import { useAppStore } from "../stores/Appstore";
 import { useDialogDetails} from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
 import { useTextHighlightSearch } from "../hooks/useTextHighlightSearch";
+import { ClipboardCheckmarkIcon, ClipboardIcon } from "@navikt/aksel-icons";
 
 
 export const DialogDetailsLookupPage = () => {
     const environment = useAppStore((state) => state.environment);
     const [input, setInput] = useState("");
     const [submittedId, setSubmittedId] = useState("");
+    const [copied, setCopied] = useState(false);
 
     const { data: response, isLoading, isError, error } = useDialogDetails(submittedId, environment);
 
@@ -23,6 +25,12 @@ export const DialogDetailsLookupPage = () => {
     const handleSearch = () => {
         if (input.trim()) setSubmittedId(input.trim());
     }
+
+    const handleCopyJson = async () => {
+        await navigator.clipboard.writeText(jsonText);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+    };
 
     const HIGHLIGHTED_FIELDS: {label: string, value: unknown}[] = response
         ? [
@@ -85,6 +93,14 @@ export const DialogDetailsLookupPage = () => {
                                         <button type="button" onClick={() => goToMatch(1)}>&darr;</button>
                                     </div>
                                 )}
+                                <Button
+                                    variant="tertiary"
+                                    data-size="sm"
+                                    aria-label=""
+                                    onClick={handleCopyJson}
+                                >
+                                    {copied ? <ClipboardCheckmarkIcon /> : <ClipboardIcon />}
+                                </Button>
                             </div>
 
                             <pre className={styles.jsonOutput}>
