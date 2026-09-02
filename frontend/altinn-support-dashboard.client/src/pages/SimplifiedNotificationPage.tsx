@@ -1,0 +1,67 @@
+import { useEffect, useState } from "react";
+import { useAppStore } from "../stores/Appstore"
+import { useNotificationsAdvanced } from "../hooks/hooks";
+import { showPopup } from "../components/Popup";
+import { Alert, Heading, Skeleton } from "@digdir/designsystemet-react";
+import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
+import NotificationShipmentCard from "../components/Notification/NIN-search/NotificationShipmentCard";
+import styles from "./styles/NotificationPage.module.css"
+
+
+
+export const SimplifiedNotificationPage = () => {
+    const environment = useAppStore((state) => state.environment);
+    const [searchValue, setSearchValue] = useState(
+        () => sessionStorage.getItem("simplifiedNotif_searchValue") || ""
+    );
+
+    useEffect(() => {
+        sessionStorage.setItem("simplifiedNotif_searchValue", searchValue)
+    }, [searchValue]);
+
+    const { data, isFetching, isError, error } = useNotificationsAdvanced(
+        searchValue,
+        environment
+    );
+
+    useEffect(() => {
+        if (isError) showPopup(error.message, "error");
+    }, [isError, error]);
+
+    return (
+        <div className = {styles.container}>
+            <Heading level={1} data-size="sm" className={styles.heading}>
+                Søk etter varsling
+            </Heading>
+
+            <NotificationSearchBar 
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                searchType="advanced"
+            />
+
+            {isFetching && (
+                <>
+                    <Skeleton variant="rectangle" height="6rem" />
+                    <Skeleton variant="rectangle" height="6rem" />
+                    <Skeleton variant="rectangle" height="6rem" />
+                </>
+            )}
+
+            {!isFetching && !isError && data?.length === 0 && (
+                <Alert data-color="info">Fant ingen varslinger</Alert>
+            )}
+
+            {data?.map((shipment,  i) => (
+                <NotificationShipmentCard 
+                    key={i}
+                    shipment={shipment}
+                    selectedResults={[]}
+                    selectedChannels={[]}
+                />
+            ))}
+        </div>
+    );
+};
+
+export default SimplifiedNotificationPage;

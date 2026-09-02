@@ -23,6 +23,7 @@ import PrivateRoutes from "./PrivateRoutes";
 import { ToastContainer } from "react-toastify";
 import { ResourceSearchPage } from "../pages/ResourceSearchPage";
 import { NotificationLogPage } from "../pages/NotificationLogPage";
+import SimplifiedNotificationPage from "../pages/SimplifiedNotificationPage";
 
 const App: React.FC = () => {
   // Sjekk etter nye versjoner
@@ -93,6 +94,10 @@ const App: React.FC = () => {
                 <Route
                   path="/notification-log"
                   element={<NotificationLogPage/>}
+                />
+                <Route 
+                  path="/notification-simple"
+                  element={<SimplifiedNotificationPage />}
                 />
               </Route>
             </Routes>
