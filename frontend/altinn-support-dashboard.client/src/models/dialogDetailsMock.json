@@ -1,0 +1,325 @@
+{
+  "id": "01913cd5-784f-7d3b-abef-4c77b1f0972d",
+  "idempotentKey": "string",
+  "revision": "a312cb9c-7632-43c2-aa38-69b06aed56ca",
+  "org": "ske",
+  "serviceResource": "urn:altinn:resource:some-service-identifier",
+  "serviceResourceType": "string",
+  "party": "urn:altinn:person:identifier-no:01125512345\nurn:altinn:organization:identifier-no:912345678",
+  "progress": 0,
+  "process": "string",
+  "precedingProcess": "string",
+  "extendedStatus": "string",
+  "externalReference": "string",
+  "deletedAt": "2026-08-17T11:30:03.080Z",
+  "visibleFrom": "2022-12-31T23:59:59Z",
+  "dueAt": "2022-12-31T23:59:59Z",
+  "expiresAt": "2022-12-31T23:59:59Z",
+  "createdAt": "2022-12-31T23:59:59Z",
+  "updatedAt": "2022-12-31T23:59:59Z",
+  "contentUpdatedAt": "2022-12-31T23:59:59Z",
+  "status": "InProgress",
+  "isApiOnly": true,
+  "hasUnopenedContent": true,
+  "content": {
+    "title": {
+      "value": [
+        {
+          "value": "string",
+          "languageCode": "nb"
+        }
+      ],
+      "mediaType": "string",
+      "isAuthorized": true
+    },
+    "nonSensitiveTitle": {
+      "value": [
+        {
+          "value": "string",
+          "languageCode": "nb"
+        }
+      ],
+      "mediaType": "string",
+      "isAuthorized": true
+    },
+    "summary": {
+      "value": [
+        {
+          "value": "string",
+          "languageCode": "nb"
+        }
+      ],
+      "mediaType": "string",
+      "isAuthorized": true
+    },
+    "nonSensitiveSummary": {
+      "value": [
+        {
+          "value": "string",
+          "languageCode": "nb"
+        }
+      ],
+      "mediaType": "string",
+      "isAuthorized": true
+    },
+    "senderName": {
+      "value": [
+        {
+          "value": "string",
+          "languageCode": "nb"
+        }
+      ],
+      "mediaType": "string",
+      "isAuthorized": true
+    },
+    "additionalInfo": {
+      "value": [
+        {
+          "value": "string",
+          "languageCode": "nb"
+        }
+      ],
+      "mediaType": "string",
+      "isAuthorized": true
+    },
+    "extendedStatus": {
+      "value": [
+        {
+          "value": "string",
+          "languageCode": "nb"
+        }
+      ],
+      "mediaType": "string",
+      "isAuthorized": true
+    },
+    "mainContentReference": {
+      "value": [
+        {
+          "value": "string",
+          "languageCode": "nb"
+        }
+      ],
+      "mediaType": "string",
+      "isAuthorized": true
+    }
+  },
+  "fromServiceOwnerTransmissionsCount": 0,
+  "fromPartyTransmissionsCount": 0,
+  "searchTags": [
+    {
+      "value": "string"
+    }
+  ],
+  "attachments": [
+    {
+      "id": "string",
+      "displayName": [
+        {
+          "value": "string",
+          "languageCode": "nb"
+        }
+      ],
+      "name": "receipt",
+      "urls": [
+        {
+          "id": "string",
+          "url": "https://someendpoint.com/someattachment.pdf",
+          "mediaType": "application/pdf\napplication/zip",
+          "consumerType": "Gui"
+        }
+      ],
+      "expiresAt": "2026-08-17T11:30:03.080Z"
+    }
+  ],
+  "transmissions": [
+    {
+      "id": "string",
+      "idempotentKey": "string",
+      "createdAt": "2026-08-17T11:30:03.080Z",
+      "authorizationAttribute": "mycustomresource\n/* equivalent to the above */\nurn:altinn:subresource:mycustomresource\nurn:altinn:task:Task_1\n/* refer to another service */\nurn:altinn:resource:some-other-service-identifier",
+      "isAuthorized": true,
+      "extendedType": "string",
+      "externalReference": "string",
+      "relatedTransmissionId": "string",
+      "type": "Information",
+      "sender": {
+        "actorType": "PartyRepresentative",
+        "actorName": "Ola Nordmann",
+        "actorId": "urn:altinn:person:identifier-no:12018212345"
+      },
+      "content": {
+        "title": {
+          "value": [
+            {
+              "value": "string",
+              "languageCode": "nb"
+            }
+          ],
+          "mediaType": "string",
+          "isAuthorized": true
+        },
+        "summary": {
+          "value": [
+            {
+              "value": "string",
+              "languageCode": "nb"
+            }
+          ],
+          "mediaType": "string",
+          "isAuthorized": true
+        },
+        "contentReference": {
+          "value": [
+            {
+              "value": "string",
+              "languageCode": "nb"
+            }
+          ],
+          "mediaType": "string",
+          "isAuthorized": true
+        }
+      },
+      "isOpened": true,
+      "attachments": [
+        {
+          "id": "string",
+          "displayName": [
+            {
+              "value": "string",
+              "languageCode": "nb"
+            }
+          ],
+          "name": "receipt",
+          "urls": [
+            {
+              "id": "string",
+              "url": "https://someendpoint.com/someattachment.pdf\nurn:dialogporten:unauthorized",
+              "mediaType": "application/pdf\napplication/zip",
+              "consumerType": "Gui"
+            }
+          ],
+          "expiresAt": "2026-08-17T11:30:03.080Z"
+        }
+      ],
+      "navigationalActions": [
+        {
+          "title": [
+            {
+              "value": "string",
+              "languageCode": "nb"
+            }
+          ],
+          "url": "https://example.com/path",
+          "expiresAt": "2026-08-17T11:30:03.080Z"
+        }
+      ]
+    }
+  ],
+  "guiActions": [
+    {
+      "id": "string",
+      "action": "string",
+      "url": "string",
+      "authorizationAttribute": "mycustomresource\n/* equivalent to the above */\nurn:altinn:subresource:mycustomresource\nurn:altinn:task:Task_1\n/* refer to another service */\nurn:altinn:resource:some-other-service-identifier",
+      "isAuthorized": true,
+      "isDeleteDialogAction": true,
+      "priority": "Primary",
+      "httpMethod": "GET",
+      "title": [
+        {
+          "value": "string",
+          "languageCode": "nb"
+        }
+      ],
+      "prompt": [
+        {
+          "value": "string",
+          "languageCode": "nb"
+        }
+      ]
+    }
+  ],
+  "apiActions": [
+    {
+      "id": "string",
+      "action": "write",
+      "authorizationAttribute": "mycustomresource\n/* equivalent to the above */\nurn:altinn:subresource:mycustomresource\nurn:altinn:task:Task_1\n/* refer to another service */\nurn:altinn:resource:some-other-service-identifier",
+      "isAuthorized": true,
+      "name": "confirm",
+      "endpoints": [
+        {
+          "id": "string",
+          "version": "string",
+          "url": "string",
+          "httpMethod": "GET",
+          "documentationUrl": "string",
+          "requestSchema": "string",
+          "responseSchema": "string",
+          "deprecated": true,
+          "sunsetAt": "2026-08-17T11:30:03.080Z"
+        }
+      ]
+    }
+  ],
+  "activities": [
+    {
+      "id": "string",
+      "createdAt": "2026-08-17T11:30:03.080Z",
+      "extendedType": "string",
+      "type": "DialogCreated",
+      "transmissionId": "string",
+      "performedBy": {
+        "actorType": "PartyRepresentative",
+        "actorName": "Ola Nordmann",
+        "actorId": "urn:altinn:person:identifier-no:12018212345"
+      },
+      "description": [
+        {
+          "value": "string",
+          "languageCode": "nb"
+        }
+      ]
+    }
+  ],
+  "seenSinceLastUpdate": [
+    {
+      "id": "string",
+      "seenAt": "2026-08-17T11:30:03.080Z",
+      "seenBy": {
+        "actorType": "PartyRepresentative",
+        "actorName": "Ola Nordmann",
+        "actorId": "urn:altinn:person:identifier-no:12018212345"
+      },
+      "isViaServiceOwner": true,
+      "isCurrentEndUser": true
+    }
+  ],
+  "seenSinceLastContentUpdate": [
+    {
+      "id": "string",
+      "seenAt": "2026-08-17T11:30:03.080Z",
+      "seenBy": {
+        "actorType": "PartyRepresentative",
+        "actorName": "Ola Nordmann",
+        "actorId": "urn:altinn:person:identifier-no:12018212345"
+      },
+      "isViaServiceOwner": true,
+      "isCurrentEndUser": true
+    }
+  ],
+  "isContentSeen": true,
+  "serviceOwnerContext": {
+    "serviceOwnerLabels": [
+      {
+        "value": "string"
+      }
+    ],
+    "revision": "0196fccd-bf48-7d27-bdfc-4ad3b0f3bee5"
+  },
+  "endUserContext": {
+    "revision": "0196fccd-bf48-7d27-bdfc-4ad3b0f3bee5",
+    "systemLabels": [
+      "Default"
+    ]
+  }
+}

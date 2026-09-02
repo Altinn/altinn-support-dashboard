@@ -45,4 +45,25 @@ public class DialogportenClient : IDialogportenClient
 
         return responseBody;
     }
+
+    public async Task<string> GetDialogDetails(string dialogId, string environmentName)
+    {
+        var client = _clients[environmentName];
+        var response = await client.GetAsync($"dialogporten/api/v1/serviceowner/dialogs/{dialogId}");
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return "";
+        }
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException(
+                $"Api request failed with status code {response.StatusCode}: {responseBody}",
+                inner: null,
+                statusCode: response.StatusCode);
+        }
+
+        return responseBody;
+    }
 }

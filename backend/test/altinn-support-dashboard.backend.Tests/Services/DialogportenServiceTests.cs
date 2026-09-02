@@ -41,7 +41,8 @@ public class DialogportenServiceTests
             ]
         }
         """;
-
+        private const string DialogId = "11111111-1111-1111-1111-111111111111";
+        private const string DetailsJson = """{"dialogId":"d1", "raw":"payload"}""";
     public DialogportenServiceTests()
     {
         _clientMock = new Mock<IDialogportenClient>();
@@ -117,4 +118,43 @@ public class DialogportenServiceTests
 
         await Assert.ThrowsAsync<Exception>(() => _service.GetDialogByUrn(Urn, EnvironmentName, includeTitle: true));
     }
+
+    [Fact]
+public async Task GetDialogDetails_ReturnsRawJson_WhenClientReturnsData()
+{
+    _clientMock.Setup(c => c.GetDialogDetails(DialogId, EnvironmentName)).ReturnsAsync(DetailsJson);
+
+    var result = await _service.GetDialogDetails(DialogId, EnvironmentName);
+
+    Assert.Equal(DetailsJson, result);
+}
+
+[Fact]
+public async Task GetDialogDetails_ReturnsNull_WhenClientReturnsEmptyString()
+{
+    _clientMock.Setup(c => c.GetDialogDetails(DialogId, EnvironmentName)).ReturnsAsync("");
+
+    var result = await _service.GetDialogDetails(DialogId, EnvironmentName);
+
+    Assert.Null(result);
+}
+
+[Fact]
+public async Task GetDialogDetails_DelegatesToClient_WithCorrectDialogIdAndEnvironment()
+{
+    _clientMock.Setup(c => c.GetDialogDetails(DialogId, EnvironmentName)).ReturnsAsync(DetailsJson);
+
+    await _service.GetDialogDetails(DialogId, EnvironmentName);
+
+    _clientMock.Verify(c => c.GetDialogDetails(DialogId, EnvironmentName), Times.Once);
+}
+
+[Fact]
+public async Task GetDialogDetails_ThrowsException_WhenClientThrows()
+{
+    _clientMock.Setup(c => c.GetDialogDetails(It.IsAny<string>(), It.IsAny<string>()))
+        .ThrowsAsync(new Exception("API request failed"));
+
+    await Assert.ThrowsAsync<Exception>(() => _service.GetDialogDetails(DialogId, EnvironmentName));
+}
 }
