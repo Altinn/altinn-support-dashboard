@@ -119,6 +119,21 @@ namespace altinn_support_dashboard.Server.Utils
             return !string.IsNullOrEmpty(ssn) && SsnPattern.IsMatch(ssn);
         }
 
+        public static bool IsValidPersonRecipientUrn(string urn)
+        {
+            return Regex.IsMatch(urn, @"^urn:altinn:person:identifier-no:\d{11}$");
+        }
+
+        public static bool IsValidOrganizationRecipientUrn(string urn)
+        {
+            return Regex.IsMatch(urn, @"^urn:altinn:organization:identifier-no:\d{9}$");
+        }
+
+        public static bool IsValidCorrespondenceRecipientUrn(string urn)
+        {
+            return IsValidPersonRecipientUrn(urn) || IsValidOrganizationRecipientUrn(urn);
+        }
+
         public static bool IsValidOrgNumberV2(string orgNumber)
         {
             if (string.IsNullOrWhiteSpace(orgNumber) || orgNumber.Length != 9 || !orgNumber.All(char.IsDigit))

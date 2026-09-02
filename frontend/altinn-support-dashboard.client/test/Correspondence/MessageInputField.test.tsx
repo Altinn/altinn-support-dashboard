@@ -47,6 +47,19 @@ describe('MessageInputField', () => {
         expect(handleChange).toHaveBeenCalledWith('c');
     });
 
+    it('should render single-line input when multiline is false', () => {
+        const { container } = render(<MessageInputField
+            labelText="Test Label"
+            value="Title"
+            onChange={() => {}}
+            multiline={false}
+        />);
+
+        expect(screen.getByDisplayValue("Title")).toBeInTheDocument();
+        expect(container.querySelector("textarea")).not.toBeInTheDocument();
+        expect(container.querySelector("input")).toBeInTheDocument();
+    });
+
     it('should update value when prop changes', () => {
 
         const { rerender } = render(<MessageInputField

@@ -1,4 +1,4 @@
-import { Checkbox, Heading, Label, Select } from "@digdir/designsystemet-react";
+import { Checkbox, Heading, Label } from "@digdir/designsystemet-react";
 import classes from "./styles/CorrespondencePage.module.css";
 import { useState } from "react";
 import {
@@ -7,7 +7,6 @@ import {
 } from "../components/ManualRoleSearch/utils/storageUtils";
 import CorrespondenceButton from "../components/Correspondence/CorrespondenceButton";
 import MessageInputField from "../components/Correspondence/MessageInputField";
-import CorrespondenceRecipientsList from "../components/Correspondence/CorrespondenceRecipientsList";
 import CorrespondenceResponseField from "../components/Correspondence/CorrespondenceResponseField";
 import {
   CorrespondenceResponse,
@@ -18,12 +17,21 @@ import { TestFlaskIcon } from "@navikt/aksel-icons";
 import CorrespondenceDueDate from "../components/Correspondence/CorrespondenceDueDate";
 import CorrespondenceResourceType from "../components/Correspondence/CorrespondenceResourceType";
 import CorrespondenceNotificationChannel from "../components/Correspondence/CorrespondenceNotificationChannel";
+import CorrespondenceRecipient, {
+  loadRecipientFromStorage,
+} from "../components/Correspondence/CorrespondenceRecipient";
+import CorrespondenceAttachments from "../components/Correspondence/CorrespondenceAttachments";
+import { RecipientType } from "../components/Correspondence/utils/correspondenceValidation";
 
 export const CorrespondencePage = () => {
-  const [recipients, setRecipients] = useState<string[]>(() => {
-    const item = getLocalStorageValue("recipients");
-    return item ? JSON.parse(item) : [""];
-  });
+  const initialRecipient = loadRecipientFromStorage();
+  const [recipientType, setRecipientType] = useState<RecipientType>(
+    initialRecipient.recipientType
+  );
+  const [recipientIdentifier, setRecipientIdentifier] = useState<string>(
+    initialRecipient.recipientIdentifier
+  );
+  const [attachments, setAttachments] = useState<File[]>([]);
   const [title, setTitle] = useState<string>(getLocalStorageValue("title"));
   const [summary, setSummary] = useState<string>(
     getLocalStorageValue("summary")
@@ -57,8 +65,6 @@ export const CorrespondencePage = () => {
     setLocalStorageValue("confirmationNeeded", JSON.stringify(bool));
   };
 
-  const [attachmentType, setAttachmentType] = useState<"txt" | "zip">("txt");
-
   return (
     <div>
       <Heading className={classes.heading} level={1} data-size="sm">
@@ -68,13 +74,16 @@ export const CorrespondencePage = () => {
 
       <div className={classes.container}>
         <div className={classes.formContainer}>
-          <CorrespondenceRecipientsList
-            recipients={recipients}
-            setRecipients={setRecipients}
+          <CorrespondenceRecipient
+            recipientType={recipientType}
+            setRecipientType={setRecipientType}
+            recipientIdentifier={recipientIdentifier}
+            setRecipientIdentifier={setRecipientIdentifier}
           />
           <MessageInputField
             className={classes.messageField}
-            labelText="Melding title"
+            labelText="Meldingstittel"
+            multiline={false}
             value={title}
             onChange={(value) => {
               setTitle(value);
@@ -83,7 +92,7 @@ export const CorrespondencePage = () => {
           />
           <MessageInputField
             className={classes.messageField}
-            labelText="Melding summary"
+            labelText="Sammendrag"
             value={summary}
             onChange={(value) => {
               setSummary(value);
@@ -92,7 +101,7 @@ export const CorrespondencePage = () => {
           />
           <MessageInputField
             className={classes.messageField}
-            labelText="Melding body"
+            labelText="Meldingstekst"
             value={body}
             onChange={(value) => {
               setBody(value);
@@ -108,7 +117,6 @@ export const CorrespondencePage = () => {
             onChange={(e) => handleConfirmationChange(e.target.checked)}
             label="Ja"
           />
-          <Label className={classes.checkboxLabel}>Send Varsling?</Label>
           <CorrespondenceNotificationChannel
             setChannel={setNotificationChannel}
             channel={notificationChannel}
@@ -121,21 +129,21 @@ export const CorrespondencePage = () => {
             SelectedDateTime={selectedDateTime}
             SetSelectedDateTime={setSelectedDateTime}
           />
-          <Label>Vedleggstype</Label>
-          <Select value={attachmentType} onChange={(e) => setAttachmentType(e.target.value as "txt" | "zip")}>
-            <Select.Option value="txt">.txt</Select.Option>
-            <Select.Option value="zip">.zip</Select.Option>
-          </Select>
+          <CorrespondenceAttachments
+            attachments={attachments}
+            setAttachments={setAttachments}
+          />
           <CorrespondenceButton
             resourceType={resourceType}
             dueDate={selectedDateTime}
-            recipients={recipients}
+            recipientType={recipientType}
+            recipientIdentifier={recipientIdentifier}
             title={title}
             summary={summary}
             body={body}
             confirmationNeeded={confirmationNeeded}
             notificationChannel={notificationChannel}
-            attachmentType={attachmentType}
+            attachments={attachments}
             setResponseMessage={setResponseMessage}
           />
         </div>
