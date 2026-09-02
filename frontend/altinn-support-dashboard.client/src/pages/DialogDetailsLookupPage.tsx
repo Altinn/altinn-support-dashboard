@@ -45,10 +45,26 @@ export const DialogDetailsLookupPage = () => {
         setTimeout(() => setCopied(false), 1500);
     };
 
+    const formatFieldValue = (value: unknown): string => {
+        if (value === null || value === undefined || value === "") return "-";
+        if (typeof value === "object") return JSON.stringify(value, null, 2);
+        return String(value);
+    }
+
     const HIGHLIGHTED_FIELDS: {label: string, value: unknown}[] = response
         ? [
-                {label: "ID", value: response.id},
-                {label: "Deleted at", value: response.deletedAt}
+                { label: "ID", value: response.id },
+                { label: "Org", value: response.org },
+                { label: "Service resource", value: response.serviceResource },
+                { label: "Created at", value: response.createdAt },
+                { label: "Updated at", value: response.updatedAt },
+                { label: "Content updated at", value: response.contentUpdatedAt },
+                { label: "Deleted at", value: response.deletedAt },
+                { label: "End user context", value: response.endUserContext },
+                { label: "Seen since last content update", value: response.seenSinceLastContentUpdate },
+                { label: "Service owner context", value: response.serviceOwnerContext },
+                { label: "Service owner labels", value: (response.serviceOwnerContext as { serviceOwnerLabels?: unknown })?.serviceOwnerLabels },
+                { label: "Activity log", value: response.activities },
             ]
         : [];
     
@@ -86,7 +102,7 @@ export const DialogDetailsLookupPage = () => {
                             {HIGHLIGHTED_FIELDS.map((field) => (
                                 <div key={field.label} className={styles.fieldRow}>
                                     <span className={styles.fieldLabel}>{field.label}</span>
-                                    <span className={styles.fieldValue}>{String(field.value)}</span>
+                                    <span className={styles.fieldValue}>{formatFieldValue(field.value)}</span>
                                 </div>
                             ))}
                         </Card>
