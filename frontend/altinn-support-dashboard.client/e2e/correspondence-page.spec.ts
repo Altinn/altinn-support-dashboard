@@ -34,48 +34,40 @@ test.describe("CorrespondencePage", () => {
     });
 
     test("should display all form fields", async ({ page }) => {
-        await expect(page.getByText("Recipient 1")).toBeVisible();
-        await expect(page.getByRole("button", { name: "Add recipient" })).toBeVisible();
-        await expect(page.getByText("Melding title")).toBeVisible();
-        await expect(page.getByText("Melding summary")).toBeVisible();
-        await expect(page.getByText("Melding body")).toBeVisible();
+        await expect(page.getByText("Mottaker")).toBeVisible();
+        await expect(page.getByText("Meldingstittel")).toBeVisible();
+        await expect(page.getByText("Sammendrag")).toBeVisible();
+        await expect(page.getByText("Meldingstekst")).toBeVisible();
         await expect(page.getByText("Trengs det bekreftelse?")).toBeVisible();
-        await expect(page.getByText("Send varsling?")).toBeVisible();
         await expect(page.getByText("Hvem skal kunne lese meldingen?")).toBeVisible();
         await expect(page.getByText("Frist")).toBeVisible();
+        await expect(page.getByText(/Vedlegg \(1-50\)/)).toBeVisible();
         await expect(page.getByRole("button", { name: "Send melding" })).toBeVisible();
     });
 
-    test("should add a new recipient field", async ({ page }) => {
-        await expect(page.getByText("Recipient 1")).toBeVisible();
-        await expect(page.getByText("Recipient 2")).not.toBeVisible();
+    test("should validate person recipient", async ({ page }) => {
+        const recipientInput = page.getByPlaceholder("12345678901");
+        await recipientInput.fill("123");
 
-        await page.getByRole("button", { name: "Add recipient" }).click();
-
-        await expect(page.getByText("Recipient 2")).toBeVisible();
+        await expect(page.getByText("Fødselsnummer må være 11 siffer")).toBeVisible();
+        await expect(page.getByRole("button", { name: "Send melding" })).toBeDisabled();
     });
 
-    test("should remove a recipient field", async ({ page }) => {
-        await page.getByRole("button", { name: "Add recipient" }).click();
-        await expect(page.getByText("Recipient 2")).toBeVisible();
+    test("should validate organization recipient", async ({ page }) => {
+        const recipientTypeSelect = page.getByText("Mottaker").locator("..").getByRole("combobox");
+        await recipientTypeSelect.selectOption("organization");
 
-        await page.getByRole("button", { name: "X" }).nth(1).click();
+        const recipientInput = page.getByPlaceholder("123456789");
+        await recipientInput.fill("12345");
 
-        await expect(page.getByText("Recipient 2")).not.toBeVisible();
-    });
-
-    test("should not remove the last recipient", async ({ page }) => {
-        await expect(page.getByText("Recipient 1")).toBeVisible();
-
-        await page.getByRole("button", { name: "X" }).first().click();
-
-        await expect(page.getByText("Recipient 1")).toBeVisible();
+        await expect(page.getByText("Organisasjonsnummer må være 9 siffer")).toBeVisible();
+        await expect(page.getByRole("button", { name: "Send melding" })).toBeDisabled();
     });
 
     test("should fill in message fields", async ({ page }) => {
-        const titleField = page.getByText("Melding title").locator("..").getByRole("textbox");
-        const summaryField = page.getByText("Melding summary").locator("..").getByRole("textbox");
-        const bodyField = page.getByText("Melding body").locator("..").getByRole("textbox");
+        const titleField = page.getByText("Meldingstittel").locator("..").getByRole("textbox");
+        const summaryField = page.getByText("Sammendrag").locator("..").getByRole("textbox");
+        const bodyField = page.getByText("Meldingstekst").locator("..").getByRole("textbox");
 
         await titleField.fill("Test Title");
         await summaryField.fill("Test Summary");
@@ -98,7 +90,7 @@ test.describe("CorrespondencePage", () => {
     });
 
     test("should select notification channel", async ({ page }) => {
-        const select = page.getByText("Varslingsinstillinger").locator("..").getByRole("combobox");
+        const select = page.getByText("Varslingsinnstillinger").locator("..").getByRole("combobox");
 
         await select.selectOption("0");
         await expect(select).toHaveValue("0");
@@ -124,7 +116,7 @@ test.describe("CorrespondencePage", () => {
     });
 
     test("should persist form values to localStorage", async ({ page }) => {
-        const titleField = page.getByText("Melding title").locator("..").getByRole("textbox");
+        const titleField = page.getByText("Meldingstittel").locator("..").getByRole("textbox");
         await titleField.fill("Persistent Title");
 
         const stored = await page.evaluate(() => localStorage.getItem("title"));
@@ -138,12 +130,17 @@ test.describe("CorrespondencePage", () => {
         expect(stored).toBe("true");
     });
 
-    test("should persist recipients to localStorage", async ({ page }) => {
-        const input = page.getByText("Recipient 1").locator("..").locator("input");
+    test("should persist recipient to localStorage", async ({ page }) => {
+        const input = page.getByPlaceholder("12345678901");
         await input.fill("12345678901");
 
-        const stored = await page.evaluate(() => localStorage.getItem("recipients"));
-        expect(stored).toContain("12345678901");
+        const storedType = await page.evaluate(() => localStorage.getItem("recipientType"));
+        const storedIdentifier = await page.evaluate(() => localStorage.getItem("recipientIdentifier"));
+        const storedUrn = await page.evaluate(() => localStorage.getItem("recipient"));
+
+        expect(storedType).toBe("person");
+        expect(storedIdentifier).toBe("12345678901");
+        expect(storedUrn).toBe("urn:altinn:person:identifier-no:12345678901");
     });
 
     test("should restore form values from localStorage on reload", async ({ page }) => {
@@ -152,19 +149,21 @@ test.describe("CorrespondencePage", () => {
             localStorage.setItem("summary", "Restored Summary");
             localStorage.setItem("body", "Restored Body");
             localStorage.setItem("confirmationNeeded", "true");
-            localStorage.setItem("recipients", JSON.stringify(["12345678901"]));
+            localStorage.setItem("recipientType", "person");
+            localStorage.setItem("recipientIdentifier", "12345678901");
+            localStorage.setItem("recipient", "urn:altinn:person:identifier-no:12345678901");
             localStorage.setItem("notificationChannel", "1");
             localStorage.setItem("resourceType", "confidentiality");
         });
 
         await page.reload();
 
-        const titleField = page.getByText("Melding title").locator("..").getByRole("textbox");
-        const summaryField = page.getByText("Melding summary").locator("..").getByRole("textbox");
-        const bodyField = page.getByText("Melding body").locator("..").getByRole("textbox");
+        const titleField = page.getByText("Meldingstittel").locator("..").getByRole("textbox");
+        const summaryField = page.getByText("Sammendrag").locator("..").getByRole("textbox");
+        const bodyField = page.getByText("Meldingstekst").locator("..").getByRole("textbox");
         const checkbox = page.getByRole("checkbox", { name: "Ja" });
-        const recipientInput = page.getByText("Recipient 1").locator("..").locator("input");
-        const notificationSelect = page.getByText("Varslingsinstillinger").locator("..").getByRole("combobox");
+        const recipientInput = page.getByPlaceholder("12345678901");
+        const notificationSelect = page.getByText("Varslingsinnstillinger").locator("..").getByRole("combobox");
         const resourceTypeSelect = page.getByText("Hvem skal kunne lese meldingen?").locator("..").getByRole("combobox");
 
         await expect(titleField).toHaveValue("Restored Title");
@@ -176,13 +175,26 @@ test.describe("CorrespondencePage", () => {
         await expect(resourceTypeSelect).toHaveValue("confidentiality");
     });
 
-    test("should disable send when recipients are empty", async ({ page }) => {
+    test("should disable send when recipient is invalid", async ({ page }) => {
         await expect(page.getByRole("button", { name: "Send melding" })).toBeDisabled();
     });
 
-    test("should enable send button when recipient has value", async ({ page }) => {
-        const input = page.getByText("Recipient 1").locator("..").locator("input");
+    test("should disable send when recipient is valid but attachment is missing", async ({ page }) => {
+        const input = page.getByPlaceholder("12345678901");
         await input.fill("12345678901");
+
+        await expect(page.getByRole("button", { name: "Send melding" })).toBeDisabled();
+    });
+
+    test("should enable send button when recipient and attachment are valid", async ({ page }) => {
+        const input = page.getByPlaceholder("12345678901");
+        await input.fill("12345678901");
+
+        await page.locator('input[type="file"]').setInputFiles({
+            name: "test.txt",
+            mimeType: "text/plain",
+            buffer: Buffer.from("test content"),
+        });
 
         await expect(page.getByRole("button", { name: "Send melding" })).toBeEnabled();
     });
@@ -196,17 +208,23 @@ test.describe("CorrespondencePage", () => {
                     statusCode: 200,
                     responseBody: '{"correspondenceId":"12345"}',
                     responseHeader: "content-type: application/json",
-                    requestBody: '{"recipients":["12345678901"]}',
+                    requestBody: '{"recipients":["urn:altinn:person:identifier-no:12345678901"]}',
                     requestHeader: "content-type: application/json"
                 }),
             });
         });
 
-        const input = page.getByText("Recipient 1").locator("..").locator("input");
+        const input = page.getByPlaceholder("12345678901");
         await input.fill("12345678901");
 
-        const titleField = page.getByText("Melding title").locator("..").getByRole("textbox");
+        const titleField = page.getByText("Meldingstittel").locator("..").getByRole("textbox");
         await titleField.fill("Test Title");
+
+        await page.locator('input[type="file"]').setInputFiles({
+            name: "test.txt",
+            mimeType: "text/plain",
+            buffer: Buffer.from("test content"),
+        });
 
         await page.getByRole("button", { name: "Send melding" }).click();
 
@@ -224,19 +242,26 @@ test.describe("CorrespondencePage", () => {
                     statusCode: 200,
                     responseBody: '{"correspondenceId":"12345"}',
                     responseHeader: "content-type: application/json",
-                    requestBody: '{"recipients":["12345678901"]}',
+                    requestBody: '{"recipients":["urn:altinn:person:identifier-no:12345678901"]}',
                     requestHeader: "content-type: application/json"
                 }),
             });
         });
 
-        const input = page.getByText("Recipient 1").locator("..").locator("input");
+        const input = page.getByPlaceholder("12345678901");
         await input.fill("12345678901");
+
+        await page.locator('input[type="file"]').setInputFiles({
+            name: "test.txt",
+            mimeType: "text/plain",
+            buffer: Buffer.from("test content"),
+        });
+
         await page.getByRole("button", { name: "Send melding" }).click();
 
         await expect(page.getByRole("tab", { name: "Response" })).toBeVisible();
         await page.getByRole("tab", { name: "Request" }).click();
-        await expect(page.getByText('{"recipients":["12345678901"]}')).toBeVisible();
+        await expect(page.getByText('{"recipients":["urn:altinn:person:identifier-no:12345678901"]}')).toBeVisible();
     });
 
     test("should display error status code on failed send", async ({ page }) => {
@@ -248,17 +273,23 @@ test.describe("CorrespondencePage", () => {
                     statusCode: 400,
                     responseBody: '{"error":"Bad Request"}',
                     responseHeader: "content-type: application/json",
-                    requestBody: '{"recipients":["12345678901"]}',
+                    requestBody: '{"recipients":["urn:altinn:person:identifier-no:12345678901"]}',
                     requestHeader: "content-type: application/json"
                 }),
             });
         });
 
-        const input = page.getByText("Recipient 1").locator("..").locator("input");
+        const input = page.getByPlaceholder("12345678901");
         await input.fill("12345678901");
 
-        const titleField = page.getByText("Melding title").locator("..").getByRole("textbox");
+        const titleField = page.getByText("Meldingstittel").locator("..").getByRole("textbox");
         await titleField.fill("Test Title");
+
+        await page.locator('input[type="file"]').setInputFiles({
+            name: "test.txt",
+            mimeType: "text/plain",
+            buffer: Buffer.from("test content"),
+        });
 
         await page.getByRole("button", { name: "Send melding" }).click();
 
@@ -274,18 +305,5 @@ test.describe("CorrespondencePage", () => {
 
         const stored = await page.evaluate(() => localStorage.getItem("dueDate"));
         expect(stored).toBe("2026-01-01");
-    });
-
-    test("should persist multiple recipients", async ({ page }) => {
-        await page.getByRole("button", { name: "Add recipient" }).click();
-        const recipientInput1 = page.getByText("Recipient 1").locator("..").locator("input");
-        const recipientInput2 = page.getByText("Recipient 2").locator("..").locator("input");
-
-        await recipientInput1.fill("12345678901");
-        await recipientInput2.fill("10987654321");
-
-        const stored = await page.evaluate(() => localStorage.getItem("recipients"));
-        expect(stored).toContain("12345678901");
-        expect(stored).toContain("10987654321");
     });
 })

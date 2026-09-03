@@ -1,7 +1,6 @@
 /**
  * @vitest-environment jsdom
  */
-//Had to add the above line to make sure the test runs in our pipline
 import { describe, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event/dist/cjs/setup/index.js";
@@ -21,31 +20,33 @@ beforeEach(() => {
   sessionStorage.clear();
 });
 
-describe("CorrespondenceButton", () => {
-  const recipients = ["123456789012", "987654321"];
-  const mockSetResponseMessage = vi.fn();
+const validAttachment = new File(["content"], "test.txt", { type: "text/plain" });
 
+const defaultProps = {
+  recipientType: "person" as const,
+  recipientIdentifier: "12345678901",
+  title: "Test",
+  summary: "test",
+  body: "test",
+  confirmationNeeded: false,
+  notificationChannel: NotificationChannel.None,
+  resourceType: "",
+  dueDate: "",
+  attachments: [validAttachment],
+  setResponseMessage: vi.fn(),
+};
+
+describe("CorrespondenceButton", () => {
   it("should render button with correct label", () => {
     const mockMutateAsync = vi.fn();
     vi.mocked(useCorrespondencePost).mockReturnValue({
       mutateAsync: mockMutateAsync,
     } as unknown as ReturnType<typeof useCorrespondencePost>);
-    render(
-      <CorrespondenceButton
-        recipients={recipients}
-        title="Test"
-        summary="test"
-        body="test"
-        confirmationNeeded={false}
-        notificationChannel={NotificationChannel.None}
-        resourceType=""
-        dueDate=""
-        setResponseMessage={mockSetResponseMessage}
-      />,
-    );
+
+    render(<CorrespondenceButton {...defaultProps} />);
 
     expect(
-      screen.getByRole("button", { name: /Send melding/i }),
+      screen.getByRole("button", { name: /Send melding/i })
     ).toBeInTheDocument();
   });
 
@@ -57,25 +58,21 @@ describe("CorrespondenceButton", () => {
 
     render(
       <CorrespondenceButton
-        recipients={recipients}
+        {...defaultProps}
         title="Test"
         summary="Test"
         body="Test"
         confirmationNeeded={true}
         notificationChannel={NotificationChannel.EmailAndSms}
-        resourceType=""
-        dueDate=""
-        setResponseMessage={mockSetResponseMessage}
-      />,
+      />
     );
 
     await userEvent.click(
-      screen.getByRole("button", { name: /Send melding/i }),
+      screen.getByRole("button", { name: /Send melding/i })
     );
 
     const payload: CorrespondenceUploadRequest = {
-      recipients: recipients,
-
+      recipients: ["urn:altinn:person:identifier-no:12345678901"],
       correspondence: {
         dueDateTime: undefined,
         isConfirmationNeeded: true,
@@ -84,7 +81,6 @@ describe("CorrespondenceButton", () => {
           notificationTemplate: "GenericAltinnMessage",
           notificationChannel: NotificationChannel.EmailAndSms,
         },
-
         content: {
           messageTitle: "Test",
           messageBody: "Test",
@@ -93,95 +89,68 @@ describe("CorrespondenceButton", () => {
       },
     };
 
-    expect(mockMutateAsync).toHaveBeenCalledWith(payload);
+    expect(mockMutateAsync).toHaveBeenCalledWith({
+      request: payload,
+      attachments: [validAttachment],
+    });
   });
 
   it("should call setResponseMessage with response after successful post", async () => {
     const mockResponse = { success: true };
     const mockMutateAsync = vi.fn().mockResolvedValue(mockResponse);
+    const mockSetResponseMessage = vi.fn();
     vi.mocked(useCorrespondencePost).mockReturnValue({
       mutateAsync: mockMutateAsync,
     } as unknown as ReturnType<typeof useCorrespondencePost>);
 
     render(
       <CorrespondenceButton
-        recipients={recipients}
-        title="Test"
-        summary="test"
-        body="test"
-        confirmationNeeded={false}
-        notificationChannel={NotificationChannel.None}
-        resourceType=""
-        dueDate=""
+        {...defaultProps}
         setResponseMessage={mockSetResponseMessage}
-      />,
+      />
     );
 
     await userEvent.click(
-      screen.getByRole("button", { name: /Send melding/i }),
+      screen.getByRole("button", { name: /Send melding/i })
     );
 
     expect(mockSetResponseMessage).toHaveBeenCalledWith(mockResponse);
   });
 
-  it("should filter out empty strings from recipients", async () => {
-    const mockMutateAsync = vi.fn().mockResolvedValue({});
+  it("should disable button when recipient is invalid", () => {
+    const mockMutateAsync = vi.fn();
     vi.mocked(useCorrespondencePost).mockReturnValue({
       mutateAsync: mockMutateAsync,
     } as unknown as ReturnType<typeof useCorrespondencePost>);
 
     render(
       <CorrespondenceButton
-        recipients={["123456789012", "", "987654321", ""]}
-        title="Test"
-        summary="test"
-        body="test"
-        confirmationNeeded={false}
-        notificationChannel={NotificationChannel.None}
-        resourceType=""
-        dueDate=""
-        setResponseMessage={mockSetResponseMessage}
-      />,
+        {...defaultProps}
+        recipientIdentifier=""
+      />
     );
 
-    await userEvent.click(screen.getByRole("button"));
-
-    expect(mockMutateAsync).toHaveBeenCalledWith(
-      expect.objectContaining({
-        recipients: ["123456789012", "987654321"],
-      }),
-    );
+    expect(
+      screen.getByRole("button", { name: /Send melding/i })
+    ).toBeDisabled();
   });
 
-  it("should not disable button during request", async () => {
-    const mockMutateAsync = vi
-      .fn()
-      .mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({}), 100)),
-      );
+  it("should disable button when attachments are missing", () => {
+    const mockMutateAsync = vi.fn();
     vi.mocked(useCorrespondencePost).mockReturnValue({
       mutateAsync: mockMutateAsync,
     } as unknown as ReturnType<typeof useCorrespondencePost>);
 
     render(
       <CorrespondenceButton
-        recipients={recipients}
-        title="Test"
-        summary="test"
-        body="test"
-        confirmationNeeded={false}
-        notificationChannel={NotificationChannel.None}
-        resourceType=""
-        dueDate=""
-        setResponseMessage={mockSetResponseMessage}
-      />,
+        {...defaultProps}
+        attachments={[]}
+      />
     );
 
-    const button = screen.getByRole("button", { name: /Send melding/i });
-
-    await userEvent.click(button);
-
-    expect(button).not.toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: /Send melding/i })
+    ).toBeDisabled();
   });
 
   it("should include resourceType in the request", async () => {
@@ -192,28 +161,24 @@ describe("CorrespondenceButton", () => {
 
     render(
       <CorrespondenceButton
-        recipients={recipients}
-        title="Test"
-        summary="test"
-        body="test"
-        confirmationNeeded={false}
-        notificationChannel={NotificationChannel.None}
+        {...defaultProps}
         resourceType="confidentiality"
         dueDate="2026-01-26"
-        setResponseMessage={mockSetResponseMessage}
-      />,
+      />
     );
 
     await userEvent.click(
-      screen.getByRole("button", { name: /Send melding/i }),
+      screen.getByRole("button", { name: /Send melding/i })
     );
 
     expect(mockMutateAsync).toHaveBeenCalledWith(
       expect.objectContaining({
-        correspondence: expect.objectContaining({
-          resourceType: "confidentiality",
+        request: expect.objectContaining({
+          correspondence: expect.objectContaining({
+            resourceType: "confidentiality",
+          }),
         }),
-      }),
+      })
     );
   });
 
@@ -225,28 +190,24 @@ describe("CorrespondenceButton", () => {
 
     render(
       <CorrespondenceButton
-        recipients={recipients}
-        title="Test"
-        summary="test"
-        body="test"
-        confirmationNeeded={false}
-        notificationChannel={NotificationChannel.None}
+        {...defaultProps}
         resourceType="default"
         dueDate="2026-01-26"
-        setResponseMessage={mockSetResponseMessage}
-      />,
+      />
     );
 
     await userEvent.click(
-      screen.getByRole("button", { name: /Send melding/i }),
+      screen.getByRole("button", { name: /Send melding/i })
     );
 
     expect(mockMutateAsync).toHaveBeenCalledWith(
       expect.objectContaining({
-        correspondence: expect.objectContaining({
-          dueDateTime: "2026-01-26",
+        request: expect.objectContaining({
+          correspondence: expect.objectContaining({
+            dueDateTime: "2026-01-26",
+          }),
         }),
-      }),
+      })
     );
   });
 
@@ -257,89 +218,19 @@ describe("CorrespondenceButton", () => {
       mutateAsync: mockMutateAsync,
     } as unknown as ReturnType<typeof useCorrespondencePost>);
 
-    const setItemSpy = vi.spyOn(window.sessionStorage.__proto__, "setItem"); // Spy on sessionStorage.setItem to check if it's called
+    const setItemSpy = vi.spyOn(window.sessionStorage.__proto__, "setItem");
 
-    render(
-      <CorrespondenceButton
-        recipients={recipients}
-        title="Test"
-        summary="test"
-        body="test"
-        confirmationNeeded={false}
-        notificationChannel={NotificationChannel.None}
-        resourceType=""
-        dueDate=""
-        setResponseMessage={mockSetResponseMessage}
-      />,
-    );
+    render(<CorrespondenceButton {...defaultProps} />);
 
     await userEvent.click(
-      screen.getByRole("button", { name: /Send melding/i }),
+      screen.getByRole("button", { name: /Send melding/i })
     );
 
     expect(setItemSpy).toHaveBeenCalledWith(
       "responseMessage",
-      JSON.stringify(mockResponse),
+      JSON.stringify(mockResponse)
     );
 
-    setItemSpy.mockRestore(); //clean up
-  });
-
-  it("should disable button when recipients array is empty", () => {
-    const mockMutateAsync = vi.fn();
-    vi.mocked(useCorrespondencePost).mockReturnValue({
-      mutateAsync: mockMutateAsync,
-    } as unknown as ReturnType<typeof useCorrespondencePost>);
-
-    render(
-      <CorrespondenceButton
-        recipients={[]}
-        title="Test"
-        summary="test"
-        body="test"
-        confirmationNeeded={false}
-        notificationChannel={NotificationChannel.None}
-        resourceType=""
-        dueDate=""
-        setResponseMessage={mockSetResponseMessage}
-      />,
-    );
-
-    expect(
-      screen.getByRole("button", { name: /Send melding/i }),
-    ).toBeDisabled();
-  });
-
-  it("should send undefined dueDateTime when dueDate is empty", async () => {
-    const mockMutateAsync = vi.fn().mockResolvedValue({});
-    vi.mocked(useCorrespondencePost).mockReturnValue({
-      mutateAsync: mockMutateAsync,
-    } as unknown as ReturnType<typeof useCorrespondencePost>);
-
-    render(
-      <CorrespondenceButton
-        recipients={recipients}
-        title="Test"
-        summary="test"
-        body="test"
-        confirmationNeeded={false}
-        notificationChannel={NotificationChannel.None}
-        resourceType=""
-        dueDate=""
-        setResponseMessage={mockSetResponseMessage}
-      />,
-    );
-
-    await userEvent.click(
-      screen.getByRole("button", { name: /Send melding/i }),
-    );
-
-    expect(mockMutateAsync).toHaveBeenCalledWith(
-      expect.objectContaining({
-        correspondence: expect.objectContaining({
-          dueDateTime: undefined,
-        }),
-      }),
-    );
+    setItemSpy.mockRestore();
   });
 });

@@ -32,7 +32,7 @@ import {
 } from "../models/notificationModels";
 import {
   CorrespondenceResponse,
-  CorrespondenceUploadRequest,
+  CorrespondenceUploadFormData,
 } from "../models/correspondenceModels";
 import { sendCorrespondence } from "../utils/correspondenceApi";
 import { fetchDialogByUrn } from "../utils/dialogportenApi";
@@ -180,7 +180,7 @@ export const useCorrespondencePost = () => {
   return useMutation<
     CorrespondenceResponse,
     Error,
-    CorrespondenceUploadRequest
+    CorrespondenceUploadFormData
   >({
     mutationFn: sendCorrespondence,
     onSuccess: () => {

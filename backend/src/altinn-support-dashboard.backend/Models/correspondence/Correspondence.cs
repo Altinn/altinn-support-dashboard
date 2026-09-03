@@ -23,6 +23,5 @@ public class Correspondence
     public DateTime? Published { get; set; }
     public bool? IsConfirmationNeeded { get; set; }
     public bool? IsConfidential { get; set; }
-    public string AttachmentType { get; set; } = "txt";
 }
 

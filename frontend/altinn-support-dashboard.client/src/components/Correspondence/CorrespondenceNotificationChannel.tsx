@@ -16,16 +16,16 @@ const CorrespondenceNotificationChannel: React.FC<
   };
   return (
     <div>
-      <Label>Varslingsinstillinger</Label>
+      <Label>Varslingsinnstillinger</Label>
       <Select
         value={channel as number}
         onChange={(e) => handleChannelChange(Number.parseInt(e.target.value))}
       >
         <Select.Option value={-1}>Ingen varsling</Select.Option>
-        <Select.Option value={NotificationChannel.Email}>Email</Select.Option>
-        <Select.Option value={NotificationChannel.Sms}>Sms</Select.Option>
+        <Select.Option value={NotificationChannel.Email}>E-post</Select.Option>
+        <Select.Option value={NotificationChannel.Sms}>SMS</Select.Option>
         <Select.Option value={NotificationChannel.EmailAndSms}>
-          Email og Sms
+          E-post og SMS
         </Select.Option>
       </Select>
     </div>
