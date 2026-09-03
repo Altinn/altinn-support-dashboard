@@ -17,10 +17,9 @@ import { TestFlaskIcon } from "@navikt/aksel-icons";
 import CorrespondenceDueDate from "../components/Correspondence/CorrespondenceDueDate";
 import CorrespondenceResourceType from "../components/Correspondence/CorrespondenceResourceType";
 import CorrespondenceNotificationChannel from "../components/Correspondence/CorrespondenceNotificationChannel";
-import CorrespondenceRecipient, {
-  loadRecipientFromStorage,
-} from "../components/Correspondence/CorrespondenceRecipient";
+import CorrespondenceRecipient from "../components/Correspondence/CorrespondenceRecipient";
 import CorrespondenceAttachments from "../components/Correspondence/CorrespondenceAttachments";
+import { loadRecipientFromStorage } from "../components/Correspondence/utils/correspondenceRecipientStorage";
 import { RecipientType } from "../components/Correspondence/utils/correspondenceValidation";
 
 export const CorrespondencePage = () => {
