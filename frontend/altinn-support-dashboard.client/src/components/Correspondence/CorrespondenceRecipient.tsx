@@ -104,7 +104,10 @@ export const loadRecipientFromStorage = (): {
   if (storedUrn) {
     const parsed = parseRecipientUrn(storedUrn);
     if (parsed) {
-      return parsed;
+      return {
+        recipientType: parsed.type,
+        recipientIdentifier: parsed.identifier,
+      };
     }
   }
 
@@ -116,7 +119,10 @@ export const loadRecipientFromStorage = (): {
       if (firstRecipient) {
         const parsed = parseRecipientUrn(firstRecipient);
         if (parsed) {
-          return parsed;
+          return {
+            recipientType: parsed.type,
+            recipientIdentifier: parsed.identifier,
+          };
         }
         if (/^\d{11}$/.test(firstRecipient)) {
           return { recipientType: "person", recipientIdentifier: firstRecipient };
