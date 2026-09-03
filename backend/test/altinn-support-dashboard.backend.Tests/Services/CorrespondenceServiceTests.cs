@@ -80,6 +80,44 @@ public class CorrespondenceServiceTests
     }
 
     [Fact]
+    public async Task UploadCorrespondence_WithValidSelfIdentifiedUrn_PassesThroughRecipient()
+    {
+        var request = CreateValidRequest("urn:altinn:person:idporten-email:bruker@eksempel.no");
+
+        _clientMock
+            .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
+            .ReturnsAsync(new CorrespondenceResponse());
+
+        await _service.UploadCorrespondence(request);
+
+        _clientMock.Verify(c =>
+            c.UploadCorrespondence(It.Is<CorrespondenceUploadRequest>(r =>
+                r.Recipients[0] == "urn:altinn:person:idporten-email:bruker@eksempel.no"
+            )),
+            Times.Once
+        );
+    }
+
+    [Fact]
+    public async Task UploadCorrespondence_WithValidLegacySelfIdentifiedUrn_PassesThroughRecipient()
+    {
+        var request = CreateValidRequest("urn:altinn:person:legacy-selfidentified:brukernavn");
+
+        _clientMock
+            .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
+            .ReturnsAsync(new CorrespondenceResponse());
+
+        await _service.UploadCorrespondence(request);
+
+        _clientMock.Verify(c =>
+            c.UploadCorrespondence(It.Is<CorrespondenceUploadRequest>(r =>
+                r.Recipients[0] == "urn:altinn:person:legacy-selfidentified:brukernavn"
+            )),
+            Times.Once
+        );
+    }
+
+    [Fact]
     public async Task UploadCorrespondence_WithMultipleRecipients_ThrowsException()
     {
         var request = CreateValidRequest("urn:altinn:person:identifier-no:01010112345");
@@ -102,7 +140,7 @@ public class CorrespondenceServiceTests
             _service.UploadCorrespondence(request)
         );
 
-        Assert.Contains("not a valid person or organization URN", ex.Message);
+        Assert.Contains("not a valid recipient URN", ex.Message);
         _clientMock.Verify(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()), Times.Never);
     }
 

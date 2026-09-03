@@ -1,4 +1,8 @@
-export type RecipientType = "person" | "organization";
+export type RecipientType =
+  | "person"
+  | "organization"
+  | "selfIdentified"
+  | "legacySelfIdentified";
 
 export const ALLOWED_ATTACHMENT_EXTENSIONS = [
   ".doc",
@@ -28,38 +32,68 @@ export const MAX_ATTACHMENTS = 50;
 
 const PERSON_URN_PREFIX = "urn:altinn:person:identifier-no:";
 const ORGANIZATION_URN_PREFIX = "urn:altinn:organization:identifier-no:";
+const SELF_IDENTIFIED_URN_PREFIX = "urn:altinn:person:idporten-email:";
+const LEGACY_SELF_IDENTIFIED_URN_PREFIX =
+  "urn:altinn:person:legacy-selfidentified:";
+
+const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+const RECIPIENT_URN_PREFIXES: Record<RecipientType, string> = {
+  person: PERSON_URN_PREFIX,
+  organization: ORGANIZATION_URN_PREFIX,
+  selfIdentified: SELF_IDENTIFIED_URN_PREFIX,
+  legacySelfIdentified: LEGACY_SELF_IDENTIFIED_URN_PREFIX,
+};
 
 export const getRecipientHelpText = (type: RecipientType): string => {
-  if (type === "person") {
-    return "Skriv inn 11-sifret fødselsnummer (kun tall).";
+  switch (type) {
+    case "person":
+      return "Skriv inn 11-sifret fødselsnummer (kun tall).";
+    case "organization":
+      return "Skriv inn 9-sifret organisasjonsnummer (kun tall).";
+    case "selfIdentified":
+      return "Skriv inn e-postadresse for selvidentifisert bruker.";
+    case "legacySelfIdentified":
+      return "Skriv inn brukernavn for A2 selvidentifisert bruker.";
   }
-  return "Skriv inn 9-sifret organisasjonsnummer (kun tall).";
 };
 
 export const getRecipientPlaceholder = (type: RecipientType): string => {
-  return type === "person" ? "12345678901" : "123456789";
+  switch (type) {
+    case "person":
+      return "12345678901";
+    case "organization":
+      return "123456789";
+    case "selfIdentified":
+      return "bruker@eksempel.no";
+    case "legacySelfIdentified":
+      return "brukernavn";
+  }
+};
+
+export const getRecipientInputMode = (
+  type: RecipientType
+): "numeric" | "text" => {
+  return type === "person" || type === "organization" ? "numeric" : "text";
 };
 
 export const buildRecipientUrn = (
   type: RecipientType,
   identifier: string
 ): string => {
-  const prefix =
-    type === "person" ? PERSON_URN_PREFIX : ORGANIZATION_URN_PREFIX;
-  return `${prefix}${identifier}`;
+  return `${RECIPIENT_URN_PREFIXES[type]}${identifier}`;
 };
 
 export const parseRecipientUrn = (
   urn: string
 ): { type: RecipientType; identifier: string } | null => {
-  if (urn.startsWith(PERSON_URN_PREFIX)) {
-    return { type: "person", identifier: urn.slice(PERSON_URN_PREFIX.length) };
-  }
-  if (urn.startsWith(ORGANIZATION_URN_PREFIX)) {
-    return {
-      type: "organization",
-      identifier: urn.slice(ORGANIZATION_URN_PREFIX.length),
-    };
+  for (const [type, prefix] of Object.entries(RECIPIENT_URN_PREFIXES) as [
+    RecipientType,
+    string,
+  ][]) {
+    if (urn.startsWith(prefix)) {
+      return { type, identifier: urn.slice(prefix.length) };
+    }
   }
   return null;
 };
@@ -72,16 +106,31 @@ export const validateRecipientIdentifier = (
     return "Mottaker er påkrevd";
   }
 
-  if (!/^\d+$/.test(identifier)) {
-    return "Kun tall er tillatt";
+  if (type === "person" || type === "organization") {
+    if (!/^\d+$/.test(identifier)) {
+      return "Kun tall er tillatt";
+    }
+
+    if (type === "person" && identifier.length !== 11) {
+      return "Fødselsnummer må være 11 siffer";
+    }
+
+    if (type === "organization" && identifier.length !== 9) {
+      return "Organisasjonsnummer må være 9 siffer";
+    }
+
+    return undefined;
   }
 
-  if (type === "person" && identifier.length !== 11) {
-    return "Fødselsnummer må være 11 siffer";
+  if (type === "selfIdentified") {
+    if (!EMAIL_PATTERN.test(identifier)) {
+      return "Ugyldig e-postadresse";
+    }
+    return undefined;
   }
 
-  if (type === "organization" && identifier.length !== 9) {
-    return "Organisasjonsnummer må være 9 siffer";
+  if (!identifier.trim() || /\s/.test(identifier) || identifier.includes(":")) {
+    return "Ugyldig brukernavn";
   }
 
   return undefined;

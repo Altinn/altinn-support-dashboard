@@ -129,9 +129,37 @@ namespace altinn_support_dashboard.Server.Utils
             return Regex.IsMatch(urn, @"^urn:altinn:organization:identifier-no:\d{9}$");
         }
 
+        public static bool IsValidSelfIdentifiedRecipientUrn(string urn)
+        {
+            const string prefix = "urn:altinn:person:idporten-email:";
+            if (!urn.StartsWith(prefix, StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            return IsValidEmail(urn[prefix.Length..]);
+        }
+
+        public static bool IsValidLegacySelfIdentifiedRecipientUrn(string urn)
+        {
+            const string prefix = "urn:altinn:person:legacy-selfidentified:";
+            if (!urn.StartsWith(prefix, StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            var username = urn[prefix.Length..];
+            return !string.IsNullOrWhiteSpace(username)
+                && !username.Contains(':')
+                && !username.Any(char.IsWhiteSpace);
+        }
+
         public static bool IsValidCorrespondenceRecipientUrn(string urn)
         {
-            return IsValidPersonRecipientUrn(urn) || IsValidOrganizationRecipientUrn(urn);
+            return IsValidPersonRecipientUrn(urn)
+                || IsValidOrganizationRecipientUrn(urn)
+                || IsValidSelfIdentifiedRecipientUrn(urn)
+                || IsValidLegacySelfIdentifiedRecipientUrn(urn);
         }
 
         public static bool IsValidOrgNumberV2(string orgNumber)

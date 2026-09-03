@@ -5,6 +5,7 @@ import classes from "./styles/CorrespondenceRecipient.module.css";
 import {
   buildRecipientUrn,
   getRecipientHelpText,
+  getRecipientInputMode,
   getRecipientPlaceholder,
   parseRecipientUrn,
   RecipientType,
@@ -52,13 +53,17 @@ const CorrespondenceRecipient: React.FC<CorrespondenceRecipientProps> = ({
       >
         <Select.Option value="person">Person</Select.Option>
         <Select.Option value="organization">Organisasjon</Select.Option>
+        <Select.Option value="selfIdentified">Selvidentifisert bruker</Select.Option>
+        <Select.Option value="legacySelfIdentified">
+          A2 selvidentifisert bruker
+        </Select.Option>
       </Select>
       <Input
         className={classes.input}
         value={recipientIdentifier}
         onChange={(e) => setRecipientIdentifier(e.target.value)}
         placeholder={getRecipientPlaceholder(recipientType)}
-        inputMode="numeric"
+        inputMode={getRecipientInputMode(recipientType)}
         aria-invalid={!!validationError}
       />
       <p className={classes.helpText}>{getRecipientHelpText(recipientType)}</p>
@@ -84,7 +89,12 @@ export const loadRecipientFromStorage = (): {
   const storedIdentifier = getLocalStorageValue("recipientIdentifier");
   const storedUrn = getLocalStorageValue("recipient");
 
-  if (storedType === "person" || storedType === "organization") {
+  if (
+    storedType === "person" ||
+    storedType === "organization" ||
+    storedType === "selfIdentified" ||
+    storedType === "legacySelfIdentified"
+  ) {
     return {
       recipientType: storedType,
       recipientIdentifier: storedIdentifier,

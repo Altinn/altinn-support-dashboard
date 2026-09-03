@@ -21,6 +21,24 @@ describe("correspondenceValidation", () => {
       );
       expect(validateRecipientIdentifier("organization", "123456789")).toBeUndefined();
     });
+
+    it("requires self identified recipient to be a valid email", () => {
+      expect(validateRecipientIdentifier("selfIdentified", "invalid-email")).toBe(
+        "Ugyldig e-postadresse"
+      );
+      expect(
+        validateRecipientIdentifier("selfIdentified", "bruker@eksempel.no")
+      ).toBeUndefined();
+    });
+
+    it("requires legacy self identified recipient to be a valid username", () => {
+      expect(
+        validateRecipientIdentifier("legacySelfIdentified", "user name")
+      ).toBe("Ugyldig brukernavn");
+      expect(
+        validateRecipientIdentifier("legacySelfIdentified", "brukernavn")
+      ).toBeUndefined();
+    });
   });
 
   describe("buildRecipientUrn", () => {
@@ -30,6 +48,12 @@ describe("correspondenceValidation", () => {
       );
       expect(buildRecipientUrn("organization", "123456789")).toBe(
         "urn:altinn:organization:identifier-no:123456789"
+      );
+      expect(buildRecipientUrn("selfIdentified", "bruker@eksempel.no")).toBe(
+        "urn:altinn:person:idporten-email:bruker@eksempel.no"
+      );
+      expect(buildRecipientUrn("legacySelfIdentified", "brukernavn")).toBe(
+        "urn:altinn:person:legacy-selfidentified:brukernavn"
       );
     });
   });
@@ -45,6 +69,18 @@ describe("correspondenceValidation", () => {
       ).toEqual({
         type: "organization",
         identifier: "123456789",
+      });
+      expect(
+        parseRecipientUrn("urn:altinn:person:idporten-email:bruker@eksempel.no")
+      ).toEqual({
+        type: "selfIdentified",
+        identifier: "bruker@eksempel.no",
+      });
+      expect(
+        parseRecipientUrn("urn:altinn:person:legacy-selfidentified:brukernavn")
+      ).toEqual({
+        type: "legacySelfIdentified",
+        identifier: "brukernavn",
       });
     });
   });
