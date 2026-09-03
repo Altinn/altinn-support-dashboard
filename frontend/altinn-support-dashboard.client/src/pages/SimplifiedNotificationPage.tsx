@@ -14,6 +14,19 @@ export const SimplifiedNotificationPage = () => {
     const [searchValue, setSearchValue] = useState(
         () => sessionStorage.getItem("simplifiedNotif_searchValue") || ""
     );
+    const [dateFrom, setDateFrom] = useState(
+        () => sessionStorage.getItem("simplifiedNotif_dateFrom") || ""
+    );
+    const [dateTo, setDateTo] = useState(
+        () => sessionStorage.getItem("simplifiedNotif_dateTo") || ""
+    );
+
+    useEffect(() => {
+        sessionStorage.setItem("simplifiedNotif_dateFrom", dateFrom)
+    }, [dateFrom]);
+    useEffect(() => {
+        sessionStorage.setItem("simplifiedNotif_dateTo", dateTo)
+    }, [dateTo]);
 
     useEffect(() => {
         sessionStorage.setItem("simplifiedNotif_searchValue", searchValue)
@@ -21,7 +34,9 @@ export const SimplifiedNotificationPage = () => {
 
     const { data, isFetching, isError, error } = useNotificationsAdvanced(
         searchValue,
-        environment
+        environment,
+        dateFrom || undefined,
+        dateTo || undefined
     );
 
     useEffect(() => {
@@ -37,7 +52,11 @@ export const SimplifiedNotificationPage = () => {
             <NotificationSearchBar 
                 searchValue={searchValue}
                 setSearchValue={setSearchValue}
-                searchType="advanced"
+                searchType="simple"
+                dateFrom={dateFrom}
+                setDateFrom={setDateFrom}
+                dateTo={dateTo}
+                setDateTo={setDateTo}
             />
 
             {isFetching && (
@@ -58,6 +77,7 @@ export const SimplifiedNotificationPage = () => {
                     shipment={shipment}
                     selectedResults={[]}
                     selectedChannels={[]}
+                    compact
                 />
             ))}
         </div>
