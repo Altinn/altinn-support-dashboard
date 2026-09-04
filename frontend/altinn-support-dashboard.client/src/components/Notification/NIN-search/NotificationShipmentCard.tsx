@@ -40,7 +40,7 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
             <Table.Head>
                 <Table.Row>
                     <Table.HeaderCell>{compact ? "Kanal" : "Channel"}</Table.HeaderCell>
-                    <Table.HeaderCell>{compact ? "Adresse" : "Adress"}</Table.HeaderCell>
+                    <Table.HeaderCell>{compact ? "Adresse" : "Address"}</Table.HeaderCell>
                     <Table.HeaderCell>{compact ? "Resultat" : "Result"}</Table.HeaderCell>
                     <Table.HeaderCell>{compact ? "Tidspunkt" : "Time"}</Table.HeaderCell>
                 </Table.Row>
