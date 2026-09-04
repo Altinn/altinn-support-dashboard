@@ -121,6 +121,12 @@ const Sidebar: React.FC = () => {
               isCollapsed={isCollapsed}
             />
             <NavItem
+              to="/notification-simple"
+              title="Varsling"
+              icon={<DatabaseIcon className={classes.icon} />}
+              isCollapsed={isCollapsed}
+            />
+            <NavItem
               to="/correspondence"
               title="Melding"
               icon={<EnvelopeOpenIcon className={classes.icons} />}
