@@ -47,17 +47,12 @@ public class DialogportenController : ControllerBase
     }
 
     [HttpGet("dialogs/{dialogId}")]
+    [Authorize(AzureRoles.DialogportenAdmin)]
     public async Task<IActionResult> GetDialogDetails([FromRoute] string environmentName, [FromRoute] string dialogId)
     {
         if (!ValidationService.IsValidGuid(dialogId))
         {
             return BadRequest("dialogId must be a valid GUID");
-        }
-
-        var authResult = await _authorizationService.AuthorizeAsync(User, AzureRoles.DialogportenAdmin);
-        if (!authResult.Succeeded)
-        {
-            return Forbid();
         }
 
         string? result = await _service.GetDialogDetails(dialogId, environmentName);

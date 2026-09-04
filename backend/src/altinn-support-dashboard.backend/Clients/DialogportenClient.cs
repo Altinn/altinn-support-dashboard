@@ -54,7 +54,7 @@ public class DialogportenClient : IDialogportenClient
 
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
-            return "";
+            return String.Empty;
         }
         if (!response.IsSuccessStatusCode)
         {
