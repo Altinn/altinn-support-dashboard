@@ -6,67 +6,77 @@ interface HighlightClassNames {
 }
 
 export function useTextHighlightSearch(text: string, { matchClassName, matchActiveClassName }: HighlightClassNames) {
-  const [searchTerm, setSearchTermState] = useState("") ;
-  const [currentMatch, setCurrentMatch] = useState(0);
+  const [searchTerm, setSearchTermState] = useState("");
+  const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
+  
+  //One ref per match across the whole text, in the order they appear in the text.
+  // Lets goToMatch scroll to specific match without re-searching the DOM
   const matchRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   const lines = useMemo(() => text.split("\n"), [text]);
 
+  // Count total matches in the text for the current search term
   const totalMatches = useMemo(() => {
     if (!searchTerm) return 0;
-    const term = searchTerm.toLowerCase();
-    const lower = text.toLowerCase();
-    let count = 0;
-    let idx = lower.indexOf(term);
-    while (idx !== -1) {
-      count ++;
-      idx = lower.indexOf(term, idx + term.length);
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const lowerCaseText = text.toLowerCase();
+    let matchCount = 0;
+    let searchIndex = lowerCaseText.indexOf(lowerCaseSearchTerm);
+    while (searchIndex !== -1) {
+      matchCount++;
+      searchIndex = lowerCaseText.indexOf(lowerCaseSearchTerm, searchIndex + lowerCaseSearchTerm.length);
     }
-    return count;
+    return matchCount;
   }, [text, searchTerm]);
 
+  // Reset once per render, then renderLine(line) appends this line's match refs in order.
+  // Ref index == global match index only if renderLine is called for every line, in the
+  // same order, on every render (e.g. don't skip lines via virtualization/conditional render).
   matchRefs.current = [];
 
   const renderLine = (line: string, lineIndex: number) => {
     if (!searchTerm) return <span>{line}</span>;
 
-    const term = searchTerm.toLowerCase();
-    const lower = line.toLowerCase();
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const lowerCaseLine = line.toLowerCase();
     const parts: React.ReactNode[] = [];
-    let cursor = 0;
-    let idx = lower.indexOf(term);
+    let sliceStart = 0;
+    let matchStart = lowerCaseLine.indexOf(lowerCaseSearchTerm);
 
-    while (idx !== -1) {
-      parts.push(line.slice(cursor, idx));
-      const matchIndex = matchRefs.current.length;
+    while (matchStart !== -1) {
+      // Plain text between the last match and this match
+      parts.push(line.slice(sliceStart, matchStart));
+
+      const globalMatchIndex = matchRefs.current.length;
       matchRefs.current.push(null);
       parts.push(
         <span
-          key ={`${lineIndex}-${idx}`}
-          ref={(el) => { matchRefs.current[matchIndex] = el; }}
-          className={matchIndex === currentMatch ? matchActiveClassName : matchClassName}
+          key={`${lineIndex}-${matchStart}`}
+          ref={(el) => { matchRefs.current[globalMatchIndex] = el; }}
+          className={globalMatchIndex === currentMatchIndex ? matchActiveClassName : matchClassName}
         >
-          {line.slice(idx, idx + term.length)}
+          {line.slice(matchStart, matchStart + lowerCaseSearchTerm.length)}
         </span>
       );
-      cursor = idx + term.length;
-      idx = lower.indexOf(term, cursor);
+      sliceStart = matchStart + lowerCaseSearchTerm.length;
+      matchStart = lowerCaseLine.indexOf(lowerCaseSearchTerm, sliceStart);
     }
-    parts.push(line.slice(cursor));
+    parts.push(line.slice(sliceStart));
     return <span>{parts}</span>
   };
 
   const goToMatch = (direction: 1 | -1) => {
     if (totalMatches === 0) return;
-    const next = (currentMatch + direction + totalMatches) % totalMatches;
-    setCurrentMatch(next);
+    // Wrap around in both directions using modulo
+    const next = (currentMatchIndex + direction + totalMatches) % totalMatches;
+    setCurrentMatchIndex(next);
     matchRefs.current[next]?.scrollIntoView({ block: "center", behavior: "smooth" });
   };
 
   const setSearchTerm = (value: string) => {
     setSearchTermState(value);
-    setCurrentMatch(0);
+    setCurrentMatchIndex(0);
   };
 
-  return { lines, searchTerm, setSearchTerm, currentMatch, totalMatches, renderLine, goToMatch};
+  return { lines, searchTerm, setSearchTerm, currentMatch: currentMatchIndex, totalMatches, renderLine, goToMatch};
 }
