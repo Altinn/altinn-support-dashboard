@@ -49,7 +49,7 @@ const JsonPanel: React.FC<JsonPanelProps> = ({ jsonText }) => {
                     <Button
                         variant="tertiary"
                         data-size="sm"
-                        aria-label=""
+                        aria-label="Kopier JSON"
                         onClick={handleCopyJson}
                     >
                         {copied ? <ClipboardCheckmarkIcon /> : <ClipboardIcon />}

@@ -67,9 +67,9 @@ describe("DialogDetailsLookupPage", () => {
 
     render(<DialogDetailsLookupPage />);
 
-    expect(screen.getByText("ID")).toBeInTheDocument();
+    expect(screen.getByText("ID:")).toBeInTheDocument();
     expect(screen.getByText("d1")).toBeInTheDocument();
-    expect(screen.getByText("Deleted at")).toBeInTheDocument();
+    expect(screen.getByText("Deleted at:")).toBeInTheDocument();
   });
 
   it("should show an error popup when the query fails", () => {
@@ -118,7 +118,7 @@ describe("DialogDetailsLookupPage", () => {
 
     render(<DialogDetailsLookupPage />);
 
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(screen.getByRole("button", { name: "Kopier JSON" }));
 
     await waitFor(() => {
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
