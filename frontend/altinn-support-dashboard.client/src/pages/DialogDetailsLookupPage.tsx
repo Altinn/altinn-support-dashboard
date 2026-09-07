@@ -1,4 +1,4 @@
-import { Button, Card, Heading, Spinner, Textfield } from "@digdir/designsystemet-react"
+import { Button, Card, Heading, Search, Spinner, Textfield } from "@digdir/designsystemet-react"
 import styles from "./styles/DialogDetailsLookupPage.module.css";
 import { useEffect, useMemo,  useState } from "react";
 import { useAppStore } from "../stores/Appstore";
@@ -91,7 +91,15 @@ export const DialogDetailsLookupPage = () => {
                         value={input}
                         onChange={(e) => handleInputChange(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                        className={styles.searchInput}
                     />
+                    <Button
+                        onClick={handleSearch}
+                        variant="secondary"
+                        className={styles.searchButton}
+                    >
+                        <Search />
+                    </Button>
                 </div>
 
                 {isLoading && <Spinner aria-label="Laster" />}

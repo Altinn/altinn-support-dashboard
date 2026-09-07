@@ -1,5 +1,22 @@
 .searchRow {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: flex-end;
     margin-bottom: 1rem;
+}
+
+.searchInput {
+    width: 50%;
+}
+
+.searchButton {
+    height: 2.5rem;
+    align-self: flex-end;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
 }
 
 .resultLayout {
