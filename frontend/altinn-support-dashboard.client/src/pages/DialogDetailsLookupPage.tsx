@@ -6,6 +6,7 @@ import { useDialogDetails} from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
 import { useTextHighlightSearch } from "../hooks/useTextHighlightSearch";
 import { ClipboardCheckmarkIcon, ClipboardIcon } from "@navikt/aksel-icons";
+import HighlightedFields from "../components/HighlightedFields";
 
 
 export const DialogDetailsLookupPage = () => {
@@ -106,14 +107,7 @@ export const DialogDetailsLookupPage = () => {
 
                  {response && (
                     <div className={styles.resultLayout}>
-                        <Card data-color="neutral" className={styles.highlightedFields}>
-                            {HIGHLIGHTED_FIELDS.map((field) => (
-                                <div key={field.label} className={styles.fieldRow}>
-                                    <span className={styles.fieldLabel}>{field.label}</span>
-                                    <span className={styles.fieldValue}>{formatFieldValue(field.value)}</span>
-                                </div>
-                            ))}
-                        </Card>
+                        <HighlightedFields fields={HIGHLIGHTED_FIELDS} />
                         <div className={styles.jsonPanel}>
                             <div className={styles.findBar}>
                                 <Textfield
