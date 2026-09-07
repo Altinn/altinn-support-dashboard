@@ -1,11 +1,9 @@
-import { Button, Card, Heading, Search, Spinner, Textfield } from "@digdir/designsystemet-react"
+import { Button, Heading, Search, Spinner, Textfield } from "@digdir/designsystemet-react"
 import styles from "./styles/DialogDetailsLookupPage.module.css";
 import { useEffect, useMemo,  useState } from "react";
 import { useAppStore } from "../stores/Appstore";
 import { useDialogDetails} from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
-import { useTextHighlightSearch } from "../hooks/useTextHighlightSearch";
-import { ClipboardCheckmarkIcon, ClipboardIcon } from "@navikt/aksel-icons";
 import HighlightedFields from "../components/DialogDetails/HighlightedFields";
 import JsonPanel from "../components/DialogDetails/JsonPanel";
 
@@ -18,8 +16,6 @@ export const DialogDetailsLookupPage = () => {
     const [submittedId, setSubmittedId] = useState(
         () => sessionStorage.getItem("dialogDetailsLookup.submittedId") || ""
     );
-    const [copied, setCopied] = useState(false);
-
     const { data: response, isLoading, isError, error } = useDialogDetails(submittedId, environment);
 
     useEffect(() => {
@@ -41,18 +37,6 @@ export const DialogDetailsLookupPage = () => {
         }
     };
 
-    const handleCopyJson = async () => {
-        await navigator.clipboard.writeText(jsonText);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
-    };
-
-    const formatFieldValue = (value: unknown): string => {
-        if (value === null || value === undefined || value === "") return "-";
-        if (typeof value === "object") return JSON.stringify(value, null, 2);
-        return String(value);
-    }
-
     const HIGHLIGHTED_FIELDS: {label: string, value: unknown}[] = response
         ? [
                 { label: "ID", value: response.id },
@@ -69,19 +53,6 @@ export const DialogDetailsLookupPage = () => {
                 { label: "Activity log", value: response.activities },
             ]
         : [];
-    
-        const {
-        lines,
-        searchTerm,
-        setSearchTerm,
-        totalMatches,
-        currentMatch,
-        renderLine,
-        goToMatch,
-    } = useTextHighlightSearch(jsonText,  {
-        matchClassName: styles.match,
-        matchActiveClassName: styles.matchActive,
-    });
 
         return (
             <div>

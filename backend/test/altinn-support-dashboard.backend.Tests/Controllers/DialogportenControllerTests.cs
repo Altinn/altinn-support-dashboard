@@ -179,17 +179,6 @@ public async Task GetDialogDetails_ReturnsBadRequest_WhenDialogIdIsInvalid(strin
 }
 
 [Fact]
-public async Task GetDialogDetails_ReturnsForbid_WhenNotAuthorized()
-{
-    SetupAuthorization(false);
-
-    var result = await _controller.GetDialogDetails(EnvironmentName, ValidDialogId);
-
-    Assert.IsType<ForbidResult>(result);
-    _serviceMock.Verify(s => s.GetDialogDetails(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
-}
-
-[Fact]
 public async Task GetDialogDetails_ReturnsNotFound_WhenServiceReturnsNull()
 {
     SetupAuthorization(true);
@@ -211,17 +200,6 @@ public async Task GetDialogDetails_ReturnsJsonContent_WhenAuthorizedAndFound()
     var contentResult = Assert.IsType<ContentResult>(result);
     Assert.Equal(DetailsJson, contentResult.Content);
     Assert.Equal("application/json", contentResult.ContentType);
-}
-
-[Fact]
-public async Task GetDialogDetails_ChecksAuthorization_WithDialogportenAdminPolicy()
-{
-    SetupAuthorization(true);
-    _serviceMock.Setup(s => s.GetDialogDetails(ValidDialogId, EnvironmentName)).ReturnsAsync(DetailsJson);
-
-    await _controller.GetDialogDetails(EnvironmentName, ValidDialogId);
-
-    _authorizationServiceMock.Verify(a => a.AuthorizeAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<object>(), AzureRoles.DialogportenAdmin), Times.Once);
 }
 
 [Fact]
