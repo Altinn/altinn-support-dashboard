@@ -30,11 +30,12 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
             <>
                 <Paragraph className={styles.paragraph}><strong>Senders reference:</strong> {shipment.sendersReference}</Paragraph>
                 <Paragraph className={styles.paragraph}><strong>Resource:</strong> {shipment.resourceId}</Paragraph>
+                <Paragraph className={styles.paragraph}><strong>{compact ? "Varslingskanal:" : "Notification channel:"}</strong> {shipment.notificationChannel}</Paragraph>
+                <Paragraph className={styles.paragraph}><strong>{compact ? "Varslinsgtype:" : "Notifcation type:"} </strong> {shipment.notificationType}</Paragraph>
             </>
         )}
         <Paragraph className={styles.paragraph}><strong>{compact ? "Forespurt sendetid:" : "Requested send time:"}</strong> {new Date(shipment.requestedSendTime).toLocaleString("nb-NO")}</Paragraph>
-        <Paragraph className={styles.paragraph}><strong>{compact ? "Varslingskanal:" : "Notification channel:"}</strong> {shipment.notificationChannel}</Paragraph>
-        <Paragraph className={styles.paragraph}><strong>{compact ? "Varslinsgtype:" : "Notifcation type:"} </strong> {shipment.notificationType}</Paragraph>
+        
 
         <Table data-size="sm" data-color="neutral" border>
             <Table.Head>
