@@ -14,9 +14,8 @@
 
 .fieldLabel {
     font-size: 1rem;
-    font-weight: 1000;
+    font-weight: 700;
     text-transform: uppercase;
-    color: var(--ds-color-neutral-text-subtle, #666);
 }
 
 .fieldValue {
