@@ -6,7 +6,8 @@ import { useDialogDetails} from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
 import { useTextHighlightSearch } from "../hooks/useTextHighlightSearch";
 import { ClipboardCheckmarkIcon, ClipboardIcon } from "@navikt/aksel-icons";
-import HighlightedFields from "../components/HighlightedFields";
+import HighlightedFields from "../components/DialogDetails/HighlightedFields";
+import JsonPanel from "../components/DialogDetails/JsonPanel";
 
 
 export const DialogDetailsLookupPage = () => {
@@ -108,38 +109,7 @@ export const DialogDetailsLookupPage = () => {
                  {response && (
                     <div className={styles.resultLayout}>
                         <HighlightedFields fields={HIGHLIGHTED_FIELDS} />
-                        <div className={styles.jsonPanel}>
-                            <div className={styles.findBar}>
-                                <Textfield
-                                    label="Søk i JSON"
-                                    value={searchTerm}
-                                    onChange={(e) => {
-                                        setSearchTerm(e.target.value);
-                                    }}
-                                />
-                                {searchTerm && (
-                                    <div className={styles.matchNav}>
-                                        <button type="button" onClick={() => goToMatch(-1)}>&uarr;</button>
-                                        <span>{totalMatches > 0 ? `${currentMatch + 1} / ${totalMatches}` : "0 / 0"}</span>
-                                        <button type="button" onClick={() => goToMatch(1)}>&darr;</button>
-                                    </div>
-                                )}
-                                <Button
-                                    variant="tertiary"
-                                    data-size="sm"
-                                    aria-label=""
-                                    onClick={handleCopyJson}
-                                >
-                                    {copied ? <ClipboardCheckmarkIcon /> : <ClipboardIcon />}
-                                </Button>
-                            </div>
-
-                            <pre className={styles.jsonOutput}>
-                                {lines.map((line, i) => (
-                                    <div key={i}>{renderLine(line, i)}</div>
-                                ))}
-                            </pre>
-                        </div>
+                        <JsonPanel jsonText={jsonText} />
                     </div>
                 )}
             </div>
