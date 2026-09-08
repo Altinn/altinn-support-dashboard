@@ -47,7 +47,7 @@ public class DialogportenController : ControllerBase
     }
 
     [HttpGet("dialogs/{dialogId}")]
-    // [Authorize(AzureRoles.DialogportenAdmin)]
+    [Authorize(AzureRoles.DialogportenAdmin)]
     public async Task<IActionResult> GetDialogDetails([FromRoute] string environmentName, [FromRoute] string dialogId)
     {
         if (!ValidationService.IsValidGuid(dialogId))
