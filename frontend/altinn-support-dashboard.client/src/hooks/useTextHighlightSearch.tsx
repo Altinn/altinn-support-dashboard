@@ -9,10 +9,6 @@ export function useTextHighlightSearch(text: string, { matchClassName, matchActi
   const [searchTerm, setSearchTermState] = useState("");
   const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
   
-  // One ref per match across the whole text, keyed by the match's index in the
-  // order they appear in the text. Lets goToMatch scroll to a specific match
-  // without re-searching the DOM. Populated/cleared via ref callbacks (commit
-  // phase) rather than mutated during render.
   const matchRefs = useRef<Map<number, HTMLSpanElement>>(new Map());
 
   const lines = useMemo(() => text.split("\n"), [text]);
@@ -31,9 +27,6 @@ export function useTextHighlightSearch(text: string, { matchClassName, matchActi
     return matchCount;
   }, [text, searchTerm]);
 
-  // globalMatchIndex == index within the whole text only if renderLine is called for
-  // every line, in the same order, on every render (e.g. don't skip lines via
-  // virtualization/conditional render).
   let globalMatchIndex = 0;
 
   const renderLine = (line: string, lineIndex: number) => {

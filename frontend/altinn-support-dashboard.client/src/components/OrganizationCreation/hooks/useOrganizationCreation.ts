@@ -25,8 +25,6 @@ export const useOrganizationCreation = (environment: string) => {
     () => sessionStorage.getItem("selected_gitea_environment") || environment
   );
 
-  // Oppdater aktivt miljø når prop-miljøet endres, uten en ekstra effect-render
-  // (se https://react.dev/learn/you-might-not-need-an-effect).
   const [prevEnvironment, setPrevEnvironment] = useState(environment);
   if (environment !== prevEnvironment) {
     setPrevEnvironment(environment);

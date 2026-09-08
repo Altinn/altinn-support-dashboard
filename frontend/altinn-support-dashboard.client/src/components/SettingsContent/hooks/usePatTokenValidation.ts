@@ -5,7 +5,6 @@ import {
 } from "../models/settingsTypes";
 import { getBaseUrl } from "../../../utils/utils";
 
-// Bygger patState fra en eventuell lagret token for et gitt miljø
 const loadPatState = (environment: string): PatTokenState => {
   const savedToken = sessionStorage.getItem(`pat_token_${environment}`);
   return {
@@ -26,8 +25,6 @@ export const usePatTokenValidation = (environment: string) => {
     loadPatState(environment)
   );
 
-  // Oppdater state hvis environment endres, uten en ekstra effect-render
-  // (se https://react.dev/learn/you-might-not-need-an-effect).
   const [prevEnvironment, setPrevEnvironment] = useState(environment);
   if (environment !== prevEnvironment) {
     setPrevEnvironment(environment);

@@ -53,8 +53,6 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
   // Sjekk om PAT-token er gyldig ved lasting
   const hasValidToken = hasValidPatToken();
 
-  // Errors er fullstendig avledet fra formData/formSubmitted - trenger ikke egen
-  // state + effect (kun valider fullt skjema hvis brukeren har forsøkt å sende inn skjemaet).
   const errors = useMemo(
     () => validateForm(formData, formSubmitted),
     [formData, formSubmitted]

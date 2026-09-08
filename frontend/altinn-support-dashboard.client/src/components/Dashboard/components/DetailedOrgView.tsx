@@ -30,8 +30,6 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
     setSelectedContact(null);
   };
 
-  // Reset search/selection whenever the selected org changes, without an
-  // extra effect-triggered render (see https://react.dev/learn/you-might-not-need-an-effect).
   const [prevSelectedOrg, setPrevSelectedOrg] = useState(selectedOrg);
   if (selectedOrg !== prevSelectedOrg) {
     setPrevSelectedOrg(selectedOrg);

@@ -96,8 +96,6 @@ export const OrgNumberField: React.FC<OrgNumberFieldProps> = ({
   ); // La til success for å fikse lint-feil
 
   // Reagerer på endring av organisasjonsnummer - med beskyttelse mot infinite loops
-  // Kaller kun det eksterne API-et (henting av organisasjonsdetaljer); tilbakestilling av
-  // lokal feil/suksess-tilstand skjer i onChange under, siden det er der value faktisk endres.
   useEffect(() => {
     // Skip på første rendering
     if (isInitialMount.current) {
@@ -159,7 +157,6 @@ export const OrgNumberField: React.FC<OrgNumberFieldProps> = ({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               const newValue = e.target.value.replace(/[^0-9]/g, ""); // Only allow numbers
 
-              // Reset states when input changes away from the previously processed number
               if (newValue !== previousOrgNumber.current) {
                 if (!success || newValue.length !== 9) {
                   setErrorMessage(null);

@@ -26,8 +26,6 @@ const SettingsPATComponent: React.FC = () => {
   const [patInput, setPatInput] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  // Sync the input field when the loaded/validated token changes, without an
-  // extra effect-triggered render (see https://react.dev/learn/you-might-not-need-an-effect).
   const [prevToken, setPrevToken] = useState(patState.token);
   if (patState.token !== prevToken) {
     setPrevToken(patState.token);

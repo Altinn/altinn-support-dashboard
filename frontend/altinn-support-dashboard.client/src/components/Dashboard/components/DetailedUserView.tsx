@@ -20,8 +20,6 @@ const DetailedUserView: React.FC<DetailedUserViewProps> = ({
   const [selectedParty, setSelectedParty] =
     useState<AuthorizedPartyIdentifiers | null>(null);
 
-  // Reset the selected party whenever the selected user changes, without an
-  // extra effect-triggered render (see https://react.dev/learn/you-might-not-need-an-effect).
   const [prevSelectedUser, setPrevSelectedUser] = useState(selectedUser);
   if (selectedUser !== prevSelectedUser) {
     setPrevSelectedUser(selectedUser);
