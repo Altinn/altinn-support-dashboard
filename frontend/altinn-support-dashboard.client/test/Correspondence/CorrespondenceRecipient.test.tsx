@@ -75,9 +75,11 @@ describe("CorrespondenceRecipient", () => {
       />
     );
 
-    expect(localStorage.getItem("recipientType")).toBe("person");
-    expect(localStorage.getItem("recipientIdentifier")).toBe("12345678901");
-    expect(localStorage.getItem("recipient")).toBe(
+    expect(localStorage.getItem("correspondence.recipientType")).toBe("person");
+    expect(localStorage.getItem("correspondence.recipientIdentifier")).toBe(
+      "12345678901"
+    );
+    expect(localStorage.getItem("correspondence.recipient")).toBe(
       "urn:altinn:person:identifier-no:12345678901"
     );
   });

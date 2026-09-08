@@ -1,8 +1,5 @@
 export type RecipientType =
-  | "person"
-  | "organization"
-  | "selfIdentified"
-  | "legacySelfIdentified";
+  "person" | "organization" | "selfIdentified" | "legacySelfIdentified";
 
 export const ALLOWED_ATTACHMENT_EXTENSIONS = [
   ".doc",
@@ -27,7 +24,7 @@ export const ALLOWED_ATTACHMENT_EXTENSIONS = [
   ".dicom",
 ] as const;
 
-export const MIN_ATTACHMENTS = 1;
+export const MIN_ATTACHMENTS = 0;
 export const MAX_ATTACHMENTS = 50;
 
 const PERSON_URN_PREFIX = "urn:altinn:person:identifier-no:";

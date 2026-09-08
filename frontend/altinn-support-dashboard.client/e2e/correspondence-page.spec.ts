@@ -134,9 +134,9 @@ test.describe("CorrespondencePage", () => {
         const input = page.getByPlaceholder("12345678901");
         await input.fill("12345678901");
 
-        const storedType = await page.evaluate(() => localStorage.getItem("recipientType"));
-        const storedIdentifier = await page.evaluate(() => localStorage.getItem("recipientIdentifier"));
-        const storedUrn = await page.evaluate(() => localStorage.getItem("recipient"));
+        const storedType = await page.evaluate(() => localStorage.getItem("correspondence.recipientType"));
+        const storedIdentifier = await page.evaluate(() => localStorage.getItem("correspondence.recipientIdentifier"));
+        const storedUrn = await page.evaluate(() => localStorage.getItem("correspondence.recipient"));
 
         expect(storedType).toBe("person");
         expect(storedIdentifier).toBe("12345678901");

@@ -37,9 +37,9 @@ const CorrespondenceRecipient: React.FC<CorrespondenceRecipientProps> = ({
   }, [recipientType, recipientIdentifier, validationError]);
 
   useEffect(() => {
-    setLocalStorageValue("recipientType", recipientType);
-    setLocalStorageValue("recipientIdentifier", recipientIdentifier);
-    setLocalStorageValue("recipient", recipientUrn);
+    setLocalStorageValue("correspondence.recipientType", recipientType);
+    setLocalStorageValue("correspondence.recipientIdentifier", recipientIdentifier);
+    setLocalStorageValue("correspondence.recipient", recipientUrn);
   }, [recipientType, recipientIdentifier, recipientUrn]);
 
   return (

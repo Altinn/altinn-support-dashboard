@@ -5,9 +5,15 @@ export const loadRecipientFromStorage = (): {
   recipientType: RecipientType;
   recipientIdentifier: string;
 } => {
-  const storedType = getLocalStorageValue("recipientType");
-  const storedIdentifier = getLocalStorageValue("recipientIdentifier");
-  const storedUrn = getLocalStorageValue("recipient");
+  const storedType =
+    getLocalStorageValue("correspondence.recipientType") ||
+    getLocalStorageValue("recipientType");
+  const storedIdentifier =
+    getLocalStorageValue("correspondence.recipientIdentifier") ||
+    getLocalStorageValue("recipientIdentifier");
+  const storedUrn =
+    getLocalStorageValue("correspondence.recipient") ||
+    getLocalStorageValue("recipient");
 
   if (
     storedType === "person" ||
