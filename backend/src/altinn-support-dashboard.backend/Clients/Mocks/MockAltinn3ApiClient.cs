@@ -27,7 +27,7 @@ public class MockAltinn3ApiClient(Altinn3ApiClient inner) : IAltinn3ApiClient
             ? Task.FromResult(MockUtils.Read("altinn3-notification-addresses.json"))
             : inner.GetNotificationAddressesByOrg(orgNumber, environmentName);
 
-    public Task<string> GetNotificationAddressesByPhone(string phoneNumber, string countryCode, string environmentName) =>
+    public Task<string> GetNotificationAddressesByPhone(string phoneNumber, string? countryCode, string environmentName) =>
         MockUtils.IsMock(environmentName)
             ? Task.FromResult(MockUtils.Read("altinn3-notification-addresses.json"))
             : inner.GetNotificationAddressesByPhone(phoneNumber, countryCode, environmentName);

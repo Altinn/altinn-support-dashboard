@@ -135,10 +135,8 @@ public class Altinn3Service : IAltinn3Service
     public async Task<List<Organization>> GetOrganizationsByPhoneAltinn3(string phonenumber, string environment)
     {
         phonenumber = phonenumber.Trim();
-        string strippedPhoneNumber = Regex.Replace(phonenumber, @"^\+\d{1,2}", "");
-        //The new profile API needs country code, so it gets stripped in that call instead
         var personalContacts = await GetPersonalContactsByPhoneAltinn3(phonenumber, environment);
-        var notificationAddesses = await GetNotificationAddressesByPhoneAltinn3(strippedPhoneNumber, environment);
+        var notificationAddesses = await GetNotificationAddressesByPhoneAltinn3(phonenumber, environment);
         var organizations = await GetOrganizationsFromProfileAltinn3(personalContacts, notificationAddesses, environment);
         return organizations;
     }
@@ -235,7 +233,7 @@ public class Altinn3Service : IAltinn3Service
             ? Regex.Replace(phoneNumber.Trim(), @"^\+\d{1,2}", "")
             : phoneNumber.Trim();
 
-        if (!ValidationService.IsValidPhoneNumber(phoneNumber))
+        if (!ValidationService.IsValidPhoneNumber(localNumber))
         {
             throw new ArgumentException("Phone number is invalid");
         }
@@ -250,19 +248,22 @@ public class Altinn3Service : IAltinn3Service
                 contacts.AddRange(JsonSerializer.Deserialize<List<PersonalContactDto>>(resultWithCountryCode, jsonOptions) 
                 ?? throw new Exception("Deserialization not valid"));
             }
-        }
-
-        // The contactinformation API requires an exact match on phoneNumber (+ optional countryCode), but whether a given
-        // contact record has a country code stored against it varies per record. Sending only one variant would silently
-        // miss contacts stored the other way, so we query both and merge the results rather than guessing the format.
+        } 
         var resultWithoutCountryCode = await _client.GetPersonalContactsByPhone(localNumber, null, environment);
         if (!string.IsNullOrEmpty(resultWithoutCountryCode))
         {
-            contacts.AddRange(JsonSerializer.Deserialize<List<PersonalContactDto>>(resultWithoutCountryCode, jsonOptions) 
-            ?? throw new Exception("Deserialization not valid"));
+            var bareContacts = JsonSerializer.Deserialize<List<PersonalContactDto>>(resultWithoutCountryCode, jsonOptions)
+                ?? throw new Exception("Deserialization not valid");
+
+            // When the search itself had no country code, any match is fine (already agreed acceptable).
+            // When the search DID have a country code, only keep contacts that are genuinely stored bare —
+            // otherwise a differently-coded contact (e.g. +47) leaks into a search for a different code (e.g. +46).
+            contacts.AddRange(countryCode == null
+                ? bareContacts
+                : bareContacts.Where(c => c.Phone == localNumber));
         }
-        
-        return contacts.DistinctBy(c => (c.OrganizationNumber,  c.Phone, c.Email)).ToList();
+
+        return contacts;
     }
 
     public async Task<UserContactInformationAltinn3?> GetUserContactInformationByNinAltinn3(string nin, string environment)
@@ -347,17 +348,37 @@ public class Altinn3Service : IAltinn3Service
     }
     public async Task<List<NotificationAddressDto>> GetNotificationAddressesByPhoneAltinn3(string phoneNumber, string environment)
     {
-        if (!ValidationService.IsValidPhoneNumber(phoneNumber))
+        var match = Regex.Match(phoneNumber.Trim(), @"^\+\d{1,2}");
+        var countryCode = match.Success ? match.Value : null;
+        string localNumber = match.Success
+            ? Regex.Replace(phoneNumber.Trim(), @"^\+\d{1,2}", "")
+            : phoneNumber.Trim();
+        if (!ValidationService.IsValidPhoneNumber(localNumber))
         {
-            throw new ArgumentException("Organization number invalid. It must be 9 digits long.");
+            throw new ArgumentException("Phone number is invalid");
         }
-        phoneNumber = phoneNumber.Trim();
-        string strippedPhoneNumber = Regex.Replace(phoneNumber, @"^\+\d{1,2}", "");
-        var result = await _client.GetNotificationAddressesByPhone(strippedPhoneNumber, environment);
-        if (string.IsNullOrEmpty(result)) return [];
-        var notificationAddresses = JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
-        return notificationAddresses;
+        var addresses = new List<NotificationAddressDto>();
+
+        if (countryCode != null && countryCode != "+47")
+        {
+            var resultWithCountryCode = await _client.GetNotificationAddressesByPhone(localNumber, countryCode, environment);
+            if (!string.IsNullOrEmpty(resultWithCountryCode))
+            {
+                addresses.AddRange(JsonSerializer.Deserialize<List<NotificationAddressDto>>(resultWithCountryCode, jsonOptions) 
+                ?? throw new Exception("Deserialization not valid"));
+            }
+        } else
+        {
+            var resultWithoutCountryCode = await _client.GetNotificationAddressesByPhone(localNumber, null, environment);
+            if (!string.IsNullOrEmpty(resultWithoutCountryCode))
+            {
+                addresses.AddRange(JsonSerializer.Deserialize<List<NotificationAddressDto>>(resultWithoutCountryCode, jsonOptions) 
+                ?? throw new Exception("Deserialization not valid"));
+            }
+        }
+
+        return addresses.DistinctBy(n => n.NotificationAddressId).ToList();
     }
 
     public async Task<List<NotificationAddressDto>> GetNotificationAddressesByEmailAltinn3(string email, string environment)
