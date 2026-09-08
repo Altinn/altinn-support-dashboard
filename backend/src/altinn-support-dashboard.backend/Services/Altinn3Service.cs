@@ -136,7 +136,8 @@ public class Altinn3Service : IAltinn3Service
     {
         phonenumber = phonenumber.Trim();
         string strippedPhoneNumber = Regex.Replace(phonenumber, @"^\+\d{1,2}", "");
-        var personalContacts = await GetPersonalContactsByPhoneAltinn3(strippedPhoneNumber, environment);
+        //The new profile API needs country code, so it gets stripped in that call instead
+        var personalContacts = await GetPersonalContactsByPhoneAltinn3(phonenumber, environment);
         var notificationAddesses = await GetNotificationAddressesByPhoneAltinn3(strippedPhoneNumber, environment);
         var organizations = await GetOrganizationsFromProfileAltinn3(personalContacts, notificationAddesses, environment);
         return organizations;
@@ -228,17 +229,40 @@ public class Altinn3Service : IAltinn3Service
 
     public async Task<List<PersonalContactDto>> GetPersonalContactsByPhoneAltinn3(string phoneNumber, string environment)
     {
+        var match = Regex.Match(phoneNumber.Trim(), @"^\+\d{1,2}");
+        var countryCode = match.Success ? match.Value.TrimStart('+') : null;
+        string localNumber = match.Success
+            ? Regex.Replace(phoneNumber.Trim(), @"^\+\d{1,2}", "")
+            : phoneNumber.Trim();
+
         if (!ValidationService.IsValidPhoneNumber(phoneNumber))
         {
             throw new ArgumentException("Phone number is invalid");
         }
 
-        var result = await _client.GetPersonalContactsByPhone(phoneNumber, environment);
-        if (string.IsNullOrEmpty(result)) return [];
-        var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+        var contacts = new List<PersonalContactDto>();
 
-        return contactsAltinn3;
+        if (countryCode != null)
+        {
+            var resultWithCountryCode = await _client.GetPersonalContactsByPhone(localNumber, countryCode, environment);
+            if (!string.IsNullOrEmpty(resultWithCountryCode))
+            {
+                contacts.AddRange(JsonSerializer.Deserialize<List<PersonalContactDto>>(resultWithCountryCode, jsonOptions) 
+                ?? throw new Exception("Deserialization not valid"));
+            }
+        }
 
+        // The contactinformation API requires an exact match on phoneNumber (+ optional countryCode), but whether a given
+        // contact record has a country code stored against it varies per record. Sending only one variant would silently
+        // miss contacts stored the other way, so we query both and merge the results rather than guessing the format.
+        var resultWithoutCountryCode = await _client.GetPersonalContactsByPhone(localNumber, null, environment);
+        if (!string.IsNullOrEmpty(resultWithoutCountryCode))
+        {
+            contacts.AddRange(JsonSerializer.Deserialize<List<PersonalContactDto>>(resultWithoutCountryCode, jsonOptions) 
+            ?? throw new Exception("Deserialization not valid"));
+        }
+        
+        return contacts.DistinctBy(c => (c.OrganizationNumber,  c.Phone, c.Email)).ToList();
     }
 
     public async Task<UserContactInformationAltinn3?> GetUserContactInformationByNinAltinn3(string nin, string environment)

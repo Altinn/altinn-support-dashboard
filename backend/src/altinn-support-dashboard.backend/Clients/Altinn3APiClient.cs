@@ -157,10 +157,13 @@ public class Altinn3ApiClient : IAltinn3ApiClient
     public async Task<string> GetPersonalContactsByEmail(string email, string environmentName)
     {
         var client = _clients[environmentName];
-        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/email/{email}";
+        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/email";
 
-        var response = await client.GetAsync(requestUrl);
+        using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
+        //email is set in header
+        request.Headers.Add("emailAddress", email);
+        var response = await client.SendAsync(request);
         var responseBody = await response.Content.ReadAsStringAsync();
 
         if (response.StatusCode == HttpStatusCode.NotFound)
@@ -176,13 +179,20 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
     }
 
-    public async Task<string> GetPersonalContactsByPhone(string phoneNumber, string environmentName)
+    public async Task<string> GetPersonalContactsByPhone(string phoneNumber, string? countryCode, string environmentName)
     {
         var client = _clients[environmentName];
-        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/phonenumber/{phoneNumber}";
+        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/phonenumber";
 
-        var response = await client.GetAsync(requestUrl);
+        using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
+        //phoneNumber is set in header
+        request.Headers.Add("phoneNumber", phoneNumber);
+        if (!string.IsNullOrEmpty(countryCode))
+        {
+            request.Headers.Add("countryCode", countryCode);
+        }
+        var response = await client.SendAsync(request);
         var responseBody = await response.Content.ReadAsStringAsync();
 
         if (response.StatusCode == HttpStatusCode.NotFound)
