@@ -2,13 +2,18 @@ export interface CorrespondenceUploadRequest {
   correspondence?: Correspondence;
   recipients: string[];
 }
+
+export interface CorrespondenceUploadFormData {
+  request: CorrespondenceUploadRequest;
+  attachments: File[];
+}
+
 export interface Correspondence {
   resourceType: string;
   content?: CorrespondenceContent;
   notification?: CorrespondenceNotification;
   isConfirmationNeeded?: boolean;
   dueDateTime?: string;
-  attachmentType?: "txt" | "zip";
 }
 
 export interface CorrespondenceContent {

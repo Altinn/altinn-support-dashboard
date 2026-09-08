@@ -19,8 +19,9 @@ import {
   FilesIcon,
   TerminalIcon,
   CheckmarkCircleIcon,
-  ChatElipsisIcon,
   BulletListIcon,
+  ChatElipsisIcon,
+  Chat2Icon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -58,6 +59,9 @@ const Sidebar: React.FC = () => {
     !authData.azureAuthActive ||
     authData.roles.includes("Dashboard.PROD") ||
     authData.roles.includes("Dashboard.TT02");
+  const hasDialogportenAdminRole =
+    !authData.azureAuthActive ||
+    authData.roles.includes("Dashboard.Dialogporten.Admin")
   return (
     <div className={classes.sidebarWrapper}>
       <div className={classes.dragHandle} onMouseDown={handleDragStart} />
@@ -139,7 +143,7 @@ const Sidebar: React.FC = () => {
                 title="Dialogporten"
                 icon={<ChatElipsisIcon className={classes.icons} />}
                 isCollapsed={isCollapsed}
-                paths={["/dialog-lookup"]}
+                paths={["/dialog-lookup", "/dialog-details"]}
               >
                 <NavItem
                   to="/dialog-lookup"
@@ -147,6 +151,14 @@ const Sidebar: React.FC = () => {
                   icon={<ChatElipsisIcon className={classes.icons} />}
                   isCollapsed={isCollapsed}
                 />
+                {hasDialogportenAdminRole && (
+                  <NavItem
+                    to="/dialog-details"
+                    title="Dialog-detaljer"
+                    icon={<Chat2Icon className={classes.icons} />}
+                    isCollapsed={isCollapsed}
+                  />
+                )}
               </NavGroup>
             )}
             {hasInternalOrExternalCoreRoles && (

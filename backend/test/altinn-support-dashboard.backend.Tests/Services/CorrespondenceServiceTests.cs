@@ -22,53 +22,36 @@ public class CorrespondenceServiceTests
         _service = new CorrespondenceService(_clientMock.Object, logger);
     }
 
-    [Fact]
-    public async Task UploadCorrespondence_WithValidOrgNumber_TransformsRecipient()
+    private static CorrespondenceUploadRequest CreateValidRequest(string recipientUrn)
     {
-        // Arrange
-        var request = new CorrespondenceUploadRequest
+        return new CorrespondenceUploadRequest
         {
-            Recipients = new List<string> { "123456789" }
+            Recipients = new List<string> { recipientUrn },
+            AttachmentData = new List<CorrespondenceAttachmentData>
+            {
+                new()
+                {
+                    FileName = "testfile.txt",
+                    Content = [1, 2, 3]
+                }
+            }
         };
-
-        _clientMock
-            .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
-            .ReturnsAsync(new CorrespondenceResponse());
-
-        // Act
-        var result = await _service.UploadCorrespondence(request);
-
-        // Assert
-        _clientMock.Verify(c =>
-            c.UploadCorrespondence(It.Is<CorrespondenceUploadRequest>(r =>
-                r.Recipients.Count == 1 &&
-                r.Recipients[0] == "urn:altinn:organization:identifier-no:123456789"
-            )),
-            Times.Once
-        );
-
-        Assert.IsType<CorrespondenceResponse>(result);
     }
 
     [Fact]
-    public async Task UploadCorrespondence_WithValidSsn_TransformsRecipient()
+    public async Task UploadCorrespondence_WithValidPersonUrn_PassesThroughRecipient()
     {
-        // Arrange
-        var request = new CorrespondenceUploadRequest
-        {
-            Recipients = new List<string> { "01010112345" }
-        };
+        var request = CreateValidRequest("urn:altinn:person:identifier-no:01010112345");
 
         _clientMock
             .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
             .ReturnsAsync(new CorrespondenceResponse());
 
-        // Act
         var result = await _service.UploadCorrespondence(request);
 
-        // Assert
         _clientMock.Verify(c =>
             c.UploadCorrespondence(It.Is<CorrespondenceUploadRequest>(r =>
+                r.Recipients.Count == 1 &&
                 r.Recipients[0] == "urn:altinn:person:identifier-no:01010112345"
             )),
             Times.Once
@@ -78,93 +61,128 @@ public class CorrespondenceServiceTests
     }
 
     [Fact]
-    public async Task UploadCorrespondence_WithMultipleRecipients_TransformsAll()
+    public async Task UploadCorrespondence_WithValidOrganizationUrn_PassesThroughRecipient()
     {
-        // Arrange
-        var request = new CorrespondenceUploadRequest
-        {
-            Recipients = new List<string>
-            {
-                "123456789",
-                "01010112345"
-            }
-        };
+        var request = CreateValidRequest("urn:altinn:organization:identifier-no:123456789");
 
         _clientMock
             .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
             .ReturnsAsync(new CorrespondenceResponse());
 
-        // Act
         await _service.UploadCorrespondence(request);
 
-        // Assert
         _clientMock.Verify(c =>
             c.UploadCorrespondence(It.Is<CorrespondenceUploadRequest>(r =>
-                r.Recipients.Contains("urn:altinn:organization:identifier-no:123456789") &&
-                r.Recipients.Contains("urn:altinn:person:identifier-no:01010112345")
+                r.Recipients[0] == "urn:altinn:organization:identifier-no:123456789"
             )),
             Times.Once
         );
     }
 
     [Fact]
-    public async Task UploadCorrespondence_WithInvalidRecipient_ThrowsException()
+    public async Task UploadCorrespondence_WithValidSelfIdentifiedUrn_PassesThroughRecipient()
     {
-        // Arrange
-        var request = new CorrespondenceUploadRequest
-        {
-            Recipients = new List<string> { "invalid-recipient" }
-        };
+        var request = CreateValidRequest("urn:altinn:person:idporten-email:bruker@eksempel.no");
 
-        // Act & Assert
+        _clientMock
+            .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
+            .ReturnsAsync(new CorrespondenceResponse());
+
+        await _service.UploadCorrespondence(request);
+
+        _clientMock.Verify(c =>
+            c.UploadCorrespondence(It.Is<CorrespondenceUploadRequest>(r =>
+                r.Recipients[0] == "urn:altinn:person:idporten-email:bruker@eksempel.no"
+            )),
+            Times.Once
+        );
+    }
+
+    [Fact]
+    public async Task UploadCorrespondence_WithValidLegacySelfIdentifiedUrn_PassesThroughRecipient()
+    {
+        var request = CreateValidRequest("urn:altinn:person:legacy-selfidentified:brukernavn");
+
+        _clientMock
+            .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
+            .ReturnsAsync(new CorrespondenceResponse());
+
+        await _service.UploadCorrespondence(request);
+
+        _clientMock.Verify(c =>
+            c.UploadCorrespondence(It.Is<CorrespondenceUploadRequest>(r =>
+                r.Recipients[0] == "urn:altinn:person:legacy-selfidentified:brukernavn"
+            )),
+            Times.Once
+        );
+    }
+
+    [Fact]
+    public async Task UploadCorrespondence_WithMultipleRecipients_ThrowsException()
+    {
+        var request = CreateValidRequest("urn:altinn:person:identifier-no:01010112345");
+        request.Recipients.Add("urn:altinn:organization:identifier-no:123456789");
+
         var ex = await Assert.ThrowsAsync<BadRequestException>(() =>
             _service.UploadCorrespondence(request)
         );
 
-        Assert.Contains("not a valid org or ssn", ex.Message);
+        Assert.Contains("Exactly one recipient", ex.Message);
+        _clientMock.Verify(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task UploadCorrespondence_WithInvalidRecipient_ThrowsException()
+    {
+        var request = CreateValidRequest("invalid-recipient");
+
+        var ex = await Assert.ThrowsAsync<BadRequestException>(() =>
+            _service.UploadCorrespondence(request)
+        );
+
+        Assert.Contains("not a valid recipient URN", ex.Message);
         _clientMock.Verify(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()), Times.Never);
     }
 
     [Fact]
     public async Task UploadCorrespondence_WithNoRecipients_ThrowsException()
     {
-        // Arrange
-        var request = new CorrespondenceUploadRequest
-        {
-            Recipients = new List<string>()
-        };
+        var request = CreateValidRequest("urn:altinn:person:identifier-no:01010112345");
+        request.Recipients = new List<string>();
 
-        // Act & Assert
         var ex = await Assert.ThrowsAsync<BadRequestException>(() =>
             _service.UploadCorrespondence(request)
         );
 
-        Assert.Contains("Need at least one Recipient", ex.Message);
+        Assert.Contains("Exactly one recipient", ex.Message);
         _clientMock.Verify(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()), Times.Never);
     }
 
-    [Theory]
-    [InlineData("txt")]
-    [InlineData("zip")]
-    public async Task UploadCorrespondence_AttachmentType_IsPassedThroughToClient(string attachmentType)
+    [Fact]
+    public async Task UploadCorrespondence_WithNoAttachments_ThrowsException()
     {
-        var request = new CorrespondenceUploadRequest
-        {
-            Recipients = new List<string> { "123456789" },
-            Correspondence = new Correspondence { AttachmentType = attachmentType }
-        };
+        var request = CreateValidRequest("urn:altinn:person:identifier-no:01010112345");
+        request.AttachmentData = null;
 
-        _clientMock
-            .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
-            .ReturnsAsync(new CorrespondenceResponse());
-
-        await _service.UploadCorrespondence(request);
-
-        _clientMock.Verify(c =>
-            c.UploadCorrespondence(It.Is<CorrespondenceUploadRequest>(r =>
-                r.Correspondence.AttachmentType == attachmentType
-            )),
-            Times.Once
+        var ex = await Assert.ThrowsAsync<BadRequestException>(() =>
+            _service.UploadCorrespondence(request)
         );
+
+        Assert.Contains("At least 1 attachment", ex.Message);
+        _clientMock.Verify(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task UploadCorrespondence_WithInvalidAttachmentType_ThrowsException()
+    {
+        var request = CreateValidRequest("urn:altinn:person:identifier-no:01010112345");
+        request.AttachmentData![0].FileName = "testfile.exe";
+
+        var ex = await Assert.ThrowsAsync<BadRequestException>(() =>
+            _service.UploadCorrespondence(request)
+        );
+
+        Assert.Contains("not allowed", ex.Message);
+        _clientMock.Verify(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()), Times.Never);
     }
 }
