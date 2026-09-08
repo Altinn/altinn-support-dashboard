@@ -135,7 +135,7 @@ describe("CorrespondenceButton", () => {
     ).toBeDisabled();
   });
 
-  it("should disable button when attachments are missing", () => {
+  it("should enable button when attachments are missing", () => {
     const mockMutateAsync = vi.fn();
     vi.mocked(useCorrespondencePost).mockReturnValue({
       mutateAsync: mockMutateAsync,
@@ -150,7 +150,7 @@ describe("CorrespondenceButton", () => {
 
     expect(
       screen.getByRole("button", { name: /Send melding/i })
-    ).toBeDisabled();
+    ).toBeEnabled();
   });
 
   it("should include resourceType in the request", async () => {

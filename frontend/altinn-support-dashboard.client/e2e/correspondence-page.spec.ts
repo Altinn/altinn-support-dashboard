@@ -41,7 +41,7 @@ test.describe("CorrespondencePage", () => {
         await expect(page.getByText("Trengs det bekreftelse?")).toBeVisible();
         await expect(page.getByText("Hvem skal kunne lese meldingen?")).toBeVisible();
         await expect(page.getByText("Frist")).toBeVisible();
-        await expect(page.getByText(/Vedlegg \(1-50\)/)).toBeVisible();
+        await expect(page.getByText(/Vedlegg \(0-50\)/)).toBeVisible();
         await expect(page.getByRole("button", { name: "Send melding" })).toBeVisible();
     });
 
@@ -179,11 +179,11 @@ test.describe("CorrespondencePage", () => {
         await expect(page.getByRole("button", { name: "Send melding" })).toBeDisabled();
     });
 
-    test("should disable send when recipient is valid but attachment is missing", async ({ page }) => {
+    test("should enable send when recipient is valid and attachment is missing", async ({ page }) => {
         const input = page.getByPlaceholder("12345678901");
         await input.fill("12345678901");
 
-        await expect(page.getByRole("button", { name: "Send melding" })).toBeDisabled();
+        await expect(page.getByRole("button", { name: "Send melding" })).toBeEnabled();
     });
 
     test("should enable send button when recipient and attachment are valid", async ({ page }) => {

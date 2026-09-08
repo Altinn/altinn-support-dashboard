@@ -86,8 +86,8 @@ describe("correspondenceValidation", () => {
   });
 
   describe("validateAttachments", () => {
-    it("requires at least one attachment", () => {
-      expect(validateAttachments([])).toBe("Minst 1 vedlegg er påkrevd");
+    it("allows no attachments", () => {
+      expect(validateAttachments([])).toBeUndefined();
     });
 
     it("rejects unsupported file types", () => {
