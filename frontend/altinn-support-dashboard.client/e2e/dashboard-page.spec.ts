@@ -82,7 +82,7 @@ test.describe("DashboardPage", () => {
         await searchBar.fill("314236242");
         await page.getByTestId("search-button").click();
 
-        await expect(page.getByRole('heading', { name: 'Ingen organisasjoner funnet' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Ingen organisasjoner eller brukere funnet' })).toBeVisible();
     });
 
     test("should display detailed org view when clicking a result", async ({ page }) => {
