@@ -35,8 +35,8 @@ import {
   CorrespondenceUploadRequest,
 } from "../models/correspondenceModels";
 import { sendCorrespondence } from "../utils/correspondenceApi";
-import { fetchDialogByUrn } from "../utils/dialogportenApi";
-import { DialogDto } from "../models/dialogModels";
+import { fetchDialogByUrn, fetchDialogDetails } from "../utils/dialogportenApi";
+import { DialogDetails, DialogDto } from "../models/dialogModels";
 import { toast } from "react-toastify";
 import {
   AuthorizedPartyIdentifiers,
@@ -326,6 +326,17 @@ export function useNotificationLog(
     queryKey: ["notificationLog", dialogId, transmissionId, environment],
     queryFn: () => fetchNotificationLog(environment, dialogId, transmissionId),
     enabled: !!dialogId || !!transmissionId,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useDialogDetails(dialogId: string, environment: string) {
+  return useQuery<DialogDetails, Error>({
+    queryKey:["dialogDetails", environment, dialogId],
+    queryFn: () => fetchDialogDetails(environment, dialogId),
+    enabled: !!dialogId && !!environment,
     retry: false,
     staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,

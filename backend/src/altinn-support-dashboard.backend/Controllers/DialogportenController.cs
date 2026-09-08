@@ -45,4 +45,21 @@ public class DialogportenController : ControllerBase
         _telemetryService.TrackDialogSearchByUrn(urn, User.Identity?.Name ?? "unknown", environmentName);
         return Ok(response);
     }
+
+    [HttpGet("dialogs/{dialogId}")]
+    [Authorize(AzureRoles.DialogportenAdmin)]
+    public async Task<IActionResult> GetDialogDetails([FromRoute] string environmentName, [FromRoute] string dialogId)
+    {
+        if (!ValidationService.IsValidGuid(dialogId))
+        {
+            return BadRequest("dialogId must be a valid GUID");
+        }
+
+        string? result = await _service.GetDialogDetails(dialogId, environmentName);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Content(result, "application/json");
+    }
 }
