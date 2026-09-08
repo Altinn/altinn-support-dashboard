@@ -29,10 +29,7 @@ export function useTextHighlightSearch(text: string, { matchClassName, matchActi
     return matchCount;
   }, [text, searchTerm]);
 
-  // Reset once per render, then renderLine(line) appends this line's match refs in order.
-  // Ref index == global match index only if renderLine is called for every line, in the
-  // same order, on every render (e.g. don't skip lines via virtualization/conditional render).
-  matchRefs.current = [];
+  let globalMatchIndex = 0;
 
   const renderLine = (line: string, lineIndex: number) => {
     if (!searchTerm) return <span>{line}</span>;
@@ -47,13 +44,12 @@ export function useTextHighlightSearch(text: string, { matchClassName, matchActi
       // Plain text between the last match and this match
       parts.push(line.slice(sliceStart, matchStart));
 
-      const globalMatchIndex = matchRefs.current.length;
-      matchRefs.current.push(null);
+      const matchIndex = globalMatchIndex++;
       parts.push(
         <span
           key={`${lineIndex}-${matchStart}`}
-          ref={(el) => { matchRefs.current[globalMatchIndex] = el; }}
-          className={globalMatchIndex === currentMatchIndex ? matchActiveClassName : matchClassName}
+          ref={(el) => { matchRefs.current[matchIndex] = el; }}
+          className={matchIndex === currentMatchIndex ? matchActiveClassName : matchClassName}
         >
           {line.slice(matchStart, matchStart + lowerCaseSearchTerm.length)}
         </span>
