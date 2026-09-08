@@ -96,6 +96,8 @@ export const OrgNumberField: React.FC<OrgNumberFieldProps> = ({
   ); // La til success for å fikse lint-feil
 
   // Reagerer på endring av organisasjonsnummer - med beskyttelse mot infinite loops
+  // Kaller kun det eksterne API-et (henting av organisasjonsdetaljer); tilbakestilling av
+  // lokal feil/suksess-tilstand skjer i onChange under, siden det er der value faktisk endres.
   useEffect(() => {
     // Skip på første rendering
     if (isInitialMount.current) {
@@ -111,19 +113,8 @@ export const OrgNumberField: React.FC<OrgNumberFieldProps> = ({
         `Nytt 9-sifret organisasjonsnummer registrert: ${value}, kaller fetchOrgDetails`
       );
       fetchOrgDetails(value);
-    } else if (value !== previousOrgNumber.current) {
-      // Reset states if input changes and is not complete or different
-      if (!success || value.length !== 9) {
-        setErrorMessage(null);
-        setSuccess(false);
-      }
-
-      // Hvis verdien er betydelig endret, nullstill tidligere verdi
-      if (value.length <= 2) {
-        previousOrgNumber.current = "";
-      }
     }
-  }, [value, fetchOrgDetails, success]); // value trengs her for å reagere på endringer
+  }, [value, fetchOrgDetails]);
 
   // Handle reset form
   const handleReset = () => {
@@ -166,9 +157,22 @@ export const OrgNumberField: React.FC<OrgNumberFieldProps> = ({
             label=""
             value={value}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              // Clear error message when user types to prevent stale errors
-              if (errorMessage) setErrorMessage(null);
-              onChange(e.target.value.replace(/[^0-9]/g, "")); // Only allow numbers
+              const newValue = e.target.value.replace(/[^0-9]/g, ""); // Only allow numbers
+
+              // Reset states when input changes away from the previously processed number
+              if (newValue !== previousOrgNumber.current) {
+                if (!success || newValue.length !== 9) {
+                  setErrorMessage(null);
+                  setSuccess(false);
+                }
+
+                // Hvis verdien er betydelig endret, nullstill tidligere verdi
+                if (newValue.length <= 2) {
+                  previousOrgNumber.current = "";
+                }
+              }
+
+              onChange(newValue);
             }}
             placeholder="9 siffer (f.eks 991825827)"
             disabled={isLoading || success} // Disable during loading or when successful

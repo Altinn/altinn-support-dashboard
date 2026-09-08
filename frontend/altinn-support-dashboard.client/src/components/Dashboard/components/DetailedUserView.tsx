@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Heading, Paragraph } from "@digdir/designsystemet-react";
 import { UserContactInformationAltinn3 } from "../../../models/models";
 import { AuthorizedPartyIdentifiers } from "../../../models/rolesModels";
@@ -20,9 +20,13 @@ const DetailedUserView: React.FC<DetailedUserViewProps> = ({
   const [selectedParty, setSelectedParty] =
     useState<AuthorizedPartyIdentifiers | null>(null);
 
-  useEffect(() => {
+  // Reset the selected party whenever the selected user changes, without an
+  // extra effect-triggered render (see https://react.dev/learn/you-might-not-need-an-effect).
+  const [prevSelectedUser, setPrevSelectedUser] = useState(selectedUser);
+  if (selectedUser !== prevSelectedUser) {
+    setPrevSelectedUser(selectedUser);
     setSelectedParty(null);
-  }, [selectedUser]);
+  }
 
   return (
     <div className={styles.container}>

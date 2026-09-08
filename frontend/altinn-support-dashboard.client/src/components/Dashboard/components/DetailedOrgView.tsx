@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Heading } from "@digdir/designsystemet-react";
 import ERRolesTable from "./ERRolesTable";
 import { RoleDetailsOrg } from "./RoleDetailsOrg";
@@ -30,9 +30,13 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
     setSelectedContact(null);
   };
 
-  useEffect(() => {
+  // Reset search/selection whenever the selected org changes, without an
+  // extra effect-triggered render (see https://react.dev/learn/you-might-not-need-an-effect).
+  const [prevSelectedOrg, setPrevSelectedOrg] = useState(selectedOrg);
+  if (selectedOrg !== prevSelectedOrg) {
+    setPrevSelectedOrg(selectedOrg);
     handleClearSearch();
-  }, [selectedOrg]);
+  }
 
   return (
     <div className={styles.container}>

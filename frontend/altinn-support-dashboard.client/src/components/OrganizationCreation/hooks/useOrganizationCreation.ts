@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
   OrganizationFormData,
   OrganizationCreationResponse,
@@ -21,10 +21,15 @@ const getCorrectBaseUrl = (): string => {
  */
 export const useOrganizationCreation = (environment: string) => {
   // Hent miljø fra session storage hvis det er lagret
-  const [activeEnvironment, setActiveEnvironment] =
-    useState<string>(environment);
+  const [activeEnvironment, setActiveEnvironment] = useState<string>(
+    () => sessionStorage.getItem("selected_gitea_environment") || environment
+  );
 
-  useEffect(() => {
+  // Oppdater aktivt miljø når prop-miljøet endres, uten en ekstra effect-render
+  // (se https://react.dev/learn/you-might-not-need-an-effect).
+  const [prevEnvironment, setPrevEnvironment] = useState(environment);
+  if (environment !== prevEnvironment) {
+    setPrevEnvironment(environment);
     const storedEnvironment = sessionStorage.getItem(
       "selected_gitea_environment"
     );
@@ -38,7 +43,7 @@ export const useOrganizationCreation = (environment: string) => {
         `Ingen lagret miljø funnet. Bruker prop-miljø: ${environment}`
       );
     }
-  }, [environment]);
+  }
 
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [isCheckingName, setIsCheckingName] = useState<boolean>(false);

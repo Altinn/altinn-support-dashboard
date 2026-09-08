@@ -9,9 +9,11 @@ export function useTextHighlightSearch(text: string, { matchClassName, matchActi
   const [searchTerm, setSearchTermState] = useState("");
   const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
   
-  //One ref per match across the whole text, in the order they appear in the text.
-  // Lets goToMatch scroll to specific match without re-searching the DOM
-  const matchRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  // One ref per match across the whole text, keyed by the match's index in the
+  // order they appear in the text. Lets goToMatch scroll to a specific match
+  // without re-searching the DOM. Populated/cleared via ref callbacks (commit
+  // phase) rather than mutated during render.
+  const matchRefs = useRef<Map<number, HTMLSpanElement>>(new Map());
 
   const lines = useMemo(() => text.split("\n"), [text]);
 
@@ -29,10 +31,10 @@ export function useTextHighlightSearch(text: string, { matchClassName, matchActi
     return matchCount;
   }, [text, searchTerm]);
 
-  // Reset once per render, then renderLine(line) appends this line's match refs in order.
-  // Ref index == global match index only if renderLine is called for every line, in the
-  // same order, on every render (e.g. don't skip lines via virtualization/conditional render).
-  matchRefs.current = [];
+  // globalMatchIndex == index within the whole text only if renderLine is called for
+  // every line, in the same order, on every render (e.g. don't skip lines via
+  // virtualization/conditional render).
+  let globalMatchIndex = 0;
 
   const renderLine = (line: string, lineIndex: number) => {
     if (!searchTerm) return <span>{line}</span>;
@@ -47,13 +49,17 @@ export function useTextHighlightSearch(text: string, { matchClassName, matchActi
       // Plain text between the last match and this match
       parts.push(line.slice(sliceStart, matchStart));
 
-      const globalMatchIndex = matchRefs.current.length;
-      matchRefs.current.push(null);
+      const matchIndex = globalMatchIndex++;
       parts.push(
         <span
           key={`${lineIndex}-${matchStart}`}
-          ref={(el) => { matchRefs.current[globalMatchIndex] = el; }}
-          className={globalMatchIndex === currentMatchIndex ? matchActiveClassName : matchClassName}
+          ref={(el) => {
+            if (el) matchRefs.current.set(matchIndex, el);
+            return () => {
+              matchRefs.current.delete(matchIndex);
+            };
+          }}
+          className={matchIndex === currentMatchIndex ? matchActiveClassName : matchClassName}
         >
           {line.slice(matchStart, matchStart + lowerCaseSearchTerm.length)}
         </span>
@@ -70,7 +76,7 @@ export function useTextHighlightSearch(text: string, { matchClassName, matchActi
     // Wrap around in both directions using modulo
     const next = (currentMatchIndex + direction + totalMatches) % totalMatches;
     setCurrentMatchIndex(next);
-    matchRefs.current[next]?.scrollIntoView({ block: "center", behavior: "smooth" });
+    matchRefs.current.get(next)?.scrollIntoView({ block: "center", behavior: "smooth" });
   };
 
   const setSearchTerm = (value: string) => {

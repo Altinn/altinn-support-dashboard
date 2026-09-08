@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Heading,
@@ -7,10 +7,7 @@ import {
   ErrorSummary,
   Paragraph,
 } from "@digdir/designsystemet-react";
-import {
-  OrganizationFormData,
-  OrganizationFormErrors,
-} from "./models/organizationTypes";
+import { OrganizationFormData } from "./models/organizationTypes";
 import { useOrganizationCreation } from "./hooks/useOrganizationCreation";
 import {
   validateForm,
@@ -30,17 +27,9 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
 
   // Hent miljø fra session storage hvis det er lagret fra PAT-validering
   // Dette sikrer at vi bruker samme miljø som ble brukt til å validere PAT-token
-  const [activeEnvironment, setActiveEnvironment] =
-    useState<string>(environment);
-
-  useEffect(() => {
-    const storedEnvironment = sessionStorage.getItem(
-      "selected_gitea_environment"
-    );
-    if (storedEnvironment) {
-      setActiveEnvironment(storedEnvironment);
-    }
-  }, []);
+  const [activeEnvironment] = useState<string>(
+    () => sessionStorage.getItem("selected_gitea_environment") || environment
+  );
 
   const { isCreating, createOrganization, hasValidPatToken } =
     useOrganizationCreation(activeEnvironment);
@@ -55,7 +44,6 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
     emailDomain: "",
   });
 
-  const [errors, setErrors] = useState<OrganizationFormErrors>({});
   // Submit state for tracking form submission attempts
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
   const [creationSuccess, setCreationSuccess] = useState<boolean | null>(null);
@@ -65,12 +53,12 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
   // Sjekk om PAT-token er gyldig ved lasting
   const hasValidToken = hasValidPatToken();
 
-  // Kjør validering når skjemadata endres
-  useEffect(() => {
-    // Kun valider fullt skjema hvis brukeren har forsøkt å sende inn skjemaet
-    const validationErrors = validateForm(formData, formSubmitted);
-    setErrors(validationErrors);
-  }, [formData, formSubmitted]);
+  // Errors er fullstendig avledet fra formData/formSubmitted - trenger ikke egen
+  // state + effect (kun valider fullt skjema hvis brukeren har forsøkt å sende inn skjemaet).
+  const errors = useMemo(
+    () => validateForm(formData, formSubmitted),
+    [formData, formSubmitted]
+  );
 
   // Debug funksjon som kan kalles fra konsollen for å feilsøke skjemadata og validering
   React.useEffect(() => {
@@ -115,7 +103,6 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
 
     // Valider skjemaet
     const validationErrors = validateForm(formData, true);
-    setErrors(validationErrors);
     setFormSubmitted(true);
 
     if (hasErrors(validationErrors) || !requiredFieldsPresent(formData)) {
@@ -187,7 +174,6 @@ const OrganizationCreationComponent: React.FC<OrganizationCreationProps> = ({
     setCreationSuccess(null);
     setCreationMessage("");
     setFormSubmitted(false);
-    setErrors({});
   };
 
   return (

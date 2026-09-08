@@ -4,7 +4,7 @@ import {
   InformationSquareIcon,
 } from "@navikt/aksel-icons";
 import classes from "./styles/SettingsPatComponent.module.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePatTokenValidation } from "./hooks/usePatTokenValidation";
 import {
   Card,
@@ -26,11 +26,15 @@ const SettingsPATComponent: React.FC = () => {
   const [patInput, setPatInput] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  useEffect(() => {
+  // Sync the input field when the loaded/validated token changes, without an
+  // extra effect-triggered render (see https://react.dev/learn/you-might-not-need-an-effect).
+  const [prevToken, setPrevToken] = useState(patState.token);
+  if (patState.token !== prevToken) {
+    setPrevToken(patState.token);
     if (patState.token) {
       setPatInput(patState.token);
     }
-  }, [patState.token]);
+  }
 
   const handlePatInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPatInput(event.target.value);
