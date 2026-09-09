@@ -71,6 +71,16 @@ public class DialogportenController : ControllerBase
         {
             return BadRequest("dialogId must be a valid GUID");
         }
+
+        if (request.HardDelete)
+        {
+            _telemetryService.TrackDialogHardDelete(request.DialogId, User.Identity?.Name ?? "unknown", environmentName);
+        }
+        else
+        {
+            _telemetryService.TrackDialogSoftDelete(request.DialogId, User.Identity?.Name ?? "unknown", environmentName);
+        }
+
         DeleteDialogResponse response = await _service.DeleteDialogById(request, environmentName);
 
         return Ok(response);
