@@ -24,6 +24,7 @@ import { ToastContainer } from "react-toastify";
 import { ResourceSearchPage } from "../pages/ResourceSearchPage";
 import { NotificationLogPage } from "../pages/NotificationLogPage";
 import SimplifiedNotificationPage from "../pages/SimplifiedNotificationPage";
+import { DialogDetailsLookupPage } from "../pages/DialogDetailsLookupPage";
 
 const App: React.FC = () => {
   // Sjekk etter nye versjoner
@@ -98,6 +99,10 @@ const App: React.FC = () => {
                 <Route 
                   path="/notification-simple"
                   element={<SimplifiedNotificationPage />}
+                />
+                <Route
+                  path="/dialog-details"
+                  element={<DialogDetailsLookupPage/>}
                 />
               </Route>
             </Routes>
