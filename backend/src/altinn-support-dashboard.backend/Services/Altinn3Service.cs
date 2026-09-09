@@ -228,7 +228,7 @@ public class Altinn3Service : IAltinn3Service
     public async Task<List<PersonalContactDto>> GetPersonalContactsByPhoneAltinn3(string phoneNumber, string environment)
     {
         var match = Regex.Match(phoneNumber.Trim(), @"^\+\d{1,2}");
-        var countryCode = match.Success ? match.Value.TrimStart('+') : null;
+        var countryCode = match.Success ? match.Value : null;
         string localNumber = match.Success
             ? Regex.Replace(phoneNumber.Trim(), @"^\+\d{1,2}", "")
             : phoneNumber.Trim();
