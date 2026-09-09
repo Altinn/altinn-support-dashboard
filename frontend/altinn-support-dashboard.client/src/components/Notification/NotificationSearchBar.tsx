@@ -53,15 +53,11 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
           label={
             searchType === "shipmentId"
               ? "Shipment-ID"
-              : searchType === "simple"
-              ? "E-post eller telefonnummer"
-              : "Avansert søk"
+              : "Orgnr, nin, email, telefonnummer, paryid, partyuuid"
           }
           placeholder={
             searchType === "shipmentId"
               ? "Shipment-ID"
-              : searchType === "simple"
-              ? "E-post eller telefonnummer"
               : "Nin,orgnr,email,tlf,partyid,partyuuid"
           }
           value={inputValue}

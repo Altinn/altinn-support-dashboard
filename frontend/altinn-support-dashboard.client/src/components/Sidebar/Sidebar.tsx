@@ -53,6 +53,9 @@ const Sidebar: React.FC = () => {
     !authData.azureAuthActive ||
     authData.roles.includes("Dashboard.Core.Internal") ||
     authData.roles.includes("Dashboard.Core.External");
+  const hasInternalCoreRole =
+    !authData.azureAuthActive ||
+    authData.roles.includes("Dashboard.Core.Internal");
   const hasDeveloperRole =
     !authData.azureAuthActive || authData.roles.includes("Dashboard.Developer");
   const hasTT02OrProductionRoles =
@@ -124,12 +127,14 @@ const Sidebar: React.FC = () => {
               icon={<FilesIcon className={classes.icons} />}
               isCollapsed={isCollapsed}
             />
+            {!hasInternalCoreRole && hasInternalOrExternalCoreRoles &&(
             <NavItem
               to="/notification-simple"
               title="Varsling"
               icon={<DatabaseIcon className={classes.icon} />}
               isCollapsed={isCollapsed}
             />
+            )}
             <NavItem
               to="/correspondence"
               title="Melding"

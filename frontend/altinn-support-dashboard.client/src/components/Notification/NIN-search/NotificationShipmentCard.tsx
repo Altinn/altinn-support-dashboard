@@ -25,25 +25,26 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
         <Card data-color="neutral" className={styles.card}>
         <Paragraph className={styles.paragraph}><strong>Shipment Id:</strong> {shipment.shipmentId}</Paragraph>
         <Paragraph className={styles.paragraph}>
-            <strong>{compact ? "Opprettet av:" : "Creator name:"}</strong> {shipment.creatorName}</Paragraph>
+            <strong>Creator name:</strong> {shipment.creatorName}</Paragraph>
         {!compact && (
             <>
                 <Paragraph className={styles.paragraph}><strong>Senders reference:</strong> {shipment.sendersReference}</Paragraph>
-                <Paragraph className={styles.paragraph}><strong>Resource:</strong> {shipment.resourceId}</Paragraph>
-                <Paragraph className={styles.paragraph}><strong>{compact ? "Varslingskanal:" : "Notification channel:"}</strong> {shipment.notificationChannel}</Paragraph>
-                <Paragraph className={styles.paragraph}><strong>{compact ? "Varslinsgtype:" : "Notifcation type:"} </strong> {shipment.notificationType}</Paragraph>
+                
+                <Paragraph className={styles.paragraph}><strong>Notification channel:</strong> {shipment.notificationChannel}</Paragraph>
+                <Paragraph className={styles.paragraph}><strong> Notifcation type:</strong> {shipment.notificationType}</Paragraph>
             </>
         )}
-        <Paragraph className={styles.paragraph}><strong>{compact ? "Forespurt sendetid:" : "Requested send time:"}</strong> {new Date(shipment.requestedSendTime).toLocaleString("nb-NO")}</Paragraph>
+        <Paragraph className={styles.paragraph}><strong>Resource:</strong> {shipment.resourceId}</Paragraph>
+        <Paragraph className={styles.paragraph}><strong>Requested send time:</strong> {new Date(shipment.requestedSendTime).toLocaleString("nb-NO")}</Paragraph>
         
 
         <Table data-size="sm" data-color="neutral" border>
             <Table.Head>
                 <Table.Row>
-                    <Table.HeaderCell>{compact ? "Kanal" : "Channel"}</Table.HeaderCell>
-                    <Table.HeaderCell>{compact ? "Adresse" : "Address"}</Table.HeaderCell>
-                    <Table.HeaderCell>{compact ? "Resultat" : "Result"}</Table.HeaderCell>
-                    <Table.HeaderCell>{compact ? "Tidspunkt" : "Time"}</Table.HeaderCell>
+                    <Table.HeaderCell>Channel</Table.HeaderCell>
+                    <Table.HeaderCell>Address</Table.HeaderCell>
+                    <Table.HeaderCell>Result</Table.HeaderCell>
+                    <Table.HeaderCell>Time</Table.HeaderCell>
                 </Table.Row>
             </Table.Head>
             <Table.Body>
