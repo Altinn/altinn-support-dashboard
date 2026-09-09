@@ -7,4 +7,5 @@ public interface IDialogportenService
 {
     Task<DialogDto?> GetDialogByUrn(string urn, string environment, bool includeTitle);
     Task<string?> GetDialogDetails(string dialogId, string environment);
+    Task<DeleteDialogResponse> DeleteDialogById(string dialogId, string revision, Boolean hardDelete, string environment);
 }

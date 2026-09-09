@@ -43,4 +43,10 @@ public class DialogportenService : IDialogportenService
         string result = await _client.GetDialogDetails(dialogId, environment);
         return result == string.Empty ? null : result;
     }
+
+    public async Task<DeleteDialogResponse> DeleteDialogById(string dialogId, string revision, Boolean hardDelete, string environment)
+    {
+        DeleteDialogResponse result = await _client.DeleteDialogById(dialogId, revision, hardDelete, environment);
+        return result;
+    }
 }
