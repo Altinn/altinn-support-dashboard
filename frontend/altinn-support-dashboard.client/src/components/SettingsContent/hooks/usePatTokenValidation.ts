@@ -1,48 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   PatTokenState,
   PatTokenValidationResponse,
 } from "../models/settingsTypes";
 import { getBaseUrl } from "../../../utils/utils";
 
+const loadPatState = (environment: string): PatTokenState => {
+  const savedToken = sessionStorage.getItem(`pat_token_${environment}`);
+  return {
+    token: savedToken || "",
+    isValid: !!savedToken, // Antar at en lagret token er gyldig
+    isValidating: false,
+    username: undefined,
+    errorMessage: undefined,
+  };
+};
+
 /**
  * Hook for håndtering av PAT-token validering og lagring
  */
 export const usePatTokenValidation = (environment: string) => {
   // Initialiser state med eventuell lagret token fra sessionStorage
-  const [patState, setPatState] = useState<PatTokenState>(() => {
-    const savedToken = sessionStorage.getItem(`pat_token_${environment}`);
-    return {
-      token: savedToken || "",
-      isValid: !!savedToken, // Antar at en lagret token er gyldig
-      isValidating: false,
-      username: undefined,
-      errorMessage: undefined,
-    };
-  });
+  const [patState, setPatState] = useState<PatTokenState>(() =>
+    loadPatState(environment)
+  );
 
-  // Oppdater state hvis environment endres
-  useEffect(() => {
-    const savedToken = sessionStorage.getItem(`pat_token_${environment}`);
-    if (savedToken) {
-      setPatState({
-        token: savedToken,
-        isValid: true,
-        isValidating: false,
-        username: undefined,
-        errorMessage: undefined,
-      });
-    } else {
-      // Reset state hvis ingen token funnet for dette miljøet
-      setPatState({
-        token: "",
-        isValid: false,
-        isValidating: false,
-        username: undefined,
-        errorMessage: undefined,
-      });
-    }
-  }, [environment]);
+  const [prevEnvironment, setPrevEnvironment] = useState(environment);
+  if (environment !== prevEnvironment) {
+    setPrevEnvironment(environment);
+    setPatState(loadPatState(environment));
+  }
 
   /**
    * Validerer PAT-token mot API
