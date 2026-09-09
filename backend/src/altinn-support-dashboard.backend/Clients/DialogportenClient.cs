@@ -46,6 +46,51 @@ public class DialogportenClient : IDialogportenClient
         return responseBody;
     }
 
+    public async Task<DeleteDialogResponse> DeleteDialogById(string dialogId, string revision, Boolean hardDelete, string environmentName)
+    {
+        var client = _clients[environmentName];
+        string url = "";
+        var request = new HttpRequestMessage();
+        request.Headers.Add("If-Match", revision);
+
+
+        if (!hardDelete)
+        {
+            //soft deletes dialog
+            url = $"dialogporten/api/v1/serviceowner/dialogs/{dialogId}";
+            request.Method = HttpMethod.Delete;
+        }
+        else
+        {
+            //permamently deletes dialog
+            url = $"dialogporten/api/v1/serviceowner/dialogs/{dialogId}/actions/purge";
+            request.Method = HttpMethod.Post;
+        }
+
+        request.RequestUri = new Uri(url, UriKind.Relative);
+
+        var response = await client.SendAsync(request);
+
+        // Excludes certain sensitive headers
+        var excludeHeaders = new[] { "ApiKey", "authorization" };
+        var filteredHeaders = response.Headers
+            .Where(h => !excludeHeaders.Contains(h.Key, StringComparer.OrdinalIgnoreCase))
+            .Select(h => $"{h.Key}: {string.Join(", ", h.Value)}");
+
+        var responseHeaders = string.Join("\r\n", filteredHeaders);
+
+        var deleteDialogResponse = new DeleteDialogResponse
+        {
+            StatusCode = response.StatusCode,
+            ResponseBody = await response.Content.ReadAsStringAsync() ?? "",
+            ResponseHeader = responseHeaders ?? "",
+            RequestHeader = request.Headers.ToString(),
+            RequestBody = request.Content != null ? await request.Content.ReadAsStringAsync() : ""
+        };
+
+        return deleteDialogResponse;
+    }
+
     public async Task<string> GetDialogDetails(string dialogId, string environmentName)
     {
         var client = _clients[environmentName];
