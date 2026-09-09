@@ -62,4 +62,17 @@ public class DialogportenController : ControllerBase
         }
         return Content(result, "application/json");
     }
+
+    [HttpPost]
+    [Authorize(AzureRoles.DialogportenAdmin)]
+    public async Task<IActionResult> DeleteDialogById([FromBody] DeleteDialogRequest request, [FromRoute] string environmentName)
+    {
+        if (!ValidationService.IsValidGuid(request.DialogId))
+        {
+            return BadRequest("dialogId must be a valid GUID");
+        }
+        DeleteDialogResponse response = await _service.DeleteDialogById(request, environmentName);
+
+        return Ok(response);
+    }
 }
