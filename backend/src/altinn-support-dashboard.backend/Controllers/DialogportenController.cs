@@ -72,6 +72,11 @@ public class DialogportenController : ControllerBase
             return BadRequest("dialogId must be a valid GUID");
         }
 
+        if (!ValidationService.IsValidGuid(request.Revision))
+        {
+            return BadRequest("Revision must be a valid GUID");
+        }
+
         if (request.HardDelete)
         {
             _telemetryService.TrackDialogHardDelete(request.DialogId, User.Identity?.Name ?? "unknown", environmentName);
