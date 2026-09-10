@@ -81,9 +81,9 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
         <div>
           <div className={style.row}>
             <Textfield
-              label={searchType === "advanced" ? "From date" : "Fra dato"}
+              label= "From date"
               type="date"
-              description={searchType === "advanced" ? "Deafults to past 7 days if empty" : "Standard er siste 7 dager hvis tom" }
+              description="Deafults to past 7 days if empty"
               max={localDateTo || today}
               value={localDateFrom}
               onChange={(e) => setLocalDateFrom(e.target.value)}
@@ -91,7 +91,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
               className={style.dateFieldFrom}
             />
             <Textfield
-              label={searchType === "advanced" ? "To date" : "Til dato"}
+              label="To date"
               type="date"
               description={" "}
               max={today}
