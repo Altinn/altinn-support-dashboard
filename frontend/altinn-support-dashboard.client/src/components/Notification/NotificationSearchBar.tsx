@@ -5,7 +5,7 @@ import style from "./styles/NotificationSearchBar.module.css";
 type NotificationSearchBarProps = {
   searchValue: string;
   setSearchValue: (value: string) => void;
-  searchType: "shipmentId" | "advanced";
+  searchType: "shipmentId" | "simple" | "advanced";
   dateFrom?: string;
   setDateFrom?: (v: string) => void;
   dateTo?: string;
@@ -50,7 +50,11 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
     <div className={style.container}>
       <div className={style.row}>
         <Textfield
-          label={searchType === "shipmentId" ? "Shipment-ID" : "Avansert søk"}
+          label={
+            searchType === "shipmentId"
+              ? "Shipment-ID"
+              : "Orgnr, nin, email, telefonnummer, paryid, partyuuid"
+          }
           placeholder={
             searchType === "shipmentId"
               ? "Shipment-ID"
@@ -73,13 +77,13 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
         </Button>
       </div>
 
-      {searchType === "advanced" && (
+      {searchType !== "shipmentId" && (
         <div>
           <div className={style.row}>
             <Textfield
-              label="From date"
+              label= "From date"
               type="date"
-              description="Defaults to past 7 days if empty"
+              description="Deafults to past 7 days if empty"
               max={localDateTo || today}
               value={localDateFrom}
               onChange={(e) => setLocalDateFrom(e.target.value)}

@@ -31,11 +31,11 @@
 }
 
 .dateFieldTo {
-  width: 18rem;
+  width: 20rem;
 }
 
 .dateFieldFrom {
-  width: 18rem;
+  width: 20rem;
 }
 
 .dateField :global(label) {

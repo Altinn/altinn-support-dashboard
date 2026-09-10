@@ -8,12 +8,14 @@ type NotificationShipemntCardProps = {
     shipment: NotificationShipmentResponse
     selectedResults?: string[]
     selectedChannels?: string[]
+    compact?: boolean
 };
 
 const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
     shipment,
     selectedResults = [],
     selectedChannels = [],
+    compact = false
 }) => {
     const deliveryAttempts = (shipment.deliveryAttempts ?? []).filter((attempt) => 
         (selectedResults.length === 0 || (attempt.result && selectedResults.includes(attempt.result))) &&
@@ -22,12 +24,19 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
     return(
         <Card data-color="neutral" className={styles.card}>
         <Paragraph className={styles.paragraph}><strong>Shipment Id:</strong> {shipment.shipmentId}</Paragraph>
-        <Paragraph className={styles.paragraph}><strong>Creator name:</strong> {shipment.creatorName}</Paragraph>
-        <Paragraph className={styles.paragraph}><strong>Senders reference:</strong> {shipment.sendersReference}</Paragraph>
+        <Paragraph className={styles.paragraph}>
+            <strong>Creator name:</strong> {shipment.creatorName}</Paragraph>
+        {!compact && (
+            <>
+                <Paragraph className={styles.paragraph}><strong>Senders reference:</strong> {shipment.sendersReference}</Paragraph>
+                
+                <Paragraph className={styles.paragraph}><strong>Notification channel:</strong> {shipment.notificationChannel}</Paragraph>
+                <Paragraph className={styles.paragraph}><strong> Notifcation type:</strong> {shipment.notificationType}</Paragraph>
+            </>
+        )}
         <Paragraph className={styles.paragraph}><strong>Resource:</strong> {shipment.resourceId}</Paragraph>
         <Paragraph className={styles.paragraph}><strong>Requested send time:</strong> {new Date(shipment.requestedSendTime).toLocaleString("nb-NO")}</Paragraph>
-        <Paragraph className={styles.paragraph}><strong>Notification channel:</strong> {shipment.notificationChannel}</Paragraph>
-        <Paragraph className={styles.paragraph}><strong>Notification type: </strong> {shipment.notificationType}</Paragraph>
+        
 
         <Table data-size="sm" data-color="neutral" border>
             <Table.Head>
