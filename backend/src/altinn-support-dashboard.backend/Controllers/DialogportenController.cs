@@ -47,7 +47,7 @@ public class DialogportenController : ControllerBase
     }
 
     [HttpGet("dialogs/{dialogId}")]
-    [Authorize(AzureRoles.DialogportenAdmin)]
+    // [Authorize(AzureRoles.DialogportenAdmin)]
     public async Task<IActionResult> GetDialogDetails([FromRoute] string environmentName, [FromRoute] string dialogId)
     {
         if (!ValidationService.IsValidGuid(dialogId))
@@ -64,7 +64,7 @@ public class DialogportenController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(AzureRoles.DialogportenAdmin)]
+    //[Authorize(AzureRoles.DialogportenAdmin)]
     public async Task<IActionResult> DeleteDialogById([FromBody] DeleteDialogRequest request, [FromRoute] string environmentName)
     {
         if (!ValidationService.IsValidGuid(request.DialogId))

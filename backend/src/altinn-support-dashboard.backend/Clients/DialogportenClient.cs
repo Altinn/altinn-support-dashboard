@@ -51,7 +51,7 @@ public class DialogportenClient : IDialogportenClient
         var client = _clients[environmentName];
         string url = "";
         var request = new HttpRequestMessage();
-        request.Headers.Add("If-Match", revision);
+        request.Headers.TryAddWithoutValidation("If-Match", revision);
 
 
         if (!hardDelete)
@@ -84,7 +84,6 @@ public class DialogportenClient : IDialogportenClient
             StatusCode = response.StatusCode,
             ResponseBody = await response.Content.ReadAsStringAsync() ?? "",
             ResponseHeader = responseHeaders ?? "",
-            RequestHeader = request.Headers.ToString(),
             RequestBody = request.Content != null ? await request.Content.ReadAsStringAsync() : ""
         };
 
