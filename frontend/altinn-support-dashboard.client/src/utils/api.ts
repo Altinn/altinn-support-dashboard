@@ -135,7 +135,7 @@ export const fetchNotificationByOrderId = async (
   environment: string
 ): Promise<NotificationOrderResponse[] | null> => {
   const res = await authorizedFetch(
-    `/api/${environment}/notifications/orderid/${encodeURIComponent(orderId)}`
+    `${getBaseUrl(environment)}/notifications/orderid/${encodeURIComponent(orderId)}`
   );
 
   if (res.status === 404) return null;
@@ -349,21 +349,21 @@ export const fetchInternalIdsFromSsn = async (
   return await res.json();
 };
 
-export const  fetchNotificationLog = async (
+export const fetchNotificationLog = async (
   environment: string,
   dialogId?: string,
   transmissionId?: string
 ): Promise<NotificationLog[]> => {
   const params = new URLSearchParams();
   if (dialogId) params.append("dialogId", dialogId);
-  if(transmissionId) params.append("transmissionId", transmissionId);
+  if (transmissionId) params.append("transmissionId", transmissionId);
 
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/notifications/log?${params.toString()}`
   );
 
-  if (!res.ok){
+  if (!res.ok) {
     throw new Error((await res.text()) || "Error fetching notification log");
   }
   return res.json();
-}
+};
