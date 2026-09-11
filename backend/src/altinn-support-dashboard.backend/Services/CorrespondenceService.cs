@@ -47,7 +47,9 @@ public class CorrespondenceService : ICorrespondenceService
 
     private static void ValidateAttachments(List<CorrespondenceAttachmentData>? attachments)
     {
-        if (attachments == null || attachments.Count < CorrespondenceAttachmentRules.MinAttachments)
+        attachments ??= [];
+
+        if (attachments.Count < CorrespondenceAttachmentRules.MinAttachments)
         {
             throw new BadRequestException($"At least {CorrespondenceAttachmentRules.MinAttachments} attachment is required");
         }
