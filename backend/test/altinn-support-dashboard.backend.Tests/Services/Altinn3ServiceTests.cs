@@ -550,7 +550,7 @@ public class Altinn3ServiceTests
     // ---- GetOrganizationsByPhoneAltinn3 ----
 
     [Fact]
-    public async Task GetOrganizationsByPhoneAltinn3_PreservesCountryCode_ForPersonalContactsCall()
+    public async Task GetOrganizationsByPhoneAltinn3_CallsPersonalContactsWithoutCountryCode()
     {
         _mockAltinn3Client
             .Setup(x => x.GetPersonalContactsByPhone(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string>()))
@@ -561,16 +561,13 @@ public class Altinn3ServiceTests
 
         await _altinnApiService.GetOrganizationsByPhoneAltinn3("+4791234567", "TT02");
 
-        // Regression: this used to pre-strip the country code before calling GetPersonalContactsByPhoneAltinn3,
-        // so it could never be recovered/sent downstream at all.
-        _mockAltinn3Client.Verify(x => x.GetPersonalContactsByPhone("91234567", It.Is<string?>(c => c != null), "TT02"), Times.Once);
         _mockAltinn3Client.Verify(x => x.GetPersonalContactsByPhone("91234567", null, "TT02"), Times.Once);
     }
 
     // ---- GetPersonalContactsByPhoneAltinn3 ----
 
     [Fact]
-    public async Task GetPersonalContactsByPhoneAltinn3_SendsLocalNumberAndCountryCode_WhenPrefixPresent()
+    public async Task GetPersonalContactsByPhoneAltinn3_OnlyCallsWithoutCountryCode_WhenPrefixPresent()
     {
         _mockAltinn3Client
             .Setup(x => x.GetPersonalContactsByPhone(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string>()))
@@ -578,7 +575,10 @@ public class Altinn3ServiceTests
 
         await _altinnApiService.GetPersonalContactsByPhoneAltinn3("+4791234567", "TT02");
 
-        _mockAltinn3Client.Verify(x => x.GetPersonalContactsByPhone("91234567", "+47", "TT02"), Times.Once);
+        _mockAltinn3Client.Verify(x => x.GetPersonalContactsByPhone("91234567", null, "TT02"), Times.Once);
+        _mockAltinn3Client.Verify(
+            x => x.GetPersonalContactsByPhone(It.IsAny<string>(), It.Is<string?>(c => c != null), It.IsAny<string>()),
+            Times.Never);
     }
 
     [Fact]
@@ -597,7 +597,7 @@ public class Altinn3ServiceTests
     }
 
     [Fact]
-    public async Task GetPersonalContactsByPhoneAltinn3_FiltersOutDifferentlyCodedContact_FromWithoutCountryCodeCall()
+    public async Task GetPersonalContactsByPhoneAltinn3_KeepsAllMatches_EvenWhenSearchHasCountryCode()
     {
         const string localNumber = "40294614";
 
@@ -606,7 +606,7 @@ public class Altinn3ServiceTests
             NationalIdentityNumber = "01010112345",
             Name = "Bare Contact",
             Email = "bare@test.no",
-            Phone = localNumber, // stored without a country code — should be kept
+            Phone = localNumber,
             OrganizationNumber = "111111111"
         };
         var differentlyCodedContact = new PersonalContactDto
@@ -614,21 +614,17 @@ public class Altinn3ServiceTests
             NationalIdentityNumber = "02020254321",
             Name = "Other Country Contact",
             Email = "other@test.no",
-            Phone = "+4740294614", // stored under a different country code — must be filtered out
+            Phone = "+4740294614",
             OrganizationNumber = "222222222"
         };
 
-        _mockAltinn3Client
-            .Setup(x => x.GetPersonalContactsByPhone(localNumber, It.Is<string?>(c => c != null), "TT02"))
-            .ReturnsAsync(string.Empty);
         _mockAltinn3Client
             .Setup(x => x.GetPersonalContactsByPhone(localNumber, null, "TT02"))
             .ReturnsAsync(JsonSerializer.Serialize(new List<PersonalContactDto> { bareContact, differentlyCodedContact }));
 
         var result = await _altinnApiService.GetPersonalContactsByPhoneAltinn3("+4640294614", "TT02");
 
-        var contact = Assert.Single(result);
-        Assert.Equal("111111111", contact.OrganizationNumber);
+        Assert.Equal(2, result.Count);
     }
 
     [Fact]
@@ -665,7 +661,7 @@ public class Altinn3ServiceTests
     // ---- GetNotificationAddressesByPhoneAltinn3 ----
 
     [Fact]
-    public async Task GetNotificationAddressesByPhoneAltinn3_OnlyCallsWithoutCountryCode_ForDefaultCountry()
+    public async Task GetNotificationAddressesByPhoneAltinn3_SendsCountryCode_ForDefaultCountry()
     {
         _mockAltinn3Client
             .Setup(x => x.GetNotificationAddressesByPhone(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string>()))
@@ -673,10 +669,7 @@ public class Altinn3ServiceTests
 
         await _altinnApiService.GetNotificationAddressesByPhoneAltinn3("+4791234567", "TT02");
 
-        _mockAltinn3Client.Verify(x => x.GetNotificationAddressesByPhone("91234567", null, "TT02"), Times.Once);
-        _mockAltinn3Client.Verify(
-            x => x.GetNotificationAddressesByPhone(It.IsAny<string>(), It.Is<string?>(c => c != null), It.IsAny<string>()),
-            Times.Never);
+        _mockAltinn3Client.Verify(x => x.GetNotificationAddressesByPhone("91234567", "+47", "TT02"), Times.Once);
     }
 
     [Fact]
