@@ -135,9 +135,8 @@ public class Altinn3Service : IAltinn3Service
     public async Task<List<Organization>> GetOrganizationsByPhoneAltinn3(string phonenumber, string environment)
     {
         phonenumber = phonenumber.Trim();
-        string strippedPhoneNumber = Regex.Replace(phonenumber, @"^\+\d{1,2}", "");
-        var personalContacts = await GetPersonalContactsByPhoneAltinn3(strippedPhoneNumber, environment);
-        var notificationAddesses = await GetNotificationAddressesByPhoneAltinn3(strippedPhoneNumber, environment);
+        var personalContacts = await GetPersonalContactsByPhoneAltinn3(phonenumber, environment);
+        var notificationAddesses = await GetNotificationAddressesByPhoneAltinn3(phonenumber, environment);
         var organizations = await GetOrganizationsFromProfileAltinn3(personalContacts, notificationAddesses, environment);
         return organizations;
     }
@@ -228,17 +227,23 @@ public class Altinn3Service : IAltinn3Service
 
     public async Task<List<PersonalContactDto>> GetPersonalContactsByPhoneAltinn3(string phoneNumber, string environment)
     {
-        if (!ValidationService.IsValidPhoneNumber(phoneNumber))
+        var (_, localNumber) = ValidationService.SplitPhoneNumber(phoneNumber);
+
+        if (!ValidationService.IsValidPhoneNumber(localNumber))
         {
             throw new ArgumentException("Phone number is invalid");
         }
 
-        var result = await _client.GetPersonalContactsByPhone(phoneNumber, environment);
-        if (string.IsNullOrEmpty(result)) return [];
-        var contactsAltinn3 = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+        var contacts = new List<PersonalContactDto>();
 
-        return contactsAltinn3;
+        var result = await _client.GetPersonalContactsByPhone(localNumber, null, environment);
+        if (!string.IsNullOrEmpty(result))
+        {
+            contacts = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions)
+                ?? throw new Exception("Deserialization not valid");
+        }
 
+        return contacts;
     }
 
     public async Task<UserContactInformationAltinn3?> GetUserContactInformationByNinAltinn3(string nin, string environment)
@@ -323,17 +328,21 @@ public class Altinn3Service : IAltinn3Service
     }
     public async Task<List<NotificationAddressDto>> GetNotificationAddressesByPhoneAltinn3(string phoneNumber, string environment)
     {
-        if (!ValidationService.IsValidPhoneNumber(phoneNumber))
+        var (countryCode, localNumber) = ValidationService.SplitPhoneNumber(phoneNumber);
+        if (!ValidationService.IsValidPhoneNumber(localNumber))
         {
-            throw new ArgumentException("Organization number invalid. It must be 9 digits long.");
+            throw new ArgumentException("Phone number is invalid");
         }
-        phoneNumber = phoneNumber.Trim();
-        string strippedPhoneNumber = Regex.Replace(phoneNumber, @"^\+\d{1,2}", "");
-        var result = await _client.GetNotificationAddressesByPhone(strippedPhoneNumber, environment);
-        if (string.IsNullOrEmpty(result)) return [];
-        var notificationAddresses = JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
-        return notificationAddresses;
+        var addresses = new List<NotificationAddressDto>();
+        var result = await _client.GetNotificationAddressesByPhone(localNumber, countryCode, environment);
+        if (!string.IsNullOrEmpty(result))
+        {
+            addresses.AddRange(JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) 
+            ?? throw new Exception("Deserialization not valid"));
+        }
+
+        return addresses.DistinctBy(n => n.NotificationAddressId).ToList();
     }
 
     public async Task<List<NotificationAddressDto>> GetNotificationAddressesByEmailAltinn3(string email, string environment)

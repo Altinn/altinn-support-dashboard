@@ -157,10 +157,14 @@ public class Altinn3ApiClient : IAltinn3ApiClient
     public async Task<string> GetPersonalContactsByEmail(string email, string environmentName)
     {
         var client = _clients[environmentName];
-        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/email/{email}";
+        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/email";
 
-        var response = await client.GetAsync(requestUrl);
+        // "using var" disposes the HttpRequestMessage automatically at the end of this method
+        using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
+        //email is set in header
+        request.Headers.Add("emailAddress", email);
+        var response = await client.SendAsync(request);
         var responseBody = await response.Content.ReadAsStringAsync();
 
         if (response.StatusCode == HttpStatusCode.NotFound)
@@ -176,13 +180,21 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
     }
 
-    public async Task<string> GetPersonalContactsByPhone(string phoneNumber, string environmentName)
+    public async Task<string> GetPersonalContactsByPhone(string phoneNumber, string? countryCode, string environmentName)
     {
         var client = _clients[environmentName];
-        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/phonenumber/{phoneNumber}";
+        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/phonenumber";
 
-        var response = await client.GetAsync(requestUrl);
+        // "using var" disposes the HttpRequestMessage automatically at the end of this method
+        using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
+        //phoneNumber is set in header
+        request.Headers.Add("phoneNumber", phoneNumber);
+        if (!string.IsNullOrEmpty(countryCode))
+        {
+            request.Headers.Add("countryCode", countryCode);
+        }
+        var response = await client.SendAsync(request);
         var responseBody = await response.Content.ReadAsStringAsync();
 
         if (response.StatusCode == HttpStatusCode.NotFound)
@@ -224,14 +236,23 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
     }
 
-    public async Task<string> GetNotificationAddressesByPhone(string phoneNumber, string environmentName)
+    public async Task<string> GetNotificationAddressesByPhone(string phoneNumber,string? countryCode, string environmentName)
     {
         try
         {
             var client = _clients[environmentName];
-            var requestUrl = $"profile/api/v1/dashboard/organizations/notificationaddresses/phonenumber/{phoneNumber}";
+            var requestUrl = $"profile/api/v1/dashboard/organizations/notificationaddresses/phonenumber";
 
-            var response = await client.GetAsync(requestUrl);
+            // "using var" disposes the HttpRequestMessage automatically at the end of this method
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            //phoneNumber is set in header
+            request.Headers.Add("phoneNumber", phoneNumber);
+            if (!string.IsNullOrEmpty(countryCode))
+            {
+                request.Headers.Add("countrycode", countryCode);
+            }
+
+            var response = await client.SendAsync(request);
             var responseBody = await response.Content.ReadAsStringAsync();
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -255,9 +276,14 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         try
         {
             var client = _clients[environmentName];
-            var requestUrl = $"profile/api/v1/dashboard/organizations/notificationaddresses/email/{email}";
+            var requestUrl = $"profile/api/v1/dashboard/organizations/notificationaddresses/email";
 
-            var response = await client.GetAsync(requestUrl);
+            // "using var" disposes the HttpRequestMessage automatically at the end of this method
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            //email is set in header
+            request.Headers.Add("emailAddress", email);
+
+            var response = await client.SendAsync(request);
             var responseBody = await response.Content.ReadAsStringAsync();
 
             if (response.StatusCode == HttpStatusCode.NotFound)
