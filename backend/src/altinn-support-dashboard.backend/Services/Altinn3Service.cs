@@ -227,11 +227,7 @@ public class Altinn3Service : IAltinn3Service
 
     public async Task<List<PersonalContactDto>> GetPersonalContactsByPhoneAltinn3(string phoneNumber, string environment)
     {
-        var match = Regex.Match(phoneNumber.Trim(), @"^\+\d{1,2}");
-        var countryCode = match.Success ? match.Value : null;
-        string localNumber = match.Success
-            ? Regex.Replace(phoneNumber.Trim(), @"^\+\d{1,2}", "")
-            : phoneNumber.Trim();
+        var (_, localNumber) = ValidationService.SplitPhoneNumber(phoneNumber);
 
         if (!ValidationService.IsValidPhoneNumber(localNumber))
         {
@@ -240,27 +236,11 @@ public class Altinn3Service : IAltinn3Service
 
         var contacts = new List<PersonalContactDto>();
 
-        if (countryCode != null)
+        var result = await _client.GetPersonalContactsByPhone(localNumber, null, environment);
+        if (!string.IsNullOrEmpty(result))
         {
-            var resultWithCountryCode = await _client.GetPersonalContactsByPhone(localNumber, countryCode, environment);
-            if (!string.IsNullOrEmpty(resultWithCountryCode))
-            {
-                contacts.AddRange(JsonSerializer.Deserialize<List<PersonalContactDto>>(resultWithCountryCode, jsonOptions) 
-                ?? throw new Exception("Deserialization not valid"));
-            }
-        } 
-        var resultWithoutCountryCode = await _client.GetPersonalContactsByPhone(localNumber, null, environment);
-        if (!string.IsNullOrEmpty(resultWithoutCountryCode))
-        {
-            var bareContacts = JsonSerializer.Deserialize<List<PersonalContactDto>>(resultWithoutCountryCode, jsonOptions)
+            contacts = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions)
                 ?? throw new Exception("Deserialization not valid");
-
-            // When the search itself had no country code, any match is fine (already agreed acceptable).
-            // When the search DID have a country code, only keep contacts that are genuinely stored bare —
-            // otherwise a differently-coded contact (e.g. +47) leaks into a search for a different code (e.g. +46).
-            contacts.AddRange(countryCode == null
-                ? bareContacts
-                : bareContacts.Where(c => c.Phone == localNumber));
         }
 
         return contacts;
@@ -348,34 +328,18 @@ public class Altinn3Service : IAltinn3Service
     }
     public async Task<List<NotificationAddressDto>> GetNotificationAddressesByPhoneAltinn3(string phoneNumber, string environment)
     {
-        var match = Regex.Match(phoneNumber.Trim(), @"^\+\d{1,2}");
-        var countryCode = match.Success ? match.Value : null;
-        string localNumber = match.Success
-            ? Regex.Replace(phoneNumber.Trim(), @"^\+\d{1,2}", "")
-            : phoneNumber.Trim();
+        var (countryCode, localNumber) = ValidationService.SplitPhoneNumber(phoneNumber);
         if (!ValidationService.IsValidPhoneNumber(localNumber))
         {
             throw new ArgumentException("Phone number is invalid");
         }
 
         var addresses = new List<NotificationAddressDto>();
-
-        if (countryCode != null && countryCode != "+47")
+        var result = await _client.GetNotificationAddressesByPhone(localNumber, countryCode, environment);
+        if (!string.IsNullOrEmpty(result))
         {
-            var resultWithCountryCode = await _client.GetNotificationAddressesByPhone(localNumber, countryCode, environment);
-            if (!string.IsNullOrEmpty(resultWithCountryCode))
-            {
-                addresses.AddRange(JsonSerializer.Deserialize<List<NotificationAddressDto>>(resultWithCountryCode, jsonOptions) 
-                ?? throw new Exception("Deserialization not valid"));
-            }
-        } else
-        {
-            var resultWithoutCountryCode = await _client.GetNotificationAddressesByPhone(localNumber, null, environment);
-            if (!string.IsNullOrEmpty(resultWithoutCountryCode))
-            {
-                addresses.AddRange(JsonSerializer.Deserialize<List<NotificationAddressDto>>(resultWithoutCountryCode, jsonOptions) 
-                ?? throw new Exception("Deserialization not valid"));
-            }
+            addresses.AddRange(JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) 
+            ?? throw new Exception("Deserialization not valid"));
         }
 
         return addresses.DistinctBy(n => n.NotificationAddressId).ToList();

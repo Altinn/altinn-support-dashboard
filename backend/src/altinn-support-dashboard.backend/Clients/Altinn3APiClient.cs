@@ -159,6 +159,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         var client = _clients[environmentName];
         var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/email";
 
+        // "using var" disposes the HttpRequestMessage automatically at the end of this method
         using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
         //email is set in header
@@ -184,6 +185,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         var client = _clients[environmentName];
         var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/phonenumber";
 
+        // "using var" disposes the HttpRequestMessage automatically at the end of this method
         using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
         //phoneNumber is set in header
@@ -241,6 +243,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             var client = _clients[environmentName];
             var requestUrl = $"profile/api/v1/dashboard/organizations/notificationaddresses/phonenumber";
 
+            // "using var" disposes the HttpRequestMessage automatically at the end of this method
             using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             //phoneNumber is set in header
             request.Headers.Add("phoneNumber", phoneNumber);
@@ -275,6 +278,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             var client = _clients[environmentName];
             var requestUrl = $"profile/api/v1/dashboard/organizations/notificationaddresses/email";
 
+            // "using var" disposes the HttpRequestMessage automatically at the end of this method
             using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             //email is set in header
             request.Headers.Add("emailAddress", email);
