@@ -159,17 +159,18 @@ public class CorrespondenceServiceTests
     }
 
     [Fact]
-    public async Task UploadCorrespondence_WithNoAttachments_ThrowsException()
+    public async Task UploadCorrespondence_WithNoAttachments_Succeeds()
     {
         var request = CreateValidRequest("urn:altinn:person:identifier-no:01010112345");
         request.AttachmentData = null;
 
-        var ex = await Assert.ThrowsAsync<BadRequestException>(() =>
-            _service.UploadCorrespondence(request)
-        );
+        _clientMock
+            .Setup(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()))
+            .ReturnsAsync(new CorrespondenceResponse());
 
-        Assert.Contains("At least 1 attachment", ex.Message);
-        _clientMock.Verify(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()), Times.Never);
+        await _service.UploadCorrespondence(request);
+
+        _clientMock.Verify(c => c.UploadCorrespondence(It.IsAny<CorrespondenceUploadRequest>()), Times.Once);
     }
 
     [Fact]
