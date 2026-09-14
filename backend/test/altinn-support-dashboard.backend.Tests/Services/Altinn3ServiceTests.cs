@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Models.altinn3Dtos;
 using Moq;
+using System.Text.Json;
 
 namespace altinn_support_dashboard.backend.Tests.Services;
 
@@ -544,6 +545,209 @@ public class Altinn3ServiceTests
         Assert.NotNull(result);
         Assert.NotNull(result.AuthorizedRoles);
         Assert.Contains("UNKN", result.AuthorizedRoles);
+    }
+
+    // ---- GetOrganizationsByPhoneAltinn3 ----
+
+    [Fact]
+    public async Task GetOrganizationsByPhoneAltinn3_CallsPersonalContactsWithoutCountryCode()
+    {
+        _mockAltinn3Client
+            .Setup(x => x.GetPersonalContactsByPhone(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string>()))
+            .ReturnsAsync(string.Empty);
+        _mockAltinn3Client
+            .Setup(x => x.GetNotificationAddressesByPhone(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string>()))
+            .ReturnsAsync(string.Empty);
+
+        await _altinnApiService.GetOrganizationsByPhoneAltinn3("+4791234567", "TT02");
+
+        _mockAltinn3Client.Verify(x => x.GetPersonalContactsByPhone("91234567", null, "TT02"), Times.Once);
+    }
+
+    // ---- GetPersonalContactsByPhoneAltinn3 ----
+
+    [Fact]
+    public async Task GetPersonalContactsByPhoneAltinn3_OnlyCallsWithoutCountryCode_WhenPrefixPresent()
+    {
+        _mockAltinn3Client
+            .Setup(x => x.GetPersonalContactsByPhone(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string>()))
+            .ReturnsAsync(string.Empty);
+
+        await _altinnApiService.GetPersonalContactsByPhoneAltinn3("+4791234567", "TT02");
+
+        _mockAltinn3Client.Verify(x => x.GetPersonalContactsByPhone("91234567", null, "TT02"), Times.Once);
+        _mockAltinn3Client.Verify(
+            x => x.GetPersonalContactsByPhone(It.IsAny<string>(), It.Is<string?>(c => c != null), It.IsAny<string>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task GetPersonalContactsByPhoneAltinn3_OnlyCallsWithoutCountryCode_WhenNoPrefixGiven()
+    {
+        _mockAltinn3Client
+            .Setup(x => x.GetPersonalContactsByPhone(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string>()))
+            .ReturnsAsync(string.Empty);
+
+        await _altinnApiService.GetPersonalContactsByPhoneAltinn3("91234567", "TT02");
+
+        _mockAltinn3Client.Verify(x => x.GetPersonalContactsByPhone("91234567", null, "TT02"), Times.Once);
+        _mockAltinn3Client.Verify(
+            x => x.GetPersonalContactsByPhone(It.IsAny<string>(), It.Is<string?>(c => c != null), It.IsAny<string>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task GetPersonalContactsByPhoneAltinn3_KeepsAllMatches_EvenWhenSearchHasCountryCode()
+    {
+        const string localNumber = "40294614";
+
+        var bareContact = new PersonalContactDto
+        {
+            NationalIdentityNumber = "01010112345",
+            Name = "Bare Contact",
+            Email = "bare@test.no",
+            Phone = localNumber,
+            OrganizationNumber = "111111111"
+        };
+        var differentlyCodedContact = new PersonalContactDto
+        {
+            NationalIdentityNumber = "02020254321",
+            Name = "Other Country Contact",
+            Email = "other@test.no",
+            Phone = "+4740294614",
+            OrganizationNumber = "222222222"
+        };
+
+        _mockAltinn3Client
+            .Setup(x => x.GetPersonalContactsByPhone(localNumber, null, "TT02"))
+            .ReturnsAsync(JsonSerializer.Serialize(new List<PersonalContactDto> { bareContact, differentlyCodedContact }));
+
+        var result = await _altinnApiService.GetPersonalContactsByPhoneAltinn3("+4640294614", "TT02");
+
+        Assert.Equal(2, result.Count);
+    }
+
+    [Fact]
+    public async Task GetPersonalContactsByPhoneAltinn3_KeepsAllMatches_WhenSearchHasNoCountryCode()
+    {
+        const string localNumber = "40294614";
+
+        var bareContact = new PersonalContactDto
+        {
+            NationalIdentityNumber = "01010112345",
+            Name = "Bare Contact",
+            Email = "bare@test.no",
+            Phone = localNumber,
+            OrganizationNumber = "111111111"
+        };
+        var codedContact = new PersonalContactDto
+        {
+            NationalIdentityNumber = "02020254321",
+            Name = "Coded Contact",
+            Email = "coded@test.no",
+            Phone = "+4740294614",
+            OrganizationNumber = "222222222"
+        };
+
+        _mockAltinn3Client
+            .Setup(x => x.GetPersonalContactsByPhone(localNumber, null, "TT02"))
+            .ReturnsAsync(JsonSerializer.Serialize(new List<PersonalContactDto> { bareContact, codedContact }));
+
+        var result = await _altinnApiService.GetPersonalContactsByPhoneAltinn3(localNumber, "TT02");
+
+        Assert.Equal(2, result.Count);
+    }
+
+    // ---- GetNotificationAddressesByPhoneAltinn3 ----
+
+    [Fact]
+    public async Task GetNotificationAddressesByPhoneAltinn3_SendsCountryCode_ForDefaultCountry()
+    {
+        _mockAltinn3Client
+            .Setup(x => x.GetNotificationAddressesByPhone(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string>()))
+            .ReturnsAsync(string.Empty);
+
+        await _altinnApiService.GetNotificationAddressesByPhoneAltinn3("+4791234567", "TT02");
+
+        _mockAltinn3Client.Verify(x => x.GetNotificationAddressesByPhone("91234567", "+47", "TT02"), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetNotificationAddressesByPhoneAltinn3_OnlyCallsWithoutCountryCode_WhenNoPrefixGiven()
+    {
+        _mockAltinn3Client
+            .Setup(x => x.GetNotificationAddressesByPhone(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string>()))
+            .ReturnsAsync(string.Empty);
+
+        await _altinnApiService.GetNotificationAddressesByPhoneAltinn3("91234567", "TT02");
+
+        _mockAltinn3Client.Verify(x => x.GetNotificationAddressesByPhone("91234567", null, "TT02"), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetNotificationAddressesByPhoneAltinn3_OnlyCallsWithCountryCode_ForNonDefaultCountry()
+    {
+        _mockAltinn3Client
+            .Setup(x => x.GetNotificationAddressesByPhone(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string>()))
+            .ReturnsAsync(string.Empty);
+
+        await _altinnApiService.GetNotificationAddressesByPhoneAltinn3("+4640294614", "TT02");
+
+        _mockAltinn3Client.Verify(x => x.GetNotificationAddressesByPhone("40294614", "+46", "TT02"), Times.Once);
+        _mockAltinn3Client.Verify(x => x.GetNotificationAddressesByPhone(It.IsAny<string>(), null, It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetNotificationAddressesByPhoneAltinn3_DeduplicatesByNotificationAddressId()
+    {
+        var duplicate = new NotificationAddressDto
+        {
+            NotificationAddressId = 123,
+            CountryCode = "+47",
+            Email = "a@test.no",
+            Phone = "91234567",
+            SourceOrgNumber = "111111111",
+            RequestedOrgNumber = "111111111"
+        };
+
+        _mockAltinn3Client
+            .Setup(x => x.GetNotificationAddressesByPhone("91234567", null, "TT02"))
+            .ReturnsAsync(JsonSerializer.Serialize(new List<NotificationAddressDto> { duplicate, duplicate }));
+
+        var result = await _altinnApiService.GetNotificationAddressesByPhoneAltinn3("91234567", "TT02");
+
+        Assert.Single(result);
+    }
+
+    // ---- Email flows ----
+
+    [Fact]
+    public async Task GetPersonalContactsByEmailAltinn3_ReturnsContacts_WhenEmailIsValid()
+    {
+        var contact = new PersonalContactDto
+        {
+            NationalIdentityNumber = "01010112345",
+            Name = "Ola Nordmann",
+            Email = "test@test.no",
+            Phone = "91234567",
+            OrganizationNumber = "111111111"
+        };
+        _mockAltinn3Client
+            .Setup(x => x.GetPersonalContactsByEmail("test@test.no", "TT02"))
+            .ReturnsAsync(JsonSerializer.Serialize(new List<PersonalContactDto> { contact }));
+
+        var result = await _altinnApiService.GetPersonalContactsByEmailAltinn3("test@test.no", "TT02");
+
+        Assert.Single(result);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("not-an-email")]
+    public async Task GetPersonalContactsByEmailAltinn3_ThrowsArgumentException_WhenEmailIsInvalid(string invalidEmail)
+    {
+        await Assert.ThrowsAsync<ArgumentException>(
+            async () => await _altinnApiService.GetPersonalContactsByEmailAltinn3(invalidEmail, "TT02"));
     }
 
 }
