@@ -54,18 +54,18 @@ public class NotificationsController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("future/nin/{nin}")]
+    [HttpGet("future/nin")]
     public async Task<IActionResult> GetFutureNotificationsByNin(
         [FromRoute] string environmentName,
-        [FromRoute] string nin,
+        [FromHeader] string nationalIdentityNumber,
         [FromQuery] DateTime? from,
         [FromQuery] DateTime? to)
     {
-        if (!ValidationService.isValidSsn(nin))
+        if (!ValidationService.isValidSsn(nationalIdentityNumber))
         {
             return BadRequest("Not a valid nin");
         }
-        var response = await _service.GetFutureNotificationsByNin(nin, from, to, environmentName);
+        var response = await _service.GetFutureNotificationsByNin(nationalIdentityNumber, from, to, environmentName);
         return Ok(response);
     }
 
@@ -84,9 +84,9 @@ public class NotificationsController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("future/{query}")]
+    [HttpGet("future")]
     public async Task<IActionResult> GetFutureNofifications([FromRoute] string environmentName,
-        [FromRoute] string query,
+        [FromHeader] string query,
         [FromQuery] DateTime? from,
         [FromQuery] DateTime? to)
     {

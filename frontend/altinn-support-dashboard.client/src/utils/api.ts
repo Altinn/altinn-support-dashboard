@@ -31,8 +31,10 @@ export const fetchOrganizations = async (
 ) => {
   const trimmedQuery = query.replace(/\s/g, "");
 
+
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search?query=${encodeURIComponent(trimmedQuery)}`
+    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search`,
+    { headers: { query: trimmedQuery } }
   );
 
   if (!res.ok) {
@@ -160,8 +162,10 @@ export const fetchNotificationsAdvancedSearch = async (
   }
   const paramsString = params.toString() ? `?${params}` : "";
 
+  const options: RequestInit = { headers: { query } };
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/notifications/future/${encodeURIComponent(query)}${paramsString}`
+    `${getBaseUrl(environment)}/notifications/future${paramsString}`,
+    options
   );
 
   if (res.status === 404) return null;
@@ -249,8 +253,10 @@ export const fetchInternalIds = async (
   environment: string
 ): Promise<PartyModel> => {
   const strippedQuery = query.replace(/\s/g, "");
+  const options: RequestInit = { headers: { value: strippedQuery } };
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/parties/lookup/${strippedQuery}`
+    `${getBaseUrl(environment)}/parties/lookup`,
+    options
   );
   if (res.status === 404) {
     throw new Error("Not found");
@@ -279,8 +285,10 @@ export const fetchUserContactInformationByNin = async (
   environment: string,
   nin: string
 ): Promise<UserContactInformationAltinn3 | null> => {
+  const options: RequestInit = { headers: { NationalIdentityNumber: nin } };
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/users/altinn3/contactinformation/${encodeURIComponent(nin)}`
+    `${getBaseUrl(environment)}/serviceowner/users/altinn3/contactinformation`, 
+    options
   );
 
   if (!res.ok) {
@@ -315,8 +323,10 @@ export const fetchInternalIdsFromSsn = async (
   ssn: string,
   environment: string
 ): Promise<PartyModel> => {
+  const options: RequestInit = { headers: { SocialSecurityNumber: ssn } };
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/parties/lookup/ssn/${ssn}`
+    `${getBaseUrl(environment)}/parties/lookup/ssn`,
+    options
   );
   if (res.status === 400) throw new Error("Ugyldig fødselsnummer");
   if (!res.ok) throw new Error("Feil ved henting av intern ID");

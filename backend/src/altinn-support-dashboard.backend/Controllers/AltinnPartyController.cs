@@ -48,10 +48,10 @@ namespace altinn_support_dashboard.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("parties/lookup/ssn/{ssn}")]
-        public async Task<IActionResult> GetPartySsn([FromRoute] string ssn)
+        [HttpGet("parties/lookup/ssn")]
+        public async Task<IActionResult> GetPartySsn([FromHeader] string socialSecurityNumber)
         {
-            var result = await _service.GetPartyFromSsnAsync(ssn, _environmentName);
+            var result = await _service.GetPartyFromSsnAsync(socialSecurityNumber, _environmentName);
             if (result == null)
             {
                 return NotFound();
@@ -99,9 +99,14 @@ namespace altinn_support_dashboard.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("parties/lookup/{value}")]
-        public async Task<IActionResult> GetPartyByValue([FromRoute] string value)
+        [HttpGet("parties/lookup")]
+        public async Task<IActionResult> GetPartyByValue([FromHeader] string value)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return BadRequest("Value cannot be empty.");
+            }
+
             if (Guid.TryParse(value, out _))
             {
                 var result = await _service.GetPartyByUuidAsync(value, _environmentName);

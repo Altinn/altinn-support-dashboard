@@ -76,7 +76,9 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/altinn3/search")]
-        public async Task<IActionResult> SearchAltinn3([FromQuery] string query)
+        // Moving this to header too as it is called when someone tries to search for contactinfo with a ssn, and thessn will be sent in 
+        // the url if we don't change it
+        public async Task<IActionResult> SearchAltinn3([FromHeader] string query)
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -186,14 +188,14 @@ namespace AltinnSupportDashboard.Controllers
 
         }
 
-        [HttpGet("users/altinn3/contactinformation/{nin}")]
-        public async Task<IActionResult> GetUserContactInformationByNinAltinn3([FromRoute] string nin)
+        [HttpGet("users/altinn3/contactinformation")]
+        public async Task<IActionResult> GetUserContactInformationByNinAltinn3([FromHeader] string nationalIdentityNumber)
         {
-            if (!ValidationService.isValidSsn(nin))
+            if (!ValidationService.isValidSsn(nationalIdentityNumber))
             {
                 return BadRequest("The National Identity Number is not valid. It must contain exactly 11 digits");
             }
-            var result = await _altinn3Service.GetUserContactInformationByNinAltinn3(nin, environmentName);
+            var result = await _altinn3Service.GetUserContactInformationByNinAltinn3(nationalIdentityNumber, environmentName);
 
             return Ok(result);
         }
