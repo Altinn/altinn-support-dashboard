@@ -29,7 +29,8 @@ import { MaskinportenDelegation } from "../models/delegationModels";
 
 const hasInvalidHeaderValue = (value: string) => {
   for (let i = 0; i < value.length; i++) {
-    if (value.charCodeAt(i) > 255) return true;
+    const code = value.charCodeAt(i);
+    if (code > 255 || code === 0x00 || code === 0x0a || code === 0x0d) return true;
   }
   return false;
 };
@@ -305,6 +306,9 @@ export const fetchUserContactInformationByNin = async (
   environment: string,
   nin: string
 ): Promise<UserContactInformationAltinn3 | null> => {
+  if (hasInvalidHeaderValue(nin)) {
+    return null;
+  }
   const options: RequestInit = { headers: { NationalIdentityNumber: nin } };
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/serviceowner/users/altinn3/contactinformation`, 
@@ -366,6 +370,9 @@ export const fetchInternalIdsFromSsn = async (
   ssn: string,
   environment: string
 ): Promise<PartyModel> => {
+  if (hasInvalidHeaderValue(ssn)) {
+    throw new Error("Ugyldig fødselsnummer");
+  }
   const options: RequestInit = { headers: { SocialSecurityNumber: ssn } };
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/parties/lookup/ssn`,
