@@ -27,22 +27,22 @@ import { MaskinportenDelegation } from "../models/delegationModels";
 
 //this file defines which which api endpoints we want to fetch data from
 
+const hasInvalidHeaderValue = (value: string) => /[^\x00-\xFF]/.test(value);
+
 export const fetchOrganizations = async (
   environment: string,
   query: string
 ) => {
   const trimmedQuery = query.replace(/\s/g, "");
 
-  let res: Response;
-  try {
-    res = await authorizedFetch(
-        `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search`,
-        { headers: { query: trimmedQuery } }
-    );
-  } catch {
+  if (hasInvalidHeaderValue(trimmedQuery)) {
     return [];
   }
-  
+
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search`,
+    { headers: { query: trimmedQuery } }
+  );
 
   if (!res.ok) {
     return [];
@@ -160,6 +160,10 @@ export const fetchNotificationsAdvancedSearch = async (
   dateFrom?: string,
   dateTo?: string
 ): Promise<NotificationShipmentResponse[] | null> => {
+  if (hasInvalidHeaderValue(query)) {
+    throw new Error("Ugyldig søketerm");
+  }
+
   const params = new URLSearchParams();
   if (dateFrom) params.set("from", new Date(dateFrom).toISOString());
   if (dateTo) {
@@ -169,17 +173,10 @@ export const fetchNotificationsAdvancedSearch = async (
   }
   const paramsString = params.toString() ? `?${params}` : "";
 
-  const options: RequestInit = { headers: { query } };
-  let res: Response;
-  try {
-    res = await authorizedFetch(
-      `${getBaseUrl(environment)}/notifications/future${paramsString}`,
-      options
-    );
-  } catch {
-    throw new Error("Ugyldig søketerm");
-  }
-
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/notifications/future${paramsString}`,
+    { headers: { query } }
+  );
 
   if (res.status === 404) return null;
   if (!res.ok)
@@ -266,17 +263,15 @@ export const fetchInternalIds = async (
   environment: string
 ): Promise<PartyModel> => {
   const strippedQuery = query.replace(/\s/g, "");
-  const options: RequestInit = { headers: { value: strippedQuery } };
 
-  let res: Response;
-  try {
-    res = await authorizedFetch(
-      `${getBaseUrl(environment)}/parties/lookup`,
-      options
-    );
-  } catch { 
-    throw new Error("Not found");
+  if (hasInvalidHeaderValue(strippedQuery)) {
+    throw new Error("Ugyldig søketerm");
   }
+
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/parties/lookup`,
+    { headers: { value: strippedQuery } }
+  );
 
   if (res.status === 404) {
     throw new Error("Not found");
