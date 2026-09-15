@@ -32,7 +32,8 @@ describe("api", () => {
 
       expect(result).toEqual(mockData);
       expect(utils.authorizedFetch).toHaveBeenCalledWith(
-        expect.stringContaining("query=Testquery")
+        expect.stringContaining("/serviceowner/organizations/altinn3/search"),
+        { headers: { query: "Testquery" } }
       );
     });
 
@@ -289,9 +290,8 @@ describe("api", () => {
 
       expect(result).toEqual(mockData);
       expect(utils.authorizedFetch).toHaveBeenCalledWith(
-        expect.stringContaining(
-          "/serviceowner/users/altinn3/contactinformation/08846999362"
-        )
+        expect.stringContaining("/serviceowner/users/altinn3/contactinformation"),
+        { headers: { NationalIdentityNumber: "08846999362" } }
       );
     });
 
