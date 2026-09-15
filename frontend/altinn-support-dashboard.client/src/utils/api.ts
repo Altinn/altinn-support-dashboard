@@ -27,7 +27,12 @@ import { MaskinportenDelegation } from "../models/delegationModels";
 
 //this file defines which which api endpoints we want to fetch data from
 
-const hasInvalidHeaderValue = (value: string) => /[^\x00-\xFF]/.test(value);
+const hasInvalidHeaderValue = (value: string) => {
+  for (let i = 0; i < value.length; i++) {
+    if (value.charCodeAt(i) > 255) return true;
+  }
+  return false;
+};
 
 export const fetchOrganizations = async (
   environment: string,
