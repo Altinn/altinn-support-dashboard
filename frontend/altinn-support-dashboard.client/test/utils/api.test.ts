@@ -38,6 +38,8 @@ describe("api", () => {
         expect.stringContaining("/serviceowner/organizations/altinn3/search"),
         { headers: { query: "Testquery" } }
       );
+      const [calledUrl] = vi.mocked(utils.authorizedFetch).mock.calls[0];
+      expect(calledUrl).not.toContain("Testquery");
     });
 
     it("should wrap single object in array", async () => {
@@ -296,6 +298,8 @@ describe("api", () => {
         expect.stringContaining("/serviceowner/users/altinn3/contactinformation"),
         { headers: { NationalIdentityNumber: "08846999362" } }
       );
+      const [calledUrl] = vi.mocked(utils.authorizedFetch).mock.calls[0];
+      expect(calledUrl).not.toContain("08846999362");
     });
 
     it("should return null on 404", async () => {

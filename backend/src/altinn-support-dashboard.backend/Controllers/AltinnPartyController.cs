@@ -60,9 +60,9 @@ namespace altinn_support_dashboard.Server.Controllers
         [HttpGet("parties/lookup/ssn")]
         public async Task<IActionResult> GetPartySsn([FromHeader] string socialSecurityNumber)
         {
-            if (string.IsNullOrWhiteSpace(socialSecurityNumber))
+            if(!ValidationService.isValidSsn(socialSecurityNumber))
             {
-                return BadRequest("Value cannot be empty.");
+                return BadRequest("The Social Security Number is not valid. It must contain exactly 11 digits");
             }
             _telemetryService.TrackPartySsnLookup(socialSecurityNumber, CurrentUserId, _environmentName);
 
