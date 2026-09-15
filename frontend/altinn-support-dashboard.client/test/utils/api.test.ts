@@ -8,6 +8,9 @@ import {
   fetchSsnFromToken,
   fetchNotificationAddresses,
   fetchUserContactInformationByNin,
+  fetchNotificationsAdvancedSearch,
+  fetchInternalIds,
+  fetchInternalIdsFromSsn,
 } from "../../src/utils/api";
 
 vi.mock("../../src/utils/utils");
@@ -317,6 +320,114 @@ describe("api", () => {
       const result = await fetchUserContactInformationByNin("TEST", "not-a-nin");
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe("fetchNotificationsAdvancedSearch", () => {
+    it("sends the query in a header, not the URL", async () => {
+      const mockData = [{ shipmentId: "1" }];
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: vi.fn().mockResolvedValue(mockData),
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      const result = await fetchNotificationsAdvancedSearch(
+        "12345678901",
+        "TEST"
+      );
+
+      expect(result).toEqual(mockData);
+      expect(utils.authorizedFetch).toHaveBeenCalledWith(
+        expect.stringContaining("/notifications/future"),
+        { headers: { query: "12345678901" } }
+      );
+      const [calledUrl] = vi.mocked(utils.authorizedFetch).mock.calls[0];
+      expect(calledUrl).not.toContain("12345678901");
+    });
+
+    it("returns null on 404", async () => {
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: false,
+        status: 404,
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      const result = await fetchNotificationsAdvancedSearch(
+        "12345678901",
+        "TEST"
+      );
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe("fetchInternalIds", () => {
+    it("sends the query in a header, not the URL", async () => {
+      const mockData = { partyId: 123 };
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: vi.fn().mockResolvedValue(mockData),
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      const result = await fetchInternalIds("12345678901", "TEST");
+
+      expect(result).toEqual(mockData);
+      expect(utils.authorizedFetch).toHaveBeenCalledWith(
+        expect.stringContaining("/parties/lookup"),
+        { headers: { value: "12345678901" } }
+      );
+      const [calledUrl] = vi.mocked(utils.authorizedFetch).mock.calls[0];
+      expect(calledUrl).not.toContain("12345678901");
+    });
+
+    it("throws on 404", async () => {
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: false,
+        status: 404,
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      await expect(fetchInternalIds("12345678901", "TEST")).rejects.toThrow(
+        "Not found"
+      );
+    });
+  });
+
+  describe("fetchInternalIdsFromSsn", () => {
+    it("sends the ssn in a header, not the URL", async () => {
+      const mockData = { partyId: 123 };
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: vi.fn().mockResolvedValue(mockData),
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      const result = await fetchInternalIdsFromSsn("12345678901", "TEST");
+
+      expect(result).toEqual(mockData);
+      expect(utils.authorizedFetch).toHaveBeenCalledWith(
+        expect.stringContaining("/parties/lookup/ssn"),
+        { headers: { SocialSecurityNumber: "12345678901" } }
+      );
+      const [calledUrl] = vi.mocked(utils.authorizedFetch).mock.calls[0];
+      expect(calledUrl).not.toContain("12345678901");
+    });
+
+    it("throws on 400", async () => {
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: false,
+        status: 400,
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      await expect(
+        fetchInternalIdsFromSsn("12345678901", "TEST")
+      ).rejects.toThrow("Ugyldig fødselsnummer");
     });
   });
 });

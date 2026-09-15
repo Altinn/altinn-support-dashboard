@@ -60,7 +60,10 @@ namespace altinn_support_dashboard.Server.Controllers
         [HttpGet("parties/lookup/ssn")]
         public async Task<IActionResult> GetPartySsn([FromHeader] string socialSecurityNumber)
         {
-            
+            if (string.IsNullOrWhiteSpace(socialSecurityNumber))
+            {
+                return BadRequest("Value cannot be empty.");
+            }
             _telemetryService.TrackPartySsnLookup(socialSecurityNumber, CurrentUserId, _environmentName);
 
             var result = await _service.GetPartyFromSsnAsync(socialSecurityNumber, _environmentName);

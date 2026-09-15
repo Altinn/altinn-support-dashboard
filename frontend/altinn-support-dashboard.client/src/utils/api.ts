@@ -33,11 +33,16 @@ export const fetchOrganizations = async (
 ) => {
   const trimmedQuery = query.replace(/\s/g, "");
 
-
-  const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search`,
-    { headers: { query: trimmedQuery } }
-  );
+  let res: Response;
+  try {
+    res = await authorizedFetch(
+        `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search`,
+        { headers: { query: trimmedQuery } }
+    );
+  } catch {
+    return [];
+  }
+  
 
   if (!res.ok) {
     return [];
@@ -165,10 +170,16 @@ export const fetchNotificationsAdvancedSearch = async (
   const paramsString = params.toString() ? `?${params}` : "";
 
   const options: RequestInit = { headers: { query } };
-  const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/notifications/future${paramsString}`,
-    options
-  );
+  let res: Response;
+  try {
+    res = await authorizedFetch(
+      `${getBaseUrl(environment)}/notifications/future${paramsString}`,
+      options
+    );
+  } catch {
+    throw new Error("Ugyldig søketerm");
+  }
+
 
   if (res.status === 404) return null;
   if (!res.ok)
@@ -256,10 +267,17 @@ export const fetchInternalIds = async (
 ): Promise<PartyModel> => {
   const strippedQuery = query.replace(/\s/g, "");
   const options: RequestInit = { headers: { value: strippedQuery } };
-  const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/parties/lookup`,
-    options
-  );
+
+  let res: Response;
+  try {
+    res = await authorizedFetch(
+      `${getBaseUrl(environment)}/parties/lookup`,
+      options
+    );
+  } catch { 
+    throw new Error("Not found");
+  }
+
   if (res.status === 404) {
     throw new Error("Not found");
   }
