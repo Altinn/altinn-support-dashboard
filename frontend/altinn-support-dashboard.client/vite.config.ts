@@ -24,6 +24,7 @@ if (
   isDevelopment &&
   (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath))
 ) {
+  fs.mkdirSync(baseFolder, { recursive: true });
   if (
     0 !==
     child_process.spawnSync(

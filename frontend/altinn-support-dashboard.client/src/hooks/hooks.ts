@@ -10,9 +10,11 @@ import {
   fetchAuthorizedParties,
   fetchERoles,
   fetchInternalIds,
+  fetchMaskinportenDelegations,
   fetchNotificationAddresses,
   fetchNotificationAvailability,
   fetchNotificationByOrderId,
+  fetchNotificationLog,
   fetchNotificationsAdvancedSearch,
   fetchOrganizations,
   fetchPersonalContacts,
@@ -30,9 +32,11 @@ import {
 } from "../models/notificationModels";
 import {
   CorrespondenceResponse,
-  CorrespondenceUploadRequest,
+  CorrespondenceUploadFormData,
 } from "../models/correspondenceModels";
 import { sendCorrespondence } from "../utils/correspondenceApi";
+import { fetchDialogByUrn, fetchDialogDetails } from "../utils/dialogportenApi";
+import { DialogDetails, DialogDto } from "../models/dialogModels";
 import { toast } from "react-toastify";
 import {
   AuthorizedPartyIdentifiers,
@@ -40,6 +44,7 @@ import {
   RolesAndRightsRequest,
 } from "../models/rolesModels";
 import { Altinn2Role, PolicyRule, Resource } from "../models/resourceModels";
+import { MaskinportenDelegation } from "../models/delegationModels";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -175,7 +180,7 @@ export const useCorrespondencePost = () => {
   return useMutation<
     CorrespondenceResponse,
     Error,
-    CorrespondenceUploadRequest
+    CorrespondenceUploadFormData
   >({
     mutationFn: sendCorrespondence,
     onSuccess: () => {
@@ -275,11 +280,65 @@ export function useResourceWithPolicies(
   return { resourceQuery, policyRulesQuery };
 }
 
+export function useMaskinportenDelegations(
+  environment: string,
+  supplierOrg?: string,
+  consumerOrg?: string,
+  scope?: string
+) {
+  return useQuery<MaskinportenDelegation[], Error>({
+    queryKey: ["maskinportenDelegations", environment, supplierOrg, consumerOrg, scope],
+    queryFn: () =>
+      fetchMaskinportenDelegations(environment, supplierOrg!, consumerOrg!, scope),
+    enabled: !!supplierOrg && !!consumerOrg,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useDialogLookup(urn: string, environment: string) {
+  return useQuery<DialogDto, Error>({
+    queryKey: ["dialogLookup", environment, urn],
+    queryFn: () => fetchDialogByUrn(environment, urn),
+    enabled: !!urn && !!environment,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
 export function useRoleDefinitions(environment: string) {
   return useQuery<Altinn2Role[], Error>({
     queryKey: ["roleDefinitions", environment],
     queryFn: () => fetchRoleDefinitions(environment),
     staleTime: 24 * 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useNotificationLog(
+  dialogId: string,
+  transmissionId: string,
+  environment: string
+) {
+  return useQuery({
+    queryKey: ["notificationLog", dialogId, transmissionId, environment],
+    queryFn: () => fetchNotificationLog(environment, dialogId, transmissionId),
+    enabled: !!dialogId || !!transmissionId,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useDialogDetails(dialogId: string, environment: string) {
+  return useQuery<DialogDetails, Error>({
+    queryKey:["dialogDetails", environment, dialogId],
+    queryFn: () => fetchDialogDetails(environment, dialogId),
+    enabled: !!dialogId && !!environment,
+    retry: false,
+    staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 }

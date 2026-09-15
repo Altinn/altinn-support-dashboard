@@ -1,0 +1,19 @@
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.paragraph {
+  margin-bottom: 0.3rem;
+}
+
+.timeCell{
+    width: 12rem;
+    padding-right: 1rem;
+    text-align: right;
+}

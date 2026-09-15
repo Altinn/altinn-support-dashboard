@@ -8,6 +8,14 @@
   overflow-y: auto;
 }
 
-.creatorFilter {
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
   margin-bottom: 1rem;
+}
+
+.sendersReferenceFilter {
+  min-width: 25rem;
 }

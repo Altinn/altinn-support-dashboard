@@ -123,6 +123,8 @@ namespace AltinnSupportDashboard
                         services.AddScoped<IResourceRegistryClient, ResourceRegistryClient>();
                     }
                     services.AddScoped<INotificationsService, NotificationsService>();
+                    services.AddScoped<IDialogportenService, DialogportenService>();
+                    services.AddScoped<IDialogportenClient, DialogportenClient>();
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
                     services.AddScoped<ICorrespondenceService, CorrespondenceService>();
                     services.AddScoped<ISsnTokenService, SsnTokenService>();

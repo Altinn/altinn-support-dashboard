@@ -21,6 +21,55 @@ namespace altinn_support_dashboard.Server.Utils
             return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
 
+        public static bool IsValidGuid(string guid)
+        {
+            if (Guid.TryParse(guid, out _))
+            {
+                return true;
+            }
+            return false;
+
+        }
+
+        public static bool IsValidDialogInput(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            const string correspondencePrefix = "urn:altinn:correspondence-id:";
+            const string dialogPrefix = "urn:altinn:dialog-id:";
+            const string instancePrefix = "urn:altinn:instance-id:";
+
+            if (value.StartsWith(correspondencePrefix, StringComparison.Ordinal))
+            {
+                return IsValidGuid(value[correspondencePrefix.Length..]);
+            }
+
+            if (value.StartsWith(dialogPrefix, StringComparison.Ordinal))
+            {
+                return IsValidGuid(value[dialogPrefix.Length..]);
+            }
+
+            if (value.StartsWith(instancePrefix, StringComparison.Ordinal))
+            {
+                var parts = value[instancePrefix.Length..].Split('/');
+                return parts.Length == 2 && int.TryParse(parts[0], out var partyId) && partyId > 0 && IsValidGuid(parts[1]);
+            }
+
+            return false;
+        }
+
+        public static bool IsValidPartyId(string partyId)
+        {
+            if (partyId.All(char.IsDigit) && partyId.Length == 8)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static bool IsValidSubjectOrReportee(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -68,6 +117,49 @@ namespace altinn_support_dashboard.Server.Utils
         {
 
             return !string.IsNullOrEmpty(ssn) && SsnPattern.IsMatch(ssn);
+        }
+
+        public static bool IsValidPersonRecipientUrn(string urn)
+        {
+            return Regex.IsMatch(urn, @"^urn:altinn:person:identifier-no:\d{11}$");
+        }
+
+        public static bool IsValidOrganizationRecipientUrn(string urn)
+        {
+            return Regex.IsMatch(urn, @"^urn:altinn:organization:identifier-no:\d{9}$");
+        }
+
+        public static bool IsValidSelfIdentifiedRecipientUrn(string urn)
+        {
+            const string prefix = "urn:altinn:person:idporten-email:";
+            if (!urn.StartsWith(prefix, StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            return IsValidEmail(urn[prefix.Length..]);
+        }
+
+        public static bool IsValidLegacySelfIdentifiedRecipientUrn(string urn)
+        {
+            const string prefix = "urn:altinn:person:legacy-selfidentified:";
+            if (!urn.StartsWith(prefix, StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            var username = urn[prefix.Length..];
+            return !string.IsNullOrWhiteSpace(username)
+                && !username.Contains(':')
+                && !username.Any(char.IsWhiteSpace);
+        }
+
+        public static bool IsValidCorrespondenceRecipientUrn(string urn)
+        {
+            return IsValidPersonRecipientUrn(urn)
+                || IsValidOrganizationRecipientUrn(urn)
+                || IsValidSelfIdentifiedRecipientUrn(urn)
+                || IsValidLegacySelfIdentifiedRecipientUrn(urn);
         }
 
         public static bool IsValidOrgNumberV2(string orgNumber)

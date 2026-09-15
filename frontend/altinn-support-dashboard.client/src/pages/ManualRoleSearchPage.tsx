@@ -6,6 +6,7 @@ import InformationDialogBox from "../components/InformationDialog/InformationDia
 import { InformationIcon } from "@navikt/aksel-icons";
 import styles from "./styles/ManualRoleSearchPage.module.css";
 import RoleTable from "../components/ManualRoleSearch/RoleTable";
+import DelegationsTable from "../components/ManualRoleSearch/DelegationsTable";
 
 export const ManualRoleSearchPage: React.FC = () => {
   const [rollehaver, setRollehaver] = useState<string>(
@@ -39,6 +40,7 @@ export const ManualRoleSearchPage: React.FC = () => {
       </div>
       <div className={styles.resultArea}>
         <RoleTable subject={rollehaver} reportee={rollegiver} />
+        <DelegationsTable supplierOrg={rollehaver} consumerOrg={rollegiver} />
       </div>
     </div>
   );

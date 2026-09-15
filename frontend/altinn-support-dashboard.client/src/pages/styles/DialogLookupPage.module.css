@@ -1,0 +1,31 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.searchRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.idTypeSelect {
+  max-width: 220px;
+}
+
+.input {
+  max-width: 600px;
+  flex: 1;
+}
+
+.result {
+  max-width: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.resultDivider {
+  margin: 0.25rem 0;
+}

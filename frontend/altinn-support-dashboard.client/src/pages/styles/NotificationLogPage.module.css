@@ -1,0 +1,23 @@
+
+.searchRow {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+}
+
+.searchField {
+    flex: 1;
+    min-width: 0;
+    max-width: 30rem;
+}
+
+.searchButton {
+    flex-shrink: 0;
+}
+
+.searchCaption {
+    margin-top: -1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--ds-color-neutral-text-subtle);
+}

@@ -1,21 +1,23 @@
 import React, { useState } from "react";
 import { Textfield, Button, Search, Checkbox } from "@digdir/designsystemet-react";
-import { ResourceSearchResult } from "../../models/resourceModels";
 import classes from "./styles/ResourceSearchSearchBar.module.css"
+import { ResourceSearchResult } from "../../models/resourceModels";
 
-type ResourceSearchSearchBarProps = {
+
+interface ResourceSearchSearchBarProps {
   query: string;
-  setQuery: (query: string) => void;
-  setSelectedResource: (resource: ResourceSearchResult | null) => void;
+  setQuery: (q: string) => void;
+  setSelectedResource: (r: ResourceSearchResult | null) => void;
   onlyDelegable: boolean;
-  setOnlyDelegable: (value: boolean) => void;
+  setOnlyDelegable: (v: boolean) => void;
   onlyVisible: boolean;
-  setOnlyVisible: (value: boolean) => void;
+  setOnlyVisible: (v: boolean) => void;
   onlyAltinnApp: boolean;
-  setOnlyAltinnApp: (value: boolean) => void;
-};
+  setOnlyAltinnApp: (v: boolean) => void;
+}
 
-export const ResourceSearchSearchBar: React.FC<ResourceSearchSearchBarProps> = ({
+
+export const ResourceSearchSearchBar: React.FC<ResourceSearchSearchBarProps> =  ({
   query,
   setQuery,
   setSelectedResource,
@@ -26,6 +28,7 @@ export const ResourceSearchSearchBar: React.FC<ResourceSearchSearchBarProps> = (
   onlyAltinnApp,
   setOnlyAltinnApp
 }) => {
+
   const [textFieldValue, setTextFieldValue] = useState(query)
 
   const handleSearch = () => {

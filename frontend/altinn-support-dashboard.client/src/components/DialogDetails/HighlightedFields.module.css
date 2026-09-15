@@ -1,0 +1,25 @@
+.highlightedFields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.fieldRow {
+    display: flex;
+    flex-direction: column;
+}
+
+.fieldLabel {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.fieldValue {
+    font-size: 0.95rem;
+    word-break: break-word;
+    white-space: pre-wrap;
+}

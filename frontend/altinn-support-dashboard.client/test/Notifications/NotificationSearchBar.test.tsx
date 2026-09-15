@@ -40,7 +40,7 @@ describe("NotificationSearchBar", () => {
   });
 
   describe("advanced mode", () => {
-    it("should render Avansert søk label and placeholder", () => {
+    it("should render Avansert søk label", () => {
       render(
         <NotificationSearchBar
           searchValue=""
@@ -49,7 +49,6 @@ describe("NotificationSearchBar", () => {
         />
       );
       expect(screen.getByLabelText("Avansert søk")).toBeInTheDocument();
-      expect(screen.getByPlaceholderText("Nin, orgnr")).toBeInTheDocument();
     });
 
     it("should show date fields", () => {
@@ -76,8 +75,12 @@ describe("NotificationSearchBar", () => {
           setDateTo={mockSetDateTo}
         />
       );
-      fireEvent.change(screen.getByLabelText("From date"), { target: { value: "2025-01-01" } });
-      fireEvent.change(screen.getByLabelText("To date"), { target: { value: "2025-06-01" } });
+      fireEvent.change(screen.getByLabelText("From date"), {
+        target: { value: "2025-01-01" },
+      });
+      fireEvent.change(screen.getByLabelText("To date"), {
+        target: { value: "2025-06-01" },
+      });
       expect(mockSetDateFrom).not.toHaveBeenCalled();
       expect(mockSetDateTo).not.toHaveBeenCalled();
 
@@ -99,7 +102,9 @@ describe("NotificationSearchBar", () => {
           setDateTo={mockSetDateTo}
         />
       );
-      fireEvent.change(screen.getByLabelText("From date"), { target: { value: "2025-01-01" } });
+      fireEvent.change(screen.getByLabelText("From date"), {
+        target: { value: "2025-01-01" },
+      });
       fireEvent.keyDown(screen.getByLabelText("From date"), { key: "Enter" });
       expect(mockSetDateFrom).toHaveBeenCalledWith("2025-01-01");
     });

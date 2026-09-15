@@ -59,6 +59,30 @@ public class NotificationsClient : INotificationsClient
 
     public async Task<string> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to, string environmentName)
     {
+        var url = "notifications/api/v1/future/dashboard/recipients/notifications/nin";
+        return await GetFutureNotifications(url, "NationalIdentityNumber", nin, from, to, environmentName);
+    }
+
+    public async Task<string> GetFutureNotificationsByPhoneNumber(string phoneNumber, DateTime? from, DateTime? to, string environmentName)
+    {
+        var url = "notifications/api/v1/future/dashboard/recipients/notifications/phonenumber";
+        return await GetFutureNotifications(url, "PhoneNumber", phoneNumber, from, to, environmentName);
+    }
+
+    public async Task<string> GetFutureNotificationsByEmail(string email, DateTime? from, DateTime? to, string environmentName)
+    {
+        var url = "notifications/api/v1/future/dashboard/recipients/notifications/email";
+        return await GetFutureNotifications(url, "Email", email, from, to, environmentName);
+    }
+
+    public async Task<string> GetFutureNotificationsByOrgNr(string orgNr, DateTime? from, DateTime? to, string environmentName)
+    {
+        var url = "notifications/api/v1/future/dashboard/recipients/notifications/orgnumber";
+        return await GetFutureNotifications(url, "OrganizationNumber", orgNr, from, to, environmentName);
+    }
+    private async Task<string> GetFutureNotifications(string url, string headerName, string headerValue, DateTime? from, DateTime? to, string environmentName)
+    {
+
         var client = _clients[environmentName];
         var query = new List<string>();
 
@@ -70,7 +94,6 @@ public class NotificationsClient : INotificationsClient
         {
             query.Add($"to={Uri.EscapeDataString(to.Value.ToString("O"))}");
         }
-        var url = "notifications/api/v1/future/dashboard/recipients/notifications/nin";
         if (query.Count > 0)
         {
             url += "?" + string.Join("&", query);
@@ -78,8 +101,7 @@ public class NotificationsClient : INotificationsClient
 
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-        //nin is set in header
-        request.Headers.Add("NationalIdentityNumber", nin);
+        request.Headers.Add(headerName, headerValue);
         var response = await client.SendAsync(request);
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -90,34 +112,29 @@ public class NotificationsClient : INotificationsClient
                 inner: null,
                 statusCode: response.StatusCode);
         }
-
         return responseBody;
     }
 
-    public async Task<string> GetFutureNotificationsByOrgNr(string orgNr, DateTime? from, DateTime? to, string environmentName)
+    public async Task<string> GetNotificationLog(string? dialogId, string? transmissionId, string environmentName)
     {
         var client = _clients[environmentName];
         var query = new List<string>();
 
-        if (from.HasValue)
+        if (!string.IsNullOrEmpty(dialogId))
         {
-            query.Add($"from={Uri.EscapeDataString(from.Value.ToString("O"))}");
+            query.Add($"dialogId={Uri.EscapeDataString(dialogId)}");
         }
-        if (to.HasValue)
+        if (!string.IsNullOrEmpty(transmissionId))
         {
-            query.Add($"to={Uri.EscapeDataString(to.Value.ToString("O"))}");
+            query.Add($"transmissionId={Uri.EscapeDataString(transmissionId)}");
         }
-        var url = "notifications/api/v1/future/dashboard/recipients/notifications/orgnumber";
+        var url = "notifications/api/v1/future/log";
         if (query.Count > 0)
         {
             url += "?" + string.Join("&", query);
         }
 
-        using var request = new HttpRequestMessage(HttpMethod.Get, url);
-
-        //orgnr is set in header
-        request.Headers.Add("OrganizationNumber", orgNr);
-        var response = await client.SendAsync(request);
+        var response = await client.GetAsync(url);
         var responseBody = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)

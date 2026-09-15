@@ -84,4 +84,25 @@ public class InputValidationTest
         string result = altinn_support_dashboard.Server.Utils.ValidationService.SanitizeRedirect(url);
         Assert.Equal(expectedResult, result);
     }
+
+    [Theory]
+    [InlineData("urn:altinn:dialog-id:11111111-1111-1111-1111-111111111111", true)]
+    [InlineData("urn:altinn:correspondence-id:11111111-1111-1111-1111-111111111111", true)]
+    [InlineData("urn:altinn:instance-id:12345678/11111111-1111-1111-1111-111111111111", true)]
+    [InlineData("urn:altinn:dialog-id:not-a-guid", false)]
+    [InlineData("urn:altinn:correspondence-id:not-a-guid", false)]
+    [InlineData("urn:altinn:instance-id:abc/11111111-1111-1111-1111-111111111111", false)]
+    [InlineData("urn:altinn:instance-id:0/11111111-1111-1111-1111-111111111111", false)]
+    [InlineData("urn:altinn:instance-id:-1/11111111-1111-1111-1111-111111111111", false)]
+    [InlineData("urn:altinn:instance-id:12345678", false)]
+    [InlineData("urn:altinn:instance-id:12345678/11111111-1111-1111-1111-111111111111/extra", false)]
+    [InlineData("urn:altinn:unknown-id:11111111-1111-1111-1111-111111111111", false)]
+    [InlineData("not-a-urn", false)]
+    [InlineData("", false)]
+    [InlineData("   ", false)]
+    public void IsValidDialogInput_ShouldReturnExpectedResult(string value, bool expectedResult)
+    {
+        bool result = altinn_support_dashboard.Server.Utils.ValidationService.IsValidDialogInput(value);
+        Assert.Equal(expectedResult, result);
+    }
 }

@@ -7,11 +7,31 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  snapshot-rollback:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Snapshot last deployment to prod-rollback
+        run: |
+          git fetch origin
+          if git show-ref --verify --quiet refs/remotes/origin/prod-current; then
+            git push origin origin/prod-current:refs/heads/prod-rollback --force
+          else
+            echo "No existing prod-current branch yet; nothing to snapshot."
+          fi
+
+  build:
+    runs-on: ubuntu-latest
+    needs: snapshot-rollback
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6
@@ -46,7 +66,7 @@ jobs:
           name: .net-app
       
       - name: Login to Azure
-        uses: azure/login@532459ea530d8321f2fb9bb10d1e0bcf23869a43 # v3
+        uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_PROD }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENTANID_PROD }}
@@ -59,3 +79,15 @@ jobs:
           app-name: 'altinn-support-dashboard-prod'
           slot-name: 'Production'
           package: .
+
+  update-current:
+    runs-on: ubuntu-latest
+    needs: deploy-to-prod
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Advance prod-current to this deployment
+        run: git push origin HEAD:refs/heads/prod-current --force

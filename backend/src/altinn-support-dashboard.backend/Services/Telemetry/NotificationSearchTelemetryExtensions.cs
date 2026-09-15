@@ -1,0 +1,56 @@
+using altinn_support_dashboard.Server.Services.Interfaces;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace altinn_support_dashboard.Server.Services;
+
+public static class NotificationSearchTelemetryExtensions
+{
+    private const string FeatureArea = "notifications";
+
+    public static void TrackOrderIdSearch(this ITelemetryService telemetry, string orderId, string userId, string environment)
+    {
+        telemetry.TrackSearch(FeatureArea, "orderId", userId, environment, new Dictionary<string, string> { { "orderId", orderId } });
+    }
+
+    public static void TrackNinSearch(this ITelemetryService telemetry, string nin, string userId, string environment)
+    {
+        //To not have actual NIN in the logs, it gets hashed
+        var ninHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(nin)));
+        telemetry.TrackSearch(FeatureArea, "nin", userId, environment, new Dictionary<string, string> { { "ninHash", ninHash } });
+    }
+
+    public static void TrackOrgNrSearch(this ITelemetryService telemetry, string orgNr, string userId, string environment)
+    {
+        telemetry.TrackSearch(FeatureArea, "orgNr", userId, environment, new Dictionary<string, string> { { "orgNr", orgNr } });
+    }
+
+    public static void TrackEmailNotificationSearch(this ITelemetryService telemetry, string email, string userId, string environment)
+    {
+        telemetry.TrackSearch(FeatureArea, "email", userId, environment, new Dictionary<string, string> { { "email", email } });
+    }
+
+    public static void TrackPhoneNumberNotificationSearch(this ITelemetryService telemetry, string phoneNumber, string userId, string environment)
+    {
+        telemetry.TrackSearch(FeatureArea, "phoneNumber", userId, environment, new Dictionary<string, string> { { "phoneNumber", phoneNumber } });
+    }
+
+    public static void TrackPartyIdSearch(this ITelemetryService telemetry, string partyId, string userId, string environment)
+    {
+        telemetry.TrackSearch(FeatureArea, "partyId", userId, environment, new Dictionary<string, string> { { "partyId", partyId } });
+    }
+
+    public static void TrackPartyUuidSearch(this ITelemetryService telemetry, string partyUuid, string userId, string environment)
+    {
+        telemetry.TrackSearch(FeatureArea, "partyUuid", userId, environment, new Dictionary<string, string> { { "partyUuid", partyUuid } });
+    }
+
+    public static void TrackNotificationLogSearch(this ITelemetryService telemetry, string? dialogId, string? transimissionId, string userId, string environment)
+    {
+        var extra = new Dictionary<string, string>();
+        if (dialogId != null) extra.Add("dialogId", dialogId);
+        if (transimissionId != null) extra.Add("transmissionId", transimissionId);
+
+        telemetry.TrackSearch(FeatureArea, "notificationLog", userId, environment, extra);
+    }
+}

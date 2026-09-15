@@ -107,7 +107,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({
         <Table.Body>
           {sortedContacts.length > 0 ? (
             sortedContacts.map((contact, index) => (
-              <Table.Row key={`${contact.nationalIdentityNumber}-${index}`}>
+              <Table.Row key={contact.ssnToken ?? `${contact.email}-${contact.phone}-${index}`}>
                 <Table.Cell className={classes.tableCell}>
                   {contact.name}
                 </Table.Cell>

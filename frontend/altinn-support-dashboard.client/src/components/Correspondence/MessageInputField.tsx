@@ -1,10 +1,11 @@
-import { Label, Textarea } from "@digdir/designsystemet-react";
+import { Input, Label, Textarea } from "@digdir/designsystemet-react";
 
 type InputFieldProps = {
   value?: string;
   className?: string;
   onChange: (value: string) => void;
   labelText: string;
+  multiline?: boolean;
 };
 
 const MessageInputField: React.FC<InputFieldProps> = ({
@@ -12,11 +13,16 @@ const MessageInputField: React.FC<InputFieldProps> = ({
   onChange,
   labelText,
   className,
+  multiline = true,
 }) => {
   return (
     <div className={`${className ?? ""}`}>
       <Label>{labelText}</Label>
-      <Textarea value={value} onChange={(e) => onChange(e.target.value)} />
+      {multiline ? (
+        <Textarea value={value} onChange={(e) => onChange(e.target.value)} />
+      ) : (
+        <Input value={value} onChange={(e) => onChange(e.target.value)} />
+      )}
     </div>
   );
 };

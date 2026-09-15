@@ -1,0 +1,10 @@
+[
+  {
+    "consumer_org": "313062090",
+    "supplier_org": "314782860",
+    "delegation_scheme_Id": null,
+    "scopes": ["altinn:dataaltinnno/advregverifikasjon"],
+    "created": "2024-01-15T10:00:00Z",
+    "resourceid": "advokatregisteret-verifikasjon"
+  }
+]

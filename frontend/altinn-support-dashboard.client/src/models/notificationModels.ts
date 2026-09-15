@@ -57,3 +57,15 @@ export interface NotificationAvailabilityResponse {
   inResourceIncludeList: boolean;
   hasContactInformationForOrg: boolean;
 }
+
+export interface NotificationLog {
+  notificationId: string;
+  dialogId: string;
+  transmissionId: string;
+  type: string;
+  channel: string;
+  destination: string;
+  status: string;
+  requestedSendTime: string;
+  lastUpdateTime: string;
+}

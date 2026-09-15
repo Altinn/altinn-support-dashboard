@@ -1,19 +1,27 @@
 import { Button } from "@digdir/designsystemet-react";
+import { useMemo } from "react";
 import { useCorrespondencePost } from "../../hooks/hooks";
 import {
   CorrespondenceResponse,
   CorrespondenceUploadRequest,
   NotificationChannel,
 } from "../../models/correspondenceModels";
+import {
+  buildRecipientUrn,
+  RecipientType,
+  validateAttachments,
+  validateRecipientIdentifier,
+} from "./utils/correspondenceValidation";
 
 type CorrespondenceButtonProps = {
   resourceType: string;
-  recipients: string[];
+  recipientType: RecipientType;
+  recipientIdentifier: string;
   title: string;
   summary: string;
   body: string;
   confirmationNeeded: boolean;
-  attachmentType: "txt" | "zip";
+  attachments: File[];
   notificationChannel: NotificationChannel;
 
   setResponseMessage: (responseData: CorrespondenceResponse) => void;
@@ -23,20 +31,43 @@ type CorrespondenceButtonProps = {
 const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
   notificationChannel,
   resourceType,
-  recipients,
+  recipientType,
+  recipientIdentifier,
   title,
   summary,
   body,
   confirmationNeeded,
-  attachmentType,
+  attachments,
   setResponseMessage,
   dueDate,
 }) => {
   const post = useCorrespondencePost();
-  const filteredRecipients = recipients.filter(Boolean);
+
+  const recipientError = useMemo(
+    () => validateRecipientIdentifier(recipientType, recipientIdentifier),
+    [recipientType, recipientIdentifier]
+  );
+  const attachmentError = useMemo(
+    () => validateAttachments(attachments),
+    [attachments]
+  );
+
+  const recipientUrn = useMemo(() => {
+    if (recipientError) {
+      return "";
+    }
+    return buildRecipientUrn(recipientType, recipientIdentifier);
+  }, [recipientType, recipientIdentifier, recipientError]);
+
+  const isDisabled = !recipientUrn || !!attachmentError;
+
   const handleSendMessage = async () => {
+    if (isDisabled) {
+      return;
+    }
+
     const correspondence: CorrespondenceUploadRequest = {
-      recipients: filteredRecipients,
+      recipients: [recipientUrn],
       correspondence: {
         content: {
           messageBody: body,
@@ -47,28 +78,25 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
         resourceType: resourceType,
         isConfirmationNeeded: confirmationNeeded,
         dueDateTime: dueDate || undefined,
-        attachmentType: attachmentType,
       },
     };
-    //sets notification options
     if (correspondence.correspondence) {
-      console.log(notificationChannel);
       correspondence.correspondence.notification = {
         notificationTemplate: "GenericAltinnMessage",
         notificationChannel: notificationChannel,
       };
     }
-    const response = await post.mutateAsync(correspondence);
+    const response = await post.mutateAsync({
+      request: correspondence,
+      attachments,
+    });
     setResponseMessage(response);
     sessionStorage.setItem("responseMessage", JSON.stringify(response));
   };
 
   return (
     <div>
-      <Button
-        onClick={handleSendMessage}
-        disabled={filteredRecipients.length === 0}
-      >
+      <Button onClick={handleSendMessage} disabled={isDisabled}>
         Send melding
       </Button>
     </div>

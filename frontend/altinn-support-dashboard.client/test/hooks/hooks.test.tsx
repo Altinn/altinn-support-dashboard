@@ -9,17 +9,21 @@ import {
   useUserDetails,
   useCorrespondencePost,
   useUserContactInfoByNin,
+  useDialogDetails
 } from "../../src/hooks/hooks";
 import * as utils from "../../src/utils/utils";
 import * as api from "../../src/utils/api";
 import { Organization } from "../../src/models/models";
 import { beforeEach, describe, vi, expect, afterEach, it } from "vitest";
 import { toast } from "react-toastify";
+import { RolesAndRights } from "../../src/models/rolesModels";
+import * as dialogportenApi from "../../src/utils/dialogportenApi";
 
 vi.mock("../../src/utils/utils");
 vi.mock("../../src/utils/api");
 vi.mock("../../src/utils/correspondenceApi");
 vi.mock("react-toastify");
+vi.mock("../../src/utils/dialogportenApi")
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -370,7 +374,11 @@ describe("hooks", () => {
         partyFilter: [{ value: "test-party" }],
         value: "some-value",
       };
-      const mockRoles = [{ name: "Test Role", details: "Role details" }];
+     const mockRoles: RolesAndRights = {
+        name: "Test Org",
+        organizationnumber: "123456789",
+        authorizedRoles: ["Test Role"],
+      };
 
       vi.mocked(api.fetchRolesForOrg).mockResolvedValue(mockRoles);
 
@@ -467,5 +475,58 @@ describe("hooks", () => {
         "Feil under sending av melding Test error",
       );
     });
+  });
+});
+
+describe("useDialogDetails", () => {
+  const mockDetails = { id: "d1", deletedAt: null };
+
+  it("should not fetch when dialogId is empty", () => {
+    const { result } = renderHook(() => useDialogDetails("", "TT02"), {
+      wrapper: createWrapper(),
+    });
+
+    expect(result.current.isFetching).toBe(false);
+    expect(dialogportenApi.fetchDialogDetails).not.toHaveBeenCalled();
+  });
+
+  it("should not fetch when environment is empty", () => {
+    const { result } = renderHook(() => useDialogDetails("d1", ""), {
+      wrapper: createWrapper(),
+    });
+
+    expect(result.current.isFetching).toBe(false);
+    expect(dialogportenApi.fetchDialogDetails).not.toHaveBeenCalled();
+  });
+
+  it("should fetch dialog details when dialogId and environment are provided", async () => {
+    vi.mocked(dialogportenApi.fetchDialogDetails).mockResolvedValue(mockDetails);
+
+    const { result } = renderHook(() => useDialogDetails("d1", "TT02"), {
+      wrapper: createWrapper(),
+    });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
+    expect(result.current.data).toEqual(mockDetails);
+    expect(dialogportenApi.fetchDialogDetails).toHaveBeenCalledWith("TT02", "d1");
+  });
+
+  it("should set isError when fetch fails", async () => {
+    vi.mocked(dialogportenApi.fetchDialogDetails).mockRejectedValue(
+      new Error("Fant ingen dialog med denne IDen")
+    );
+
+    const { result } = renderHook(() => useDialogDetails("d1", "TT02"), {
+      wrapper: createWrapper(),
+    });
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true);
+    });
+
+    expect(result.current.error?.message).toBe("Fant ingen dialog med denne IDen");
   });
 });

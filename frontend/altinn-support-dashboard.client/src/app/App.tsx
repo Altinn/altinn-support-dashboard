@@ -17,10 +17,13 @@ import { CorrespondencePage } from "../pages/CorrespondencePage";
 import { NotificationPage } from "../pages/NotificationPage";
 import { NotificationAvailabilityPage } from "../pages/NotificationAvailabilityPage";
 import IdentifierConversionPage from "../pages/IdentifierConversionPage";
+import DialogLookupPage from "../pages/DialogLookupPage";
 import { useAppStore } from "../stores/Appstore";
 import PrivateRoutes from "./PrivateRoutes";
 import { ToastContainer } from "react-toastify";
 import { ResourceSearchPage } from "../pages/ResourceSearchPage";
+import { NotificationLogPage } from "../pages/NotificationLogPage";
+import { DialogDetailsLookupPage } from "../pages/DialogDetailsLookupPage";
 
 const App: React.FC = () => {
   // Sjekk etter nye versjoner
@@ -83,9 +86,18 @@ const App: React.FC = () => {
                   path="/identifier-conversion"
                   element={<IdentifierConversionPage />}
                 />
+                <Route path="/dialog-lookup" element={<DialogLookupPage />} />
                 <Route
                   path="/resourcesearch"
                   element={<ResourceSearchPage />}
+                />
+                <Route
+                  path="/notification-log"
+                  element={<NotificationLogPage/>}
+                />
+                <Route
+                  path="/dialog-details"
+                  element={<DialogDetailsLookupPage/>}
                 />
               </Route>
             </Routes>

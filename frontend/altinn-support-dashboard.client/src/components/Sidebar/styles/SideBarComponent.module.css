@@ -14,7 +14,13 @@
     min-width 0.3s ease;
   background-color: var(--ds-color-accent-base-default);
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 [data-color-scheme="dark"] .sidebar {

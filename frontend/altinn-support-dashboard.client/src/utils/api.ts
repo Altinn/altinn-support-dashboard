@@ -12,6 +12,7 @@ import {
 import {
   NotificationAvailabilityRequest,
   NotificationAvailabilityResponse,
+  NotificationLog,
   NotificationOrderResponse,
   NotificationShipmentResponse,
 } from "../models/notificationModels";
@@ -22,6 +23,7 @@ import {
   ResourceSearchResult,
 } from "../models/resourceModels";
 import { PartyModel } from "../models/PartyModel";
+import { MaskinportenDelegation } from "../models/delegationModels";
 
 //this file defines which which api endpoints we want to fetch data from
 
@@ -135,7 +137,7 @@ export const fetchNotificationByOrderId = async (
   environment: string
 ): Promise<NotificationOrderResponse[] | null> => {
   const res = await authorizedFetch(
-    `/api/${environment}/notifications/orderid/${encodeURIComponent(orderId)}`
+    `${getBaseUrl(environment)}/notifications/orderid/${encodeURIComponent(orderId)}`
   );
 
   if (res.status === 404) return null;
@@ -319,6 +321,29 @@ export const fetchAuthorizedParties = async (
   return Array.isArray(data) ? data : [data];
 };
 
+export const fetchMaskinportenDelegations = async (
+  environment: string,
+  supplierOrg: string,
+  consumerOrg: string,
+  scope?: string
+): Promise<MaskinportenDelegation[]> => {
+  const params = new URLSearchParams();
+  params.set("supplierOrg", supplierOrg);
+  params.set("consumerOrg", consumerOrg);
+  if (scope) params.set("scope", scope);
+
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/serviceowner/maskinporten/delegations?${params}`
+  );
+
+  if (res.status === 404) return [];
+  if (!res.ok)
+    throw new Error((await res.text()) || "Error fetching delegations");
+
+  const data = await res.json();
+  return Array.isArray(data) ? data : [data];
+};
+
 export const fetchInternalIdsFromSsn = async (
   ssn: string,
   environment: string
@@ -332,4 +357,23 @@ export const fetchInternalIdsFromSsn = async (
   if (!res.ok) throw new Error("Feil ved henting av intern ID");
 
   return await res.json();
+};
+
+export const fetchNotificationLog = async (
+  environment: string,
+  dialogId?: string,
+  transmissionId?: string
+): Promise<NotificationLog[]> => {
+  const params = new URLSearchParams();
+  if (dialogId) params.append("dialogId", dialogId);
+  if (transmissionId) params.append("transmissionId", transmissionId);
+
+  const res = await authorizedFetch(
+    `${getBaseUrl(environment)}/notifications/log?${params.toString()}`
+  );
+
+  if (!res.ok) {
+    throw new Error((await res.text()) || "Error fetching notification log");
+  }
+  return res.json();
 };
