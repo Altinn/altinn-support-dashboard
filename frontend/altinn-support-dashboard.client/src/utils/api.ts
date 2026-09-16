@@ -27,6 +27,9 @@ import { MaskinportenDelegation } from "../models/delegationModels";
 
 //this file defines which which api endpoints we want to fetch data from
 
+// Header values must be Latin-1 (fetch throws otherwise) and can't contain
+// NUL/CR/LF (header injection) — used to validate input before it's sent
+// as a request header or route segment.
 const hasInvalidHeaderValue = (value: string) => {
   for (let i = 0; i < value.length; i++) {
     const code = value.charCodeAt(i);
