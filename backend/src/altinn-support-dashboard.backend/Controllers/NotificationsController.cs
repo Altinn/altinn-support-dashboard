@@ -11,7 +11,7 @@ namespace AltinnSupportDashboard.Controllers;
 [ApiController]
 [Route("api/{environmentName}/notifications")]
 [Authorize(AzureRoles.Authenticated)]
-[Authorize(AzureRoles.CoreInternal)]
+[Authorize(AzureRoles.CoreExternalOrInternal)]
 public class NotificationsController : ControllerBase
 {
     private const string InvalidOrderIdMessage = "Order-ID is invalid. It should be in GUID format";

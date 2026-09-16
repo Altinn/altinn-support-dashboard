@@ -8,5 +8,6 @@ public static class AzureRoles
     public const string Developer = "Dashboard.Developer";
     public const string CoreInternal = "Dashboard.Core.Internal";
     public const string CoreExternal = "Dashboard.Core.External";
+    public const string CoreExternalOrInternal = "Dashboard.Core.ExternalOrInternal";
     public const string DialogportenAdmin = "Dashboard.Dialogporten.Admin";
 }
