@@ -41,7 +41,7 @@ namespace altinn_support_dashboard.Server.Services
                 var client = _clients[environmentName];
 
                 var requestUrl = $"enhetsregisteret/api/enheter/{orgNumber}/roller";
-                Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
+                _logger.LogDebug("Requesting roles from Brreg for organization {OrgNumber} in environment {Environment}: {RequestUrl}", orgNumber, environmentName, requestUrl);
 
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
@@ -72,6 +72,7 @@ namespace altinn_support_dashboard.Server.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while calling Brreg API for organization {OrgNumber} in environment {Environment}: {Message}", orgNumber, environmentName, ex.Message);
                 throw new Exception($"An error occurred while calling Brreg API: {ex.Message}", ex);
             }
         }
@@ -82,6 +83,7 @@ namespace altinn_support_dashboard.Server.Services
                 var client = _clients[environmentName];
 
                 var requestUrl = $"enhetsregisteret/api/underenheter/{orgNumber}";
+                _logger.LogDebug("Requesting underenhet from Brreg for organization {OrgNumber} in environment {Environment}: {RequestUrl}", orgNumber, environmentName, requestUrl);
 
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
@@ -107,6 +109,7 @@ namespace altinn_support_dashboard.Server.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while calling Brreg API for underenhet {OrgNumber} in environment {Environment}: {Message}", orgNumber, environmentName, ex.Message);
                 throw new Exception($"An error occurred while calling Brreg API: {ex.Message}", ex);
             }
         }
