@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Textfield, Button, Search, Checkbox } from "@digdir/designsystemet-react";
+import { Textfield, Button, Checkbox } from "@digdir/designsystemet-react";
+import { MagnifyingGlassIcon } from "@navikt/aksel-icons";
 import classes from "./styles/ResourceSearchSearchBar.module.css"
 import { ResourceSearchResult } from "../../models/resourceModels";
 
@@ -64,7 +65,7 @@ export const ResourceSearchSearchBar: React.FC<ResourceSearchSearchBarProps> =  
           onClick={handleSearch}
           className={classes.searchButton}
         >
-          <Search />
+          <MagnifyingGlassIcon />
         </Button>
       </div>
       <div className={classes.filters}>

@@ -4,10 +4,10 @@ import {
   Card,
   Heading,
   Paragraph,
-  Search,
   Spinner,
   Textfield,
 } from "@digdir/designsystemet-react";
+import { MagnifyingGlassIcon } from "@navikt/aksel-icons";
 import { useAppStore } from "../stores/Appstore";
 import { useInternalIdLookup } from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
@@ -61,7 +61,7 @@ const IdentifierConversionPage: React.FC = () => {
           disabled={!input.trim()}
           variant="primary"
         >
-          <Search />
+          <MagnifyingGlassIcon />
           Søk
         </Button>
       </div>

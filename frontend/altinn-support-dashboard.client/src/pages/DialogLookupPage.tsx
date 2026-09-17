@@ -5,12 +5,12 @@ import {
   Divider,
   Heading,
   Paragraph,
-  Search,
   Select,
   SelectOption,
   Spinner,
   Textfield,
 } from "@digdir/designsystemet-react";
+import { MagnifyingGlassIcon } from "@navikt/aksel-icons";
 import { useAppStore } from "../stores/Appstore";
 import { useDialogLookup } from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
@@ -114,7 +114,7 @@ const DialogLookupPage: React.FC = () => {
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
         <Button onClick={handleSearch} disabled={!urn} variant="primary">
-          <Search />
+          <MagnifyingGlassIcon />
           Søk
         </Button>
       </div>
