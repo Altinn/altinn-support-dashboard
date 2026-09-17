@@ -83,7 +83,6 @@ namespace altinn_support_dashboard.Server.Services
                 var client = _clients[environmentName];
 
                 var requestUrl = $"enhetsregisteret/api/underenheter/{orgNumber}";
-                _logger.LogDebug("Requesting underenhet from Brreg for organization {OrgNumber} in environment {Environment}: {RequestUrl}", orgNumber, environmentName, requestUrl);
 
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
@@ -104,12 +103,13 @@ namespace altinn_support_dashboard.Server.Services
                 }
                 else
                 {
+                    _logger.LogWarning("Brreg returned {StatusCode} when fetching sub-unit for organization {OrgNumber} in environment {Environment}", response.StatusCode, orgNumber, environmentName);
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while calling Brreg API for underenhet {OrgNumber} in environment {Environment}: {Message}", orgNumber, environmentName, ex.Message);
+                _logger.LogError(ex, "Failed to retrieve sub-unit from Brreg for organization {OrgNumber} in environment {Environment}", orgNumber, environmentName);
                 throw new Exception($"An error occurred while calling Brreg API: {ex.Message}", ex);
             }
         }
@@ -121,7 +121,7 @@ namespace altinn_support_dashboard.Server.Services
                 var client = _clients[environmentName];
 
                 var requestUrl = $"enhetsregisteret/api/underenheter?overordnetEnhet={orgNumber}&registrertIMvaregisteret=false&size=10000";
-                Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
+                _logger.LogDebug("Requesting sub-units from Brreg for organization {OrgNumber} in environment {Environment}", orgNumber, environmentName);
 
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
@@ -148,6 +148,7 @@ namespace altinn_support_dashboard.Server.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Failed to retrieve sub-units from Brreg for organization {OrgNumber} in environment {Environment}", orgNumber, environmentName);
                 throw new Exception($"An error occurred while calling Brreg API: {ex.Message}", ex);
             }
         }
@@ -164,7 +165,7 @@ namespace altinn_support_dashboard.Server.Services
             {
                 var client = _clients[environmentName];
                 var requestUrl = $"enhetsregisteret/api/enheter/{orgNumber}";
-                Console.WriteLine($"Requesting URL: {client.BaseAddress}{requestUrl}");
+                _logger.LogDebug("Requesting organization details from Brreg for organization {OrgNumber} in environment {Environment}: {RequestUrl}", orgNumber, environmentName, requestUrl);
 
                 // Simplified HTTP request without problematic headers
                 using (HttpClient httpClient = new HttpClient())
@@ -180,20 +181,20 @@ namespace altinn_support_dashboard.Server.Services
                     {
                         // Simple string reading without Base64 encoding issues
                         string result = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Brreg API returned successful response");
+                        _logger.LogDebug("Brreg returned successfully for organization {OrgNumber} in environment {Environment}", orgNumber, environmentName);
                         return result;
                     }
                     else
                     {
                         var responseBody = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine($"API call failed with status code {response.StatusCode}: {responseBody}");
+                        _logger.LogWarning("Brreg call failed with status code {StatusCode} for organization {OrgNumber} in environment {Environment}: {ResponseBody}", response.StatusCode, orgNumber, environmentName, responseBody);
                         throw new HttpRequestException($"Failed to retrieve organization details from Brreg. Status code: {response.StatusCode}, Response: {responseBody}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception in GetEnhetsdetaljer: {ex.Message}");
+                _logger.LogError(ex, "Failed to retrieve organization details from Brreg for organization {OrgNumber} in environment {Environment}", orgNumber, environmentName);
                 // We don't want mock data, so just throw the exception
                 throw new Exception($"An error occurred while calling Brreg API for organization details: {ex.Message}", ex);
             }
