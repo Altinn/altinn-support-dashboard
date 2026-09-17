@@ -204,7 +204,7 @@ public class Altinn3Service : IAltinn3Service
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error redacting: {ex.Message}");
+                _logger.LogError(ex, "Failed to redact and tokenize national identity number for a personal contact of organization {OrgNumber} in environment {EnvironmentName}", orgNumber, environment);
             }
         }
 
@@ -426,7 +426,7 @@ public class Altinn3Service : IAltinn3Service
                         roles.AuthorizedRoles = roleNames;
                     }
                 }
-                catch (Exception e) { _logger.LogError($"Error converting roleNames: {e}"); }
+                catch (Exception e) { _logger.LogError(e, "Failed to convert authorized role codes to display names for environment {Environment}", environment); }
             }
 
             if (roles.AuthorizedResources != null && roles.AuthorizedResources.Count >= 1)
@@ -439,7 +439,7 @@ public class Altinn3Service : IAltinn3Service
                         roles.AuthorizedResources = resourceNames;
                     }
                 }
-                catch (Exception e) { _logger.LogError($"Error converting resourceNames: {e}"); }
+                catch (Exception e) { _logger.LogError(e, "Failed to convert authorized resource codes to display names for environment {Environment}", environment); }
             }
 
             if (roles.AuthorizedAccessPackages != null && roles.AuthorizedAccessPackages.Count >= 1)
@@ -452,7 +452,7 @@ public class Altinn3Service : IAltinn3Service
                         roles.AuthorizedAccessPackages = accessPackageNames;
                     }
                 }
-                catch (Exception e) { _logger.LogError($"Error converting accessPackageNames: {e}"); }
+                catch (Exception e) { _logger.LogError(e, "Failed to convert authorized access package URNs to display names for environment {Environment}", environment); }
             }
         }
         return roles;

@@ -13,10 +13,12 @@ namespace altinn_support_dashboard.Server.Controllers
     public class EnhetsregisterController : ControllerBase
     {
         private readonly IDataBrregService _dataBrregService;
+        private readonly ILogger<EnhetsregisterController> _logger;
 
-        public EnhetsregisterController(IDataBrregService dataBrregService)
+        public EnhetsregisterController(IDataBrregService dataBrregService, ILogger<EnhetsregisterController> logger)
         {
             _dataBrregService = dataBrregService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -50,18 +52,22 @@ namespace altinn_support_dashboard.Server.Controllers
             }
             catch (ArgumentException ex)
             {
+                _logger.LogWarning(ex, "Invalid request for organization details. OrgNumber: {OrgNumber}, Environment: {EnvironmentName}", orgNumber, environmentName);
                 return BadRequest(ex.Message);
             }
             catch (HttpRequestException ex)
             {
                 if (ex.Message.Contains("NotFound"))
                 {
+                    _logger.LogInformation("No data found for organization {OrgNumber} in environment {EnvironmentName}", orgNumber, environmentName);
                     return NotFound("Ingen data funnet for dette organisasjonsnummeret");
                 }
+                _logger.LogError(ex, "Failed to communicate with Brreg while fetching organization details for orgNumber: {OrgNumber} in environment: {EnvironmentName}", orgNumber, environmentName);
                 return StatusCode(503, $"Feil ved kommunikasjon med Br\u00f8nn\u00f8ysundregistrene: {ex.Message}");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An unexpected error occurred while retrieving organization details for orgNumber: {OrgNumber} in environment: {EnvironmentName}", orgNumber, environmentName);
                 return StatusCode(500, $"En feil oppstod: {ex.Message}");
             }
         }

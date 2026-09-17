@@ -14,12 +14,14 @@ namespace altinn_support_dashboard.Server.Services
         private readonly IDataBrregClient _client;
         private readonly IPartyApiService _partyService;
         private readonly JsonSerializerOptions jsonOptions;
+        private readonly ILogger<DataBrregService> _logger;
         private readonly List<string> _validEnvironmentNames = new List<string> { "Production", "TT02", "mock" };
 
-        public DataBrregService(IDataBrregClient client, IPartyApiService partyApiService)
+        public DataBrregService(IDataBrregClient client, IPartyApiService partyApiService, ILogger<DataBrregService> logger)
         {
             _client = client;
             _partyService = partyApiService;
+            _logger = logger;
 
             jsonOptions = new JsonSerializerOptions
             {
@@ -181,7 +183,7 @@ namespace altinn_support_dashboard.Server.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Brreg API-kall feilet: {ex.Message}");
+                _logger.LogError(ex, "Failed to retrieve organization details for orgNumber: {OrgNumber} in environment: {EnvironmentName}", orgNumber, environmentName);
                 throw;
             }
         }

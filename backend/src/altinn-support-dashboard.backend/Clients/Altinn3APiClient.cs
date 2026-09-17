@@ -126,6 +126,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Failed to retrieve personal contacts for organization {OrgNumber} in environment {EnvironmentName}", orgNumber, environmentName);
             throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
         }
     }
@@ -220,6 +221,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Failed to retrieve notification addresses for organization {OrgNumber} in environment {EnvironmentName}", orgNumber, environmentName);
             throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
     }
@@ -246,6 +248,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Failed to retrieve notification addresses by phone number  in environment {EnvironmentName}",  environmentName);
             throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
     }
@@ -272,6 +275,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Failed to retrieve notification addresses by email in environment {EnvironmentName}", environmentName);
             throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
     }

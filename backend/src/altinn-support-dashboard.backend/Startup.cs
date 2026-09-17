@@ -142,11 +142,6 @@ namespace AltinnSupportDashboard
                 endpoints.MapFallbackToFile("index.html");
             });
 
-            // This will print to the console when the app is ready
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Backend is now running!");
-            Console.ResetColor();
-
             logger.LogInformation("Backend is now running!");
         }
     }
