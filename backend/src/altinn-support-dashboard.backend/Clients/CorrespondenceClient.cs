@@ -64,12 +64,8 @@ public class CorrespondenceClient : ICorrespondenceClient
         // Correspondence optional fields
         AddIfNotNull(form, correspondenceData.Correspondence.IsConfirmationNeeded.ToString(), "correspondence.isconfirmationneeded");
 
-        //Sets dueDate 7 days in future if null
-        if (AddIfNotNull(form, correspondenceData.Correspondence.DueDateTime.ToString("o", CultureInfo.InvariantCulture), "correspondence.duedatetime"))
-        {
-            form.Add(new StringContent(DateTime.UtcNow.AddDays(7).ToString("o", CultureInfo.InvariantCulture)), "correspondence.duedatetime");
-        }
-        ;
+        // Make it possible to send a Correspondence without a due date
+        AddIfNotNull(form, correspondenceData.Correspondence.DueDateTime?.ToString("o", CultureInfo.InvariantCulture), "correspondence.duedatetime");
         AddIfNotNull(form, correspondenceData.Correspondence.Content.MessageSummary, "correspondence.content.messageSummary");
 
         //notification fields
