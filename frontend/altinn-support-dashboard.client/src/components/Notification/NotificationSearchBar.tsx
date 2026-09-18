@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Button, Search, Textfield } from "@digdir/designsystemet-react";
+import { Button, Textfield } from "@digdir/designsystemet-react";
+import { MagnifyingGlassIcon } from "@navikt/aksel-icons";
 import style from "./styles/NotificationSearchBar.module.css";
 
 type NotificationSearchBarProps = {
@@ -66,7 +67,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
           variant="secondary"
           className={style.searchButton}
         >
-          <Search />
+          <MagnifyingGlassIcon />
         </Button>
         <Button onClick={handleClear} className={style.removeButton}>
           x

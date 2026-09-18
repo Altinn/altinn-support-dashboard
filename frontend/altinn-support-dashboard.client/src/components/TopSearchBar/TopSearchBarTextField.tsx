@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Textfield, Button, Search } from "@digdir/designsystemet-react";
+import { Textfield, Button } from "@digdir/designsystemet-react";
+import { MagnifyingGlassIcon } from "@navikt/aksel-icons";
 import styles from "./styles/TopSearchBarTextfield.module.css";
 import { SelectedCard } from "../../models/models";
 
@@ -53,7 +54,7 @@ export const TopSearchBarTextField: React.FC<Props> = ({
         className={styles.searchButton}
         data-testid="search-button"
       >
-        <Search />
+        <MagnifyingGlassIcon />
       </Button>
     </div>
   );

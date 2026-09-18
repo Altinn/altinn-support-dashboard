@@ -1,5 +1,7 @@
 import { Button, Heading, Search, Spinner, Textfield } from "@digdir/designsystemet-react"
 import { TrashIcon } from "@navikt/aksel-icons";
+import { Button, Heading, Spinner, Textfield } from "@digdir/designsystemet-react"
+import { MagnifyingGlassIcon } from "@navikt/aksel-icons"
 import styles from "./styles/DialogDetailsLookupPage.module.css";
 import { useEffect, useMemo,  useState } from "react";
 import { useAppStore } from "../stores/Appstore";
@@ -93,7 +95,7 @@ export const DialogDetailsLookupPage = () => {
                         variant="secondary"
                         className={styles.searchButton}
                     >
-                        <Search />
+                        <MagnifyingGlassIcon />
                     </Button>
                     {response && (
                         <Button
