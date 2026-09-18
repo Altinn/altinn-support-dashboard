@@ -31,3 +31,17 @@ export interface DialogDetails {
   deletedAt?: string | null;
   [key: string]: unknown;
 }
+
+export interface DeleteDialogRequest {
+  dialogId: string;
+  revision: string;
+  /** true = purge (permanent), false = soft delete */
+  hardDelete: boolean;
+}
+
+export interface DeleteDialogResponse {
+  statusCode: number;
+  responseHeader?: string | null;
+  responseBody?: string | null;
+  requestBody?: string | null;
+}

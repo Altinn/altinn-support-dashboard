@@ -1,4 +1,5 @@
 import { Button, Heading, Search, Spinner, Textfield } from "@digdir/designsystemet-react"
+import { TrashIcon } from "@navikt/aksel-icons";
 import styles from "./styles/DialogDetailsLookupPage.module.css";
 import { useEffect, useMemo,  useState } from "react";
 import { useAppStore } from "../stores/Appstore";
@@ -6,6 +7,10 @@ import { useDialogDetails} from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
 import HighlightedFields from "../components/DialogDetails/HighlightedFields";
 import JsonPanel from "../components/DialogDetails/JsonPanel";
+import DialogDeletePopup, {
+    DialogDeleteOutcome,
+} from "../components/DialogDetails/DialogDeletePopup";
+import DialogDeleteResult from "../components/DialogDetails/DialogDeleteResult";
 
 
 export const DialogDetailsLookupPage = () => {
@@ -16,7 +21,11 @@ export const DialogDetailsLookupPage = () => {
     const [submittedId, setSubmittedId] = useState(
         () => sessionStorage.getItem("dialogDetailsLookup.submittedId") || ""
     );
+    const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+    const [deleteOutcome, setDeleteOutcome] = useState<DialogDeleteOutcome | null>(null);
     const { data: response, isLoading, isError, error } = useDialogDetails(submittedId, environment);
+
+    const revision = typeof response?.revision === "string" ? response.revision : undefined;
 
     useEffect(() => {
         if (isError) showPopup((error as Error)?.message, "error")
@@ -34,6 +43,7 @@ export const DialogDetailsLookupPage = () => {
         if (trimmed) {
             setSubmittedId(trimmed);
             sessionStorage.setItem("dialogDetailsLookup.submittedId", trimmed);
+            setDeleteOutcome(null);
         }
     };
 
@@ -54,6 +64,18 @@ export const DialogDetailsLookupPage = () => {
             ]
         : [];
 
+        if (deleteOutcome) {
+            return (
+                <div>
+                    <Heading>Dialog detaljer</Heading>
+                    <DialogDeleteResult
+                        outcome={deleteOutcome}
+                        onBack={() => setDeleteOutcome(null)}
+                    />
+                </div>
+            );
+        }
+
         return (
             <div>
                 <Heading>Dialog detaljer</Heading>
@@ -73,6 +95,16 @@ export const DialogDetailsLookupPage = () => {
                     >
                         <Search />
                     </Button>
+                    {response && (
+                        <Button
+                            onClick={() => setIsDeletePopupOpen(true)}
+                            variant="secondary"
+                            data-color="danger"
+                        >
+                            <TrashIcon aria-hidden />
+                            Slett dialog
+                        </Button>
+                    )}
                 </div>
 
                 {isLoading && <Spinner aria-label="Laster" />}
@@ -82,6 +114,16 @@ export const DialogDetailsLookupPage = () => {
                         <HighlightedFields fields={HIGHLIGHTED_FIELDS} />
                         <JsonPanel jsonText={jsonText} />
                     </div>
+                )}
+
+                {response && isDeletePopupOpen && (
+                    <DialogDeletePopup
+                        onClose={() => setIsDeletePopupOpen(false)}
+                        dialogId={response.id}
+                        revision={revision}
+                        environment={environment}
+                        onDeleted={setDeleteOutcome}
+                    />
                 )}
             </div>
         )
