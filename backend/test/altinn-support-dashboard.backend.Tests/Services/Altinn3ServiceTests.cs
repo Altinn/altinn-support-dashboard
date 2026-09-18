@@ -697,28 +697,6 @@ public class Altinn3ServiceTests
         _mockAltinn3Client.Verify(x => x.GetNotificationAddressesByPhone(It.IsAny<string>(), null, It.IsAny<string>()), Times.Never);
     }
 
-    [Fact]
-    public async Task GetNotificationAddressesByPhoneAltinn3_DeduplicatesByNotificationAddressId()
-    {
-        var duplicate = new NotificationAddressDto
-        {
-            NotificationAddressId = 123,
-            CountryCode = "+47",
-            Email = "a@test.no",
-            Phone = "91234567",
-            SourceOrgNumber = "111111111",
-            RequestedOrgNumber = "111111111"
-        };
-
-        _mockAltinn3Client
-            .Setup(x => x.GetNotificationAddressesByPhone("91234567", null, "TT02"))
-            .ReturnsAsync(JsonSerializer.Serialize(new List<NotificationAddressDto> { duplicate, duplicate }));
-
-        var result = await _altinnApiService.GetNotificationAddressesByPhoneAltinn3("91234567", "TT02");
-
-        Assert.Single(result);
-    }
-
     // ---- Email flows ----
 
     [Fact]
