@@ -227,7 +227,7 @@ public class Altinn3Service : IAltinn3Service
 
     public async Task<List<PersonalContactDto>> GetPersonalContactsByPhoneAltinn3(string phoneNumber, string environment)
     {
-        var (_, localNumber) = ValidationService.SplitPhoneNumber(phoneNumber);
+        var (_, localNumber) = PhoneNumberUtils.SplitPhoneNumber(phoneNumber);
 
         if (!ValidationService.IsValidPhoneNumber(localNumber))
         {
@@ -328,7 +328,7 @@ public class Altinn3Service : IAltinn3Service
     }
     public async Task<List<NotificationAddressDto>> GetNotificationAddressesByPhoneAltinn3(string phoneNumber, string environment)
     {
-        var (countryCode, localNumber) = ValidationService.SplitPhoneNumber(phoneNumber);
+        var (countryCode, localNumber) = PhoneNumberUtils.SplitPhoneNumber(phoneNumber);
         if (!ValidationService.IsValidPhoneNumber(localNumber))
         {
             throw new ArgumentException("Phone number is invalid");
@@ -342,7 +342,7 @@ public class Altinn3Service : IAltinn3Service
             ?? throw new Exception("Deserialization not valid"));
         }
 
-        return addresses.DistinctBy(n => n.NotificationAddressId).ToList();
+        return addresses;
     }
 
     public async Task<List<NotificationAddressDto>> GetNotificationAddressesByEmailAltinn3(string email, string environment)
