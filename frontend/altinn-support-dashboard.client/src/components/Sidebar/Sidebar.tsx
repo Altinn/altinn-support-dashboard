@@ -29,6 +29,7 @@ import { Button, Divider, Label } from "@digdir/designsystemet-react";
 
 import classes from "./styles/SideBarComponent.module.css";
 import { useAuthDetails } from "../../hooks/azureAuthHooks";
+import { AuthUtils } from "../../utils/authUtils";
 
 const Sidebar: React.FC = () => {
   const { isCollapsed, toggleCollapse, handleDragStart } = useSidebarDrag();
@@ -49,23 +50,12 @@ const Sidebar: React.FC = () => {
   }
 
   const authData = authDetails.data;
-  const hasInternalCoreRoles =
-    !authData.azureAuthActive ||
-    authData.roles.includes("Dashboard.Core.Internal");
-
+  const hasInternalCoreRoles = AuthUtils.hasInternalCoreRoles(authData);
   const hasInternalOrExternalCoreRoles =
-    !authData.azureAuthActive ||
-    authData.roles.includes("Dashboard.Core.Internal") ||
-    authData.roles.includes("Dashboard.Core.External");
-  const hasDeveloperRole =
-    !authData.azureAuthActive || authData.roles.includes("Dashboard.Developer");
-  const hasTT02OrProductionRoles =
-    !authData.azureAuthActive ||
-    authData.roles.includes("Dashboard.PROD") ||
-    authData.roles.includes("Dashboard.TT02");
-  const hasDialogportenAdminRole =
-    !authData.azureAuthActive ||
-    authData.roles.includes("Dashboard.Dialogporten.Admin");
+    AuthUtils.hasInternalOrExternalCoreRoles(authData);
+  const hasDeveloperRole = AuthUtils.hasDeveloperRole(authData);
+  const hasTT02OrProductionRoles = AuthUtils.hasTT02OrProductionRoles(authData);
+  const hasDialogportenAdminRole = AuthUtils.hasDialogportenAdminRole(authData);
   return (
     <div className={classes.sidebarWrapper}>
       <div className={classes.dragHandle} onMouseDown={handleDragStart} />

@@ -16,6 +16,7 @@ import NotificationFilterDropdown from "../components/Notification/NotificationF
 import usePersistedArray from "../hooks/usePersistedArray";
 import { collectUnique } from "../utils/utils";
 import { useAuthDetails } from "../hooks/azureAuthHooks";
+import { AuthUtils } from "../utils/authUtils";
 
 type SearchType = "shipmentId" | "advanced";
 
@@ -31,9 +32,9 @@ const toggleValue = (
 export const NotificationPage = () => {
   const environment = useAppStore((state) => state.environment);
   const authDetails = useAuthDetails();
-  const hasInternalCoreRoles =
-    !authDetails.data?.azureAuthActive ||
-    authDetails.data.roles.includes("Dashboard.Core.Internal");
+  const hasInternalCoreRoles = AuthUtils.hasInternalCoreRoles(
+    authDetails.data
+  );
 
   const [searchType, setSearchType] = useState<SearchType>(
     () =>
