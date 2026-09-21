@@ -1,4 +1,4 @@
-import { Button, Card, Heading, Tabs, Tag } from "@digdir/designsystemet-react";
+import { Card, Heading, Tabs, Tag } from "@digdir/designsystemet-react";
 import { isSuccess } from "../../utils/httpUtils";
 import { DialogDeleteOutcome } from "./DialogDeletePopup";
 import styles from "./DialogDeleteResult.module.css";
@@ -18,10 +18,7 @@ const formatPayload = (payload?: string | null): string => {
   }
 };
 
-const DialogDeleteResult: React.FC<DialogDeleteResultProps> = ({
-  outcome,
-  onClose,
-}) => {
+const DialogDeleteResult: React.FC<DialogDeleteResultProps> = ({ outcome }) => {
   const { result, dialogId, environment, hardDelete } = outcome;
   const succeeded = isSuccess(result.statusCode);
 
