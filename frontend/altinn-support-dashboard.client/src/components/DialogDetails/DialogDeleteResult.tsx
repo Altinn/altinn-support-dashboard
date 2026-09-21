@@ -43,31 +43,24 @@ const DialogDeleteResult: React.FC<DialogDeleteResultProps> = ({
       </Card>
 
       <dl className={styles.summary}>
-        <div className={styles.summaryRow}>
-          <dt className={styles.summaryLabel}>Type sletting</dt>
-          <dd className={styles.summaryValue}>
-            <Tag data-color={hardDelete ? "danger" : "warning"} data-size="sm">
-              {hardDelete ? "Permanent (purge)" : "Soft delete"}
-            </Tag>
-          </dd>
-        </div>
-        <div className={styles.summaryRow}>
-          <dt className={styles.summaryLabel}>Miljø</dt>
-          <dd className={styles.summaryValue}>
-            <Tag
-              data-color={environment === "PROD" ? "danger" : "info"}
-              data-size="sm"
-            >
-              {environment}
-            </Tag>
-          </dd>
-        </div>
-        <div className={styles.summaryRow}>
-          <dt className={styles.summaryLabel}>Dialog-ID</dt>
-          <dd className={styles.summaryValue}>
-            <code className={styles.code}>{dialogId}</code>
-          </dd>
-        </div>
+        <dt>Type sletting</dt>
+        <dd>
+          <Tag data-color={hardDelete ? "danger" : "warning"} data-size="sm">
+            {hardDelete ? "Permanent (purge)" : "Soft delete"}
+          </Tag>
+        </dd>
+
+        <dt>Miljø</dt>
+        <dd>
+          <Tag data-color="info" data-size="sm">
+            {environment}
+          </Tag>
+        </dd>
+
+        <dt>Dialog-ID</dt>
+        <dd>
+          <code className={styles.code}>{dialogId}</code>
+        </dd>
       </dl>
 
       <Tabs defaultValue="response">

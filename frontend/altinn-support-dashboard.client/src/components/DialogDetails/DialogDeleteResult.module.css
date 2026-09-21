@@ -10,9 +10,11 @@
 }
 
 .summary {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    row-gap: 0.5rem;
+    column-gap: 1rem;
     margin: 0;
     padding: 1rem;
     background: var(--ds-color-neutral-background-subtle, #f5f5f5);
@@ -20,20 +22,14 @@
     border-radius: 4px;
 }
 
-.summaryRow {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.summaryLabel {
+.summary dt {
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     color: var(--ds-color-neutral-text-subtle, #666);
 }
 
-.summaryValue {
+.summary dd {
     margin: 0;
 }
 

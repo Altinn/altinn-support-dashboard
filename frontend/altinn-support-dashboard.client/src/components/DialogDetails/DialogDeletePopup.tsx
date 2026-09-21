@@ -83,7 +83,7 @@ const DialogDeletePopup: React.FC<DialogDeletePopupProps> = ({
             headingId={DIALOG_HEADING_ID}
           />
         ) : (
-          <>
+          <div>
             <Heading id={DIALOG_HEADING_ID} level={2} data-size="sm">
               {hardDelete ? "Slett dialog permanent" : "Slett dialog"}
             </Heading>
@@ -95,36 +95,31 @@ const DialogDeletePopup: React.FC<DialogDeletePopupProps> = ({
                 </Heading>
                 <Paragraph>
                   Dette er en ekte dialog som tilhører en ekte bruker eller
-                  virksomhet. Sletting påvirker det de ser i Altinn
-                  umiddelbart.
+                  virksomhet. Sletting påvirker det de ser i Altinn umiddelbart.
                 </Paragraph>
               </Alert>
             )}
 
             <dl className={styles.summary}>
-              <div className={styles.summaryRow}>
-                <dt className={styles.summaryLabel}>Miljø</dt>
-                <dd className={styles.summaryValue}>
-                  <Tag
-                    data-color={isProduction ? "danger" : "info"}
-                    data-size="sm"
-                  >
-                    {environment}
-                  </Tag>
-                </dd>
-              </div>
-              <div className={styles.summaryRow}>
-                <dt className={styles.summaryLabel}>Dialog-ID</dt>
-                <dd className={styles.summaryValue}>
-                  <code className={styles.code}>{dialogId}</code>
-                </dd>
-              </div>
-              <div className={styles.summaryRow}>
-                <dt className={styles.summaryLabel}>Revision</dt>
-                <dd className={styles.summaryValue}>
-                  <code className={styles.code}>{revision ?? "-"}</code>
-                </dd>
-              </div>
+              <dt>Miljø</dt>
+              <dd>
+                <Tag
+                  data-color={isProduction ? "danger" : "info"}
+                  data-size="sm"
+                >
+                  {environment}
+                </Tag>
+              </dd>
+
+              <dt>Dialog-ID</dt>
+              <dd>
+                <code className={styles.code}>{dialogId}</code>
+              </dd>
+
+              <dt>Revision</dt>
+              <dd>
+                <code className={styles.code}>{revision ?? "-"}</code>
+              </dd>
             </dl>
 
             <Checkbox
@@ -153,11 +148,7 @@ const DialogDeletePopup: React.FC<DialogDeletePopupProps> = ({
             />
 
             <div className={styles.actions}>
-              <Button
-                variant="tertiary"
-                onClick={onClose}
-                disabled={isPending}
-              >
+              <Button variant="tertiary" onClick={onClose} disabled={isPending}>
                 Avbryt
               </Button>
               <Button
@@ -170,7 +161,7 @@ const DialogDeletePopup: React.FC<DialogDeletePopupProps> = ({
                 {hardDelete ? "Slett permanent" : "Slett dialog"}
               </Button>
             </div>
-          </>
+          </div>
         )}
       </Dialog.Block>
     </Dialog>
