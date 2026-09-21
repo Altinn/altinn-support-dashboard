@@ -49,6 +49,10 @@ const Sidebar: React.FC = () => {
   }
 
   const authData = authDetails.data;
+  const hasInternalCoreRoles =
+    !authData.azureAuthActive ||
+    authData.roles.includes("Dashboard.Core.Internal");
+
   const hasInternalOrExternalCoreRoles =
     !authData.azureAuthActive ||
     authData.roles.includes("Dashboard.Core.Internal") ||
@@ -61,7 +65,7 @@ const Sidebar: React.FC = () => {
     authData.roles.includes("Dashboard.TT02");
   const hasDialogportenAdminRole =
     !authData.azureAuthActive ||
-    authData.roles.includes("Dashboard.Dialogporten.Admin")
+    authData.roles.includes("Dashboard.Dialogporten.Admin");
   return (
     <div className={classes.sidebarWrapper}>
       <div className={classes.dragHandle} onMouseDown={handleDragStart} />
@@ -163,7 +167,7 @@ const Sidebar: React.FC = () => {
             )}
             {hasInternalOrExternalCoreRoles && (
               <NavGroup
-                title="Core"
+                title="Varsling"
                 icon={<TerminalIcon className={classes.icons} />}
                 isCollapsed={isCollapsed}
                 paths={["/notification", "/notification-availability"]}
@@ -174,18 +178,23 @@ const Sidebar: React.FC = () => {
                   icon={<DatabaseIcon className={classes.icons} />}
                   isCollapsed={isCollapsed}
                 />
-                <NavItem
-                  to="/notification-availability"
-                  title="Varslingskontroll"
-                  icon={<CheckmarkCircleIcon className={classes.icons} />}
-                  isCollapsed={isCollapsed}
-                />
-                <NavItem
-                  to="/notification-log"
-                  title="Varslingslogg"
-                  icon={<BulletListIcon className={classes.icons} />}
-                  isCollapsed={isCollapsed}
-                />
+                {hasInternalCoreRoles && (
+                  <>
+                    <NavItem
+                      to="/notification-availability"
+                      title="Varslingskontroll"
+                      icon={<CheckmarkCircleIcon className={classes.icons} />}
+                      isCollapsed={isCollapsed}
+                    />
+
+                    <NavItem
+                      to="/notification-log"
+                      title="Varslingslogg"
+                      icon={<BulletListIcon className={classes.icons} />}
+                      isCollapsed={isCollapsed}
+                    />
+                  </>
+                )}
               </NavGroup>
             )}
             <NavItem
