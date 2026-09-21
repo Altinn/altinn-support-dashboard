@@ -1,3 +1,4 @@
+using System.Net;
 using System.Security.Claims;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using AltinnSupportDashboard.Controllers;
@@ -19,6 +20,7 @@ public class DialogportenControllerTests
     private const string ValidCorrespondenceUrn = "urn:altinn:correspondence-id:11111111-1111-1111-1111-111111111111";
     private const string ValidInstanceUrn = "urn:altinn:instance-id:12345678/11111111-1111-1111-1111-111111111111";
     private const string ValidDialogId = "11111111-1111-1111-1111-111111111111";
+    private const string ValidRevision = "22222222-2222-2222-2222-222222222222";
     private const string DetailsJson = """{"dialogId":"d1","raw":"payload"}""";
 
     private readonly DialogportenController _controller;
@@ -210,5 +212,113 @@ public async Task GetDialogDetails_PropagatesException_WhenServiceThrows()
         .ThrowsAsync(new Exception("Service failure"));
 
     await Assert.ThrowsAsync<Exception>(() => _controller.GetDialogDetails(EnvironmentName, ValidDialogId));
+}
+
+private static DeleteDialogRequest CreateDeleteRequest(bool hardDelete, string? dialogId = null, string? revision = null) => new()
+{
+    DialogId = dialogId ?? ValidDialogId,
+    Revision = revision ?? ValidRevision,
+    HardDelete = hardDelete
+};
+
+private static DeleteDialogResponse CreateDeleteResponse(HttpStatusCode statusCode) => new()
+{
+    StatusCode = statusCode,
+    ResponseBody = "",
+    ResponseHeader = "",
+    RequestHeader = "",
+    RequestBody = ""
+};
+
+[Theory]
+[InlineData("", ValidRevision)]
+[InlineData("not-a-guid", ValidRevision)]
+[InlineData(ValidDialogId, "")]
+[InlineData(ValidDialogId, "not-a-guid")]
+public async Task DeleteDialogById_ReturnsBadRequest_WhenDialogIdOrRevisionIsInvalid(string dialogId, string revision)
+{
+    var request = CreateDeleteRequest(hardDelete: false, dialogId: dialogId, revision: revision);
+
+    var result = await _controller.DeleteDialogById(request, EnvironmentName);
+
+    Assert.IsType<BadRequestObjectResult>(result);
+    _serviceMock.Verify(s => s.DeleteDialogById(It.IsAny<DeleteDialogRequest>(), It.IsAny<string>()), Times.Never);
+    _telemetryServiceMock.Verify(t => t.TrackSearch(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()), Times.Never);
+}
+
+[Fact]
+public async Task DeleteDialogById_ReturnsOkWithResponse_WhenSoftDeleting()
+{
+    var request = CreateDeleteRequest(hardDelete: false);
+    var response = CreateDeleteResponse(HttpStatusCode.NoContent);
+    _serviceMock.Setup(s => s.DeleteDialogById(request, EnvironmentName)).ReturnsAsync(response);
+
+    var result = await _controller.DeleteDialogById(request, EnvironmentName);
+
+    var okResult = Assert.IsType<OkObjectResult>(result);
+    Assert.Equal(response, okResult.Value);
+}
+
+[Fact]
+public async Task DeleteDialogById_ReturnsOkWithResponse_WhenHardDeleting()
+{
+    var request = CreateDeleteRequest(hardDelete: true);
+    var response = CreateDeleteResponse(HttpStatusCode.NoContent);
+    _serviceMock.Setup(s => s.DeleteDialogById(request, EnvironmentName)).ReturnsAsync(response);
+
+    var result = await _controller.DeleteDialogById(request, EnvironmentName);
+
+    var okResult = Assert.IsType<OkObjectResult>(result);
+    Assert.Equal(response, okResult.Value);
+}
+
+[Fact]
+public async Task DeleteDialogById_PassesHardDeleteFlagThrough_ToService()
+{
+    var request = CreateDeleteRequest(hardDelete: true);
+    _serviceMock.Setup(s => s.DeleteDialogById(It.IsAny<DeleteDialogRequest>(), EnvironmentName))
+        .ReturnsAsync(CreateDeleteResponse(HttpStatusCode.NoContent));
+
+    await _controller.DeleteDialogById(request, EnvironmentName);
+
+    _serviceMock.Verify(s => s.DeleteDialogById(
+        It.Is<DeleteDialogRequest>(r => r.HardDelete && r.DialogId == ValidDialogId && r.Revision == ValidRevision),
+        EnvironmentName), Times.Once);
+}
+
+[Fact]
+public async Task DeleteDialogById_TracksSoftDeleteTelemetry_WhenHardDeleteIsFalse()
+{
+    var request = CreateDeleteRequest(hardDelete: false);
+    _serviceMock.Setup(s => s.DeleteDialogById(request, EnvironmentName)).ReturnsAsync(CreateDeleteResponse(HttpStatusCode.NoContent));
+
+    await _controller.DeleteDialogById(request, EnvironmentName);
+
+    _telemetryServiceMock.Verify(t => t.TrackSearch("Dialogporten", "SoftDelete", "test-user", EnvironmentName,
+        It.Is<IDictionary<string, string>>(d => d["Dialog"] == ValidDialogId)), Times.Once);
+    _telemetryServiceMock.Verify(t => t.TrackSearch("Dialogporten", "HardDelete", It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()), Times.Never);
+}
+
+[Fact]
+public async Task DeleteDialogById_TracksHardDeleteTelemetry_WhenHardDeleteIsTrue()
+{
+    var request = CreateDeleteRequest(hardDelete: true);
+    _serviceMock.Setup(s => s.DeleteDialogById(request, EnvironmentName)).ReturnsAsync(CreateDeleteResponse(HttpStatusCode.NoContent));
+
+    await _controller.DeleteDialogById(request, EnvironmentName);
+
+    _telemetryServiceMock.Verify(t => t.TrackSearch("Dialogporten", "HardDelete", "test-user", EnvironmentName,
+        It.Is<IDictionary<string, string>>(d => d["Dialog"] == ValidDialogId)), Times.Once);
+    _telemetryServiceMock.Verify(t => t.TrackSearch("Dialogporten", "SoftDelete", It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()), Times.Never);
+}
+
+[Fact]
+public async Task DeleteDialogById_PropagatesException_WhenServiceThrows()
+{
+    var request = CreateDeleteRequest(hardDelete: false);
+    _serviceMock.Setup(s => s.DeleteDialogById(It.IsAny<DeleteDialogRequest>(), It.IsAny<string>()))
+        .ThrowsAsync(new Exception("Service failure"));
+
+    await Assert.ThrowsAsync<Exception>(() => _controller.DeleteDialogById(request, EnvironmentName));
 }
 }
