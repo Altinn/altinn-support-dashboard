@@ -41,64 +41,79 @@ public class Altinn3ApiClient : IAltinn3ApiClient
     //Used to get Uuids of orgs
     public async Task<string> GetOrganizationIdentifiers(List<string> orgNumbers, string environmentName)
     {
-        var client = _clients[environmentName];
-        const int chunkSize = 40;
-        var allResults = new List<JsonElement>();
-
-        //have to do this because url becomes to long otherwise
-        foreach (var chunk in orgNumbers.Chunk(chunkSize))
+        try
         {
-            var query = HttpUtility.ParseQueryString(string.Empty);
-            foreach (string orgNumber in chunk)
+            var client = _clients[environmentName];
+            const int chunkSize = 40;
+            var allResults = new List<JsonElement>();
+
+            //have to do this because url becomes to long otherwise
+            foreach (var chunk in orgNumbers.Chunk(chunkSize))
             {
-                query.Add("orgs", orgNumber);
+                var query = HttpUtility.ParseQueryString(string.Empty);
+                foreach (string orgNumber in chunk)
+                {
+                    query.Add("orgs", orgNumber);
+                }
+
+                var requestUrl = $"register/api/v1/parties/identifiers?{query}";
+                var response = await client.GetAsync(requestUrl);
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    continue;
+                }
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+                }
+
+                using var doc = JsonDocument.Parse(responseBody);
+                foreach (var element in doc.RootElement.EnumerateArray())
+                {
+                    allResults.Add(element.Clone());
+                }
             }
 
-            var requestUrl = $"register/api/v1/parties/identifiers?{query}";
-            var response = await client.GetAsync(requestUrl);
-            var responseBody = await response.Content.ReadAsStringAsync();
-
-            if (response.StatusCode == HttpStatusCode.NotFound)
-            {
-                continue;
-            }
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
-            }
-
-            using var doc = JsonDocument.Parse(responseBody);
-            foreach (var element in doc.RootElement.EnumerateArray())
-            {
-                allResults.Add(element.Clone());
-            }
+            return JsonSerializer.Serialize(allResults);
+        } catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to retrieve identifiers for {Count} organizations in environment {EnvironmentName}", orgNumbers.Count, environmentName);
+            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
         }
-
-        return JsonSerializer.Serialize(allResults);
+        
     }
 
     //used to get the partyInformation of a org
     public async Task<string> GetOrganizationsPartyInfoByPartyId(List<int> partyIds, string environmentName)
     {
-        var client = _clients[environmentName];
-        var requestUrl = "register/api/v1/parties/partylist?fetchSubUnits=true";
-
-        string jsonPayload = JsonSerializer.Serialize(partyIds);
-
-        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-
-        var response = await client.PostAsync(requestUrl, content);
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        if (response.StatusCode == HttpStatusCode.NotFound)
+        try
         {
-            return string.Empty;
-        }
-        if (!response.IsSuccessStatusCode)
+            var client = _clients[environmentName];
+            var requestUrl = "register/api/v1/parties/partylist?fetchSubUnits=true";
+
+            string jsonPayload = JsonSerializer.Serialize(partyIds);
+
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(requestUrl, content);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return string.Empty;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+            return responseBody;
+        } catch (Exception ex)
         {
-            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            _logger.LogError(ex, "Failed to retrieve party info for {Count} organizations in environment {EnvironmentName}", partyIds.Count, environmentName);
+            throw new Exception($"An error occured while calling the API {ex.Message}", ex);
         }
-        return responseBody;
     }
 
     public async Task<string> GetPersonalContactsByOrg(string orgNumber, string environmentName)
@@ -120,7 +135,6 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             {
                 throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
             }
-            _logger.LogDebug(responseBody);
             return responseBody;
 
         }
@@ -133,82 +147,103 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
     public async Task<string> GetUserContactInformationByNin(string nin, string environmentName)
     {
-        var client = _clients[environmentName];
-        var requestUrl = "profile/api/v1/dashboard/users/contactinformation";
-
-        using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-
-        //nin is set in header
-        request.Headers.Add("NationalIdentityNumber", nin);
-        var response = await client.SendAsync(request);
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        if (response.StatusCode == HttpStatusCode.NotFound)
+        try
         {
-            return string.Empty;
-        }
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
-        }
+            var client = _clients[environmentName];
+            var requestUrl = "profile/api/v1/dashboard/users/contactinformation";
 
-        return responseBody;
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+            //nin is set in header
+            request.Headers.Add("NationalIdentityNumber", nin);
+            var response = await client.SendAsync(request);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return string.Empty;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+
+            return responseBody;
+        } catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to retrieve user contact information by national identity number in environment {environmentName}", environmentName);
+            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
+        }
     }
 
     public async Task<string> GetPersonalContactsByEmail(string email, string environmentName)
     {
-        var client = _clients[environmentName];
-        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/email";
-
-        // "using var" disposes the HttpRequestMessage automatically at the end of this method
-        using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-
-        //email is set in header
-        request.Headers.Add("emailAddress", email);
-        var response = await client.SendAsync(request);
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        if (response.StatusCode == HttpStatusCode.NotFound)
+        try
         {
-            return string.Empty;
-        }
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new HttpRequestException($"Api request failed with status code {response.StatusCode}: {responseBody}");
-        }
+            var client = _clients[environmentName];
+            var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/email";
 
-        return responseBody;
+            // "using var" disposes the HttpRequestMessage automatically at the end of this method
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+            //email is set in header
+            request.Headers.Add("emailAddress", email);
+            var response = await client.SendAsync(request);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return string.Empty;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+
+            return responseBody;
+            
+        } catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to retrieve personal contacts by email in environment {EnvironmentName}", environmentName);
+            throw;
+        }
 
     }
 
     public async Task<string> GetPersonalContactsByPhone(string phoneNumber, string? countryCode, string environmentName)
     {
-        var client = _clients[environmentName];
-        var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/phonenumber";
-
-        // "using var" disposes the HttpRequestMessage automatically at the end of this method
-        using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-
-        //phoneNumber is set in header
-        request.Headers.Add("phoneNumber", phoneNumber);
-        if (!string.IsNullOrEmpty(countryCode))
+        try
         {
-            request.Headers.Add("countryCode", countryCode);
-        }
-        var response = await client.SendAsync(request);
-        var responseBody = await response.Content.ReadAsStringAsync();
+            var client = _clients[environmentName];
+            var requestUrl = $"profile/api/v1/dashboard/organizations/contactinformation/phonenumber";
 
-        if (response.StatusCode == HttpStatusCode.NotFound)
+            // "using var" disposes the HttpRequestMessage automatically at the end of this method
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+            //phoneNumber is set in header
+            request.Headers.Add("phoneNumber", phoneNumber);
+            if (!string.IsNullOrEmpty(countryCode))
+            {
+                request.Headers.Add("countryCode", countryCode);
+            }
+            var response = await client.SendAsync(request);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return string.Empty;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+
+            return responseBody;
+        } catch (Exception ex)
         {
-            return string.Empty;
+            _logger.LogError(ex, "Failed to retrieve personal contacts by phonenumber in environment {EnvironmentName}", environmentName);
+            throw;
         }
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new HttpRequestException($"Api request failed with status code {response.StatusCode}: {responseBody}");
-        }
-
-        return responseBody;
-
     }
 
     public async Task<string> GetNotificationAddressesByOrg(string orgNumber, string environmentName)
@@ -268,7 +303,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve notification addresses by phone number  in environment {EnvironmentName}",  environmentName);
+            _logger.LogError(ex, "Failed to retrieve notification addresses by phone number in environment {EnvironmentName}",  environmentName);
             throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
     }
@@ -307,135 +342,173 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
     public async Task<string> GetRolesAndRightsAltinn3(RolesAndRightsRequest dto, List<string>? AnyOfResourceIds, string environmentName)
     {
-
-        var client = _clients[environmentName];
-
-        var requestUrl = $"accessmanagement/api/v1/resourceowner/authorizedparties?includeAltinn3=true&includeResources=true&includeAccessPackages=true";
-        if (AnyOfResourceIds != null && AnyOfResourceIds.Count > 0)
+        try
         {
-            foreach (string resourceId in AnyOfResourceIds)
+            var client = _clients[environmentName];
+
+            var requestUrl = $"accessmanagement/api/v1/resourceowner/authorizedparties?includeAltinn3=true&includeResources=true&includeAccessPackages=true";
+            if (AnyOfResourceIds != null && AnyOfResourceIds.Count > 0)
             {
-                requestUrl += $"&anyOfResourceIds={resourceId}";
+                foreach (string resourceId in AnyOfResourceIds)
+                {
+                    requestUrl += $"&anyOfResourceIds={resourceId}";
+                }
             }
-        }
 
 
-        string jsonPayload = JsonSerializer.Serialize(dto);
+            string jsonPayload = JsonSerializer.Serialize(dto);
 
-        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
-        var response = await client.PostAsync(requestUrl, content);
-        var responseBody = await response.Content.ReadAsStringAsync();
+            var response = await client.PostAsync(requestUrl, content);
+            var responseBody = await response.Content.ReadAsStringAsync();
 
-        if (response.StatusCode == HttpStatusCode.NotFound)
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return string.Empty;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+            return responseBody;
+        } catch (Exception ex)
         {
-            return string.Empty;
+            _logger.LogError(ex, "Failed to retrieve roles and rights in environment {EnvironmentName}", environmentName);
+            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
         }
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
-        }
-        return responseBody;
+ 
     }
     public async Task<string> GetAuthorizedParties(string value, string type, string environmentName)
     {
-        var client = _clients[environmentName];
-
-        var requestUrl = "accessmanagement/api/v1/resourceowner/authorizedparties?includeAltinn2=true&includeAltinn3=true&includeRoles=true&includeAccessPackages=true&includeResources=true&includeInstances=true";
-
-        var dto = new RolesAndRightsRequest
+        try
         {
-            Value = value,
-            Type = type,
-            PartyFilter = []
-        };
+            var client = _clients[environmentName];
 
-        string jsonPayload = JsonSerializer.Serialize(dto);
-        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            var requestUrl = "accessmanagement/api/v1/resourceowner/authorizedparties?includeAltinn2=true&includeAltinn3=true&includeRoles=true&includeAccessPackages=true&includeResources=true&includeInstances=true";
 
-        var response = await client.PostAsync(requestUrl, content);
-        var responseBody = await response.Content.ReadAsStringAsync();
+            var dto = new RolesAndRightsRequest
+            {
+                Value = value,
+                Type = type,
+                PartyFilter = []
+            };
 
-        if (response.StatusCode == HttpStatusCode.NotFound)
+            string jsonPayload = JsonSerializer.Serialize(dto);
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(requestUrl, content);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return string.Empty;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+            return responseBody;
+        } catch (Exception ex)
         {
-            return string.Empty;
+            _logger.LogError(ex, "Failed to retrieve authorized parties for lookup type {Type} in environment {EnvironmentName}", type, environmentName);
+            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
         }
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
-        }
-        return responseBody;
+       
     }
 
     public async Task<string> GetAltinn2RolesList(string environmentName)
     {
-
-        var client = _clients[environmentName];
-
-        var requestUrl = $"accessmanagement/api/v1/meta/info/roles";
-
-
-        var response = await client.GetAsync(requestUrl);
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        if (response.StatusCode == HttpStatusCode.NotFound)
+        try
         {
-            return string.Empty;
-        }
-        if (!response.IsSuccessStatusCode)
+            var client = _clients[environmentName];
+
+            var requestUrl = $"accessmanagement/api/v1/meta/info/roles";
+
+
+            var response = await client.GetAsync(requestUrl);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return string.Empty;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+            return responseBody;
+        } catch (Exception ex)
         {
-            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            _logger.LogError(ex, "Failed to retrieve the Altinn 2 roles list in environment {EnvironmentName}", environmentName);
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
-        return responseBody;
+        
     }
 
     public async Task<string> GetAccessPackagesList(string environmentName)
     {
-        var client = _clients[environmentName];
-        var requestUrl = $"accessmanagement/api/v1/meta/info/accesspackages/export";
-
-        var response = await client.GetAsync(requestUrl);
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            var client = _clients[environmentName];
+            var requestUrl = $"accessmanagement/api/v1/meta/info/accesspackages/export";
+
+            var response = await client.GetAsync(requestUrl);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+            return responseBody;
+        } catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to retrieve the access package list in environment {EnvironmentName}", environmentName);
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
-        return responseBody;
+        
     }
 
     public async Task<string> GetMaskinportenDelegations(string? supplierOrg, string? consumerOrg, string? scope, string environmentName)
     {
-        var client = _clients[environmentName];
+        try
+        {
+            var client = _clients[environmentName];
 
-        var query = HttpUtility.ParseQueryString(string.Empty);
-        if (!string.IsNullOrEmpty(supplierOrg))
-        {
-            query.Add("supplierOrg", supplierOrg);
-        }
-        if (!string.IsNullOrEmpty(consumerOrg))
-        {
-            query.Add("consumerOrg", consumerOrg);
-        }
-        if (!string.IsNullOrEmpty(scope))
-        {
-            query.Add("scope", scope);
-        }
+            var query = HttpUtility.ParseQueryString(string.Empty);
+            if (!string.IsNullOrEmpty(supplierOrg))
+            {
+                query.Add("supplierOrg", supplierOrg);
+            }
+            if (!string.IsNullOrEmpty(consumerOrg))
+            {
+                query.Add("consumerOrg", consumerOrg);
+            }
+            if (!string.IsNullOrEmpty(scope))
+            {
+                query.Add("scope", scope);
+            }
 
-        var requestUrl = $"accessmanagement/api/v1/maskinporten/delegations?{query}";
+            var requestUrl = $"accessmanagement/api/v1/maskinporten/delegations?{query}";
 
-        var response = await client.GetAsync(requestUrl);
-        var responseBody = await response.Content.ReadAsStringAsync();
+            var response = await client.GetAsync(requestUrl);
+            var responseBody = await response.Content.ReadAsStringAsync();
 
-        if (response.StatusCode == HttpStatusCode.NotFound)
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return string.Empty;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+            }
+            return responseBody;
+        } catch (Exception ex)
         {
-            return string.Empty;
+            _logger.LogError(ex, "Failed to retrieve Maskinporten delegations for supplier {SupplierOrg} and consumer {ConsumerOrg} in environment {EnvironmentName}", supplierOrg, consumerOrg, environmentName);
+            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
         }
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
-        }
-        return responseBody;
+        
     }
 
 }
