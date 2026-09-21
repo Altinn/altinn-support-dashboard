@@ -6,7 +6,6 @@ import styles from "./DialogDeleteResult.module.css";
 type DialogDeleteResultProps = {
   outcome: DialogDeleteOutcome;
   onClose: () => void;
-  headingId?: string;
 };
 
 /** Pretty-prints the payload when it is JSON, otherwise returns it unchanged */
@@ -22,14 +21,13 @@ const formatPayload = (payload?: string | null): string => {
 const DialogDeleteResult: React.FC<DialogDeleteResultProps> = ({
   outcome,
   onClose,
-  headingId,
 }) => {
   const { result, dialogId, environment, hardDelete } = outcome;
   const succeeded = isSuccess(result.statusCode);
 
   return (
     <div className={styles.resultView}>
-      <Heading id={headingId} level={2} data-size="sm">
+      <Heading level={2} data-size="sm">
         {succeeded ? "Dialogen ble slettet" : "Sletting feilet"}
       </Heading>
 
@@ -97,12 +95,6 @@ const DialogDeleteResult: React.FC<DialogDeleteResultProps> = ({
           </pre>
         </Tabs.Panel>
       </Tabs>
-
-      <div className={styles.actions}>
-        <Button variant="secondary" onClick={onClose}>
-          Lukk
-        </Button>
-      </div>
     </div>
   );
 };

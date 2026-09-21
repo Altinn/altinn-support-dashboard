@@ -29,8 +29,6 @@ type DialogDeletePopupProps = {
   environment: string;
 };
 
-const DIALOG_HEADING_ID = "dialog-delete-heading";
-
 const DialogDeletePopup: React.FC<DialogDeletePopupProps> = ({
   onClose,
   dialogId,
@@ -41,6 +39,7 @@ const DialogDeletePopup: React.FC<DialogDeletePopupProps> = ({
   const [hardDelete, setHardDelete] = useState(false);
   const [confirmation, setConfirmation] = useState("");
   const [outcome, setOutcome] = useState<DialogDeleteOutcome | null>(null);
+  const [awaitingPurgeConfirm, setAwaitingPurgeConfirm] = useState(false);
   const { mutate, isPending } = useDeleteDialog();
 
   const isProduction = environment === "PROD";
@@ -54,7 +53,7 @@ const DialogDeletePopup: React.FC<DialogDeletePopupProps> = ({
     dialogRef.current?.showModal();
   }, []);
 
-  const handleDelete = () => {
+  const performDelete = () => {
     if (!canDelete || !revision) return;
 
     mutate(
@@ -67,24 +66,68 @@ const DialogDeletePopup: React.FC<DialogDeletePopupProps> = ({
     );
   };
 
+  const handleDelete = () => {
+    if (!canDelete || !revision) return;
+
+    if (hardDelete && isProduction) {
+      setAwaitingPurgeConfirm(true);
+      return;
+    }
+
+    performDelete();
+  };
+
   return (
     <Dialog
       ref={dialogRef}
       className={styles.dialogBox}
       closedby="closerequest"
       onClose={onClose}
-      aria-labelledby={DIALOG_HEADING_ID}
     >
       <Dialog.Block className={styles.content}>
         {outcome ? (
-          <DialogDeleteResult
-            outcome={outcome}
-            onClose={onClose}
-            headingId={DIALOG_HEADING_ID}
-          />
+          <DialogDeleteResult outcome={outcome} onClose={onClose} />
+        ) : awaitingPurgeConfirm ? (
+          <div>
+            <Heading level={2} data-size="sm">
+              Er du helt sikker?
+            </Heading>
+
+            <Alert data-color="danger">
+              <Heading level={3} data-size="2xs">
+                Permanent sletting i PRODUKSJON
+              </Heading>
+              <Paragraph>
+                Du er i ferd med å slette dialog "{dialogId}" permanent (purge)
+                i produksjon. Dette kan ikke angres.
+              </Paragraph>
+            </Alert>
+
+            <div className={styles.actions}>
+              <Button
+                variant="tertiary"
+                onClick={() => setAwaitingPurgeConfirm(false)}
+                disabled={isPending}
+              >
+                Avbryt
+              </Button>
+              <Button
+                variant="primary"
+                data-color="danger"
+                onClick={() => {
+                  setAwaitingPurgeConfirm(false);
+                  performDelete();
+                }}
+                disabled={!canDelete}
+              >
+                {isPending && <Spinner aria-hidden data-size="xs" />}
+                Ja, slett permanent
+              </Button>
+            </div>
+          </div>
         ) : (
           <div>
-            <Heading id={DIALOG_HEADING_ID} level={2} data-size="sm">
+            <Heading level={2} data-size="sm">
               {hardDelete ? "Slett dialog permanent" : "Slett dialog"}
             </Heading>
 
