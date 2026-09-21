@@ -75,97 +75,104 @@ const DialogDeletePopup: React.FC<DialogDeletePopupProps> = ({
       onClose={onClose}
       aria-labelledby={DIALOG_HEADING_ID}
     >
-      {outcome ? (
-        <DialogDeleteResult
-          outcome={outcome}
-          onClose={onClose}
-          headingId={DIALOG_HEADING_ID}
-        />
-      ) : (
-        <>
-          <Heading id={DIALOG_HEADING_ID} level={2} data-size="sm">
-            {hardDelete ? "Slett dialog permanent" : "Slett dialog"}
-          </Heading>
-
-          {isProduction && (
-            <Alert data-color="danger">
-              <Heading level={3} data-size="2xs">
-                Du er i PRODUKSJON
-              </Heading>
-              <Paragraph>
-                Dette er en ekte dialog som tilhører en ekte bruker eller
-                virksomhet. Sletting påvirker det de ser i Altinn umiddelbart.
-              </Paragraph>
-            </Alert>
-          )}
-
-          <dl className={styles.summary}>
-            <div className={styles.summaryRow}>
-              <dt className={styles.summaryLabel}>Miljø</dt>
-              <dd className={styles.summaryValue}>
-                <Tag
-                  data-color={isProduction ? "danger" : "info"}
-                  data-size="sm"
-                >
-                  {environment}
-                </Tag>
-              </dd>
-            </div>
-            <div className={styles.summaryRow}>
-              <dt className={styles.summaryLabel}>Dialog-ID</dt>
-              <dd className={styles.summaryValue}>
-                <code className={styles.code}>{dialogId}</code>
-              </dd>
-            </div>
-            <div className={styles.summaryRow}>
-              <dt className={styles.summaryLabel}>Revision</dt>
-              <dd className={styles.summaryValue}>
-                <code className={styles.code}>{revision ?? "-"}</code>
-              </dd>
-            </div>
-          </dl>
-
-          <Checkbox
-            label="Slett permanent (purge)"
-            checked={hardDelete}
-            onChange={(e) => setHardDelete(e.target.checked)}
-            disabled={isPending}
+      <Dialog.Block className={styles.content}>
+        {outcome ? (
+          <DialogDeleteResult
+            outcome={outcome}
+            onClose={onClose}
+            headingId={DIALOG_HEADING_ID}
           />
+        ) : (
+          <>
+            <Heading id={DIALOG_HEADING_ID} level={2} data-size="sm">
+              {hardDelete ? "Slett dialog permanent" : "Slett dialog"}
+            </Heading>
 
-          {hardDelete && (
-            <Alert data-color="danger">
-              <Heading level={3} data-size="2xs">
-                Denne dialogen blir permanent og ugjenkallelig slettet
-              </Heading>
-            </Alert>
-          )}
+            {isProduction && (
+              <Alert data-color="danger">
+                <Heading level={3} data-size="2xs">
+                  Du er i PRODUKSJON
+                </Heading>
+                <Paragraph>
+                  Dette er en ekte dialog som tilhører en ekte bruker eller
+                  virksomhet. Sletting påvirker det de ser i Altinn
+                  umiddelbart.
+                </Paragraph>
+              </Alert>
+            )}
 
-          <Textfield
-            label="Bekreft ved å skrive dialog-IDen"
-            description="Sletting er først mulig når IDen under er identisk med dialogen som skal slettes."
-            value={confirmation}
-            onChange={(e) => setConfirmation(e.target.value)}
-            error={showMismatch ? "Dialog-IDen stemmer ikke" : undefined}
-            autoComplete="off"
-            disabled={isPending}
-          />
+            <dl className={styles.summary}>
+              <div className={styles.summaryRow}>
+                <dt className={styles.summaryLabel}>Miljø</dt>
+                <dd className={styles.summaryValue}>
+                  <Tag
+                    data-color={isProduction ? "danger" : "info"}
+                    data-size="sm"
+                  >
+                    {environment}
+                  </Tag>
+                </dd>
+              </div>
+              <div className={styles.summaryRow}>
+                <dt className={styles.summaryLabel}>Dialog-ID</dt>
+                <dd className={styles.summaryValue}>
+                  <code className={styles.code}>{dialogId}</code>
+                </dd>
+              </div>
+              <div className={styles.summaryRow}>
+                <dt className={styles.summaryLabel}>Revision</dt>
+                <dd className={styles.summaryValue}>
+                  <code className={styles.code}>{revision ?? "-"}</code>
+                </dd>
+              </div>
+            </dl>
 
-          <div className={styles.actions}>
-            <Button variant="tertiary" onClick={onClose} disabled={isPending}>
-              Avbryt
-            </Button>
-            <Button
-              variant="primary"
-              data-color="danger"
-              onClick={handleDelete}
-              disabled={!canDelete}
-            >
-              {isPending && <Spinner aria-hidden data-size="xs" />}
-              {hardDelete ? "Slett permanent" : "Slett dialog"}
-            </Button>
-          </div>
-        </>
-      )}
+            <Checkbox
+              label="Slett permanent (purge)"
+              checked={hardDelete}
+              onChange={(e) => setHardDelete(e.target.checked)}
+              disabled={isPending}
+            />
+
+            {hardDelete && (
+              <Alert data-color="danger">
+                <Heading level={3} data-size="2xs">
+                  Denne dialogen blir permanent og ugjenkallelig slettet
+                </Heading>
+              </Alert>
+            )}
+
+            <Textfield
+              label="Bekreft ved å skrive dialog-IDen"
+              description="Sletting er først mulig når IDen under er identisk med dialogen som skal slettes."
+              value={confirmation}
+              onChange={(e) => setConfirmation(e.target.value)}
+              error={showMismatch ? "Dialog-IDen stemmer ikke" : undefined}
+              autoComplete="off"
+              disabled={isPending}
+            />
+
+            <div className={styles.actions}>
+              <Button
+                variant="tertiary"
+                onClick={onClose}
+                disabled={isPending}
+              >
+                Avbryt
+              </Button>
+              <Button
+                variant="primary"
+                data-color="danger"
+                onClick={handleDelete}
+                disabled={!canDelete}
+              >
+                {isPending && <Spinner aria-hidden data-size="xs" />}
+                {hardDelete ? "Slett permanent" : "Slett dialog"}
+              </Button>
+            </div>
+          </>
+        )}
+      </Dialog.Block>
     </Dialog>
   );
 };
