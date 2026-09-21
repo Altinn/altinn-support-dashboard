@@ -1,17 +1,17 @@
 import { Button, Card, Heading, Tabs, Tag } from "@digdir/designsystemet-react";
-import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import { isSuccess } from "../../utils/httpUtils";
 import { DialogDeleteOutcome } from "./DialogDeletePopup";
 import styles from "./DialogDeleteResult.module.css";
 
 type DialogDeleteResultProps = {
   outcome: DialogDeleteOutcome;
-  onBack: () => void;
+  onClose: () => void;
+  headingId?: string;
 };
 
 /** Pretty-prints the payload when it is JSON, otherwise returns it unchanged */
 const formatPayload = (payload?: string | null): string => {
-  if (!payload) return "(tom)";
+  if (!payload) return "";
   try {
     return JSON.stringify(JSON.parse(payload), null, 2);
   } catch {
@@ -21,21 +21,15 @@ const formatPayload = (payload?: string | null): string => {
 
 const DialogDeleteResult: React.FC<DialogDeleteResultProps> = ({
   outcome,
-  onBack,
+  onClose,
+  headingId,
 }) => {
   const { result, dialogId, environment, hardDelete } = outcome;
   const succeeded = isSuccess(result.statusCode);
 
   return (
     <div className={styles.resultView}>
-      <div className={styles.header}>
-        <Button variant="tertiary" onClick={onBack}>
-          <ArrowLeftIcon aria-hidden />
-          Tilbake til dialogdetaljer
-        </Button>
-      </div>
-
-      <Heading level={2} data-size="sm">
+      <Heading id={headingId} level={2} data-size="sm">
         {succeeded ? "Dialogen ble slettet" : "Sletting feilet"}
       </Heading>
 
@@ -53,7 +47,7 @@ const DialogDeleteResult: React.FC<DialogDeleteResultProps> = ({
           <dt className={styles.summaryLabel}>Type sletting</dt>
           <dd className={styles.summaryValue}>
             <Tag data-color={hardDelete ? "danger" : "warning"} data-size="sm">
-              {hardDelete ? "Permanent (purge)" : "Myk sletting"}
+              {hardDelete ? "Permanent (purge)" : "Soft delete"}
             </Tag>
           </dd>
         </div>
@@ -107,6 +101,12 @@ const DialogDeleteResult: React.FC<DialogDeleteResultProps> = ({
           </pre>
         </Tabs.Panel>
       </Tabs>
+
+      <div className={styles.actions}>
+        <Button variant="secondary" onClick={onClose}>
+          Lukk
+        </Button>
+      </div>
     </div>
   );
 };

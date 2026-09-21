@@ -13,10 +13,7 @@ import { useDialogDetails } from "../hooks/hooks";
 import { showPopup } from "../components/Popup";
 import HighlightedFields from "../components/DialogDetails/HighlightedFields";
 import JsonPanel from "../components/DialogDetails/JsonPanel";
-import DialogDeletePopup, {
-  DialogDeleteOutcome,
-} from "../components/DialogDetails/DialogDeletePopup";
-import DialogDeleteResult from "../components/DialogDetails/DialogDeleteResult";
+import DialogDeletePopup from "../components/DialogDetails/DialogDeletePopup";
 
 export const DialogDetailsLookupPage = () => {
   const environment = useAppStore((state) => state.environment);
@@ -27,8 +24,6 @@ export const DialogDetailsLookupPage = () => {
     () => sessionStorage.getItem("dialogDetailsLookup.submittedId") || ""
   );
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
-  const [deleteOutcome, setDeleteOutcome] =
-    useState<DialogDeleteOutcome | null>(null);
   const {
     data: response,
     isLoading,
@@ -58,7 +53,6 @@ export const DialogDetailsLookupPage = () => {
     if (trimmed) {
       setSubmittedId(trimmed);
       sessionStorage.setItem("dialogDetailsLookup.submittedId", trimmed);
-      setDeleteOutcome(null);
     }
   };
 
@@ -86,18 +80,6 @@ export const DialogDetailsLookupPage = () => {
         { label: "Activity log", value: response.activities },
       ]
     : [];
-
-  if (deleteOutcome) {
-    return (
-      <div>
-        <Heading>Dialog detaljer</Heading>
-        <DialogDeleteResult
-          outcome={deleteOutcome}
-          onBack={() => setDeleteOutcome(null)}
-        />
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -145,7 +127,6 @@ export const DialogDetailsLookupPage = () => {
           dialogId={response.id}
           revision={revision}
           environment={environment}
-          onDeleted={setDeleteOutcome}
         />
       )}
     </div>

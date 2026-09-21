@@ -1,4 +1,7 @@
 .dialogBox {
+    position: fixed;
+    inset: 0;
+    margin: auto;
     display: flex;
     flex-direction: column;
     gap: 1rem;
