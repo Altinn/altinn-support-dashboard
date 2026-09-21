@@ -27,14 +27,30 @@ import { MaskinportenDelegation } from "../models/delegationModels";
 
 //this file defines which which api endpoints we want to fetch data from
 
+// Header values must be Latin-1 (fetch throws otherwise) and can't contain
+// NUL/CR/LF (header injection) — used to validate input before it's sent
+// as a request header or route segment.
+const hasInvalidHeaderValue = (value: string) => {
+  for (let i = 0; i < value.length; i++) {
+    const code = value.charCodeAt(i);
+    if (code > 255 || code === 0x00 || code === 0x0a || code === 0x0d) return true;
+  }
+  return false;
+};
+
 export const fetchOrganizations = async (
   environment: string,
   query: string
 ) => {
   const trimmedQuery = query.replace(/\s/g, "");
 
+  if (hasInvalidHeaderValue(trimmedQuery)) {
+    return [];
+  }
+
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search?query=${encodeURIComponent(trimmedQuery)}`
+    `${getBaseUrl(environment)}/serviceowner/organizations/altinn3/search`,
+    { headers: { query: trimmedQuery } }
   );
 
   if (!res.ok) {
@@ -153,6 +169,10 @@ export const fetchNotificationsAdvancedSearch = async (
   dateFrom?: string,
   dateTo?: string
 ): Promise<NotificationShipmentResponse[] | null> => {
+  if (hasInvalidHeaderValue(query)) {
+    throw new Error("Ugyldig søketerm");
+  }
+
   const params = new URLSearchParams();
   if (dateFrom) params.set("from", new Date(dateFrom).toISOString());
   if (dateTo) {
@@ -163,7 +183,8 @@ export const fetchNotificationsAdvancedSearch = async (
   const paramsString = params.toString() ? `?${params}` : "";
 
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/notifications/future/${encodeURIComponent(query)}${paramsString}`
+    `${getBaseUrl(environment)}/notifications/future${paramsString}`,
+    { headers: { query } }
   );
 
   if (res.status === 404) return null;
@@ -251,9 +272,16 @@ export const fetchInternalIds = async (
   environment: string
 ): Promise<PartyModel> => {
   const strippedQuery = query.replace(/\s/g, "");
+
+  if (hasInvalidHeaderValue(strippedQuery)) {
+    throw new Error("Ugyldig søketerm");
+  }
+
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/parties/lookup/${strippedQuery}`
+    `${getBaseUrl(environment)}/parties/lookup`,
+    { headers: { value: strippedQuery } }
   );
+
   if (res.status === 404) {
     throw new Error("Not found");
   }
@@ -281,8 +309,13 @@ export const fetchUserContactInformationByNin = async (
   environment: string,
   nin: string
 ): Promise<UserContactInformationAltinn3 | null> => {
+  if (hasInvalidHeaderValue(nin)) {
+    return null;
+  }
+  const options: RequestInit = { headers: { NationalIdentityNumber: nin } };
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/users/altinn3/contactinformation/${encodeURIComponent(nin)}`
+    `${getBaseUrl(environment)}/serviceowner/users/altinn3/contactinformation`, 
+    options
   );
 
   if (!res.ok) {
@@ -340,8 +373,13 @@ export const fetchInternalIdsFromSsn = async (
   ssn: string,
   environment: string
 ): Promise<PartyModel> => {
+  if (hasInvalidHeaderValue(ssn)) {
+    throw new Error("Ugyldig fødselsnummer");
+  }
+  const options: RequestInit = { headers: { SocialSecurityNumber: ssn } };
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/parties/lookup/ssn/${ssn}`
+    `${getBaseUrl(environment)}/parties/lookup/ssn`,
+    options
   );
   if (res.status === 400) throw new Error("Ugyldig fødselsnummer");
   if (!res.ok) throw new Error("Feil ved henting av intern ID");
