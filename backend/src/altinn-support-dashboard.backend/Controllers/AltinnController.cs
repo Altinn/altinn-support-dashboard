@@ -77,8 +77,6 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/altinn3/search")]
-        // Moving this to header too as it is called when someone tries to search for contactinfo with a ssn, and thessn will be sent in 
-        // the url if we don't change it
         public async Task<IActionResult> SearchAltinn3([FromHeader] string query)
         {
             if (string.IsNullOrEmpty(query))
