@@ -43,5 +43,6 @@ export interface DeleteDialogResponse {
   statusCode: number;
   responseHeader?: string | null;
   responseBody?: string | null;
+  requestHeader?: string | null;
   requestBody?: string | null;
 }

@@ -80,9 +80,7 @@ const DialogDeleteResult: React.FC<DialogDeleteResultProps> = ({
           <Heading level={3} data-size="xs">
             Headers
           </Heading>
-          <pre className={styles.payload}>
-            {result.responseHeader || "(tom)"}
-          </pre>
+          <pre className={styles.payload}>{result.responseHeader}</pre>
 
           <Heading level={3} data-size="xs">
             Body
@@ -93,6 +91,11 @@ const DialogDeleteResult: React.FC<DialogDeleteResultProps> = ({
         </Tabs.Panel>
 
         <Tabs.Panel className={styles.tabContent} value="request">
+          <Heading level={3} data-size="xs">
+            Headers
+          </Heading>
+          <pre className={styles.payload}>{result.requestHeader}</pre>
+
           <Heading level={3} data-size="xs">
             Body
           </Heading>

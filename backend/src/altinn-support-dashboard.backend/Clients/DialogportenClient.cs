@@ -72,18 +72,25 @@ public class DialogportenClient : IDialogportenClient
         var response = await client.SendAsync(request);
 
         // Excludes certain sensitive headers
-        var excludeHeaders = new[] { "ApiKey", "authorization" };
+        var excludeHeaders = new[] { "ApiKey", "authorization", "Ocp-Apim-Subscription-Key" };
         var filteredHeaders = response.Headers
             .Where(h => !excludeHeaders.Contains(h.Key, StringComparer.OrdinalIgnoreCase))
             .Select(h => $"{h.Key}: {string.Join(", ", h.Value)}");
 
         var responseHeaders = string.Join("\r\n", filteredHeaders);
 
+        var filteredRequestHeaders = request.Headers
+            .Where(h => !excludeHeaders.Contains(h.Key, StringComparer.OrdinalIgnoreCase))
+            .Select(h => $"{h.Key}: {string.Join(", ", h.Value)}");
+
+        var requestHeaders = string.Join("\r\n", filteredRequestHeaders);
+
         var deleteDialogResponse = new DeleteDialogResponse
         {
             StatusCode = response.StatusCode,
             ResponseBody = await response.Content.ReadAsStringAsync() ?? "",
             ResponseHeader = responseHeaders ?? "",
+            RequestHeader = requestHeaders ?? "",
             RequestBody = request.Content != null ? await request.Content.ReadAsStringAsync() : ""
         };
 
