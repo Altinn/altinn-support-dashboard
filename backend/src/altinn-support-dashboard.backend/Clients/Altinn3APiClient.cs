@@ -171,7 +171,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             return responseBody;
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve user contact information by national identity number in environment {environmentName}", environmentName);
+            _logger.LogError(ex, "Failed to retrieve user contact information by national identity number in environment {EnvironmentName}", environmentName);
             throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
         }
     }

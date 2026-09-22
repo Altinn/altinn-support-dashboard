@@ -73,7 +73,7 @@ namespace altinn_support_dashboard.Server.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while calling Brreg API for organization {OrgNumber} in environment {Environment}: {Message}", orgNumber, environmentName, ex.Message);
-                throw new Exception($"An error occurred while calling Brreg API: {ex.Message}", ex);
+                throw;
             }
         }
         public async Task<string?> GetUnderenhet(string orgNumber, string environmentName)
@@ -149,7 +149,7 @@ namespace altinn_support_dashboard.Server.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to retrieve sub-units from Brreg for organization {OrgNumber} in environment {Environment}", orgNumber, environmentName);
-                throw new Exception($"An error occurred while calling Brreg API: {ex.Message}", ex);
+                throw;
             }
         }
 
@@ -196,7 +196,7 @@ namespace altinn_support_dashboard.Server.Services
             {
                 _logger.LogError(ex, "Failed to retrieve organization details from Brreg for organization {OrgNumber} in environment {Environment}", orgNumber, environmentName);
                 // We don't want mock data, so just throw the exception
-                throw new Exception($"An error occurred while calling Brreg API for organization details: {ex.Message}", ex);
+                throw;
             }
         }
 

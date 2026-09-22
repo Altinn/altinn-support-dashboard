@@ -196,7 +196,6 @@ public class Altinn3Service : IAltinn3Service
                 if (!string.IsNullOrEmpty(contact.NationalIdentityNumber))
                 {
                     contact.DisplayedSocialSecurityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(contact.NationalIdentityNumber);
-                    _logger.LogDebug($"Displayed ssn created {contact.DisplayedSocialSecurityNumber}");
                     contact.SsnToken = _ssnTokenService.GenerateSsnToken(contact.NationalIdentityNumber);
                     contact.NationalIdentityNumber = null;
                 }
