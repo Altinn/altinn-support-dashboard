@@ -15,6 +15,8 @@ import NotificationShipmentCard from "../components/Notification/NIN-search/Noti
 import NotificationFilterDropdown from "../components/Notification/NotificationFilterDropdown";
 import usePersistedArray from "../hooks/usePersistedArray";
 import { collectUnique } from "../utils/utils";
+import { useAuthDetails } from "../hooks/azureAuthHooks";
+import { AuthUtils } from "../utils/authUtils";
 
 type SearchType = "shipmentId" | "advanced";
 
@@ -29,10 +31,19 @@ const toggleValue = (
 
 export const NotificationPage = () => {
   const environment = useAppStore((state) => state.environment);
-  const [searchType, setSearchType] = useState<SearchType>(
+  const authDetails = useAuthDetails();
+  const hasInternalCoreRoles = AuthUtils.hasInternalCoreRoles(
+    authDetails.data
+  );
+
+  const [storedSearchType, setSearchType] = useState<SearchType>(
     () =>
       (sessionStorage.getItem("notif_searchType") as SearchType) || "shipmentId"
   );
+  const searchType: SearchType =
+    hasInternalCoreRoles || storedSearchType !== "shipmentId"
+      ? storedSearchType
+      : "advanced";
   const [searchValue, setSearchValue] = useState(
     () => sessionStorage.getItem("notif_searchValue") || ""
   );
@@ -57,8 +68,8 @@ export const NotificationPage = () => {
   );
 
   useEffect(() => {
-    sessionStorage.setItem("notif_searchType", searchType);
-  }, [searchType]);
+    sessionStorage.setItem("notif_searchType", storedSearchType);
+  }, [storedSearchType]);
   useEffect(() => {
     sessionStorage.setItem("notif_searchValue", searchValue);
   }, [searchValue]);
@@ -182,20 +193,22 @@ export const NotificationPage = () => {
         Søk etter varsling
       </Heading>
 
-      <ToggleGroup
-        value={searchType}
-        data-toggle-group="Søketype"
-        onChange={(val) => {
-          setSearchType(val as SearchType);
-          setSearchValue("");
-          setDateFrom("");
-          setDateTo("");
-        }}
-        data-size="sm"
-      >
-        <ToggleGroup.Item value="shipmentId">Shipment-Id</ToggleGroup.Item>
-        <ToggleGroup.Item value="advanced">Avansert søk</ToggleGroup.Item>
-      </ToggleGroup>
+      {hasInternalCoreRoles && (
+        <ToggleGroup
+          value={searchType}
+          data-toggle-group="Søketype"
+          onChange={(val) => {
+            setSearchType(val as SearchType);
+            setSearchValue("");
+            setDateFrom("");
+            setDateTo("");
+          }}
+          data-size="sm"
+        >
+          <ToggleGroup.Item value="shipmentId">Shipment-Id</ToggleGroup.Item>
+          <ToggleGroup.Item value="advanced">Avansert søk</ToggleGroup.Item>
+        </ToggleGroup>
+      )}
 
       <NotificationSearchBar
         key={searchType}
