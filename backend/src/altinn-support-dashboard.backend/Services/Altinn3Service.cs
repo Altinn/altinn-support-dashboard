@@ -257,8 +257,43 @@ public class Altinn3Service : IAltinn3Service
         if (string.IsNullOrEmpty(result)) return null;
         var contactDto = JsonSerializer.Deserialize<DashboardUserContactPointResponse>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
+        var contactInformation = await GetUserContactInformation(contactDto, environment);
+        return contactInformation;
+    }
 
-        var party = await _partyService.GetPartyFromSsnAsync(nin, environment);
+    public async Task<UserContactInformationAltinn3?> GetUserContactInformationByEmailAltinn3(string email, string environment)
+    {
+        if (!ValidationService.IsValidEmail(email))
+        {
+            throw new ArgumentException("The email is not valid.");
+        }
+
+        var result = await _client.GetUserContactInformationByEmail(email, environment);
+        if (string.IsNullOrEmpty(result)) return null;
+        var contactDto = JsonSerializer.Deserialize<DashboardUserContactPointResponse>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+
+        var contactInformation = await GetUserContactInformation(contactDto, environment);
+        return contactInformation;
+    }
+
+    public async Task<UserContactInformationAltinn3?> GetUserContactInformationByPhoneNumberAltinn3(string phoneNumber, string environment)
+    {
+        if (!ValidationService.IsValidPhoneNumber(phoneNumber))
+        {
+            throw new ArgumentException("The phonenumber is not valid.");
+        }
+
+        var result = await _client.GetUserContactInformationByPhoneNumber(phoneNumber, environment);
+        if (string.IsNullOrEmpty(result)) return null;
+        var contactDto = JsonSerializer.Deserialize<DashboardUserContactPointResponse>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
+
+        var contactInformation = await GetUserContactInformation(contactDto, environment);
+        return contactInformation;
+    }
+    private async Task<UserContactInformationAltinn3> GetUserContactInformation(DashboardUserContactPointResponse contactDto, string environment)
+    {
+
+        var party = await _partyService.GetPartyFromSsnAsync(contactDto.NationalIdentityNumber, environment);
 
         var contactInformation = new UserContactInformationAltinn3
         {
@@ -284,7 +319,6 @@ public class Altinn3Service : IAltinn3Service
         {
             _logger.LogError(ex, "Error redacting national identity number");
         }
-
         return contactInformation;
     }
 
@@ -338,7 +372,7 @@ public class Altinn3Service : IAltinn3Service
         var result = await _client.GetNotificationAddressesByPhone(localNumber, countryCode, environment);
         if (!string.IsNullOrEmpty(result))
         {
-            addresses.AddRange(JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions) 
+            addresses.AddRange(JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions)
             ?? throw new Exception("Deserialization not valid"));
         }
 
