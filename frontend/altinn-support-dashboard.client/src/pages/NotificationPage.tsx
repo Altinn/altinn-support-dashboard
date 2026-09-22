@@ -36,10 +36,14 @@ export const NotificationPage = () => {
     authDetails.data
   );
 
-  const [searchType, setSearchType] = useState<SearchType>(
+  const [storedSearchType, setSearchType] = useState<SearchType>(
     () =>
       (sessionStorage.getItem("notif_searchType") as SearchType) || "shipmentId"
   );
+  const searchType: SearchType =
+    hasInternalCoreRoles || storedSearchType !== "shipmentId"
+      ? storedSearchType
+      : "advanced";
   const [searchValue, setSearchValue] = useState(
     () => sessionStorage.getItem("notif_searchValue") || ""
   );
@@ -64,18 +68,8 @@ export const NotificationPage = () => {
   );
 
   useEffect(() => {
-    if (
-      authDetails.data &&
-      !hasInternalCoreRoles &&
-      searchType === "shipmentId"
-    ) {
-      setSearchType("advanced");
-    }
-  }, [authDetails.data, hasInternalCoreRoles, searchType]);
-
-  useEffect(() => {
-    sessionStorage.setItem("notif_searchType", searchType);
-  }, [searchType]);
+    sessionStorage.setItem("notif_searchType", storedSearchType);
+  }, [storedSearchType]);
   useEffect(() => {
     sessionStorage.setItem("notif_searchValue", searchValue);
   }, [searchValue]);
