@@ -37,6 +37,7 @@ public class DialogportenClient : IDialogportenClient
         }
         if (!response.IsSuccessStatusCode)
         {
+            _logger.LogError("Failed to look up dialog {Urn} in environment {EnvironmentName}. Status code: {StatusCode}", urn, environmentName, response.StatusCode);
             throw new HttpRequestException(
                 $"Api request failed with status code {response.StatusCode}: {responseBody}",
                 inner: null,
@@ -58,6 +59,7 @@ public class DialogportenClient : IDialogportenClient
         }
         if (!response.IsSuccessStatusCode)
         {
+            _logger.LogError("Failed to lookup dialog details for {DialogId} in environment {EnvironmentName}. Status code: {StatusCode}", dialogId, environmentName, response.StatusCode);
             throw new HttpRequestException(
                 $"Api request failed with status code {response.StatusCode}: {responseBody}",
                 inner: null,
