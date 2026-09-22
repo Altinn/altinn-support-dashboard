@@ -246,7 +246,7 @@ public class Altinn3Service : IAltinn3Service
         return contacts;
     }
 
-    public async Task<UserContactInformationAltinn3?> GetUserContactInformationByNinAltinn3(string nin, string environment)
+    public async Task<UserContactInformationAltinn3[]?> GetUserContactInformationByNinAltinn3(string nin, string environment)
     {
         if (!ValidationService.isValidSsn(nin))
         {
@@ -257,8 +257,7 @@ public class Altinn3Service : IAltinn3Service
         if (string.IsNullOrEmpty(result)) return null;
         var contactDto = JsonSerializer.Deserialize<DashboardUserContactPointResponse>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
-        var contacts = await GetUserContactInformation([contactDto], environment);
-        return contacts.First();
+        return await GetUserContactInformation([contactDto], environment);
     }
 
     public async Task<UserContactInformationAltinn3[]?> GetUserContactInformationByEmailAltinn3(string email, string environment)

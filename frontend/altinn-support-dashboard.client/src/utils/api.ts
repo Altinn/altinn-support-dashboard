@@ -322,8 +322,7 @@ export const fetchUserContactInformationSearch = async (
   if (!res.ok) {
     return [];
   }
-  const data = await res.json();
-  return Array.isArray(data) ? data : [data];
+  return await res.json();
 };
 
 export const fetchAuthorizedParties = async (
