@@ -11,7 +11,7 @@ namespace AltinnSupportDashboard.Controllers;
 [ApiController]
 [Route("api/{environmentName}/notifications")]
 [Authorize(AzureRoles.Authenticated)]
-[Authorize(AzureRoles.CoreInternal)]
+[Authorize(AzureRoles.CoreExternal)]
 public class NotificationsController : ControllerBase
 {
     private const string InvalidOrderIdMessage = "Order-ID is invalid. It should be in GUID format";
@@ -29,6 +29,7 @@ public class NotificationsController : ControllerBase
 
     private string CurrentUserId => User.Identity?.Name ?? "unknown";
 
+    [Authorize(AzureRoles.CoreInternal)]
     [HttpGet("orderid/email/{orderId}")]
     public async Task<IActionResult> GetEmailNotificationsByOrderId([FromRoute] string environmentName, string orderId)
     {
@@ -39,6 +40,7 @@ public class NotificationsController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize(AzureRoles.CoreInternal)]
     [HttpGet("orderid/sms/{orderId}")]
     public async Task<IActionResult> GetSmsNotificationsByOrderId([FromRoute] string environmentName, string orderId)
     {
@@ -49,6 +51,7 @@ public class NotificationsController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize(AzureRoles.CoreInternal)]
     [HttpGet("orderid/{orderId}")]
     public async Task<IActionResult> GetAllNotificationsByOrderId([FromRoute] string environmentName, string orderId)
     {
@@ -63,10 +66,10 @@ public class NotificationsController : ControllerBase
 
     [HttpGet("future/nin")]
     public async Task<IActionResult> GetFutureNotificationsByNin(
-        [FromRoute] string environmentName,
-        [FromHeader] string nationalIdentityNumber,
-        [FromQuery] DateTime? from,
-        [FromQuery] DateTime? to)
+            [FromRoute] string environmentName,
+            [FromHeader] string nationalIdentityNumber,
+            [FromQuery] DateTime? from,
+            [FromQuery] DateTime? to)
     {
         if (!ValidationService.isValidSsn(nationalIdentityNumber))
         {
@@ -205,6 +208,7 @@ public class NotificationsController : ControllerBase
         return BadRequest("Not a valid nin, org number, partyid or partyuuid");
     }
 
+    [Authorize(AzureRoles.CoreInternal)]
     [HttpPost("availability")]
     public async Task<IActionResult> GetNotificationAvailabilityForResource([FromRoute] string environmentName, [FromBody] NotificationAvailabilityRequest request)
     {
@@ -212,6 +216,7 @@ public class NotificationsController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(AzureRoles.CoreInternal)]
     [HttpGet("log")]
     public async Task<IActionResult> GetNotificationLog(
         [FromRoute] string environmentName,
