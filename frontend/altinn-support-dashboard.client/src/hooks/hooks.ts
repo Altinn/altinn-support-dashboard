@@ -24,7 +24,6 @@ import {
   fetchRoleDefinitions,
   fetchRolesForOrg,
   fetchSsnFromToken,
-  fetchUserContactInformationByNin,
   fetchUserContactInformationSearch,
 } from "../utils/api";
 import {
