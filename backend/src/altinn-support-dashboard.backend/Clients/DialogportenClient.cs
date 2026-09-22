@@ -5,9 +5,9 @@ using Microsoft.Extensions.Options;
 public class DialogportenClient : IDialogportenClient
 {
     private readonly Dictionary<string, HttpClient> _clients = new();
-    private readonly ILogger<INotificationsClient> _logger;
+    private readonly ILogger<IDialogportenClient> _logger;
 
-    public DialogportenClient(IOptions<Configuration> configuration, IHttpClientFactory clientFactory, ILogger<INotificationsClient> logger)
+    public DialogportenClient(IOptions<Configuration> configuration, IHttpClientFactory clientFactory, ILogger<IDialogportenClient> logger)
     {
         _logger = logger;
         InitClient(nameof(configuration.Value.TT02), configuration.Value.TT02, clientFactory);
