@@ -33,7 +33,8 @@ import { MaskinportenDelegation } from "../models/delegationModels";
 const hasInvalidHeaderValue = (value: string) => {
   for (let i = 0; i < value.length; i++) {
     const code = value.charCodeAt(i);
-    if (code > 255 || code === 0x00 || code === 0x0a || code === 0x0d) return true;
+    if (code > 255 || code === 0x00 || code === 0x0a || code === 0x0d)
+      return true;
   }
   return false;
 };
@@ -305,24 +306,24 @@ export const fetchInternalIdsFromOrg = async (
   return await res.json();
 };
 
-export const fetchUserContactInformationByNin = async (
+export const fetchUserContactInformationSearch = async (
   environment: string,
-  nin: string
-): Promise<UserContactInformationAltinn3 | null> => {
-  if (hasInvalidHeaderValue(nin)) {
+  query: string
+): Promise<UserContactInformationAltinn3[] | null> => {
+  if (hasInvalidHeaderValue(query)) {
     return null;
   }
-  const options: RequestInit = { headers: { NationalIdentityNumber: nin } };
+  const options: RequestInit = { headers: { query: query } };
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/users/altinn3/contactinformation`, 
+    `${getBaseUrl(environment)}/serviceowner/users/altinn3/search`,
     options
   );
 
   if (!res.ok) {
-    return null;
+    return [];
   }
-
-  return await res.json();
+  const data = await res.json();
+  return Array.isArray(data) ? data : [data];
 };
 
 export const fetchAuthorizedParties = async (

@@ -162,7 +162,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
         //phonenumber is set in header
-        request.Headers.Add("PhoneNumber", phoneNumber);
+        request.Headers.Add("phoneNumber", phoneNumber);
         var response = await client.SendAsync(request);
         var responseBody = await response.Content.ReadAsStringAsync();
 

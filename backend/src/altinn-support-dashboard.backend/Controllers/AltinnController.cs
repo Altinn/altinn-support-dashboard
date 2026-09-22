@@ -238,7 +238,7 @@ namespace AltinnSupportDashboard.Controllers
         [HttpGet("users/altinn3/contactinformation/phonenumber")]
         public async Task<IActionResult> GetUserContactInformationByPhoneNumberAltinn3([FromHeader] string phonenumber)
         {
-            if (!ValidationService.IsValidEmail(phonenumber))
+            if (!ValidationService.IsValidPhoneNumber(phonenumber))
             {
                 return BadRequest("The phonenumber is not valid.");
             }
@@ -257,7 +257,6 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("The email is not valid.");
             }
-
 
             _telemetryService.TrackEmailSearch(email, User.Identity?.Name ?? "unknown", environmentName);
 
