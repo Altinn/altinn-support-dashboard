@@ -8,7 +8,7 @@ import {
   useSsnFromToken,
   useUserDetails,
   useCorrespondencePost,
-  useUserContactInfoByNin,
+  useUserContactSearch,
   useDialogDetails
 } from "../../src/hooks/hooks";
 import * as utils from "../../src/utils/utils";
@@ -279,32 +279,34 @@ describe("hooks", () => {
     });
   });
 
-  describe("useUserContactInfoByNin", () => {
-    const mockUser = {
-      isReserved: false,
-      phoneNumber: "+4799115744",
-      emailAddress: "test@test.no",
-      displayedSocialSecurityNumber: "088469*****",
-      ssnToken: "token-123",
-    };
+  describe("useUserContactSearch", () => {
+    const mockUsers = [
+      {
+        isReserved: false,
+        phoneNumber: "+4799115744",
+        emailAddress: "test@test.no",
+        displayedSocialSecurityNumber: "088469*****",
+        ssnToken: "token-123",
+      },
+    ];
 
-    it("should not fetch when nin is empty", () => {
+    it("should not fetch when query is empty", () => {
       const { result } = renderHook(
-        () => useUserContactInfoByNin("tt02", ""),
+        () => useUserContactSearch("tt02", ""),
         { wrapper: createWrapper() },
       );
 
       expect(result.current.userQuery.isFetching).toBe(false);
-      expect(api.fetchUserContactInformationByNin).not.toHaveBeenCalled();
+      expect(api.fetchUserContactInformationSearch).not.toHaveBeenCalled();
     });
 
-    it("should fetch user contact information when nin is provided", async () => {
-      vi.mocked(api.fetchUserContactInformationByNin).mockResolvedValue(
-        mockUser,
+    it("should fetch user contact information when query is provided", async () => {
+      vi.mocked(api.fetchUserContactInformationSearch).mockResolvedValue(
+        mockUsers,
       );
 
       const { result } = renderHook(
-        () => useUserContactInfoByNin("tt02", "08846999362"),
+        () => useUserContactSearch("tt02", "08846999362"),
         { wrapper: createWrapper() },
       );
 
@@ -312,20 +314,20 @@ describe("hooks", () => {
         expect(result.current.userQuery.isSuccess).toBe(true);
       });
 
-      expect(result.current.userQuery.data).toEqual(mockUser);
-      expect(api.fetchUserContactInformationByNin).toHaveBeenCalledWith(
+      expect(result.current.userQuery.data).toEqual(mockUsers);
+      expect(api.fetchUserContactInformationSearch).toHaveBeenCalledWith(
         "tt02",
         "08846999362",
       );
     });
 
     it("should set isError when fetch fails", async () => {
-      vi.mocked(api.fetchUserContactInformationByNin).mockRejectedValue(
+      vi.mocked(api.fetchUserContactInformationSearch).mockRejectedValue(
         new Error("Network error"),
       );
 
       const { result } = renderHook(
-        () => useUserContactInfoByNin("tt02", "08846999362"),
+        () => useUserContactSearch("tt02", "08846999362"),
         { wrapper: createWrapper() },
       );
 
@@ -336,24 +338,24 @@ describe("hooks", () => {
       expect(result.current.userQuery.error?.message).toBe("Network error");
     });
 
-    it("should stop fetching when nin becomes empty", async () => {
-      vi.mocked(api.fetchUserContactInformationByNin).mockResolvedValue(
-        mockUser,
+    it("should stop fetching when query becomes empty", async () => {
+      vi.mocked(api.fetchUserContactInformationSearch).mockResolvedValue(
+        mockUsers,
       );
 
       const { result, rerender } = renderHook(
-        ({ nin }) => useUserContactInfoByNin("tt02", nin),
-        { wrapper: createWrapper(), initialProps: { nin: "08846999362" } },
+        ({ query }) => useUserContactSearch("tt02", query),
+        { wrapper: createWrapper(), initialProps: { query: "08846999362" } },
       );
 
       await waitFor(() => {
         expect(result.current.userQuery.isSuccess).toBe(true);
       });
 
-      rerender({ nin: "" });
+      rerender({ query: "" });
 
       expect(result.current.userQuery.fetchStatus).toBe("idle");
-      expect(api.fetchUserContactInformationByNin).toHaveBeenCalledTimes(1);
+      expect(api.fetchUserContactInformationSearch).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -5,7 +5,7 @@ import { CardList } from "../../../../src/components/Dashboard/components/organi
 
 vi.mock("../../../../src/hooks/hooks", () => ({
   useOrgSearch: vi.fn(),
-  useUserContactInfoByNin: vi.fn(),
+  useUserContactSearch: vi.fn(),
 }));
 
 vi.mock("../../../../src/stores/Appstore", () => ({
@@ -58,7 +58,7 @@ vi.mock("@digdir/designsystemet-react", () => ({
   },
 }));
 
-const { useOrgSearch, useUserContactInfoByNin } =
+const { useOrgSearch, useUserContactSearch } =
   await import("../../../../src/hooks/hooks");
 const { useAppStore } = await import("../../../../src/stores/Appstore");
 const { showPopup } = await import("../../../../src/components/Popup");
@@ -93,9 +93,9 @@ describe("CardList", () => {
       },
     });
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useUserContactInfoByNin as any).mockReturnValue({
+    (useUserContactSearch as any).mockReturnValue({
       userQuery: {
-        data: null,
+        data: [],
         isLoading: false,
         isError: false,
         error: null,
@@ -219,9 +219,9 @@ describe("CardList", () => {
 
   it("should render a user card alongside organization cards when a user is found", () => {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useUserContactInfoByNin as any).mockReturnValue({
+    (useUserContactSearch as any).mockReturnValue({
       userQuery: {
-        data: mockUser,
+        data: [mockUser],
         isLoading: false,
         isError: false,
         error: null,
@@ -260,9 +260,9 @@ describe("CardList", () => {
       orgQuery: { data: [], isLoading: false, isError: false, error: null },
     });
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useUserContactInfoByNin as any).mockReturnValue({
+    (useUserContactSearch as any).mockReturnValue({
       userQuery: {
-        data: mockUser,
+        data: [mockUser],
         isLoading: false,
         isError: false,
         error: null,
