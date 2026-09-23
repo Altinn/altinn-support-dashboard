@@ -4,6 +4,7 @@ using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.altinn3Dtos;
+using Models.notifications;
 using Security;
 
 namespace AltinnSupportDashboard.Controllers;
@@ -193,7 +194,15 @@ public class NotificationsController : ControllerBase
 
         if (ValidationService.IsValidPhoneNumber(query))
         {
-            return await GetFutureNotificationsByPhoneNumber(environmentName, query, from, to);
+            var phoneResult = await GetFutureNotificationsByPhoneNumber(environmentName, query, from, to);
+
+            // An 8-digit query is ambiguous between a local phone number and a party ID.
+            // Try phone number first, and only fall back to party ID if that came up empty.
+            var phoneResultIsEmpty = phoneResult is OkObjectResult { Value: List<FutureNotificationDto> { Count: 0 } };
+            if (!phoneResultIsEmpty || !ValidationService.IsValidPartyId(query))
+            {
+                return phoneResult;
+            }
         }
 
         if (ValidationService.IsValidPartyId(query))
