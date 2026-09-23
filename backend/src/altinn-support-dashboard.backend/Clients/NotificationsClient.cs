@@ -106,6 +106,8 @@ public class NotificationsClient : INotificationsClient
         request.Headers.Add(headerName, headerValue);
         var response = await client.SendAsync(request);
         var responseBody = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(responseBody);
+
 
         if (!response.IsSuccessStatusCode)
         {
