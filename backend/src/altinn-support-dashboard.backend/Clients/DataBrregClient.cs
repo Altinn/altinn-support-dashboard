@@ -110,7 +110,7 @@ namespace altinn_support_dashboard.Server.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to retrieve sub-unit from Brreg for organization {OrgNumber} in environment {Environment}", orgNumber, environmentName);
-                throw new Exception($"An error occurred while calling Brreg API: {ex.Message}", ex);
+                throw;
             }
         }
 
@@ -165,7 +165,6 @@ namespace altinn_support_dashboard.Server.Services
             {
                 var client = _clients[environmentName];
                 var requestUrl = $"enhetsregisteret/api/enheter/{orgNumber}";
-                _logger.LogDebug("Requesting organization details from Brreg for organization {OrgNumber} in environment {Environment}: {RequestUrl}", orgNumber, environmentName, requestUrl);
 
                 // Simplified HTTP request without problematic headers
                 using (HttpClient httpClient = new HttpClient())
@@ -181,7 +180,6 @@ namespace altinn_support_dashboard.Server.Services
                     {
                         // Simple string reading without Base64 encoding issues
                         string result = await response.Content.ReadAsStringAsync();
-                        _logger.LogDebug("Brreg returned successfully for organization {OrgNumber} in environment {Environment}", orgNumber, environmentName);
                         return result;
                     }
                     else

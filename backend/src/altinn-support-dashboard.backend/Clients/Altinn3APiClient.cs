@@ -79,8 +79,8 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             return JsonSerializer.Serialize(allResults);
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve identifiers for {Count} organizations in environment {EnvironmentName}", orgNumbers.Count, environmentName);
-            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
+            _logger.LogError(ex, "Failed to retrieve identifiers for {Count} organizations in environment {EnvironmentName}", orgNumbers?.Count ?? 0, environmentName);
+            throw;
         }
         
     }
@@ -111,8 +111,8 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             return responseBody;
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve party info for {Count} organizations in environment {EnvironmentName}", partyIds.Count, environmentName);
-            throw new Exception($"An error occured while calling the API {ex.Message}", ex);
+            _logger.LogError(ex, "Failed to retrieve party info for {Count} organizations in environment {EnvironmentName}", partyIds?.Count ?? 0, environmentName);
+            throw;
         }
     }
 
@@ -141,7 +141,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve personal contacts for organization {OrgNumber} in environment {EnvironmentName}", orgNumber, environmentName);
-            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
+            throw;
         }
     }
 
@@ -172,7 +172,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         } catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve user contact information by national identity number in environment {EnvironmentName}", environmentName);
-            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
+            throw;
         }
     }
 
@@ -269,7 +269,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve notification addresses for organization {OrgNumber} in environment {EnvironmentName}", orgNumber, environmentName);
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+            throw;
         }
     }
 
@@ -304,7 +304,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve notification addresses by phone number in environment {EnvironmentName}",  environmentName);
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+            throw;
         }
     }
 
@@ -336,7 +336,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve notification addresses by email in environment {EnvironmentName}", environmentName);
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+            throw;
         }
     }
 
@@ -375,7 +375,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         } catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve roles and rights in environment {EnvironmentName}", environmentName);
-            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
+            throw;
         }
  
     }
@@ -412,7 +412,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         } catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve authorized parties for lookup type {Type} in environment {EnvironmentName}", type, environmentName);
-            throw new Exception($"An error occured while calling the API: {ex.Message}", ex);
+            throw;
         }
        
     }
@@ -441,7 +441,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         } catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve the Altinn 2 roles list in environment {EnvironmentName}", environmentName);
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+            throw;
         }
         
     }
@@ -464,7 +464,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         } catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve the access package list in environment {EnvironmentName}", environmentName);
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+            throw;
         }
         
     }
@@ -506,7 +506,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         } catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve Maskinporten delegations for supplier {SupplierOrg} and consumer {ConsumerOrg} in environment {EnvironmentName}", supplierOrg, consumerOrg, environmentName);
-            throw new Exception($"An error occurred while calling the API: {ex.Message}", ex);
+            throw;
         }
         
     }

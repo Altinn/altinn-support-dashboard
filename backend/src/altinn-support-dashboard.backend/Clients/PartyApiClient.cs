@@ -53,7 +53,6 @@ public class PartyApiClient : IPartyApiClient
 
         if (response.StatusCode == HttpStatusCode.BadRequest)
         {
-            _logger.LogError("Party lookup by {LookupType} failed with status code {StatusCode} in environment {EnvironmentName}", isOrg ? "org number" : "ssn", response.StatusCode, environmentName);
             throw new BadRequestException($"Invalid lookup request: {responseBody}");
         }
             
