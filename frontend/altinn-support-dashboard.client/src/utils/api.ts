@@ -178,8 +178,8 @@ export const fetchNotificationsAdvancedSearch = async (
   if (dateFrom) params.set("from", new Date(dateFrom).toISOString());
   if (dateTo) {
     const toDate = new Date(dateTo + "T23:59:59");
-    const now = new Date();
-    params.set("to", (toDate > now ? now : toDate).toISOString());
+    const maxTo = new Date(Date.now() - 60 * 1000);
+    params.set("to", (toDate > maxTo ? maxTo : toDate).toISOString());
   }
   const paramsString = params.toString() ? `?${params}` : "";
 
