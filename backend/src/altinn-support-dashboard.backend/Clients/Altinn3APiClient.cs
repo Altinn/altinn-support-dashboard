@@ -176,6 +176,53 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
     }
 
+    public async Task<string> GetUserContactInformationByPhoneNumber(string phoneNumber, string environmentName)
+    {
+        var client = _clients[environmentName];
+        var requestUrl = "profile/api/v1/dashboard/users/contactinformation/phonenumber";
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+        //phonenumber is set in header
+        request.Headers.Add("phoneNumber", phoneNumber);
+        var response = await client.SendAsync(request);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return string.Empty;
+        }
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+
+        return responseBody;
+    }
+    public async Task<string> GetUserContactInformationByEmail(string email, string environmentName)
+    {
+        var client = _clients[environmentName];
+        var requestUrl = "profile/api/v1/dashboard/users/contactinformation/email";
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+        //email is set in header
+        request.Headers.Add("EmailAddress", email);
+        var response = await client.SendAsync(request);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return string.Empty;
+        }
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
+        }
+
+        return responseBody;
+    }
+
     public async Task<string> GetPersonalContactsByEmail(string email, string environmentName)
     {
         try
@@ -273,7 +320,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
     }
 
-    public async Task<string> GetNotificationAddressesByPhone(string phoneNumber,string? countryCode, string environmentName)
+    public async Task<string> GetNotificationAddressesByPhone(string phoneNumber, string? countryCode, string environmentName)
     {
         try
         {

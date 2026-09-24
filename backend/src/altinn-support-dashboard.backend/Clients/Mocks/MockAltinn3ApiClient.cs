@@ -12,6 +12,18 @@ public class MockAltinn3ApiClient(Altinn3ApiClient inner) : IAltinn3ApiClient
             ? Task.FromResult(MockUtils.Read("altinn3-personal-contacts.json"))
             : inner.GetUserContactInformationByNin(nin, environmentName);
 
+    public Task<string> GetUserContactInformationByEmail(string email, string environmentName) =>
+        MockUtils.IsMock(environmentName)
+            ? Task.FromResult(MockUtils.Read("altinn3-personal-contacts.json"))
+            : inner.GetUserContactInformationByEmail(email, environmentName);
+
+    public Task<string> GetUserContactInformationByPhoneNumber(string phonenumber, string environmentName) =>
+        MockUtils.IsMock(environmentName)
+            ? Task.FromResult(MockUtils.Read("altinn3-personal-contacts.json"))
+            : inner.GetUserContactInformationByPhoneNumber(phonenumber, environmentName);
+
+
+
     public Task<string> GetPersonalContactsByEmail(string email, string environmentName) =>
         MockUtils.IsMock(environmentName)
             ? Task.FromResult(MockUtils.Read("altinn3-personal-contacts.json"))

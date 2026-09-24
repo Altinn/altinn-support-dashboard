@@ -197,6 +197,31 @@ namespace AltinnSupportDashboard.Controllers
 
         }
 
+        [HttpGet("users/altinn3/search")]
+        public async Task<IActionResult> SearchUsersAltinn3([FromHeader] string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return BadRequest("Søketerm kan ikke være tom.");
+            }
+
+            if (ValidationService.IsValidEmail(query))
+            {
+                return await GetUserContactInformationByEmailAltinn3(query);
+            }
+            if (ValidationService.isValidSsn(query))
+            {
+                return await GetUserContactInformationByNinAltinn3(query);
+            }
+
+            if (ValidationService.IsValidPhoneNumber(query))
+            {
+                return await GetUserContactInformationByPhoneNumberAltinn3(query);
+            }
+
+            return BadRequest("Ugyldig søketerm. Angi et gyldig fødselsnummer, telefonnummer eller e-postadresse.");
+        }
+
         [HttpGet("users/altinn3/contactinformation")]
         public async Task<IActionResult> GetUserContactInformationByNinAltinn3([FromHeader] string nationalIdentityNumber)
         {
@@ -204,11 +229,41 @@ namespace AltinnSupportDashboard.Controllers
             {
                 return BadRequest("The National Identity Number is not valid. It must contain exactly 11 digits");
             }
-            
+
 
             _telemetryService.TrackSsnSearch(nationalIdentityNumber, User.Identity?.Name ?? "unknown", environmentName);
 
             var result = await _altinn3Service.GetUserContactInformationByNinAltinn3(nationalIdentityNumber, environmentName);
+
+            return Ok(result);
+        }
+
+        [HttpGet("users/altinn3/contactinformation/phonenumber")]
+        public async Task<IActionResult> GetUserContactInformationByPhoneNumberAltinn3([FromHeader] string phonenumber)
+        {
+            if (!ValidationService.IsValidPhoneNumber(phonenumber))
+            {
+                return BadRequest("The phonenumber is not valid.");
+            }
+
+
+            _telemetryService.TrackPhoneSearch(phonenumber, User.Identity?.Name ?? "unknown", environmentName);
+
+            var result = await _altinn3Service.GetUserContactInformationByPhoneNumberAltinn3(phonenumber, environmentName);
+
+            return Ok(result);
+        }
+        [HttpGet("users/altinn3/contactinformation/email")]
+        public async Task<IActionResult> GetUserContactInformationByEmailAltinn3([FromHeader] string email)
+        {
+            if (!ValidationService.IsValidEmail(email))
+            {
+                return BadRequest("The email is not valid.");
+            }
+
+            _telemetryService.TrackEmailSearch(email, User.Identity?.Name ?? "unknown", environmentName);
+
+            var result = await _altinn3Service.GetUserContactInformationByEmailAltinn3(email, environmentName);
 
             return Ok(result);
         }

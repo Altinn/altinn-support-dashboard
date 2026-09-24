@@ -33,7 +33,8 @@ import { MaskinportenDelegation } from "../models/delegationModels";
 const hasInvalidHeaderValue = (value: string) => {
   for (let i = 0; i < value.length; i++) {
     const code = value.charCodeAt(i);
-    if (code > 255 || code === 0x00 || code === 0x0a || code === 0x0d) return true;
+    if (code > 255 || code === 0x00 || code === 0x0a || code === 0x0d)
+      return true;
   }
   return false;
 };
@@ -177,8 +178,8 @@ export const fetchNotificationsAdvancedSearch = async (
   if (dateFrom) params.set("from", new Date(dateFrom).toISOString());
   if (dateTo) {
     const toDate = new Date(dateTo + "T23:59:59");
-    const now = new Date();
-    params.set("to", (toDate > now ? now : toDate).toISOString());
+    const maxTo = new Date(Date.now() - 60 * 1000);
+    params.set("to", (toDate > maxTo ? maxTo : toDate).toISOString());
   }
   const paramsString = params.toString() ? `?${params}` : "";
 
@@ -305,23 +306,22 @@ export const fetchInternalIdsFromOrg = async (
   return await res.json();
 };
 
-export const fetchUserContactInformationByNin = async (
+export const fetchUserContactInformationSearch = async (
   environment: string,
-  nin: string
-): Promise<UserContactInformationAltinn3 | null> => {
-  if (hasInvalidHeaderValue(nin)) {
+  query: string
+): Promise<UserContactInformationAltinn3[] | null> => {
+  if (hasInvalidHeaderValue(query)) {
     return null;
   }
-  const options: RequestInit = { headers: { NationalIdentityNumber: nin } };
+  const options: RequestInit = { headers: { query: query } };
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/serviceowner/users/altinn3/contactinformation`, 
+    `${getBaseUrl(environment)}/serviceowner/users/altinn3/search`,
     options
   );
 
   if (!res.ok) {
-    return null;
+    return [];
   }
-
   return await res.json();
 };
 

@@ -7,7 +7,7 @@ import {
   fetchERoles,
   fetchSsnFromToken,
   fetchNotificationAddresses,
-  fetchUserContactInformationByNin,
+  fetchUserContactInformationSearch,
   fetchNotificationsAdvancedSearch,
   fetchInternalIds,
   fetchInternalIdsFromSsn,
@@ -272,15 +272,17 @@ describe("api", () => {
     });
   });
 
-  describe("fetchUserContactInformationByNin", () => {
+  describe("fetchUserContactInformationSearch", () => {
     it("should fetch and return user contact information", async () => {
-      const mockData = {
-        isReserved: false,
-        phoneNumber: "+4799115744",
-        emailAddress: "test@test.no",
-        displayedSocialSecurityNumber: "088469*****",
-        ssnToken: "token-123",
-      };
+      const mockData = [
+        {
+          isReserved: false,
+          phoneNumber: "+4799115744",
+          emailAddress: "test@test.no",
+          displayedSocialSecurityNumber: "088469*****",
+          ssnToken: "token-123",
+        },
+      ];
       vi.mocked(utils.authorizedFetch).mockResolvedValue({
         ok: true,
         status: 200,
@@ -288,42 +290,45 @@ describe("api", () => {
         //eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
-      const result = await fetchUserContactInformationByNin(
+      const result = await fetchUserContactInformationSearch(
         "TEST",
         "08846999362"
       );
 
       expect(result).toEqual(mockData);
       expect(utils.authorizedFetch).toHaveBeenCalledWith(
-        expect.stringContaining("/serviceowner/users/altinn3/contactinformation"),
-        { headers: { NationalIdentityNumber: "08846999362" } }
+        expect.stringContaining("/serviceowner/users/altinn3/search"),
+        { headers: { query: "08846999362" } }
       );
       const [calledUrl] = vi.mocked(utils.authorizedFetch).mock.calls[0];
       expect(calledUrl).not.toContain("08846999362");
     });
 
-    it("should return null on 404", async () => {
+    it("should return an empty array on 404", async () => {
       vi.mocked(utils.authorizedFetch).mockResolvedValue({
         ok: false,
         status: 404,
         //eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
-      const result = await fetchUserContactInformationByNin("TEST", "123");
+      const result = await fetchUserContactInformationSearch("TEST", "123");
 
-      expect(result).toBeNull();
+      expect(result).toEqual([]);
     });
 
-    it("should return null on any other non-ok response", async () => {
+    it("should return an empty array on any other non-ok response", async () => {
       vi.mocked(utils.authorizedFetch).mockResolvedValue({
         ok: false,
         status: 400,
         //eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
-      const result = await fetchUserContactInformationByNin("TEST", "not-a-nin");
+      const result = await fetchUserContactInformationSearch(
+        "TEST",
+        "not-a-nin"
+      );
 
-      expect(result).toBeNull();
+      expect(result).toEqual([]);
     });
   });
 

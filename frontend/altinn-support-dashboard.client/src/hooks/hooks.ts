@@ -24,7 +24,7 @@ import {
   fetchRoleDefinitions,
   fetchRolesForOrg,
   fetchSsnFromToken,
-  fetchUserContactInformationByNin,
+  fetchUserContactInformationSearch,
 } from "../utils/api";
 import {
   NotificationAvailabilityRequest,
@@ -97,14 +97,14 @@ export function useAuthorizedParties(environment: string, nin?: string) {
   });
 }
 
-export function useUserContactInfoByNin(environment: string, nin: string) {
+export function useUserContactSearch(environment: string, query: string) {
   const userQuery = useQuery({
-    queryKey: ["userContactInfo", environment, nin],
-    queryFn: () => fetchUserContactInformationByNin(environment, nin),
+    queryKey: ["userContactInfoSearch", environment, query],
+    queryFn: () => fetchUserContactInformationSearch(environment, query),
     retry: false,
     staleTime: 2 * 60 * 1000, // fresh for 2 minutes
     refetchOnWindowFocus: false,
-    enabled: !!nin,
+    enabled: !!query,
   });
 
   return { userQuery };
@@ -287,9 +287,20 @@ export function useMaskinportenDelegations(
   scope?: string
 ) {
   return useQuery<MaskinportenDelegation[], Error>({
-    queryKey: ["maskinportenDelegations", environment, supplierOrg, consumerOrg, scope],
+    queryKey: [
+      "maskinportenDelegations",
+      environment,
+      supplierOrg,
+      consumerOrg,
+      scope,
+    ],
     queryFn: () =>
-      fetchMaskinportenDelegations(environment, supplierOrg!, consumerOrg!, scope),
+      fetchMaskinportenDelegations(
+        environment,
+        supplierOrg!,
+        consumerOrg!,
+        scope
+      ),
     enabled: !!supplierOrg && !!consumerOrg,
     retry: false,
     staleTime: 2 * 60 * 1000,
@@ -334,7 +345,7 @@ export function useNotificationLog(
 
 export function useDialogDetails(dialogId: string, environment: string) {
   return useQuery<DialogDetails, Error>({
-    queryKey:["dialogDetails", environment, dialogId],
+    queryKey: ["dialogDetails", environment, dialogId],
     queryFn: () => fetchDialogDetails(environment, dialogId),
     enabled: !!dialogId && !!environment,
     retry: false,
