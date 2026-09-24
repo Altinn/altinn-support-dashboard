@@ -1,12 +1,13 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DialogDetailsLookupPage } from "../../src/pages/DialogDetailsLookupPage";
-import { useDialogDetails } from "../../src/hooks/hooks";
+import { useDeleteDialog, useDialogDetails } from "../../src/hooks/hooks";
 import { useAppStore } from "../../src/stores/Appstore";
 import { showPopup } from "../../src/components/Popup";
 
 vi.mock("../../src/hooks/hooks", () => ({
   useDialogDetails: vi.fn(),
+  useDeleteDialog: vi.fn(),
 }));
 
 vi.mock("../../src/stores/Appstore", () => ({
@@ -29,6 +30,12 @@ describe("DialogDetailsLookupPage", () => {
       isLoading: false,
       isError: false,
       error: null,
+    });
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useDeleteDialog as any).mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+      reset: vi.fn(),
     });
     Object.assign(navigator, {
       clipboard: { writeText: vi.fn().mockResolvedValue(undefined) },

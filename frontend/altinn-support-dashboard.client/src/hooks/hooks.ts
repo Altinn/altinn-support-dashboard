@@ -5,7 +5,12 @@ import {
   PersonalContactAltinn3,
 } from "../models/models";
 import { getFormattedDateTime, fetchUserDetails } from "../utils/utils";
-import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import {
   fetchAuthorizedParties,
   fetchERoles,
@@ -35,8 +40,17 @@ import {
   CorrespondenceUploadFormData,
 } from "../models/correspondenceModels";
 import { sendCorrespondence } from "../utils/correspondenceApi";
-import { fetchDialogByUrn, fetchDialogDetails } from "../utils/dialogportenApi";
-import { DialogDetails, DialogDto } from "../models/dialogModels";
+import {
+  deleteDialogById,
+  fetchDialogByUrn,
+  fetchDialogDetails,
+} from "../utils/dialogportenApi";
+import {
+  DeleteDialogRequest,
+  DeleteDialogResponse,
+  DialogDetails,
+  DialogDto,
+} from "../models/dialogModels";
 import { toast } from "react-toastify";
 import {
   AuthorizedPartyIdentifiers,
@@ -351,5 +365,28 @@ export function useDialogDetails(dialogId: string, environment: string) {
     retry: false,
     staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+}
+
+export function useDeleteDialog() {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    DeleteDialogResponse,
+    Error,
+    { environment: string; request: DeleteDialogRequest }
+  >({
+    mutationFn: ({ environment, request }) =>
+      deleteDialogById(environment, request),
+    onSuccess: (_data, { environment, request }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["dialogDetails", environment, request.dialogId],
+        refetchType: request.hardDelete ? "none" : "active",
+      });
+    },
+    onError: (err) => {
+      toast.error(`Feil ved sletting av dialog: ${err.message}`);
+    },
   });
 }
