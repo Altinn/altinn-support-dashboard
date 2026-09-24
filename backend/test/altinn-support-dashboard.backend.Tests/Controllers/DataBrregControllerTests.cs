@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public DataBrregControllerTests()
         {
             _mockService = new Mock<IDataBrregService>();
-            _controller = new ER_Roller_APIController(_mockService.Object);
+            _controller = new ER_Roller_APIController(_mockService.Object, NullLogger<ER_Roller_APIController>.Instance);
         }
 
         [Fact]
