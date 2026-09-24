@@ -253,7 +253,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             const string nin = "12345678901";
             _mockServiceAltinn3
                 .Setup(x => x.GetUserContactInformationByNinAltinn3(nin, "TT02"))
-                .ReturnsAsync(new UserContactInformationAltinn3());
+                .ReturnsAsync([new UserContactInformationAltinn3()]);
 
             await _controller.GetUserContactInformationByNinAltinn3(nin);
 

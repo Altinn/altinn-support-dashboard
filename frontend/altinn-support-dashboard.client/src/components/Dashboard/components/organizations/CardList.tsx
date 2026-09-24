@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { OrganizationCard } from "./OrganizationCard";
 import { UserCard } from "./UserCard";
-import { useOrgSearch, useUserContactInfoByNin } from "../../../../hooks/hooks";
+import { useOrgSearch, useUserContactSearch } from "../../../../hooks/hooks";
 import { Organization, SelectedCard } from "../../../../models/models";
 import { useAppStore } from "../../../../stores/Appstore";
 import classes from "../../styles/CardList.module.css";
@@ -22,9 +22,9 @@ export const CardList: React.FC<CardListProps> = ({
 }) => {
   const environment = useAppStore((state) => state.environment);
   const { orgQuery } = useOrgSearch(environment, query);
-  const { userQuery } = useUserContactInfoByNin(environment, query);
+  const { userQuery } = useUserContactSearch(environment, query);
   const organizations = orgQuery.data ?? [];
-  const users = userQuery.data ? [userQuery.data] : [];
+  const users = userQuery.data ?? [];
 
   useEffect(() => {
     if (orgQuery.isError) {
