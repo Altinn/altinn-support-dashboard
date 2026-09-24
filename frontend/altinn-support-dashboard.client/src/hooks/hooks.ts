@@ -382,7 +382,7 @@ export function useDeleteDialog() {
     onSuccess: (_data, { environment, request }) => {
       queryClient.invalidateQueries({
         queryKey: ["dialogDetails", environment, request.dialogId],
-        refetchType: "none",
+        refetchType: request.hardDelete ? "none" : "active",
       });
     },
     onError: (err) => {
