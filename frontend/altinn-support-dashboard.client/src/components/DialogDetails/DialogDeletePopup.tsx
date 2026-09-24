@@ -69,7 +69,7 @@ const DialogDeletePopup: React.FC<DialogDeletePopupProps> = ({
   const handleDelete = () => {
     if (!canDelete || !revision) return;
 
-    if (hardDelete && isProduction) {
+    if (hardDelete) {
       setAwaitingPurgeConfirm(true);
       return;
     }
@@ -95,11 +95,11 @@ const DialogDeletePopup: React.FC<DialogDeletePopupProps> = ({
 
             <Alert data-color="danger">
               <Heading level={3} data-size="2xs">
-                Permanent sletting i PRODUKSJON
+                Permanent sletting i {environment}
               </Heading>
               <Paragraph>
                 Du er i ferd med å slette dialog "{dialogId}" permanent (purge)
-                i produksjon. Dette kan ikke angres.
+                i miljøet <strong>{environment}</strong>. Dette kan ikke angres.
               </Paragraph>
             </Alert>
 

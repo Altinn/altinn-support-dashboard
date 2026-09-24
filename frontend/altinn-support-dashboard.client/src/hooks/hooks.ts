@@ -354,6 +354,7 @@ export function useDialogDetails(dialogId: string, environment: string) {
     retry: false,
     staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }
 
@@ -368,9 +369,9 @@ export function useDeleteDialog() {
     mutationFn: ({ environment, request }) =>
       deleteDialogById(environment, request),
     onSuccess: (_data, { environment, request }) => {
-      // the dialog changed in Dialogporten, so the cached details are stale
       queryClient.invalidateQueries({
         queryKey: ["dialogDetails", environment, request.dialogId],
+        refetchType: "none",
       });
     },
     onError: (err) => {
