@@ -33,7 +33,7 @@ public class ResourceRegistryClient : IResourceRegistryClient
     public async Task<string> GetResourceList(string environmentName)
     {
         var client = _clients[environmentName];
-        var requestUrl = "/resourceregistry/api/v1/resource/resourcelist";
+        var requestUrl = "/resourceregistry/api/v1/resource/resourcelist?includeApps=true&includeMigratedApps=true";
         var response = await client.GetAsync(requestUrl);
         response.EnsureSuccessStatusCode();
 
@@ -45,7 +45,7 @@ public class ResourceRegistryClient : IResourceRegistryClient
     public async Task<string> GetResourceByIdentifier(string environmentName, string identifier)
     {
         var client = _clients[environmentName];
-        var requestUrl = $"/resourceregistry/api/v1/resource/{identifier}";
+        var requestUrl = $"/resourceregistry/api/v1/resource/{identifier}?includeMigratedApps=true";
 
         var response = await client.GetAsync(requestUrl);
         response.EnsureSuccessStatusCode();
