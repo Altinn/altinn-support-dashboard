@@ -1,6 +1,7 @@
 using altinn_support_dashboard.Server.Controllers;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
 namespace altinn_support_dashboard.backend.Tests.Controllers;
@@ -13,7 +14,7 @@ public class EnhetsregisterControllerTest
     public EnhetsregisterControllerTest()
     {
         _dataBrregServiceMock = new Mock<IDataBrregService>();
-        _controller = new EnhetsregisterController(_dataBrregServiceMock.Object);
+        _controller = new EnhetsregisterController(_dataBrregServiceMock.Object, NullLogger<EnhetsregisterController>.Instance);
     }
 
     [Fact]

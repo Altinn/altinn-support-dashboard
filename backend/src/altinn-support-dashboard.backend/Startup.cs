@@ -63,7 +63,7 @@ namespace AltinnSupportDashboard
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
 
 
@@ -74,6 +74,8 @@ namespace AltinnSupportDashboard
                 {
                     var exception = context.Features
                         .Get<IExceptionHandlerFeature>()?.Error;
+
+                    logger.LogError(exception, "Unhandled exception while processing {Method} {Path}", context.Request.Method, context.Request.Path);
 
                     context.Response.ContentType = "application/json";
 
@@ -140,10 +142,7 @@ namespace AltinnSupportDashboard
                 endpoints.MapFallbackToFile("index.html");
             });
 
-            // This will print to the console when the app is ready
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Backend is now running!");
-            Console.ResetColor();
+            logger.LogInformation("Backend is now running!");
         }
     }
 }

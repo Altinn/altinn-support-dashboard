@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services.Interfaces;
@@ -29,7 +30,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var mockSection = new Mock<IConfigurationSection>();
             mockSection.Setup(s => s.GetChildren()).Returns(new List<IConfigurationSection>());
             _mockConfiguration.Setup(c => c.GetSection("LoggingConfiguration:TrackedEnvironments")).Returns(mockSection.Object);
-            _controller = new AltinnTT02Controller(_mockServiceAltinn3.Object, _mockSsnTokenService.Object, _mockTelemetryService.Object, _mockConfiguration.Object)
+            _controller = new AltinnTT02Controller(_mockServiceAltinn3.Object, _mockSsnTokenService.Object, _mockTelemetryService.Object, _mockConfiguration.Object, NullLogger<AltinnBaseController>.Instance)
             {
                 ControllerContext = new ControllerContext
                 {
