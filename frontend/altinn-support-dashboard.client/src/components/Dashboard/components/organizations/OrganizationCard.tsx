@@ -37,7 +37,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
     <div className={classes.container}>
       {isExpandedHead && org.headUnit && (
         <Card
-          className={`${classes.headUnit} ${classes.card}`}
+          className={`${classes.headUnit} ${classes.card} ${org.headUnit.isDeleted && classes.cardIsDeleted}`}
           variant={
             checkIsSelected(org.headUnit.organizationNumber)
               ? "tinted"
@@ -107,7 +107,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
             )
             .map((sub: Organization) => (
               <Card
-                className={`${classes.subunit} ${classes.card}`}
+                className={`${classes.subunit} ${classes.card} ${sub.isDeleted && classes.cardIsDeleted}`}
                 variant={
                   checkIsSelected(sub.organizationNumber) ? "tinted" : "default"
                 }
