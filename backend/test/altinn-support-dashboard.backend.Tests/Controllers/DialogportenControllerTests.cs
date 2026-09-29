@@ -243,7 +243,7 @@ public async Task DeleteDialogById_ReturnsBadRequest_WhenDialogIdOrRevisionIsInv
 
     Assert.IsType<BadRequestObjectResult>(result);
     _serviceMock.Verify(s => s.DeleteDialogById(It.IsAny<DeleteDialogRequest>(), It.IsAny<string>()), Times.Never);
-    _telemetryServiceMock.Verify(t => t.TrackSearch(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()), Times.Never);
+    _telemetryServiceMock.Verify(t => t.TrackDelete(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()), Times.Never);
 }
 
 [Fact]
@@ -294,9 +294,9 @@ public async Task DeleteDialogById_TracksSoftDeleteTelemetry_WhenHardDeleteIsFal
 
     await _controller.DeleteDialogById(request, EnvironmentName);
 
-    _telemetryServiceMock.Verify(t => t.TrackSearch("Dialogporten", "SoftDelete", "test-user", EnvironmentName,
+    _telemetryServiceMock.Verify(t => t.TrackDelete("Dialogporten", "SoftDelete", "test-user", EnvironmentName,
         It.Is<IDictionary<string, string>>(d => d["Dialog"] == ValidDialogId)), Times.Once);
-    _telemetryServiceMock.Verify(t => t.TrackSearch("Dialogporten", "HardDelete", It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()), Times.Never);
+    _telemetryServiceMock.Verify(t => t.TrackDelete("Dialogporten", "HardDelete", It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()), Times.Never);
 }
 
 [Fact]
@@ -307,9 +307,9 @@ public async Task DeleteDialogById_TracksHardDeleteTelemetry_WhenHardDeleteIsTru
 
     await _controller.DeleteDialogById(request, EnvironmentName);
 
-    _telemetryServiceMock.Verify(t => t.TrackSearch("Dialogporten", "HardDelete", "test-user", EnvironmentName,
+    _telemetryServiceMock.Verify(t => t.TrackDelete("Dialogporten", "HardDelete", "test-user", EnvironmentName,
         It.Is<IDictionary<string, string>>(d => d["Dialog"] == ValidDialogId)), Times.Once);
-    _telemetryServiceMock.Verify(t => t.TrackSearch("Dialogporten", "SoftDelete", It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()), Times.Never);
+    _telemetryServiceMock.Verify(t => t.TrackDelete("Dialogporten", "SoftDelete", It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()), Times.Never);
 }
 
 [Fact]
