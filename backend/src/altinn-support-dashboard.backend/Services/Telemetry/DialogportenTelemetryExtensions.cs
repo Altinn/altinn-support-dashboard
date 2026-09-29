@@ -14,13 +14,13 @@ public static class DialogPortenTelemetryExtension
 
 	public static void TrackDialogHardDelete(this ITelemetryService telemetry, string dialogId, string userId, string environment)
 	{
-		telemetry.TrackSearch(FeatureArea, "HardDelete", userId, environment,
+		telemetry.TrackDelete(FeatureArea, "HardDelete", userId, environment,
 		new Dictionary<string, string> { { "Dialog", dialogId } });
 	}
 
 	public static void TrackDialogSoftDelete(this ITelemetryService telemetry, string dialogId, string userId, string environment)
 	{
-		telemetry.TrackSearch(FeatureArea, "SoftDelete", userId, environment,
+		telemetry.TrackDelete(FeatureArea, "SoftDelete", userId, environment,
 		new Dictionary<string, string> { { "Dialog", dialogId } });
 	}
 }
