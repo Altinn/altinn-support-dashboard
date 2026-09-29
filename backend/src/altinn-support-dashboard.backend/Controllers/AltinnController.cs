@@ -28,7 +28,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/mock/serviceowner")]
     public class AltinnMockController : AltinnBaseController
     {
-        public AltinnMockController(IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration) : base(altinn3Service, "mock", ssnTokenService, telemetryService, configuration)
+        public AltinnMockController(IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration, ILogger<AltinnBaseController> logger) : base(altinn3Service, "mock", ssnTokenService, telemetryService, configuration, logger)
         {
         }
     }
@@ -38,7 +38,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/TT02/serviceowner")]
     public class AltinnTT02Controller : AltinnBaseController
     {
-        public AltinnTT02Controller(IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration) : base(altinn3Service, "TT02", ssnTokenService, telemetryService, configuration)
+        public AltinnTT02Controller(IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration, ILogger<AltinnBaseController> logger) : base(altinn3Service, "TT02", ssnTokenService, telemetryService, configuration, logger)
         {
         }
 
@@ -49,7 +49,7 @@ namespace AltinnSupportDashboard.Controllers
     [Route("api/Production/serviceowner")]
     public class AltinnProductionController : AltinnBaseController
     {
-        public AltinnProductionController(IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration) : base(altinn3Service, "Production", ssnTokenService, telemetryService, configuration)
+        public AltinnProductionController(IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration, ILogger<AltinnBaseController> logger) : base(altinn3Service, "Production", ssnTokenService, telemetryService, configuration, logger)
         {
         }
     }
@@ -66,14 +66,16 @@ namespace AltinnSupportDashboard.Controllers
         protected readonly ISsnTokenService _ssnTokenService;
         protected readonly ITelemetryService _telemetryService;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AltinnBaseController> _logger;
 
-        public AltinnBaseController(IAltinn3Service altinn3Service, string environmentName, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration)
+        public AltinnBaseController(IAltinn3Service altinn3Service, string environmentName, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration, ILogger<AltinnBaseController> logger)
         {
             _altinn3Service = altinn3Service;
             this.environmentName = environmentName;
             _ssnTokenService = ssnTokenService;
             _telemetryService = telemetryService;
             _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpGet("organizations/altinn3/search")]
@@ -98,6 +100,7 @@ namespace AltinnSupportDashboard.Controllers
                 return await GetOrganizationsFromPhoneAltinn3(query);
             }
 
+            _logger.LogWarning("SearchAltinn3 received a query that is not a valid email, phonenumber or organization number in environment {EnvironmentName}", environmentName);
             return BadRequest("Ugyldig søketerm. Angi et gyldig organisasjonsnummer, telefonnummer eller e-postadresse.");
         }
 
@@ -307,6 +310,7 @@ namespace AltinnSupportDashboard.Controllers
             var ssn = _ssnTokenService.GetSsnFromToken(ssnToken);
             if (string.IsNullOrEmpty(ssn))
             {
+                _logger.LogWarning("SSN token lookup failed: token was invalid or expired in environment {EnvironmentName}", environmentName);
                 throw new Exception("Invalid or expired SSN token.");
             }
 

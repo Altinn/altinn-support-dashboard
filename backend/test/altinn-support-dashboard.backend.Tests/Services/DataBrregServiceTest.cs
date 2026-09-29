@@ -1,6 +1,7 @@
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
 namespace altinn_support_dashboard.backend.Tests.Services;
@@ -17,7 +18,7 @@ public class DataBrregServiceTest
         _mockDataBrregClient = new Mock<IDataBrregClient>();
         _mockPartyApiService = new Mock<IPartyApiService>();
 
-        _dataBrregService = new DataBrregService(_mockDataBrregClient.Object, _mockPartyApiService.Object);
+        _dataBrregService = new DataBrregService(_mockDataBrregClient.Object, _mockPartyApiService.Object, NullLogger<DataBrregService>.Instance);
     }
 
     [Fact]
