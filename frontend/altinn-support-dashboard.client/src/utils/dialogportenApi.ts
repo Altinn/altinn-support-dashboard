@@ -1,5 +1,10 @@
-import { DialogDetails, DialogDto } from "../models/dialogModels";
-import { authorizedFetch, getBaseUrl } from "./utils";
+import {
+  DeleteDialogRequest,
+  DeleteDialogResponse,
+  DialogDetails,
+  DialogDto,
+} from "../models/dialogModels";
+import { authorizedFetch, authorizedPost, getBaseUrl } from "./utils";
 
 export const fetchDialogByUrn = async (
   environment: string,
@@ -30,3 +35,20 @@ export const fetchDialogDetails = async (
 
   return res.json();
 }
+
+export const deleteDialogById = async (
+  environment: string,
+  request: DeleteDialogRequest
+): Promise<DeleteDialogResponse> => {
+  const res = await authorizedPost(
+    `${getBaseUrl(environment)}/dialogporten`,
+    request
+  );
+
+  if (res.status === 403)
+    throw new Error("Du mangler tilgang til å slette dialoger");
+  if (!res.ok)
+    throw new Error((await res.text()) || "Feil ved sletting av dialog");
+
+  return res.json();
+};

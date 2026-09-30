@@ -55,4 +55,25 @@ public class TelemetryService : ITelemetryService
 
         _telemetryClient?.TrackEvent("search", properties);
     }
+
+    public void TrackDelete(string featureArea, string deleteType, string userId, string environment, IDictionary<string, string>? extra = null)
+    {
+        var properties = new Dictionary<string, string>
+        {
+            { "featureArea", featureArea},
+            { "deleteType", deleteType },
+            { "userId", userId },
+            { "environment", environment }
+        };
+
+        if (extra != null)
+        {
+            foreach (var kvp in extra)
+            {
+                properties[kvp.Key] = kvp.Value;
+            }
+        }
+
+        _telemetryClient?.TrackEvent("delete", properties);
+    }
 }

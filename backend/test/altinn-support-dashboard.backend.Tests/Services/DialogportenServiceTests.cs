@@ -3,6 +3,7 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Models.dialogporten;
 using Moq;
+using System.Net;
 using System.Text.Json;
 using Xunit;
 
@@ -156,5 +157,62 @@ public async Task GetDialogDetails_ThrowsException_WhenClientThrows()
         .ThrowsAsync(new Exception("API request failed"));
 
     await Assert.ThrowsAsync<Exception>(() => _service.GetDialogDetails(DialogId, EnvironmentName));
+}
+
+private const string Revision = "22222222-2222-2222-2222-222222222222";
+
+private static DeleteDialogResponse CreateDeleteResponse(HttpStatusCode statusCode) => new()
+{
+    StatusCode = statusCode,
+    ResponseBody = "",
+    ResponseHeader = "",
+    RequestHeader = "",
+    RequestBody = ""
+};
+
+[Fact]
+public async Task DeleteDialogById_DelegatesToClient_WithHardDeleteFalse_ForSoftDelete()
+{
+    var request = new DeleteDialogRequest { DialogId = DialogId, Revision = Revision, HardDelete = false };
+    _clientMock.Setup(c => c.DeleteDialogById(DialogId, Revision, false, EnvironmentName))
+        .ReturnsAsync(CreateDeleteResponse(HttpStatusCode.NoContent));
+
+    await _service.DeleteDialogById(request, EnvironmentName);
+
+    _clientMock.Verify(c => c.DeleteDialogById(DialogId, Revision, false, EnvironmentName), Times.Once);
+}
+
+[Fact]
+public async Task DeleteDialogById_DelegatesToClient_WithHardDeleteTrue_ForPurgeDelete()
+{
+    var request = new DeleteDialogRequest { DialogId = DialogId, Revision = Revision, HardDelete = true };
+    _clientMock.Setup(c => c.DeleteDialogById(DialogId, Revision, true, EnvironmentName))
+        .ReturnsAsync(CreateDeleteResponse(HttpStatusCode.NoContent));
+
+    await _service.DeleteDialogById(request, EnvironmentName);
+
+    _clientMock.Verify(c => c.DeleteDialogById(DialogId, Revision, true, EnvironmentName), Times.Once);
+}
+
+[Fact]
+public async Task DeleteDialogById_ReturnsClientResponse_Unmodified()
+{
+    var request = new DeleteDialogRequest { DialogId = DialogId, Revision = Revision, HardDelete = true };
+    var clientResponse = CreateDeleteResponse(HttpStatusCode.OK);
+    _clientMock.Setup(c => c.DeleteDialogById(DialogId, Revision, true, EnvironmentName)).ReturnsAsync(clientResponse);
+
+    var result = await _service.DeleteDialogById(request, EnvironmentName);
+
+    Assert.Same(clientResponse, result);
+}
+
+[Fact]
+public async Task DeleteDialogById_ThrowsException_WhenClientThrows()
+{
+    var request = new DeleteDialogRequest { DialogId = DialogId, Revision = Revision, HardDelete = false };
+    _clientMock.Setup(c => c.DeleteDialogById(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>()))
+        .ThrowsAsync(new Exception("API request failed"));
+
+    await Assert.ThrowsAsync<Exception>(() => _service.DeleteDialogById(request, EnvironmentName));
 }
 }
