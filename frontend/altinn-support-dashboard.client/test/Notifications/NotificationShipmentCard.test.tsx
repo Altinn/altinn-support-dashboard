@@ -17,7 +17,8 @@ const makeShipment = (overrides?: Partial<NotificationShipmentResponse>): Notifi
 });
 
 const makeAttempt = (overrides?: Partial<DeliveryAttempt>): DeliveryAttempt => ({
-  nationalIdentityNumber: null,
+  displayedNationalIdentityNumber: undefined,
+  organizationNumber: undefined,
   channel: "email",
   emailAddress: "test@example.com",
   mobileNumber: null,
@@ -36,10 +37,27 @@ describe("NotificationShipmentCard", () => {
 
   it("should render table headers", () => {
     render(<NotificationShipmentCard shipment={makeShipment()} />);
+    expect(screen.getByText("NIN/Org")).toBeInTheDocument();
     expect(screen.getByText("Channel")).toBeInTheDocument();
     expect(screen.getByText("Address")).toBeInTheDocument();
     expect(screen.getByText("Result")).toBeInTheDocument();
     expect(screen.getByText("Time")).toBeInTheDocument();
+  });
+
+  it("should display masked NIN for a person recipient", () => {
+    const shipment = makeShipment({
+      deliveryAttempts: [makeAttempt({ displayedNationalIdentityNumber: "010190*****" })],
+    });
+    render(<NotificationShipmentCard shipment={shipment} />);
+    expect(screen.getByText("010190*****")).toBeInTheDocument();
+  });
+
+  it("should display organization number for an organization recipient", () => {
+    const shipment = makeShipment({
+      deliveryAttempts: [makeAttempt({ organizationNumber: "987654321" })],
+    });
+    render(<NotificationShipmentCard shipment={shipment} />);
+    expect(screen.getByText("987654321")).toBeInTheDocument();
   });
 
   it("should render E-post for email channel", () => {
@@ -88,7 +106,7 @@ describe("NotificationShipmentCard", () => {
     const shipment = makeShipment({ deliveryAttempts: [makeAttempt({ resultTime: null })] });
     render(<NotificationShipmentCard shipment={shipment} />);
     const cells = screen.getAllByRole("cell");
-    const timeCells = cells.filter((_, i) => (i + 1) % 4 === 0);
+    const timeCells = cells.filter((_, i) => (i + 1) % 5 === 0);
     expect(timeCells[0]).toHaveTextContent("");
   });
 
