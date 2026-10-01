@@ -114,8 +114,8 @@ public class NotificationsController : ControllerBase
         }
         _telemetryService.TrackPhoneNumberNotificationSearch(phonenumber, CurrentUserId, environmentName);
 
-
-        var response = await _service.GetFutureNotificationsByPhoneNumber(phonenumber, from, to, environmentName);
+        var normalizedPhoneNumber = PhoneNumberUtils.NormalizeInternationalPrefix(phonenumber);
+        var response = await _service.GetFutureNotificationsByPhoneNumber(normalizedPhoneNumber, from, to, environmentName);
         return Ok(response);
     }
 
