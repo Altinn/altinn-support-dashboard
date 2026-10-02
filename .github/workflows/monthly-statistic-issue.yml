@@ -34,6 +34,6 @@ jobs:
                 '',
                 '_This issue was created automatically by the monthly statistics workflow._'
               ].join('\n'),
-              labels: ['analysis],
+              labels: ['analysis'],
               assignees: ['SiriBJ']
             });
