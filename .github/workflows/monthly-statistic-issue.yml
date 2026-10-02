@@ -1,0 +1,39 @@
+name: Monthly statistics reminder
+
+on:
+  schedule:
+    - cron: '0 6 1 * *'   # 06:00 UTC on the 1st of every month
+  workflow_dispatch:        # lets you trigger it manually to test
+
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const now = new Date();
+            const month = now.toLocaleString('default', { month: 'long', year: 'numeric' });
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Gather product statistics for ${month}`,
+              body: [
+                `## Monthly statistics check-in — ${month}`,
+                '',
+                'Time to collect and report usage statistics for the product.',
+                '',
+                '### Checklist',
+                '- [ ] Pull support ticket volume and categories for the month',
+                '- [ ] Pull API/endpoint usage metrics',
+                '- [ ] Note any notable incidents or outages',
+                '- [ ] Compare against previous month for trends',
+                '- [ ] Share summary on Confluence',
+                '',
+                '_This issue was created automatically by the monthly statistics workflow._'
+              ].join('\n'),
+              labels: ['analysis'],
+              assignees: ['SiriBJ']
+            });
