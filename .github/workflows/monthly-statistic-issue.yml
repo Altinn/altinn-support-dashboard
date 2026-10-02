@@ -30,7 +30,7 @@ jobs:
                 '- [ ] Pull API/endpoint usage metrics',
                 '- [ ] Note any notable incidents or outages',
                 '- [ ] Compare against previous month for trends',
-                '- [ ] Share summary with the team',
+                '- [ ] Share summary on Confluence',
                 '',
                 '_This issue was created automatically by the monthly statistics workflow._'
               ].join('\n'),
