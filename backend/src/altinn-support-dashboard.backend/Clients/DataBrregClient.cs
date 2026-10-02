@@ -41,7 +41,7 @@ namespace altinn_support_dashboard.Server.Services
                 var client = _clients[environmentName];
 
                 var requestUrl = $"enhetsregisteret/api/enheter/{orgNumber}/roller";
-                _logger.LogDebug("Requesting roles from Brreg for organization {OrgNumber} in environment {Environment}: {RequestUrl}", orgNumber, environmentName, requestUrl);
+                _logger.LogDebug("Requesting roles from Brreg for organization in environment {Environment}", environmentName);
 
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
@@ -72,7 +72,7 @@ namespace altinn_support_dashboard.Server.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while calling Brreg API for organization {OrgNumber} in environment {Environment}: {Message}", orgNumber, environmentName, ex.Message);
+                _logger.LogError(ex, "An error occurred while calling Brreg API for organization in environment {Environment}: {Message}", environmentName, ex.Message);
                 throw;
             }
         }
@@ -103,13 +103,13 @@ namespace altinn_support_dashboard.Server.Services
                 }
                 else
                 {
-                    _logger.LogWarning("Brreg returned {StatusCode} when fetching sub-unit for organization {OrgNumber} in environment {Environment}", response.StatusCode, orgNumber, environmentName);
+                    _logger.LogWarning("Brreg returned {StatusCode} when fetching sub-unit for organization in environment {Environment}", response.StatusCode, environmentName);
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to retrieve sub-unit from Brreg for organization {OrgNumber} in environment {Environment}", orgNumber, environmentName);
+                _logger.LogError(ex, "Failed to retrieve sub-unit from Brreg for organization in environment {Environment}",environmentName);
                 throw;
             }
         }
@@ -148,7 +148,7 @@ namespace altinn_support_dashboard.Server.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to retrieve sub-units from Brreg for organization {OrgNumber} in environment {Environment}", orgNumber, environmentName);
+                _logger.LogError(ex, "Failed to retrieve sub-units from Brreg for organization in environment {Environment}",  environmentName);
                 throw;
             }
         }
@@ -185,14 +185,14 @@ namespace altinn_support_dashboard.Server.Services
                     else
                     {
                         var responseBody = await response.Content.ReadAsStringAsync();
-                        _logger.LogWarning("Brreg call failed with status code {StatusCode} for organization {OrgNumber} in environment {Environment}: {ResponseBody}", response.StatusCode, orgNumber, environmentName, responseBody);
+                        _logger.LogWarning("Brreg call failed with status code {StatusCode} for organization in environment {Environment}: {ResponseBody}", response.StatusCode, environmentName, responseBody);
                         throw new HttpRequestException($"Failed to retrieve organization details from Brreg. Status code: {response.StatusCode}, Response: {responseBody}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to retrieve organization details from Brreg for organization {OrgNumber} in environment {Environment}", orgNumber, environmentName);
+                _logger.LogError(ex, "Failed to retrieve organization details from Brreg for organization in environment {Environment}", environmentName);
                 // We don't want mock data, so just throw the exception
                 throw;
             }

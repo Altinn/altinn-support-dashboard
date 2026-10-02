@@ -31,7 +31,7 @@ public class NotificationsClient : INotificationsClient
 
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogError("Failed to retrieve email notifications for order {OrderId} in environment {EnvironmentName}. Status code: {StatusCode}", orderId, environmentName, response.StatusCode);
+            _logger.LogError("Failed to retrieve email notifications for order  in environment {EnvironmentName}. Status code: {StatusCode}", environmentName, response.StatusCode);
             throw new HttpRequestException(
                 $"Api request failed with status code {response.StatusCode}: {responseBody}",
                 inner: null,
@@ -49,7 +49,7 @@ public class NotificationsClient : INotificationsClient
 
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogError("Failed to retrieve SMS notifications for order {OrderId} in environment {EnvironmentName}. Status code: {StatusCode}", orderId, environmentName, response.StatusCode);
+            _logger.LogError("Failed to retrieve SMS notifications for order in environment {EnvironmentName}. Status code: {StatusCode}", environmentName, response.StatusCode);
             throw new HttpRequestException(
                 $"Api request failed with status code {response.StatusCode}: {responseBody}",
                 inner: null,
@@ -110,7 +110,7 @@ public class NotificationsClient : INotificationsClient
 
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogError("Failed to retrieve future notifications by {HeaderName} in environment {EnvironmentName}. Status code: {StatusCode}", headerName, environmentName, response.StatusCode);
+            _logger.LogError("Failed to retrieve future notifications by in environment {EnvironmentName}. Status code: {StatusCode}", environmentName, response.StatusCode);
             throw new HttpRequestException(
                 $"Api request failed with status code {response.StatusCode}: {responseBody}",
                 inner: null,
@@ -143,7 +143,7 @@ public class NotificationsClient : INotificationsClient
 
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogError("Failed to retrieve notification log for dialogId {DialogId} / transmissionId {TransmissionId} in environment {EnvironmentName}. Status code: {StatusCode}", dialogId, transmissionId, environmentName, response.StatusCode);
+            _logger.LogError("Failed to retrieve notification log for dialogId / transmissionId  in environment {EnvironmentName}. Status code: {StatusCode}", environmentName, response.StatusCode);
             throw new HttpRequestException(
                 $"Api request failed with status code {response.StatusCode}: {responseBody}",
                 inner: null,

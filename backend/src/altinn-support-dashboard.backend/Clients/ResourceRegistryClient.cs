@@ -56,7 +56,7 @@ public class ResourceRegistryClient : IResourceRegistryClient
 
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogError("Failed to retrieve resource {Identifier} in environment {EnvironmentName}. Status code: {StatusCode}", identifier, environmentName, response.StatusCode);
+            _logger.LogError("Failed to retrieve resource in environment {EnvironmentName}. Status code: {StatusCode}", environmentName, response.StatusCode);
             throw new HttpRequestException($"API request failed with status code {response.StatusCode}: {responseBody}");
         }
 

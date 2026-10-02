@@ -32,7 +32,7 @@ public class DialogportenController : ControllerBase
     {
         if (!ValidationService.IsValidDialogInput(urn))
         {
-            _logger.LogWarning("Rejected dialog lookup with invalid urn input from {User}", User.Identity?.Name ?? "unknown");
+            _logger.LogWarning("Rejected dialog lookup with invalid urn input");
             return BadRequest("The input needs to be in the format 	urn:altinn:dialog-id:{uuid}, urn:altinn:correspondence-id:{uuid}, urn:altinn:instance-id:{partyId}/{uuid} ");
         }
 
@@ -41,7 +41,7 @@ public class DialogportenController : ControllerBase
         DialogDto? response = await _service.GetDialogByUrn(urn, environmentName, authResult.Succeeded);
         if (response == null)
         {
-            _logger.LogWarning("Dialog not found for urn {Urn} in environment {EnvironmentName}", urn, environmentName);
+            _logger.LogWarning("Dialog not found in environment {EnvironmentName}", environmentName);
             return NotFound();
         }
         _telemetryService.TrackDialogSearchByUrn(urn, User.Identity?.Name ?? "unknown", environmentName);
