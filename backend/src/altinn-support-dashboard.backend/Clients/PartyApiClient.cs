@@ -56,7 +56,7 @@ public class PartyApiClient : IPartyApiClient
             throw new BadRequestException($"Invalid lookup request: {responseBody}");
         }
             
-        _logger.LogError("Party lookup by {LookupType} failed with status code {StatusCode} in environment {EnvironmentName}", isOrg ? "org number" : "ssn", response.StatusCode, environmentName);
+        _logger.LogError("Party lookup by failed with status code {StatusCode} in environment {EnvironmentName}", response.StatusCode, environmentName);
         throw new HttpRequestException($"API request failed with status code {response.StatusCode}: {responseBody}");
     }
 
@@ -72,7 +72,7 @@ public class PartyApiClient : IPartyApiClient
         if (response.StatusCode == HttpStatusCode.NotFound)
             return string.Empty;
 
-        _logger.LogError("Failed to retrieve party roles for {PartyUuid} in environment {Environment}. Status code: {StatusCode}", partyUuid, environmentName, response.StatusCode);
+        _logger.LogError("Failed to retrieve party roles for in environment {Environment}. Status code: {StatusCode}", environmentName, response.StatusCode);
         throw new HttpRequestException($"API request failed with status code {response.StatusCode}: {responseBody}");
     }
 
@@ -88,7 +88,7 @@ public class PartyApiClient : IPartyApiClient
         if (response.StatusCode == HttpStatusCode.NotFound)
             return string.Empty;
 
-        _logger.LogError("Failed to retrieve party {PartyUuid} in environment {Environment}. Status code: {StatusCode}", partyUuid, environmentName, response.StatusCode);
+        _logger.LogError("Failed to retrieve party in environment {Environment}. Status code: {StatusCode}", environmentName, response.StatusCode);
         throw new HttpRequestException($"API request failed with status code {response.StatusCode}: {responseBody}");
     }
 
@@ -104,7 +104,7 @@ public class PartyApiClient : IPartyApiClient
         if (response.StatusCode == HttpStatusCode.NotFound)
             return string.Empty;
 
-        _logger.LogError("Failed to retrieve party {PartyId} in environment {Environment}. Status code: {StatusCode}", partyId, environmentName, response.StatusCode);
+        _logger.LogError("Failed to retrieve party in environment {Environment}. Status code: {StatusCode}", environmentName, response.StatusCode);
         throw new HttpRequestException($"API request failed with status code {response.StatusCode}: {responseBody}");
     }
 
@@ -120,7 +120,7 @@ public class PartyApiClient : IPartyApiClient
         if (response.StatusCode == HttpStatusCode.NotFound)
             return string.Empty;
 
-        _logger.LogError("Failed to retrieve party with user information {PartyUuid} in environment {Environment}. Status code: {StatusCode}", partyUuid, environmentName, response.StatusCode);
+        _logger.LogError("Failed to retrieve party with user information in environment {Environment}. Status code: {StatusCode}", environmentName, response.StatusCode);
         throw new HttpRequestException($"API request failed with status code {response.StatusCode}: {responseBody}");
     }
 }

@@ -183,7 +183,7 @@ namespace altinn_support_dashboard.Server.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to retrieve organization details for orgNumber: {OrgNumber} in environment: {EnvironmentName}", orgNumber, environmentName);
+                _logger.LogError(ex, "Failed to retrieve organization details in environment: {EnvironmentName}", environmentName);
                 throw;
             }
         }
