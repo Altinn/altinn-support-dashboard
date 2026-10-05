@@ -2,9 +2,14 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import "@testing-library/jest-dom/vitest";
 import NotificationShipmentCard from "../../src/components/Notification/NIN-search/NotificationShipmentCard";
-import { NotificationShipmentResponse, DeliveryAttempt } from "../../src/models/notificationModels";
+import {
+  NotificationShipmentResponse,
+  DeliveryAttempt,
+} from "../../src/models/notificationModels";
 
-const makeShipment = (overrides?: Partial<NotificationShipmentResponse>): NotificationShipmentResponse => ({
+const makeShipment = (
+  overrides?: Partial<NotificationShipmentResponse>
+): NotificationShipmentResponse => ({
   shipmentId: "ship-001",
   creatorName: "Test Creator",
   resourceId: "res-123",
@@ -16,8 +21,11 @@ const makeShipment = (overrides?: Partial<NotificationShipmentResponse>): Notifi
   ...overrides,
 });
 
-const makeAttempt = (overrides?: Partial<DeliveryAttempt>): DeliveryAttempt => ({
-  nationalIdentityNumber: null,
+const makeAttempt = (
+  overrides?: Partial<DeliveryAttempt>
+): DeliveryAttempt => ({
+  displayedNationalIdentityNumber: undefined,
+  organizationNumber: undefined,
   channel: "email",
   emailAddress: "test@example.com",
   mobileNumber: null,
@@ -36,10 +44,29 @@ describe("NotificationShipmentCard", () => {
 
   it("should render table headers", () => {
     render(<NotificationShipmentCard shipment={makeShipment()} />);
+    expect(screen.getByText("Recipient")).toBeInTheDocument();
     expect(screen.getByText("Channel")).toBeInTheDocument();
     expect(screen.getByText("Address")).toBeInTheDocument();
     expect(screen.getByText("Result")).toBeInTheDocument();
     expect(screen.getByText("Time")).toBeInTheDocument();
+  });
+
+  it("should display masked NIN for a person recipient", () => {
+    const shipment = makeShipment({
+      deliveryAttempts: [
+        makeAttempt({ displayedNationalIdentityNumber: "010190*****" }),
+      ],
+    });
+    render(<NotificationShipmentCard shipment={shipment} />);
+    expect(screen.getByText("010190*****")).toBeInTheDocument();
+  });
+
+  it("should display organization number for an organization recipient", () => {
+    const shipment = makeShipment({
+      deliveryAttempts: [makeAttempt({ organizationNumber: "987654321" })],
+    });
+    render(<NotificationShipmentCard shipment={shipment} />);
+    expect(screen.getByText("987654321")).toBeInTheDocument();
   });
 
   it("should render E-post for email channel", () => {
@@ -50,7 +77,13 @@ describe("NotificationShipmentCard", () => {
 
   it("should render SMS for non-email channel", () => {
     const shipment = makeShipment({
-      deliveryAttempts: [makeAttempt({ channel: "sms", emailAddress: null, mobileNumber: "+4712345678" })],
+      deliveryAttempts: [
+        makeAttempt({
+          channel: "sms",
+          emailAddress: null,
+          mobileNumber: "+4712345678",
+        }),
+      ],
     });
     render(<NotificationShipmentCard shipment={shipment} />);
     expect(screen.getByText("SMS")).toBeInTheDocument();
@@ -66,29 +99,44 @@ describe("NotificationShipmentCard", () => {
 
   it("should display mobile number for SMS delivery", () => {
     const shipment = makeShipment({
-      deliveryAttempts: [makeAttempt({ channel: "sms", emailAddress: null, mobileNumber: "+4799999999" })],
+      deliveryAttempts: [
+        makeAttempt({
+          channel: "sms",
+          emailAddress: null,
+          mobileNumber: "+4799999999",
+        }),
+      ],
     });
     render(<NotificationShipmentCard shipment={shipment} />);
     expect(screen.getByText("+4799999999")).toBeInTheDocument();
   });
 
   it("should apply success color for delivered result", () => {
-    const shipment = makeShipment({ deliveryAttempts: [makeAttempt({ result: "Delivered" })] });
+    const shipment = makeShipment({
+      deliveryAttempts: [makeAttempt({ result: "Delivered" })],
+    });
     render(<NotificationShipmentCard shipment={shipment} />);
-    expect(screen.getByText("Delivered")).toHaveAttribute("data-color", "success");
+    expect(screen.getByText("Delivered")).toHaveAttribute(
+      "data-color",
+      "success"
+    );
   });
 
   it("should apply danger color for failed result", () => {
-    const shipment = makeShipment({ deliveryAttempts: [makeAttempt({ result: "Failed" })] });
+    const shipment = makeShipment({
+      deliveryAttempts: [makeAttempt({ result: "Failed" })],
+    });
     render(<NotificationShipmentCard shipment={shipment} />);
     expect(screen.getByText("Failed")).toHaveAttribute("data-color", "danger");
   });
 
   it("should show empty string when resultTime is null", () => {
-    const shipment = makeShipment({ deliveryAttempts: [makeAttempt({ resultTime: null })] });
+    const shipment = makeShipment({
+      deliveryAttempts: [makeAttempt({ resultTime: null })],
+    });
     render(<NotificationShipmentCard shipment={shipment} />);
     const cells = screen.getAllByRole("cell");
-    const timeCells = cells.filter((_, i) => (i + 1) % 4 === 0);
+    const timeCells = cells.filter((_, i) => (i + 1) % 5 === 0);
     expect(timeCells[0]).toHaveTextContent("");
   });
 
@@ -96,7 +144,11 @@ describe("NotificationShipmentCard", () => {
     const shipment = makeShipment({
       deliveryAttempts: [
         makeAttempt({ emailAddress: "first@example.com" }),
-        makeAttempt({ channel: "sms", emailAddress: null, mobileNumber: "+4711111111" }),
+        makeAttempt({
+          channel: "sms",
+          emailAddress: null,
+          mobileNumber: "+4711111111",
+        }),
       ],
     });
     render(<NotificationShipmentCard shipment={shipment} />);
@@ -105,7 +157,11 @@ describe("NotificationShipmentCard", () => {
   });
 
   it("should render only the header row when there are no delivery attempts", () => {
-    render(<NotificationShipmentCard shipment={makeShipment({ deliveryAttempts: [] })} />);
+    render(
+      <NotificationShipmentCard
+        shipment={makeShipment({ deliveryAttempts: [] })}
+      />
+    );
     expect(screen.getAllByRole("row")).toHaveLength(1);
   });
 });
