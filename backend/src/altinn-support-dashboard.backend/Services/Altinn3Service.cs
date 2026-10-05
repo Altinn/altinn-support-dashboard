@@ -202,7 +202,7 @@ public class Altinn3Service : IAltinn3Service
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to redact and tokenize national identity number for a personal contact of organization {OrgNumber} in environment {EnvironmentName}", orgNumber, environment);
+                _logger.LogError(ex, "Failed to redact and tokenize national identity number for a personal contact of organization in environment {EnvironmentName}", environment);
             }
         }
 

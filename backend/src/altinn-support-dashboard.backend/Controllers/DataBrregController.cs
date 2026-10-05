@@ -44,27 +44,27 @@ public class ER_Roller_APIController : ControllerBase
         }
         catch (ArgumentException ex)
         {
-            _logger.LogWarning(ex, "Invalid request for roles. OrgNumber: {OrgNumber}, Environment: {EnvironmentName}", orgNumber, environmentName);
+            _logger.LogWarning(ex, "Invalid request for roles. Environment: {EnvironmentName}",  environmentName);
             return BadRequest(ex.Message);
         }
         catch (HttpRequestException ex)
         {
             if (ex.Message.Contains("NotFound"))
             {
-                _logger.LogInformation("No roles found for organization {OrgNumber} in environment {EnvironmentName}", orgNumber, environmentName);
+                _logger.LogInformation("No roles found for organization in environment {EnvironmentName}", environmentName);
                 return NotFound("Ingen data funnet");
             }
-            _logger.LogError(ex, "Failed to communicate with Brreg while fetching roles for orgNumber: {OrgNumber} in environment: {EnvironmentName}", orgNumber, environmentName);
+            _logger.LogError(ex, "Failed to communicate with Brreg while fetching roles in environment: {EnvironmentName}", environmentName);
             return StatusCode(503, ex.Message);
         }
         catch (KeyNotFoundException)
         {
-            _logger.LogWarning("Unknown environment name provided for orgNumber: {OrgNumber}. Environment: {EnvironmentName}", orgNumber, environmentName);
+            _logger.LogWarning("Unknown environment name provided. Environment: {EnvironmentName}", environmentName);
             return BadRequest("Ugyldig miljønavn.");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error occurred while retrieving roles for orgNumber: {OrgNumber} in environment: {EnvironmentName}", orgNumber, environmentName);
+            _logger.LogError(ex, "Unexpected error occurred while retrieving roles in environment: {EnvironmentName}", environmentName);
             return StatusCode(500, $"Intern serverfeil: {ex.Message}");
         }
     }
@@ -114,22 +114,22 @@ public class ER_Roller_APIController : ControllerBase
         }
         catch (ArgumentException ex)
         {
-            _logger.LogWarning(ex, "Invalid request for roles. OrgNumber: {OrgNumber}, Environment: {EnvironmentName}", orgNumber, environmentName);
+            _logger.LogWarning(ex, "Invalid request for roles. Environment: {EnvironmentName}", environmentName);
             return BadRequest(ex.Message);
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Failed to communicate with Brreg while fetching roles for orgNumber: {OrgNumber} in environment: {EnvironmentName}", orgNumber, environmentName);
+            _logger.LogError(ex, "Failed to communicate with Brreg while fetching roles in environment: {EnvironmentName}",environmentName);
             return StatusCode(503, ex.Message);
         }
         catch (KeyNotFoundException)
         {
-            _logger.LogWarning("Unknown environment name provided for orgNumber: {OrgNumber}. Environment: {EnvironmentName}", orgNumber, environmentName);
+            _logger.LogWarning("Unknown environment name provided. Environment: {EnvironmentName}",environmentName);
             return BadRequest("Ugyldig miljønavn.");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error occurred while retrieving roles for orgNumber: {OrgNumber} in environment: {EnvironmentName}", orgNumber, environmentName);
+            _logger.LogError(ex, "Unexpected error occurred while retrieving roles in environment: {EnvironmentName}", environmentName);
             return StatusCode(500, $"Intern serverfeil: {ex.Message}");
         }
     }

@@ -79,7 +79,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             return JsonSerializer.Serialize(allResults);
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve identifiers for {Count} organizations in environment {EnvironmentName}", orgNumbers?.Count ?? 0, environmentName);
+            _logger.LogError(ex, "Failed to retrieve identifiers for  organization in environment {EnvironmentName}",  environmentName);
             throw;
         }
         
@@ -111,7 +111,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             return responseBody;
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve party info for {Count} organizations in environment {EnvironmentName}", partyIds?.Count ?? 0, environmentName);
+            _logger.LogError(ex, "Failed to retrieve party info for organizations in environment {EnvironmentName}", environmentName);
             throw;
         }
     }
@@ -140,7 +140,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve personal contacts for organization {OrgNumber} in environment {EnvironmentName}", orgNumber, environmentName);
+            _logger.LogError(ex, "Failed to retrieve personal contacts for organization in environment {EnvironmentName}", environmentName);
             throw;
         }
     }
@@ -315,7 +315,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve notification addresses for organization {OrgNumber} in environment {EnvironmentName}", orgNumber, environmentName);
+            _logger.LogError(ex, "Failed to retrieve notification addresses for organization in environment {EnvironmentName}", environmentName);
             throw;
         }
     }
@@ -458,7 +458,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             return responseBody;
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve authorized parties for lookup type {Type} in environment {EnvironmentName}", type, environmentName);
+            _logger.LogError(ex, "Failed to retrieve authorized parties for lookup in environment {EnvironmentName}",environmentName);
             throw;
         }
        
@@ -552,7 +552,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             return responseBody;
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve Maskinporten delegations for supplier {SupplierOrg} and consumer {ConsumerOrg} in environment {EnvironmentName}", supplierOrg, consumerOrg, environmentName);
+            _logger.LogError(ex, "Failed to retrieve Maskinporten delegations for supplier and consumer in environment {EnvironmentName}", environmentName);
             throw;
         }
         
