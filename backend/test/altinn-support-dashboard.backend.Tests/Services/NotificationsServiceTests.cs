@@ -1,5 +1,7 @@
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using altinn_support_dashboard.Server.Utils;
+using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Text.Json;
@@ -9,6 +11,7 @@ public class NotificationsServiceTests
 {
     private readonly Mock<INotificationsClient> _clientMock;
     private readonly Mock<IPartyApiService> _partyServiceMock;
+    private readonly Mock<IRedactorProvider> _redactorProviderMock;
     private readonly NotificationsService _service;
 
     private const string EnvironmentName = "TT02";
@@ -36,6 +39,28 @@ public class NotificationsServiceTests
             }
         ]
         """;
+    private const string ValidFutureNotificationsWithNinJson = """
+        [
+            {
+                "shipmentId": "dec90ca7-4f8d-410f-96ed-666fe019c946",
+                "creatorName": "test-creator",
+                "resourceId": null,
+                "sendersReference": "ref-1",
+                "requestedSendTime": "2024-01-01T00:00:00",
+                "notificationChannel": "email",
+                "deliveryAttempts": [
+                    {
+                        "nationalIdentityNumber": "12345678901",
+                        "channel": "email",
+                        "emailAddress": "test@test.no",
+                        "result": "Delivered",
+                        "resultTime": "2024-01-01T00:05:00"
+                    }
+                ]
+            }
+        ]
+        """;
+
     private const string ValidNotificationLogJson = """
         [
             {
@@ -56,8 +81,9 @@ public class NotificationsServiceTests
     {
         _clientMock = new Mock<INotificationsClient>();
         _partyServiceMock = new Mock<IPartyApiService>();
+        _redactorProviderMock = new Mock<IRedactorProvider>();
         var logger = Mock.Of<ILogger<INotificationsService>>();
-        _service = new NotificationsService(_clientMock.Object, _partyServiceMock.Object, logger);
+        _service = new NotificationsService(_clientMock.Object, _partyServiceMock.Object, logger, _redactorProviderMock.Object);
     }
 
     [Fact]
@@ -246,6 +272,20 @@ public class NotificationsServiceTests
             .ReturnsAsync("null");
 
         await Assert.ThrowsAsync<Exception>(() => _service.GetFutureNotificationsByNin("12345678901", null, null, EnvironmentName));
+    }
+
+    [Fact]
+    public async Task GetFutureNotificationsByNin_MasksNationalIdentityNumber_AndClearsRawValue()
+    {
+        _redactorProviderMock.Setup(p => p.GetRedactor(CustomDataClassifications.SSN)).Returns(new SsnRedactor());
+        _clientMock.Setup(c => c.GetFutureNotificationsByNin(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<string>()))
+            .ReturnsAsync(ValidFutureNotificationsWithNinJson);
+
+        var result = await _service.GetFutureNotificationsByNin("12345678901", null, null, EnvironmentName);
+
+        var attempt = result[0].DeliveryAttempts[0];
+        Assert.Null(attempt!.NationalIdentityNumber);
+        Assert.Equal("123456*****", attempt.DisplayedNationalIdentityNumber);
     }
 
     // --- GetFutureNotificationsByPhoneNumber ---
