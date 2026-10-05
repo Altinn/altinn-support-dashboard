@@ -95,9 +95,9 @@ describe('NotificationContactCell', () => {
         );
 
         const cell = screen.getByRole('cell');
-        expect(cell).toHaveStyle('font-weight: bold');
+        expect(cell).toHaveStyle('font-weight: 700');
     });
-    
+
     it('should apply bold style when query matches with different case', () => {
         mockUseDashboardStore.mockReturnValue({ query: "TEST" });
 
@@ -109,7 +109,7 @@ describe('NotificationContactCell', () => {
         );
 
         const cell = screen.getByRole('cell');
-        expect(cell).toHaveStyle('font-weight: bold');
+        expect(cell).toHaveStyle('font-weight: 700');
     });
 
     it('should apply nbolc style when query matches wth spaces removed', () => {
@@ -123,7 +123,7 @@ describe('NotificationContactCell', () => {
         );
 
         const cell = screen.getByRole('cell');
-        expect(cell).toHaveStyle('font-weight: bold');
+        expect(cell).toHaveStyle('font-weight: 700');
     });
 
     it('should apply bold style for phone number when query matches', () => {
@@ -137,7 +137,7 @@ describe('NotificationContactCell', () => {
         );
 
         const cell = screen.getByRole('cell');
-        expect(cell).toHaveStyle('font-weight: bold');
+        expect(cell).toHaveStyle('font-weight: 700');
     });
 
     it('should apply bold when query matches country code', () => {
