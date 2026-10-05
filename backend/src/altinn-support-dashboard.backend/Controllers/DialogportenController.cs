@@ -62,6 +62,8 @@ public class DialogportenController : ControllerBase
         {
             return NotFound();
         }
+
+        _telemetryService.TrackDialogDetailsLookup(dialogId, User.Identity?.Name ?? "unknown", environmentName);
         return Content(result, "application/json");
     }
 
