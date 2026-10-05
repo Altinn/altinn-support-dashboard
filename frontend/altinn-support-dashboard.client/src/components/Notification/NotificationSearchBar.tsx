@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Button, Textfield } from "@digdir/designsystemet-react";
 import { MagnifyingGlassIcon } from "@navikt/aksel-icons";
 import style from "./styles/NotificationSearchBar.module.css";
@@ -45,7 +45,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
     if (e.key === "Enter") handleSearch();
   };
 
-  const today = useMemo(() => new Date().toISOString().split("T")[0], []);
+  const [today] = useState(() => new Date().toISOString().split("T")[0]);
 
   return (
     <div className={style.container}>

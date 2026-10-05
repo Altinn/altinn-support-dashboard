@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useState } from "react";
 import { Input, Label } from "@digdir/designsystemet-react";
 import { setLocalStorageValue } from "../ManualRoleSearch/utils/storageUtils";
 
@@ -16,11 +16,11 @@ const CorrespondenceDueDate: React.FC<CorrespondenceDuaDateProps> = ({
     SetSelectedDateTime(newDate);
   };
 
-  const minDate = useMemo(() => {
+  const [minDate] = useState(() => {
     const validDate = new Date();
     validDate.setDate(validDate.getDate() + 1);
     return validDate.toISOString().split("T")[0];
-  }, []);
+  });
 
   return (
     <div>
