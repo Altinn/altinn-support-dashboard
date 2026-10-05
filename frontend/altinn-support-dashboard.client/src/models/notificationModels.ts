@@ -37,7 +37,8 @@ export interface NotificationShipmentResponse {
 }
 
 export interface DeliveryAttempt {
-  nationalIdentityNumber?: string;
+  displayedNationalIdentityNumber?: string;
+  organizationNumber?: string;
   channel?: string;
   emailAddress?: string;
   mobileNumber?: string;
