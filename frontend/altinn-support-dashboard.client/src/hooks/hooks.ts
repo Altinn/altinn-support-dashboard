@@ -73,7 +73,7 @@ export function useUserDetails() {
 }
 
 export function useCurrentDateTime() {
-  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentDateTime(new Date());

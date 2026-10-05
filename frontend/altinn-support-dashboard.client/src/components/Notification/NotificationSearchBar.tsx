@@ -45,7 +45,7 @@ const NotificationSearchBar: React.FC<NotificationSearchBarProps> = ({
     if (e.key === "Enter") handleSearch();
   };
 
-  const today = new Date().toISOString().split("T")[0];
+  const [today] = useState(() => new Date().toISOString().split("T")[0]);
 
   return (
     <div className={style.container}>

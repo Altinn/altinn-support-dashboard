@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Input, Label } from "@digdir/designsystemet-react";
 import { setLocalStorageValue } from "../ManualRoleSearch/utils/storageUtils";
 
@@ -15,15 +16,18 @@ const CorrespondenceDueDate: React.FC<CorrespondenceDuaDateProps> = ({
     SetSelectedDateTime(newDate);
   };
 
-  const validDate = new Date();
-  validDate.setDate(validDate.getDate() + 1);
+  const [minDate] = useState(() => {
+    const validDate = new Date();
+    validDate.setDate(validDate.getDate() + 1);
+    return validDate.toISOString().split("T")[0];
+  });
 
   return (
     <div>
       <Label>Frist</Label>
       <Input
         value={SelectedDateTime}
-        min={validDate.toISOString().split("T")[0]}
+        min={minDate}
         onChange={(e) => {
           handleChange(e.target.value);
         }}
