@@ -1,5 +1,6 @@
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Utils;
+using Microsoft.Extensions.Compliance.Redaction;
 using Models.notifications;
 using System.Net;
 using System.Text.Json;
@@ -11,29 +12,59 @@ public class NotificationsService : INotificationsService
     private readonly INotificationsClient _client;
     private readonly IPartyApiService _partyService;
     private readonly ILogger<INotificationsService> _logger;
+    private readonly IRedactorProvider _redactorProvider;
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         PropertyNameCaseInsensitive = true
     };
 
-    public NotificationsService(INotificationsClient client, IPartyApiService partyService, ILogger<INotificationsService> logger)
+    public NotificationsService(INotificationsClient client, IPartyApiService partyService, ILogger<INotificationsService> logger, IRedactorProvider redactorProvider)
     {
         _partyService = partyService;
         _client = client;
         _logger = logger;
+        _redactorProvider = redactorProvider;
+    }
+
+    private void RedactNationalIdentityNumbers(List<FutureNotificationDto> notifications)
+    {
+        foreach (var notification in notifications)
+        {
+            foreach (var attempt in notification.DeliveryAttempts)
+            {
+                if (attempt == null || string.IsNullOrEmpty(attempt.NationalIdentityNumber))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    attempt.DisplayedNationalIdentityNumber = _redactorProvider.GetRedactor(CustomDataClassifications.SSN).Redact(attempt.NationalIdentityNumber);
+                    attempt.NationalIdentityNumber = null;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to redact national identity number for a notification delivery attempt");
+                }
+            }
+        }
     }
 
     public async Task<List<FutureNotificationDto>> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to, string environmentName)
     {
         var result = await _client.GetFutureNotificationsByNin(nin, from, to, environmentName);
-        return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+        var notifications = JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+        RedactNationalIdentityNumbers(notifications);
+        return notifications;
     }
 
     public async Task<List<FutureNotificationDto>> GetFutureNotificationsByOrgNr(string orgNr, DateTime? from, DateTime? to, string environmentName)
     {
         var result = await _client.GetFutureNotificationsByOrgNr(orgNr, from, to, environmentName);
-        return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+        var notifications = JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+        RedactNationalIdentityNumbers(notifications);
+        return notifications;
     }
 
     public async Task<List<FutureNotificationDto>> GetFutureNotificationsByPhoneNumber(string phoneNumber, DateTime? from, DateTime? to, string environmentName)
@@ -44,13 +75,17 @@ public class NotificationsService : INotificationsService
         }
 
         var result = await _client.GetFutureNotificationsByPhoneNumber(phoneNumber, from, to, environmentName);
-        return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+        var notifications = JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+        RedactNationalIdentityNumbers(notifications);
+        return notifications;
     }
 
     public async Task<List<FutureNotificationDto>> GetFutureNotificationsByEmail(string email, DateTime? from, DateTime? to, string environmentName)
     {
         var result = await _client.GetFutureNotificationsByEmail(email, from, to, environmentName);
-        return JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+        var notifications = JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+        RedactNationalIdentityNumbers(notifications);
+        return notifications;
     }
 
 

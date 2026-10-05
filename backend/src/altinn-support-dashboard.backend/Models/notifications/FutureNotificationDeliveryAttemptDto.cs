@@ -4,8 +4,11 @@ namespace Models.notifications;
 
 public class FutureNotificationDeliveryAttemptDto
 {
-
 	public string? NationalIdentityNumber { get; set; }
+
+	public string? DisplayedNationalIdentityNumber { get; set; }
+
+	public string? OrganizationNumber { get; set; }
 
 	public string? Channel { get; set; }
 
