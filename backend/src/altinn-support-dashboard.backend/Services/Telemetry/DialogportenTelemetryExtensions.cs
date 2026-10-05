@@ -23,4 +23,10 @@ public static class DialogPortenTelemetryExtension
 		telemetry.TrackDelete(FeatureArea, "SoftDelete", userId, environment,
 		new Dictionary<string, string> { { "Dialog", dialogId } });
 	}
+
+	public static void TrackDialogDetailsLookup(this ITelemetryService telemetry, string dialogId, string userId, string environment)
+	{
+		telemetry.TrackSearch(FeatureArea, "DialogDetails", userId, environment,
+		new Dictionary<string, string> { { "Dialog", dialogId } });
+	}
 }
