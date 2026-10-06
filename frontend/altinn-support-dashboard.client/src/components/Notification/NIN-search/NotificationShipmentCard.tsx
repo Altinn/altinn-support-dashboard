@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Alert, Card, Paragraph, Table } from "@digdir/designsystemet-react";
 import { NotificationShipmentResponse } from "../../../models/notificationModels";
 import styles from "./NotificationShipmentCard.module.css";

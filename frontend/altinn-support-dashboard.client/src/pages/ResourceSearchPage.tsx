@@ -13,11 +13,17 @@ import { extractIdFromUrn } from "../utils/utils";
 export const ResourceSearchPage = () => {
   const environment = useAppStore((s) => s.environment);
 
+  // Navigated here via an EntityLink (e.g. from Notification Search)?
+  const incomingState = useIncomingNavigationState<{ resourceId?: string }>();
+
   const [query, setQuery] = useState(
     () => sessionStorage.getItem("resource_search_query" ) || ""
   );
   const [selectedResource, setSelectedResource] = useState<ResourceSearchResult | null>(
     () => {
+      if (incomingState?.resourceId) {
+        return { identifier: extractIdFromUrn(incomingState.resourceId) };
+      }
       const saved = sessionStorage.getItem("resource_search_selectedResource");
       return saved ? JSON.parse(saved) : null;
     }
@@ -60,14 +66,6 @@ export const ResourceSearchPage = () => {
     }
     prevEnvironmentRef.current = environment
   }, [environment])
-
-  // Preselect a resource when navigated here via an EntityLink (e.g. from Notification Search)
-  const incomingState = useIncomingNavigationState<{ resourceId?: string }>();
-  useEffect(() => {
-    if (incomingState?.resourceId) {
-      setSelectedResource({ identifier: extractIdFromUrn(incomingState.resourceId) });
-    }
-  }, [incomingState]);
 
   return (
     <div className={styles.pageContainer}>
