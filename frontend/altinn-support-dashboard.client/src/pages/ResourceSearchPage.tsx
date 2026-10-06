@@ -6,6 +6,8 @@ import ResourceSearchDetailedView from "../components/ResourceSearch/ResourceSea
 import { useAppStore } from "../stores/Appstore";
 import { useEffect, useRef, useState } from "react";
 import { ResourceSearchResult } from "../models/resourceModels";
+import { useIncomingNavigationState } from "../hooks/useIncomingNavigationState";
+import { extractIdFromUrn } from "../utils/utils";
 
 
 export const ResourceSearchPage = () => {
@@ -58,6 +60,14 @@ export const ResourceSearchPage = () => {
     }
     prevEnvironmentRef.current = environment
   }, [environment])
+
+  // Preselect a resource when navigated here via an EntityLink (e.g. from Notification Search)
+  const incomingState = useIncomingNavigationState<{ resourceId?: string }>();
+  useEffect(() => {
+    if (incomingState?.resourceId) {
+      setSelectedResource({ identifier: extractIdFromUrn(incomingState.resourceId) });
+    }
+  }, [incomingState]);
 
   return (
     <div className={styles.pageContainer}>

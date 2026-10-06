@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
 import { Alert, Card, Paragraph, Table } from "@digdir/designsystemet-react";
 import { NotificationShipmentResponse } from "../../../models/notificationModels";
 import styles from "./NotificationShipmentCard.module.css";
 import { colorMap } from "../notificationColorMap";
+import { EntityLink } from "../../EntityLink";
 
 type NotificationShipemntCardProps = {
   shipment: NotificationShipmentResponse;
@@ -33,7 +35,17 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
         <strong>Senders reference:</strong> {shipment.sendersReference}
       </Paragraph>
       <Paragraph className={styles.paragraph}>
-        <strong>Resource:</strong> {shipment.resourceId}
+        <strong>Resource:</strong>{" "}
+        {shipment.resourceId ? (
+          <EntityLink
+            to="/resourcesearch"
+            state={{ resourceId: shipment.resourceId }}
+          >
+            {shipment.resourceId}
+          </EntityLink>
+        ) : (
+          shipment.resourceId
+        )}
       </Paragraph>
       <Paragraph className={styles.paragraph}>
         <strong>Requested send time:</strong>{" "}

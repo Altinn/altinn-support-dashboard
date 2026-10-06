@@ -9,7 +9,13 @@ namespace altinn_support_dashboard.Server.Utils
 
         public static bool IsValidPhoneNumber(string phoneNumber)
         {
-            return !string.IsNullOrWhiteSpace(phoneNumber) && ((phoneNumber[0] == '+' && phoneNumber.Skip(1).All(char.IsDigit)) || (phoneNumber.All(char.IsDigit)));
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                return false;
+            }
+
+            var digits = phoneNumber[0] == '+' ? phoneNumber[1..] : phoneNumber;
+            return digits.Length >= 8 && digits.All(char.IsDigit);
         }
 
         public static bool IsValidOrgNumber(string orgNumber)

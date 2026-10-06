@@ -102,7 +102,7 @@ public class NotificationsService : INotificationsService
             return await GetFutureNotificationsByNin(party.Ssn, from, to, environmentName);
         }
 
-        throw new Exception("no org or person found for given partyId");
+        return new List<FutureNotificationDto>();
     }
 
     public async Task<List<FutureNotificationDto>> GetFutureNotificationsByPartyUuid(string partyUuid, DateTime? from, DateTime? to, string environmentName)
@@ -118,7 +118,7 @@ public class NotificationsService : INotificationsService
             return await GetFutureNotificationsByNin(party.Ssn, from, to, environmentName);
         }
 
-        throw new Exception("no org or person found for given partyUuid");
+        return new List<FutureNotificationDto>();
     }
 
     public async Task<NotificationOrderResponseDto> GetEmailNotificationsByOrderId(string orderId, string environmentName)

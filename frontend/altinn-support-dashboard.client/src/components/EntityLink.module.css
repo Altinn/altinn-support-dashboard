@@ -1,0 +1,5 @@
+.link {
+    color: var(--ds-color-accent-text-default, #0062ba);
+    text-decoration: underline;
+    cursor: pointer;
+}
