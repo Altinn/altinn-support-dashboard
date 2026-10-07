@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import Sidebar from "../components/Sidebar/Sidebar";
-import { VersionDialog } from "../components/VersionDialog/VersionDialog";
 
 import {
   BrowserRouter as Router,
@@ -9,7 +8,6 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { useVersionCheck } from "../hooks/useVersionCheck";
 import { DashboardPage } from "../pages/DashboardPage";
 import { ManualRoleSearchPage } from "../pages/ManualRoleSearchPage";
 import SettingsPage from "../pages/SettingsPage";
@@ -26,10 +24,6 @@ import { NotificationLogPage } from "../pages/NotificationLogPage";
 import { DialogDetailsLookupPage } from "../pages/DialogDetailsLookupPage";
 
 const App: React.FC = () => {
-  // Sjekk etter nye versjoner
-  const { versionInfo, shouldShowDialog, acknowledgeVersion } =
-    useVersionCheck();
-
   //forces zustand to store states in localstorage first time
   useEffect(() => {
     const stored = localStorage.getItem("app-storage");
@@ -44,13 +38,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      {/* Vis versjonsoppdateringsmelding hvis ny versjon er tilgjengelig */}
       <ToastContainer />
-      <VersionDialog
-        versionInfo={versionInfo}
-        open={shouldShowDialog}
-        onClose={acknowledgeVersion}
-      />
       <Router>
         <div className="app-wrapper">
           <Sidebar />
