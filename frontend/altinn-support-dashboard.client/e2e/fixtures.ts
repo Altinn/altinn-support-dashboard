@@ -60,8 +60,7 @@ export const test = base.extend({
         });
 
         await page.route('**/serviceowner/organizations/altinn3/search*', async (route) => {
-            const url = new URL(route.request().url());
-            const query = url.searchParams.get('query');
+            const query = route.request().headers()['query'];
 
             // Small delay so tests can observe the loading/progressbar state
             await new Promise(resolve => setTimeout(resolve, 100));
