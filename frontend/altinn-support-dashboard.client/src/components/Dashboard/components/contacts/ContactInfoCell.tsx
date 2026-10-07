@@ -28,7 +28,12 @@ const ContactInfoCell: React.FC<ContactInfoCellProps> = ({
     <div>
       {contactLastChanged && (
         <Tooltip content={`Dato endret: ${formatDate(contactLastChanged)}`}>
-          <Label className={isBold ? classes.bold : ""}>{contact || ""}</Label>
+          <Label 
+            data-weight={isBold ? "semibold" : "regular"}
+            className={isBold ? classes.bold : ""}
+          >
+            {contact || ""}
+          </Label>
         </Tooltip>
       )}
     </div>

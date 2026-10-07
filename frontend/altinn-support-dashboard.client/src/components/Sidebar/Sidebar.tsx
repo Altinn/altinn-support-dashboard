@@ -213,7 +213,7 @@ const Sidebar: React.FC = () => {
                 Logg ut
               </Button>
               <div className={classes.userInfo}>
-                <Label>
+                <Label data-weight="regular">
                   {authDetails?.data?.name ? newUsername : userName}
                 </Label>
               </div>
