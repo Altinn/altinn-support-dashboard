@@ -44,8 +44,11 @@ export const NotificationPage = () => {
     hasInternalCoreRoles || storedSearchType !== "shipmentId"
       ? storedSearchType
       : "advanced";
-  const [searchValue, setSearchValue] = useState(
-    () => sessionStorage.getItem("notif_searchValue") || ""
+  const [shipmentIdValue, setShipmentIdValue] = useState(
+    () => sessionStorage.getItem("notif_shipmentIdValue") || ""
+  );
+  const [advancedSearchValue, setAdvancedSearchValue] = useState(
+    () => sessionStorage.getItem("notif_advancedSearchValue") || ""
   );
   const [dateFrom, setDateFrom] = useState(
     () => sessionStorage.getItem("notif_dateFrom") || ""
@@ -71,8 +74,11 @@ export const NotificationPage = () => {
     sessionStorage.setItem("notif_searchType", storedSearchType);
   }, [storedSearchType]);
   useEffect(() => {
-    sessionStorage.setItem("notif_searchValue", searchValue);
-  }, [searchValue]);
+    sessionStorage.setItem("notif_shipmentIdValue", shipmentIdValue);
+  }, [shipmentIdValue]);
+  useEffect(() => {
+    sessionStorage.setItem("notif_advancedSearchValue", advancedSearchValue);
+  }, [advancedSearchValue]);
   useEffect(() => {
     sessionStorage.setItem("notif_dateFrom", dateFrom);
   }, [dateFrom]);
@@ -81,11 +87,11 @@ export const NotificationPage = () => {
   }, [dateTo]);
 
   const orderQuery = useNotifications(
-    searchType === "shipmentId" ? searchValue : "",
+    searchType === "shipmentId" ? shipmentIdValue : "",
     environment
   );
   const advancedQuery = useNotificationsAdvanced(
-    searchType === "advanced" ? searchValue : "",
+    searchType === "advanced" ? advancedSearchValue : "",
     environment,
     dateFrom || undefined,
     dateTo || undefined
@@ -197,12 +203,7 @@ export const NotificationPage = () => {
         <ToggleGroup
           value={searchType}
           data-toggle-group="Søketype"
-          onChange={(val) => {
-            setSearchType(val as SearchType);
-            setSearchValue("");
-            setDateFrom("");
-            setDateTo("");
-          }}
+          onChange={(val) => setSearchType(val as SearchType)}
           data-size="sm"
         >
           <ToggleGroup.Item value="shipmentId">Shipment-Id</ToggleGroup.Item>
@@ -212,8 +213,14 @@ export const NotificationPage = () => {
 
       <NotificationSearchBar
         key={searchType}
-        searchValue={searchValue}
-        setSearchValue={setSearchValue}
+        searchValue={
+          searchType === "shipmentId" ? shipmentIdValue : advancedSearchValue
+        }
+        setSearchValue={
+          searchType === "shipmentId"
+            ? setShipmentIdValue
+            : setAdvancedSearchValue
+        }
         searchType={searchType}
         dateFrom={dateFrom}
         setDateFrom={setDateFrom}
