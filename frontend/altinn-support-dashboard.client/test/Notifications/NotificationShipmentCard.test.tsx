@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import "@testing-library/jest-dom/vitest";
+import { MemoryRouter } from "react-router-dom";
 import NotificationShipmentCard from "../../src/components/Notification/NIN-search/NotificationShipmentCard";
 import {
   NotificationShipmentResponse,
@@ -34,16 +35,23 @@ const makeAttempt = (
   ...overrides,
 });
 
+const renderCard = (shipment: NotificationShipmentResponse) =>
+  render(
+    <MemoryRouter>
+      <NotificationShipmentCard shipment={shipment} />
+    </MemoryRouter>
+  );
+
 describe("NotificationShipmentCard", () => {
   it("should render shipment metadata", () => {
-    render(<NotificationShipmentCard shipment={makeShipment()} />);
+    renderCard(makeShipment());
     expect(screen.getByText(/ship-001/)).toBeInTheDocument();
     expect(screen.getByText(/ref-abc/)).toBeInTheDocument();
     expect(screen.getByText(/res-123/)).toBeInTheDocument();
   });
 
   it("should render table headers", () => {
-    render(<NotificationShipmentCard shipment={makeShipment()} />);
+    renderCard(makeShipment());
     expect(screen.getByText("Recipient")).toBeInTheDocument();
     expect(screen.getByText("Channel")).toBeInTheDocument();
     expect(screen.getByText("Address")).toBeInTheDocument();
@@ -57,7 +65,7 @@ describe("NotificationShipmentCard", () => {
         makeAttempt({ displayedNationalIdentityNumber: "010190*****" }),
       ],
     });
-    render(<NotificationShipmentCard shipment={shipment} />);
+    renderCard(shipment);
     expect(screen.getByText("010190*****")).toBeInTheDocument();
   });
 
@@ -65,13 +73,13 @@ describe("NotificationShipmentCard", () => {
     const shipment = makeShipment({
       deliveryAttempts: [makeAttempt({ organizationNumber: "987654321" })],
     });
-    render(<NotificationShipmentCard shipment={shipment} />);
+    renderCard(shipment);
     expect(screen.getByText("987654321")).toBeInTheDocument();
   });
 
   it("should render E-post for email channel", () => {
     const shipment = makeShipment({ deliveryAttempts: [makeAttempt()] });
-    render(<NotificationShipmentCard shipment={shipment} />);
+    renderCard(shipment);
     expect(screen.getByText("E-post")).toBeInTheDocument();
   });
 
@@ -85,7 +93,7 @@ describe("NotificationShipmentCard", () => {
         }),
       ],
     });
-    render(<NotificationShipmentCard shipment={shipment} />);
+    renderCard(shipment);
     expect(screen.getByText("SMS")).toBeInTheDocument();
   });
 
@@ -93,7 +101,7 @@ describe("NotificationShipmentCard", () => {
     const shipment = makeShipment({
       deliveryAttempts: [makeAttempt({ emailAddress: "user@example.com" })],
     });
-    render(<NotificationShipmentCard shipment={shipment} />);
+    renderCard(shipment);
     expect(screen.getByText("user@example.com")).toBeInTheDocument();
   });
 
@@ -107,7 +115,7 @@ describe("NotificationShipmentCard", () => {
         }),
       ],
     });
-    render(<NotificationShipmentCard shipment={shipment} />);
+    renderCard(shipment);
     expect(screen.getByText("+4799999999")).toBeInTheDocument();
   });
 
@@ -115,7 +123,7 @@ describe("NotificationShipmentCard", () => {
     const shipment = makeShipment({
       deliveryAttempts: [makeAttempt({ result: "Delivered" })],
     });
-    render(<NotificationShipmentCard shipment={shipment} />);
+    renderCard(shipment);
     expect(screen.getByText("Delivered")).toHaveAttribute(
       "data-color",
       "success"
@@ -126,7 +134,7 @@ describe("NotificationShipmentCard", () => {
     const shipment = makeShipment({
       deliveryAttempts: [makeAttempt({ result: "Failed" })],
     });
-    render(<NotificationShipmentCard shipment={shipment} />);
+    renderCard(shipment);
     expect(screen.getByText("Failed")).toHaveAttribute("data-color", "danger");
   });
 
@@ -134,7 +142,7 @@ describe("NotificationShipmentCard", () => {
     const shipment = makeShipment({
       deliveryAttempts: [makeAttempt({ resultTime: null })],
     });
-    render(<NotificationShipmentCard shipment={shipment} />);
+    renderCard(shipment);
     const cells = screen.getAllByRole("cell");
     const timeCells = cells.filter((_, i) => (i + 1) % 5 === 0);
     expect(timeCells[0]).toHaveTextContent("");
@@ -151,17 +159,13 @@ describe("NotificationShipmentCard", () => {
         }),
       ],
     });
-    render(<NotificationShipmentCard shipment={shipment} />);
+    renderCard(shipment);
     expect(screen.getByText("first@example.com")).toBeInTheDocument();
     expect(screen.getByText("+4711111111")).toBeInTheDocument();
   });
 
   it("should render only the header row when there are no delivery attempts", () => {
-    render(
-      <NotificationShipmentCard
-        shipment={makeShipment({ deliveryAttempts: [] })}
-      />
-    );
+    renderCard(makeShipment({ deliveryAttempts: [] }));
     expect(screen.getAllByRole("row")).toHaveLength(1);
   });
 });

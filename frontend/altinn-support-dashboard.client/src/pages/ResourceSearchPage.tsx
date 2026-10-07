@@ -6,16 +6,24 @@ import ResourceSearchDetailedView from "../components/ResourceSearch/ResourceSea
 import { useAppStore } from "../stores/Appstore";
 import { useEffect, useRef, useState } from "react";
 import { ResourceSearchResult } from "../models/resourceModels";
+import { useIncomingNavigationState } from "../hooks/useIncomingNavigationState";
+import { extractIdFromUrn } from "../utils/utils";
 
 
 export const ResourceSearchPage = () => {
   const environment = useAppStore((s) => s.environment);
+
+  // Navigated here via an EntityLink (e.g. from Notification Search)?
+  const incomingState = useIncomingNavigationState<{ resourceId?: string }>();
 
   const [query, setQuery] = useState(
     () => sessionStorage.getItem("resource_search_query" ) || ""
   );
   const [selectedResource, setSelectedResource] = useState<ResourceSearchResult | null>(
     () => {
+      if (incomingState?.resourceId) {
+        return { identifier: extractIdFromUrn(incomingState.resourceId) };
+      }
       const saved = sessionStorage.getItem("resource_search_selectedResource");
       return saved ? JSON.parse(saved) : null;
     }
