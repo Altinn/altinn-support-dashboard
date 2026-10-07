@@ -7,16 +7,6 @@ test.describe("ManualRoleSearchPage", () => {
             localStorage.clear();
             sessionStorage.clear();
         });
-        //This is so the versiondialog doesn't block the tests, as it is set to show on first visit. The version is not relevant for these tests, so we can just set it to a value.
-        await page.evaluate(async () => {
-            try {
-                const response = await fetch('/version.json');
-                const data = await response.json();
-                localStorage.setItem("altinn_support_dashboard_version", data.version);
-            } catch {
-                localStorage.setItem("altinn_support_dashboard_version", "0.0.0");
-            }
-        })
         await page.goto("/manualrolesearch");
     });
 

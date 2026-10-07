@@ -15,15 +15,6 @@ test.describe("CorrespondencePage", () => {
             }));
         });
 
-        await page.evaluate(async () => {
-            try {
-                const response = await fetch('/version.json');
-                const data = await response.json();
-                localStorage.setItem("altinn_support_dashboard_version", data.version);
-            } catch {
-                localStorage.setItem("altinn_support_dashboard_version", "0.0.0");
-            }
-        })
         await page.goto("/correspondence");
     });
 

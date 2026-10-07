@@ -4,7 +4,6 @@ import SettingsPATComponent from "../components/SettingsContent/SettingsPATCompo
 import SettingsDarkModeComponent from "../components/SettingsContent/SettingsDarkModeComponent";
 import SettingsLanguageComponent from "../components/SettingsContent/SettingsLanguageComponent";
 import SettingsActionButtons from "../components/SettingsContent/SettingsActionButtons";
-import SettingsVersionComponent from "../components/SettingsContent/SettingsVersionComponent";
 
 const SettingsPage: React.FC = () => {
   return (
@@ -17,7 +16,6 @@ const SettingsPage: React.FC = () => {
       <SettingsDarkModeComponent />
       <SettingsLanguageComponent />
       <SettingsActionButtons />
-      <SettingsVersionComponent />
     </div>
   );
 };
