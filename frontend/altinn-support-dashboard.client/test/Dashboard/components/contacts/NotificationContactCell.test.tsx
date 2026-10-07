@@ -78,7 +78,7 @@ describe("NotificationContactCell", () => {
     render(<NotificationContactCell contact={mockContact} field="email" />);
 
     const cell = screen.getByRole("cell");
-    expect(cell).toHaveStyle("font-weight: 700");
+    expect(cell.style.fontWeight).toMatch(/^(bold|700)$/);
   });
 
   it("should apply bold style when query matches with different case", () => {
@@ -87,7 +87,7 @@ describe("NotificationContactCell", () => {
     render(<NotificationContactCell contact={mockContact} field="email" />);
 
     const cell = screen.getByRole("cell");
-    expect(cell).toHaveStyle("font-weight: 700");
+    expect(cell.style.fontWeight).toMatch(/^(bold|700)$/);
   });
 
   it("should apply nbolc style when query matches wth spaces removed", () => {
@@ -96,7 +96,7 @@ describe("NotificationContactCell", () => {
     render(<NotificationContactCell contact={mockContact} field="email" />);
 
     const cell = screen.getByRole("cell");
-    expect(cell).toHaveStyle("font-weight: 700");
+    expect(cell.style.fontWeight).toMatch(/^(bold|700)$/);
   });
 
   it("should apply bold style for phone number when query matches", () => {
@@ -105,7 +105,7 @@ describe("NotificationContactCell", () => {
     render(<NotificationContactCell contact={mockContact} field="phone" />);
 
     const cell = screen.getByRole("cell");
-    expect(cell).toHaveStyle("font-weight: 700");
+    expect(cell.style.fontWeight).toMatch(/^(bold|700)$/);
   });
 
   it("should apply bold when query matches country code", () => {
@@ -114,7 +114,7 @@ describe("NotificationContactCell", () => {
     render(<NotificationContactCell contact={mockContact} field="phone" />);
 
     const cell = screen.getByRole("cell");
-    expect(cell).toHaveStyle("font-weight: 700");
+    expect(cell.style.fontWeight).toMatch(/^(bold|700)$/);
   });
 
   it("should handle phone field with undefined value", () => {
