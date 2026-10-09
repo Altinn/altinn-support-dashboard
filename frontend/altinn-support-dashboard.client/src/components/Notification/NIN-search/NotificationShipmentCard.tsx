@@ -3,6 +3,7 @@ import { NotificationShipmentResponse } from "../../../models/notificationModels
 import styles from "./NotificationShipmentCard.module.css";
 import { colorMap } from "../notificationColorMap";
 import { EntityLink } from "../../EntityLink";
+import { getOrgName } from "../../../utils/orgCode";
 
 type NotificationShipemntCardProps = {
   shipment: NotificationShipmentResponse;
@@ -28,7 +29,7 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
         <strong>Shipment Id:</strong> {shipment.shipmentId}
       </Paragraph>
       <Paragraph className={styles.paragraph}>
-        <strong>Creator name:</strong> {shipment.creatorName}
+        <strong>Creator name:</strong> {getOrgName(shipment.creatorName)}
       </Paragraph>
       <Paragraph className={styles.paragraph}>
         <strong>Senders reference:</strong> {shipment.sendersReference}
