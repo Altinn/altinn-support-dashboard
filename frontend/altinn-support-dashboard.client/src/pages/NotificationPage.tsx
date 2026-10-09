@@ -6,8 +6,10 @@ import {
 } from "@digdir/designsystemet-react";
 import { useEffect, useMemo, useState } from "react";
 import NotificationSearchBar from "../components/Notification/NotificationSearchBar";
-import { useNotifications, useNotificationsAdvanced } from "../hooks/hooks";
-import NotificationCard from "../components/Notification/NotificationCard";
+import {
+  useNotificationsAdvanced,
+  useNotificationsByShipmentId,
+} from "../hooks/hooks";
 import style from "./styles/NotificationPage.module.css";
 import { showPopup } from "../components/Popup";
 import { useAppStore } from "../stores/Appstore";
@@ -15,8 +17,6 @@ import NotificationShipmentCard from "../components/Notification/NIN-search/Noti
 import NotificationFilterDropdown from "../components/Notification/NotificationFilterDropdown";
 import usePersistedArray from "../hooks/usePersistedArray";
 import { collectUnique } from "../utils/utils";
-import { useAuthDetails } from "../hooks/azureAuthHooks";
-import { AuthUtils } from "../utils/authUtils";
 
 type SearchType = "shipmentId" | "advanced";
 
@@ -31,19 +31,11 @@ const toggleValue = (
 
 export const NotificationPage = () => {
   const environment = useAppStore((state) => state.environment);
-  const authDetails = useAuthDetails();
-  const hasInternalCoreRoles = AuthUtils.hasInternalCoreRoles(
-    authDetails.data
-  );
 
-  const [storedSearchType, setSearchType] = useState<SearchType>(
+  const [searchType, setSearchType] = useState<SearchType>(
     () =>
       (sessionStorage.getItem("notif_searchType") as SearchType) || "shipmentId"
   );
-  const searchType: SearchType =
-    hasInternalCoreRoles || storedSearchType !== "shipmentId"
-      ? storedSearchType
-      : "advanced";
   const [shipmentIdValue, setShipmentIdValue] = useState(
     () => sessionStorage.getItem("notif_shipmentIdValue") || ""
   );
@@ -71,8 +63,8 @@ export const NotificationPage = () => {
   );
 
   useEffect(() => {
-    sessionStorage.setItem("notif_searchType", storedSearchType);
-  }, [storedSearchType]);
+    sessionStorage.setItem("notif_searchType", searchType);
+  }, [searchType]);
   useEffect(() => {
     sessionStorage.setItem("notif_shipmentIdValue", shipmentIdValue);
   }, [shipmentIdValue]);
@@ -86,7 +78,7 @@ export const NotificationPage = () => {
     sessionStorage.setItem("notif_dateTo", dateTo);
   }, [dateTo]);
 
-  const orderQuery = useNotifications(
+  const shipmentIdQuery = useNotificationsByShipmentId(
     searchType === "shipmentId" ? shipmentIdValue : "",
     environment
   );
@@ -97,7 +89,7 @@ export const NotificationPage = () => {
     dateTo || undefined
   );
 
-  const activeQuery = searchType === "shipmentId" ? orderQuery : advancedQuery;
+  const activeQuery = searchType === "shipmentId" ? shipmentIdQuery : advancedQuery;
 
   useEffect(() => {
     if (activeQuery?.isError) {
@@ -199,17 +191,15 @@ export const NotificationPage = () => {
         Søk etter varsling
       </Heading>
 
-      {hasInternalCoreRoles && (
-        <ToggleGroup
-          value={searchType}
-          data-toggle-group="Søketype"
-          onChange={(val) => setSearchType(val as SearchType)}
-          data-size="sm"
-        >
-          <ToggleGroup.Item value="shipmentId">Shipment-Id</ToggleGroup.Item>
-          <ToggleGroup.Item value="advanced">Avansert søk</ToggleGroup.Item>
-        </ToggleGroup>
-      )}
+      <ToggleGroup
+        value={searchType}
+        data-toggle-group="Søketype"
+        onChange={(val) => setSearchType(val as SearchType)}
+        data-size="sm"
+      >
+        <ToggleGroup.Item value="advanced">Avansert søk</ToggleGroup.Item>
+        <ToggleGroup.Item value="shipmentId">Shipment-Id</ToggleGroup.Item>
+      </ToggleGroup>
 
       <NotificationSearchBar
         key={searchType}
@@ -265,10 +255,10 @@ export const NotificationPage = () => {
         </>
       )}
 
-      {!orderQuery.isFetching &&
-        !orderQuery.isError &&
+      {!shipmentIdQuery.isFetching &&
+        !shipmentIdQuery.isError &&
         searchType === "shipmentId" &&
-        orderQuery.data?.length === 0 && (
+        shipmentIdQuery.data?.length === 0 && (
           <Alert data-color="info">No shipments found.</Alert>
         )}
 
@@ -284,12 +274,10 @@ export const NotificationPage = () => {
           </Alert>
         )}
 
-      {/* Filters out the notifications with 0 (shows only email if sms was 0 f.ex.) */}
-      {/* Different result view based on what type of search it is */}
       {searchType === "shipmentId" &&
-        orderQuery.data
-          ?.filter((o) => o.notifications.length > 0)
-          .map((order, i) => <NotificationCard key={i} order={order} />)}
+        shipmentIdQuery.data?.map((shipment, i) => (
+          <NotificationShipmentCard key={i} shipment={shipment} />
+        ))}
 
       {searchType === "advanced" &&
         filteredShipments?.map((shipment, i) => (

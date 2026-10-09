@@ -101,11 +101,6 @@ namespace altinn_support_dashboard.Server.Utils
             return false;
         }
 
-        public static bool IsValidNotificationOrderId(string orderId)
-        {
-            return !string.IsNullOrWhiteSpace(orderId) && Guid.TryParseExact(orderId, "D", out _);
-        }
-
         public static bool IsValidSsnToken(string token)
         {
             if (string.IsNullOrWhiteSpace(token))
