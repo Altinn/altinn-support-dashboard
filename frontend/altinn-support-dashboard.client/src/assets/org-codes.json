@@ -1,0 +1,860 @@
+{
+    "orgs": {
+        "acn": {
+            "name": {
+                "en": "ACN Test org",
+                "nb": "ACN Test org",
+                "nn": "ACN Test org"
+            },
+            "orgnr": "999999990"
+        },
+        "afs": {
+            "name": {
+                "en": "Avfall Sør AS",
+                "nb": "Avfall Sør AS",
+                "nn": "Avfall Sør AS"
+            },
+            "orgnr": "995646137"
+        },
+        "bft": {
+            "name": {
+                "en": "BFT Test org",
+                "nb": "BFT Test org",
+                "nn": "BFT Test org"
+            },
+            "orgnr": "999999991"
+        },
+        "bits": {
+            "name": {
+                "en": "BITS AS",
+                "nb": "BITS AS",
+                "nn": "BITS AS"
+            },
+            "orgnr": "916960190"
+        },
+        "brg": {
+            "name": {
+                "en": "Brønnøysund Register Centre",
+                "nb": "Brønnøysundregistrene",
+                "nn": "Brønnøysundregistera"
+            },
+            "orgnr": "974760673"
+        },
+        "brm": {
+            "name": {
+                "en": "Brannvesenet Midt IKS",
+                "nb": "Brannvesenet Midt IKS",
+                "nn": "Brannvesenet Midt IKS"
+            },
+            "orgnr": "989023578"
+        },
+        "buf": {
+            "name": {
+                "en": "The Norwegian Directorate for Children, Youth and Family Affairs",
+                "nb": "Barne-, ungdoms- og familiedirektoratet",
+                "nn": "Barne-, ungdoms- og familiedirektoratet"
+            },
+            "orgnr": "986128433"
+        },
+        "dat": {
+            "name": {
+                "en": "The Norwegian Labour Inspection Authority",
+                "nb": "Arbeidstilsynet",
+                "nn": "Arbeidstilsynet"
+            },
+            "orgnr": "974761211"
+        },
+        "ddlabs": {
+            "name": {
+                "en": "Digdir Labs",
+                "nb": "Digdir Labs",
+                "nn": "Digdir Labs"
+            },
+            "orgnr": "310797510"
+        },
+        "dibk": {
+            "name": {
+                "en": "Norwegian Building Authority",
+                "nb": "Direktoratet for byggkvalitet",
+                "nn": "Direktoratet for byggkvalitet"
+            },
+            "orgnr": "974760223"
+        },
+        "digdir": {
+            "name": {
+                "en": "Norwegian Digitalisation Agency",
+                "nb": "Digitaliseringsdirektoratet",
+                "nn": "Digitaliseringsdirektoratet"
+            },
+            "orgnr": "991825827"
+        },
+        "dihe": {
+            "name": {
+                "en": "Digital Helgeland ",
+                "nb": "Digitale Helgeland",
+                "nn": "Digitale Helgeland"
+            },
+            "orgnr": "964983291"
+        },
+        "dmf": {
+            "name": {
+                "en": "The Directorate of Mining",
+                "nb": "Direktoratet for mineralforvaltning",
+                "nn": "Direktoratet for mineralforvaltning"
+            },
+            "orgnr": "974760282"
+        },
+        "din": {
+            "name": {
+                "en": "The Norwegian Courts",
+                "nb": "Domstolene i Norge",
+                "nn": "Domstolane i Noreg"
+            },
+            "orgnr": "984195796"
+        },
+        "dsa": {
+            "name": {
+                "en": "Norwegian Radiation and Nuclear Safety Authority",
+                "nb": "Direktoratet for Strålevern og Atomsikkerhet",
+                "nn": "Direktoratet for Strålevern og Atomsikkerhet"
+            },
+            "orgnr": "867668292"
+        },
+        "dsb": {
+            "name": {
+                "en": "The Norwegian Directorate for Civil Protection",
+                "nb": "Direktoratet for samfunnssikkerhet og beredskap",
+                "nn": "Direktoratet for samfunnssikkerhet og beredskap"
+            },
+            "orgnr": "974760983"
+        },
+        "elh": {
+            "name": {
+                "en": "Elhub",
+                "nb": "Elhub",
+                "nn": "Elhub"
+            },
+            "orgnr": "915925529"
+        },
+        "fd": {
+            "name": {
+                "en": "The Norwegian Directorate of Fisheries",
+                "nb": "Fiskeridirektoratet",
+                "nn": "Fiskeridirektoratet"
+            },
+            "orgnr": "971203420"
+        },
+        "fhi": {
+            "name": {
+                "en": "The Norwegian Institute of Public Health",
+                "nb": "Folkehelseinstituttet",
+                "nn": "Folkehelseinstituttet"
+            },
+            "orgnr": "983744516"
+        },
+        "fjel": {
+            "name": {
+                "en": "Fjellinjen AS",
+                "nb": "Fjellinjen AS",
+                "nn": "Fjellinjen AS"
+            },
+            "orgnr": "941856543"
+        },
+        "fors": {
+            "name": {
+                "en": "The Norwegian Armed Forces",
+                "nb": "Forsvaret",
+                "nn": "Forsvaret"
+            },
+            "orgnr": "986105174"
+        },
+        "gk": {
+            "name": {
+                "en": "The Criminal Cases Review Commission",
+                "nb": "Gjenopptakelseskommisjonen",
+                "nn": "Gjenopptakingskommisjonen"
+            },
+            "orgnr": "985847215"
+        },
+        "hdir": {
+            "name": {
+                "en": "Norwegian Directorate of Health",
+                "nb": "Helsedirektoratet",
+                "nn": "Helsedirektoratet"
+            },
+            "orgnr": "983544622"
+        },
+        "hemit": {
+            "name": {
+                "en": "Central Norway Regional Health Authority's IT department",
+                "nb": "Hemit HF",
+                "nn": "Hemit HF"
+            },
+            "orgnr": "928033821"
+        },
+        "hi": {
+            "name": {
+                "en": "Institute of Marine Research",
+                "nb": "Havforskningsinstituttet",
+                "nn": "Havforskningsinstituttet"
+            },
+            "orgnr": "971349077"
+        },
+        "hko": {
+            "name": {
+                "en": "Horten municipality",
+                "nb": "Horten kommune",
+                "nn": "Horten kommune"
+            },
+            "orgnr": "964951284"
+        },
+        "hmrhf": {
+            "name": {
+                "en": "Helse Møre og Romsdal",
+                "nb": "Helse Møre og Romsdal",
+                "nn": "Helse Møre og Romsdal"
+            },
+            "orgnr": "997005562"
+        },
+        "ikta": {
+            "name": {
+                "en": "IKT Agder IKS",
+                "nb": "IKT Agder IKS",
+                "nn": "IKT Agder IKS"
+            },
+            "orgnr": "985359385"
+        },
+        "indi": {
+            "name": {
+                "en": "Indigo IKT IKS",
+                "nb": "Indigo IKT IKS",
+                "nn": "Indigo IKT IKS"
+            },
+            "orgnr": "930283487"
+        },
+        "k1103": {
+            "name": {
+                "en": "The municipality of Stavanger",
+                "nb": "Stavanger kommune",
+                "nn": "Stavanger kommune"
+            },
+            "orgnr": "964965226"
+        },
+        "krt": {
+            "name": {
+                "en": "The Financial Supervisory Authority of Norway",
+                "nb": "Finanstilsynet",
+                "nn": "Finanstilsynet"
+            },
+            "orgnr": "840747972"
+        },
+        "ksdigi": {
+            "name": {
+                "en": "KS Digital",
+                "nb": "KS Digitale fellestjenester",
+                "nn": "KS Digitale fellestjenester"
+            },
+            "orgnr": "931796003"
+        },
+        "kt": {
+            "name": {
+                "en": "Norwegian Competition Authority",
+                "nb": "Konkurransetilsynet",
+                "nn": "Konkurransetilsynet"
+            },
+            "orgnr": "974761246"
+        },
+        "kv": {
+            "name": {
+                "en": "Norwegian Mapping Authority",
+                "nb": "Kartverket",
+                "nn": "Kartverket"
+            },
+            "orgnr": "971040238"
+        },
+        "kyv": {
+            "name": {
+                "en": "The Norwegian Coastal Administration",
+                "nb": "Kystverket",
+                "nn": "Kystverket"
+            },
+            "orgnr": "874783242"
+        },
+        "lt": {
+            "name": {
+                "en": "Civil Aviation Authority of Norway",
+                "nb": "Luftfartstilsynet",
+                "nn": "Luftfartstilsynet"
+            },
+            "orgnr": "981105516"
+        },
+        "lts": {
+            "name": {
+                "en": "Norwegian Gaming and Foundation Authority",
+                "nb": "Lotteri- og stiftelsestilsynet",
+                "nn": "Lotteri- og stiftelsestilsynet"
+            },
+            "orgnr": "982391490"
+        },
+        "mat": {
+            "name": {
+                "en": "Norwegian Food Safety Authority",
+                "nb": "Mattilsynet",
+                "nn": "Mattilsynet"
+            },
+            "orgnr": "985399077"
+        },
+        "mdir": {
+            "name": {
+                "en": "Norwegian Environment Agency",
+                "nb": "Miljødirektoratet",
+                "nn": "Miljødirektoratet"
+            },
+            "orgnr": "999601391"
+        },
+        "nb": {
+            "name": {
+                "en": "Norges Bank",
+                "nb": "Norges Bank",
+                "nn": "Noregs Bank"
+            },
+            "orgnr": "937884117"
+        },
+        "nbib": {
+            "name": {
+                "en": "National Library of Norway",
+                "nb": "Nasjonalbiblioteket",
+                "nn": "Nasjonalbiblioteket"
+            },
+            "orgnr": "976029100"
+        },
+        "nfk": {
+            "name": {
+                "en": "Nordre Follo kommune",
+                "nb": "Nordre Follo kommune",
+                "nn": "Nordre Follo kommune"
+            },
+            "orgnr": "922092648"
+        },
+        "nhn": {
+            "name": {
+                "en": "Norwegian Healthnet",
+                "nb": "Norsk helsenett",
+                "nn": "Norsk helsenett"
+            },
+            "orgnr": "994598759"
+        },
+        "nkom": {
+            "name": {
+                "en": "The Norwegian Communications Authority",
+                "nb": "Nasjonal kommunikasjonsmyndighet",
+                "nn": "Nasjonal kommunikasjonsmyndighet"
+            },
+            "orgnr": "974446871"
+        },
+        "nkr": {
+            "name": {
+                "en": "Arts and Culture Norway",
+                "nb": "Kulturdirektoratet",
+                "nn": "Kulturdirektoratet"
+            },
+            "orgnr": "971527412"
+        },
+        "nav": {
+            "name": {
+                "en": "Norwegian Labour and Welfare Administration (NAV)",
+                "nb": "Arbeids- og velferdsetaten (NAV)",
+                "nn": "Arbeids- og velferdsetaten (NAV)"
+            },
+            "orgnr": "889640782"
+        },
+        "npd": {
+            "name": {
+                "en": "Norwegian Offshore Directorate",
+                "nb": "Sokkeldirektoratet",
+                "nn": "Sokkeldirektoratet"
+            },
+            "orgnr": "870917732"
+        },
+        "npe": {
+            "name": {
+                "en": "Norwegian System of Patient Injury Compensation",
+                "nb": "Norsk pasientskadeerstatning",
+                "nn": "Norsk pasientskadeerstatning"
+            },
+            "orgnr": "984936923"
+        },
+        "nsm": {
+            "name": {
+                "en": "National Security Agency",
+                "nb": "Nasjonal sikkerhetsmyndighet",
+                "nn": "Nasjonal sikkerhetsmyndighet"
+            },
+            "orgnr": "985165262"
+        },
+        "oed": {
+            "name": {
+                "en": "Ministry of Energy",
+                "nb": "Energidepartementet",
+                "nn": "Energidepartementet"
+            },
+            "orgnr": "977161630"
+        },
+        "ok": {
+            "name": {
+                "en": "City of Oslo",
+                "nb": "Oslo kommune",
+                "nn": "Oslo kommune"
+            },
+            "orgnr": "971183675"
+        },
+        "oko": {
+            "name": {
+                "en": "National Authority for Investigation and Prosecution of Economic and Environmental Crime",
+                "nb": "Økokrim",
+                "nn": "Økokrim"
+            },
+            "orgnr": "874761532"
+        },
+        "pat": {
+            "name": {
+                "en": "Norwegian Industrial Property Office",
+                "nb": "Patentstyret",
+                "nn": "Patentstyret"
+            },
+            "orgnr": "971526157"
+        },
+        "reit": {
+            "name": {
+                "en": "ReIT AS",
+                "nb": "ReIT AS",
+                "nn": "ReIT AS"
+            },
+            "orgnr": "993474118"
+        },
+        "rir": {
+            "name": {
+                "en": "ROMSDALSHALVØYA INTERKOMMUNALE RENOVASJONSSELSKAP IKS",
+                "nb": "ROMSDALSHALVØYA INTERKOMMUNALE RENOVASJONSSELSKAP IKS",
+                "nn": "ROMSDALSHALVØYA INTERKOMMUNALE RENOVASJONSSELSKAP IKS"
+            },
+            "orgnr": "971042656"
+        },
+        "ssikt": {
+            "name": {
+                "en": "SØRE SUNNMØRE IKT KOMMUNALT OPPGÅVEFELLESSKAP",
+                "nb": "SØRE SUNNMØRE IKT KOMMUNALT OPPGÅVEFELLESSKAP",
+                "nn": "SØRE SUNNMØRE IKT KOMMUNALT OPPGÅVEFELLESSKAP"
+            },
+            "orgnr": "919824573"
+        },
+        "sfd": {
+            "name": {
+                "en": "Norwegian Maritime Authority",
+                "nb": "Sjøfartsdirektoratet",
+                "nn": "Sjøfartsdirektoratet"
+            },
+            "orgnr": "974761262"
+        },
+        "sfvt": {
+            "name": {
+                "en": "County Governor of Vestfold and Telemark",
+                "nb": "Statsforvalteren i Vestfold og Telemark",
+                "nn": "Statsforvaltaren i Vestfold og Telemark"
+            },
+            "orgnr": "974762501"
+        },
+        "skd": {
+            "name": {
+                "en": "Norwegian Tax Administration",
+                "nb": "Skatteetaten",
+                "nn": "Skatteetaten"
+            },
+            "orgnr": "974761076"
+        },
+        "slv": {
+            "name": {
+                "en": "The Norwegian Medical Products Agency",
+                "nb": "Direktoratet for medisinske produkter",
+                "nn": "Direktoratet for medisinske produkter"
+            },
+            "orgnr": "974761122"
+        },
+        "spk": {
+            "name": {
+                "en": "Norwegian Public Service Pension Fund",
+                "nb": "Statens pensjonskasse",
+                "nn": "Statens pensjonskasse"
+            },
+            "orgnr": "974760967"
+        },
+        "srf": {
+            "name": {
+                "en": "Norwegian Civil Affairs Authority",
+                "nb": "Statens Sivilrettsforvaltning",
+                "nn": "Statens Sivilrettsforvaltning"
+            },
+            "orgnr": "986186999"
+        },
+        "ssb": {
+            "name": {
+                "en": "Statistics Norway",
+                "nb": "Statistisk sentralbyrå",
+                "nn": "Statistisk sentralbyrå"
+            },
+            "orgnr": "971526920"
+        },
+        "staf": {
+            "name": {
+                "en": "County Governor",
+                "nb": "Statsforvalterens fellestjenester",
+                "nn": "Statsforvaltarens fellestjenester"
+            },
+            "orgnr": "921627009"
+        },
+        "stami": {
+            "name": {
+                "en": "The National Institute of Occupational Health",
+                "nb": "Statens arbeidsmiljøinstitutt",
+                "nn": "Statens arbeidsmiljøinstitutt"
+            },
+            "orgnr": "874761222"
+        },
+        "stped": {
+            "name": {
+                "en": "Statped",
+                "nb": "Statped",
+                "nn": "Statped"
+            },
+            "orgnr": "998554640"
+        },
+        "svv": {
+            "name": {
+                "en": "The Norwegian Public Roads Administration",
+                "nb": "Statens vegvesen",
+                "nn": "Statens vegvesen"
+            },
+            "orgnr": "971032081"
+        },
+        "sb": {
+            "name": {
+                "en": "Statsbygg",
+                "nb": "Statsbygg",
+                "nn": "Statsbygg"
+            },
+            "orgnr": "971278374"
+        },
+        "sym": {
+            "name": {
+                "en": "Symfoni AS",
+                "nb": "Symfoni AS",
+                "nn": "Symfoni AS"
+            },
+            "orgnr": "915772137"
+        },
+        "tad": {
+            "name": {
+                "en": "Norwegian Customs",
+                "nb": "Tolletaten",
+                "nn": "Tolletaten"
+            },
+            "orgnr": "880455702"
+        },
+        "tra": {
+            "name": {
+                "en": "Supervisory Authority for Legal Services",
+                "nb": "Advokattilsynet",
+                "nn": "Advokattilsynet"
+            },
+            "orgnr": "914459265"
+        },
+        "trr": {
+            "name": {
+                "en": "The National Insurance Court",
+                "nb": "Trygderetten",
+                "nn": "Trygderetten"
+            },
+            "orgnr": "974761084"
+        },
+        "ttd": {
+            "name": {
+                "en": "Test Ministry",
+                "nb": "Testdepartementet",
+                "nn": "Testdepartementet"
+            },
+            "orgnr": ""
+        },
+        "udi": {
+            "name": {
+                "en": "The Norwegian Directorate of Immigration",
+                "nb": "Utlendingsdirektoratet",
+                "nn": "Utlendingsdirektoratet"
+            },
+            "orgnr": "974760746"
+        },
+        "udir": {
+            "name": {
+                "en": "Norwegian Directorate for Education and Training",
+                "nb": "Utdanningsdirektoratet",
+                "nn": "Utdanningsdirektoratet"
+            },
+            "orgnr": "970018131"
+        },
+        "valg": {
+            "name": {
+                "en": "Election Directorate",
+                "nb": "Valgdirektoratet",
+                "nn": "Valdirektoratet"
+            },
+            "orgnr": "916132727"
+        },
+        "dfo": {
+            "name": {
+                "en": "The Norwegian Agency for Public and Financial Management (DFØ)",
+                "nb": "Direktoratet for forvaltning og økonomistyring",
+                "nn": "Direktoratet for forvaltning og økonomistyring"
+            },
+            "orgnr": "986252932"
+        },
+        "skm": {
+            "name": {
+                "en": "Norwegian civil security clearance authority",
+                "nb": "Sivil klareringsmyndighet",
+                "nn": "Sivil klareringsmyndigheit"
+            },
+            "orgnr": "918929673"
+        },
+        "slk": {
+            "name": {
+                "en": "Norwegian State Educational Loan Fund",
+                "nb": "Statens Lånekasse for utdanning",
+                "nn": "Statens Lånekasse for utdanning"
+            },
+            "orgnr": "960885406"
+        },
+        "hb": {
+            "name": {
+                "en": "Norwegian State Housing Bank",
+                "nb": "Husbanken",
+                "nn": "Husbanken"
+            },
+            "orgnr": "942114184"
+        },
+        "slf": {
+            "name": {
+                "en": "Norwegian Agriculture Agency",
+                "nb": "Landbruksdirektoratet",
+                "nn": "Landbruksdirektoratet"
+            },
+            "orgnr": "981544315"
+        },
+        "nve": {
+            "name": {
+                "en": "Norwegian Water Resources and Energy Directorate",
+                "nb": "Norges vassdrags- og energidirektorat",
+                "nn": "Norges vassdrags- og energidirektoratt"
+            },
+            "orgnr": "970205039"
+        },
+        "bk": {
+            "name": {
+                "en": "City of Bergen",
+                "nb": "Bergen kommune",
+                "nn": "Bergen kommune"
+            },
+            "orgnr": "964338531"
+        },
+        "ks": {
+            "name": {
+                "en": "Municipalities/County Municipalities",
+                "nb": "Kommuner/fylkeskommuner",
+                "nn": "Kommunar/fylkeskommunar"
+            },
+            "orgnr": "971032146"
+        },
+        "dpa": {
+            "name": {
+                "en": "Norwegian Data Protection Authority",
+                "nb": "Datatilsynet",
+                "nn": "Datatilsynet"
+            },
+            "orgnr": "974761467"
+        },
+        "pod": {
+            "name": {
+                "en": "Police",
+                "nb": "Politiet",
+                "nn": "Politiet"
+            },
+            "orgnr": "982531950"
+        },
+        "sht": {
+            "name": {
+                "en": "Accident Investigation Board Norway",
+                "nb": "Statens havarikommisjon",
+                "nn": "Statens havarikommisjon"
+            },
+            "orgnr": "881143712"
+        },
+        "eno": {
+            "name": {
+                "en": "Enova SF",
+                "nb": "Enova SF",
+                "nn": "Enova SF"
+            },
+            "orgnr": "983609155"
+        },
+        "k5001": {
+            "name": {
+                "en": "Trondheim Municipality",
+                "nb": "Trondheim kommune",
+                "nn": "Trondheim kommune"
+            },
+            "orgnr": "942110464"
+        },
+        "k3030": {
+            "name": {
+                "en": "Lillestrøm kommune",
+                "nb": "Lillestrøm kommune",
+                "nn": "Lillestrøm kommune"
+            },
+            "orgnr": "820710592"
+        },
+        "nokut": {
+            "name": {
+                "en": "NOKUT (The Norwegian Agency for Quality Assurance in Education)",
+                "nb": "NOKUT (Nasjonalt organ for kvalitet i utdanningen)",
+                "nn": "NOKUT (Nasjonalt organ for kvalitet i utdanninga)"
+            },
+            "orgnr": "985042667"
+        },
+        "pol": {
+            "name": {
+                "en": "The Norwegian Police Service",
+                "nb": "Politi- og lensmannsetaten",
+                "nn": "Politi- og lensmannsetaten"
+            },
+            "orgnr": "915429785"
+        },
+        "rmt": {
+            "name": {
+                "en": "Remidt IKS",
+                "nb": "Remidt IKS",
+                "nn": "Remidt IKS"
+            },
+            "orgnr": "975936333"
+        },
+        "mna": {
+            "name": {
+                "en": "MIDTRE NAMDAL AVFALLSSELSKAP IKS",
+                "nb": "MIDTRE NAMDAL AVFALLSSELSKAP IKS",
+                "nn": "MIDTRE NAMDAL AVFALLSSELSKAP IKS"
+            },
+            "orgnr": "957387969"
+        },
+        "vigo": {
+            "name": {
+                "en": "Novari IKS",
+                "nb": "Novari IKS",
+                "nn": "Novari IKS"
+            },
+            "orgnr": "998283914"
+        },
+        "fk30": {
+            "name": {
+                "en": "Viken Fylkeskommune",
+                "nb": "Viken Fylkeskommune",
+                "nn": "Viken Fylkeskommune"
+            },
+            "orgnr": "921693230"
+        },
+        "tffa": {
+            "name": {
+                "en": "Norwegian Motor Insurers’ Bureau",
+                "nb": "Trafikkforsikringsforeningen",
+                "nn": "Trafikkforsikringsforeningen"
+            },
+            "orgnr": "960509811"
+        },
+        "asf": {
+            "name": {
+                "en": "Altinn Sentralforvaltning",
+                "nb": "Altinn Sentralforvaltning",
+                "nn": "Altinn Sentralforvaltning"
+            },
+            "orgnr": "974706121"
+        },
+        "ehls": {
+            "name": {
+                "en": "Direktoratet for e-helse",
+                "nb": "Direktoratet for e-helse",
+                "nn": "Direktoratet for e-helse"
+            },
+            "orgnr": "915933149"
+        },
+        "fk": {
+            "name": {
+                "en": "Fellesordning for avtalefestet pensjon",
+                "nb": "Fellesordning for avtalefestet pensjon",
+                "nn": "Fellesordning for avtalefestet pensjon"
+            },
+            "orgnr": "987414502"
+        },
+        "fkd": {
+            "name": {
+                "en": "Fiskeri- og kystdepartementet",
+                "nb": "Fiskeri- og kystdepartementet",
+                "nn": "Fiskeri- og kystdepartementet"
+            },
+            "orgnr": "972417815"
+        },
+        "htil": {
+            "name": {
+                "en": "Statens Helsetilsyn",
+                "nb": "Statens Helsetilsyn",
+                "nn": "Statens Helsetilsyn"
+            },
+            "orgnr": "974761394"
+        },
+        "k0231": {
+            "name": {
+                "en": "Skedsmo kommune",
+                "nb": "Skedsmo kommune",
+                "nn": "Skedsmo kommune"
+            },
+            "orgnr": "938275130"
+        },
+        "klif": {
+            "name": {
+                "en": "Statens forurensningstilsyn",
+                "nb": "Statens forurensningstilsyn",
+                "nn": "Statens forurensningstilsyn"
+            },
+            "orgnr": "970935657"
+        },
+        "lat": {
+            "name": {
+                "en": "Luftambulansetjenesten HF",
+                "nb": "Luftambulansetjenesten HF",
+                "nn": "Luftambulansetjenesten HF"
+            },
+            "orgnr": "818711832"
+        },
+        "si": {
+            "name": {
+                "en": "Statens innkrevingssentral",
+                "nb": "Statens innkrevingssentral",
+                "nn": "Statens innkrevingssentral"
+            },
+            "orgnr": "971648198"
+        },
+        "sft": {
+            "name": {
+                "en": "Klima- og forurensningsdirektoratet",
+                "nb": "Klima- og forurensningsdirektoratet",
+                "nn": "Klima- og forurensningsdirektoratet"
+            },
+            "orgnr": "999999992"
+        }
+    }
+}
