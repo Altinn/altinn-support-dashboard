@@ -236,12 +236,17 @@ public class Altinn3Service : IAltinn3Service
         var contacts = new List<PersonalContactDto>();
 
         var result = await _client.GetPersonalContactsByPhone(localNumber, null, environment);
+        
         if (!string.IsNullOrEmpty(result))
         {
             contacts = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions)
                 ?? throw new Exception("Deserialization not valid");
         }
 
+        if (PhoneNumberUtils.IsLocalNorwegianNumber(phoneNumber))
+        {
+            contacts = contacts.Where(c => PhoneNumberUtils.MatchesLocalNumber(localNumber, c.Phone)).ToList();
+        }    
         return contacts;
     }
 
@@ -283,10 +288,17 @@ public class Altinn3Service : IAltinn3Service
             throw new ArgumentException("The phonenumber is not valid.");
         }
 
+        
+
+
         var result = await _client.GetUserContactInformationByPhoneNumber(localNumber, environment);
         if (string.IsNullOrEmpty(result)) return null;
         var contactDtos = JsonSerializer.Deserialize<DashboardUserContactPointResponse[]>(result, jsonOptions) ?? throw new Exception("Deserialization not valid");
 
+        if (PhoneNumberUtils.IsLocalNorwegianNumber(phoneNumber))
+        {
+            contactDtos = contactDtos.Where(c => PhoneNumberUtils.MatchesLocalNumber(localNumber, c.PhoneNumber)).ToArray();
+        }
         var contacts = await GetUserContactInformation(contactDtos, environment);
         return contacts;
     }
@@ -379,6 +391,11 @@ public class Altinn3Service : IAltinn3Service
         {
             addresses.AddRange(JsonSerializer.Deserialize<List<NotificationAddressDto>>(result, jsonOptions)
             ?? throw new Exception("Deserialization not valid"));
+        }
+
+        if (PhoneNumberUtils.IsLocalNorwegianNumber(phoneNumber))
+        {
+            addresses = addresses.Where(a => PhoneNumberUtils.MatchesLocalNumber(localNumber, a.Phone, a.CountryCode)).ToList();
         }
 
         return addresses;
