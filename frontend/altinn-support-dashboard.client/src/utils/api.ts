@@ -13,7 +13,6 @@ import {
   NotificationAvailabilityRequest,
   NotificationAvailabilityResponse,
   NotificationLog,
-  NotificationOrderResponse,
   NotificationShipmentResponse,
 } from "../models/notificationModels";
 import {
@@ -147,18 +146,18 @@ export const fetchNotificationAddresses = async (
   return Array.isArray(data) ? data : [data];
 };
 
-export const fetchNotificationByOrderId = async (
-  orderId: string,
+export const fetchNotificationsByShipmentId = async (
+  shipmentId: string,
   environment: string
-): Promise<NotificationOrderResponse[] | null> => {
+): Promise<NotificationShipmentResponse[] | null> => {
   const res = await authorizedFetch(
-    `${getBaseUrl(environment)}/notifications/orderid/${encodeURIComponent(orderId)}`
+    `${getBaseUrl(environment)}/notifications/future/shipmentid/${encodeURIComponent(shipmentId)}`
   );
 
   if (res.status === 404) return null;
   if (!res.ok)
     throw new Error(
-      (await res.text()) || "Error fetching notification by orderId"
+      (await res.text()) || "Error fetching notification by shipmentId"
     );
 
   return await res.json();

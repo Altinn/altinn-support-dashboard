@@ -23,40 +23,10 @@ public class NotificationsClient : INotificationsClient
         _clients.Add(environmentName, client);
     }
 
-    public async Task<string> GetEmailNotificationsByOrderId(string orderId, string environmentName)
+    public async Task<string> GetFutureNotificationsByShipmentId(string shipmentId, string environmentName)
     {
-        var client = _clients[environmentName];
-        var response = await client.GetAsync($"notifications/api/v1/orders/{orderId}/notifications/email");
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        if (!response.IsSuccessStatusCode)
-        {
-            _logger.LogError("Failed to retrieve email notifications for order  in environment {EnvironmentName}. Status code: {StatusCode}", environmentName, response.StatusCode);
-            throw new HttpRequestException(
-                $"Api request failed with status code {response.StatusCode}: {responseBody}",
-                inner: null,
-                statusCode: response.StatusCode);
-        }
-
-        return responseBody;
-    }
-
-    public async Task<string> GetSmsNotificationsByOrderId(string orderId, string environmentName)
-    {
-        var client = _clients[environmentName];
-        var response = await client.GetAsync($"notifications/api/v1/orders/{orderId}/notifications/sms");
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        if (!response.IsSuccessStatusCode)
-        {
-            _logger.LogError("Failed to retrieve SMS notifications for order in environment {EnvironmentName}. Status code: {StatusCode}", environmentName, response.StatusCode);
-            throw new HttpRequestException(
-                $"Api request failed with status code {response.StatusCode}: {responseBody}",
-                inner: null,
-                statusCode: response.StatusCode);
-        }
-
-        return responseBody;
+        var url = "notifications/api/v1/future/dashboard/recipients/notifications/shipmentid";
+        return await GetFutureNotifications(url, "ShipmentId", shipmentId, null, null, environmentName);
     }
 
     public async Task<string> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to, string environmentName)

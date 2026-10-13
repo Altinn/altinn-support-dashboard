@@ -18,9 +18,9 @@ import {
   fetchMaskinportenDelegations,
   fetchNotificationAddresses,
   fetchNotificationAvailability,
-  fetchNotificationByOrderId,
   fetchNotificationLog,
   fetchNotificationsAdvancedSearch,
+  fetchNotificationsByShipmentId,
   fetchOrganizations,
   fetchPersonalContacts,
   fetchResourceByIdentifier,
@@ -217,11 +217,14 @@ export function useInternalIdLookup(query: string, environment: string) {
   });
 }
 
-export function useNotifications(orderId: string, environment: string) {
+export function useNotificationsByShipmentId(
+  shipmentId: string,
+  environment: string
+) {
   const notificationQuery = useQuery({
-    queryKey: ["notifications", orderId, environment],
-    queryFn: () => fetchNotificationByOrderId(orderId, environment),
-    enabled: !!orderId,
+    queryKey: ["notificationsByShipmentId", shipmentId, environment],
+    queryFn: () => fetchNotificationsByShipmentId(shipmentId, environment),
+    enabled: !!shipmentId,
     retry: false,
     staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,

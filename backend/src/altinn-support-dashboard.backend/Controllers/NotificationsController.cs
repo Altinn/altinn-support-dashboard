@@ -15,8 +15,6 @@ namespace AltinnSupportDashboard.Controllers;
 [Authorize(AzureRoles.CoreExternal)]
 public class NotificationsController : ControllerBase
 {
-    private const string InvalidOrderIdMessage = "Order-ID is invalid. It should be in GUID format";
-
     private readonly INotificationsService _service;
     private readonly IAltinn3Service _altinn3Service;
     private readonly ITelemetryService _telemetryService;
@@ -30,38 +28,17 @@ public class NotificationsController : ControllerBase
 
     private string CurrentUserId => User.Identity?.Name ?? "unknown";
 
-    [Authorize(AzureRoles.CoreInternal)]
-    [HttpGet("orderid/email/{orderId}")]
-    public async Task<IActionResult> GetEmailNotificationsByOrderId([FromRoute] string environmentName, string orderId)
+    [HttpGet("future/shipmentid/{shipmentId}")]
+    public async Task<IActionResult> GetFutureNotificationsByShipmentId([FromRoute] string environmentName, [FromRoute] string shipmentId)
     {
-        if (!ValidationService.IsValidNotificationOrderId(orderId))
-            return BadRequest(InvalidOrderIdMessage);
+        if (!ValidationService.IsValidGuid(shipmentId))
+        {
+            return BadRequest("Shipment-ID is invalid. It should be in GUID format");
+        }
 
-        var response = await _service.GetEmailNotificationsByOrderId(orderId, environmentName);
-        return Ok(response);
-    }
+        _telemetryService.TrackShipmentIdSearch(shipmentId, CurrentUserId, environmentName);
 
-    [Authorize(AzureRoles.CoreInternal)]
-    [HttpGet("orderid/sms/{orderId}")]
-    public async Task<IActionResult> GetSmsNotificationsByOrderId([FromRoute] string environmentName, string orderId)
-    {
-        if (!ValidationService.IsValidNotificationOrderId(orderId))
-            return BadRequest(InvalidOrderIdMessage);
-
-        var response = await _service.GetSmsNotificationsByOrderId(orderId, environmentName);
-        return Ok(response);
-    }
-
-    [Authorize(AzureRoles.CoreInternal)]
-    [HttpGet("orderid/{orderId}")]
-    public async Task<IActionResult> GetAllNotificationsByOrderId([FromRoute] string environmentName, string orderId)
-    {
-        if (!ValidationService.IsValidNotificationOrderId(orderId))
-            return BadRequest(InvalidOrderIdMessage);
-
-        _telemetryService.TrackOrderIdSearch(orderId, CurrentUserId, environmentName);
-
-        var response = await _service.GetAllNotificationsByOrderId(orderId, environmentName);
+        var response = await _service.GetFutureNotificationsByShipmentId(shipmentId, environmentName);
         return Ok(response);
     }
 

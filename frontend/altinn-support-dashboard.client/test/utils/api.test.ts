@@ -9,6 +9,7 @@ import {
   fetchNotificationAddresses,
   fetchUserContactInformationSearch,
   fetchNotificationsAdvancedSearch,
+  fetchNotificationsByShipmentId,
   fetchInternalIds,
   fetchInternalIdsFromSsn,
 } from "../../src/utils/api";
@@ -369,6 +370,49 @@ describe("api", () => {
       );
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe("fetchNotificationsByShipmentId", () => {
+    const shipmentId = "dec90ca7-4f8d-410f-96ed-666fe019c946";
+
+    it("fetches from the shipmentid endpoint and returns the shipments", async () => {
+      const mockData = [{ shipmentId }];
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: vi.fn().mockResolvedValue(mockData),
+      } as unknown as Response);
+
+      const result = await fetchNotificationsByShipmentId(shipmentId, "TEST");
+
+      expect(result).toEqual(mockData);
+      expect(utils.authorizedFetch).toHaveBeenCalledWith(
+        `http://localhost/api/notifications/future/shipmentid/${shipmentId}`
+      );
+    });
+
+    it("returns null on 404", async () => {
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: false,
+        status: 404,
+      } as unknown as Response);
+
+      const result = await fetchNotificationsByShipmentId(shipmentId, "TEST");
+
+      expect(result).toBeNull();
+    });
+
+    it("throws with the response text on other errors", async () => {
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: false,
+        status: 400,
+        text: vi.fn().mockResolvedValue("Shipment-ID is invalid"),
+      } as unknown as Response);
+
+      await expect(
+        fetchNotificationsByShipmentId("not-a-guid", "TEST")
+      ).rejects.toThrow("Shipment-ID is invalid");
     });
   });
 

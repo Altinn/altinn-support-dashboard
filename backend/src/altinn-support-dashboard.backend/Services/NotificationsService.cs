@@ -1,8 +1,6 @@
 using altinn_support_dashboard.Server.Services.Interfaces;
-using altinn_support_dashboard.Server.Utils;
 using Microsoft.Extensions.Compliance.Redaction;
 using Models.notifications;
-using System.Net;
 using System.Text.Json;
 
 namespace altinn_support_dashboard.Server.Services;
@@ -49,6 +47,14 @@ public class NotificationsService : INotificationsService
                 }
             }
         }
+    }
+
+    public async Task<List<FutureNotificationDto>> GetFutureNotificationsByShipmentId(string shipmentId, string environmentName)
+    {
+        var result = await _client.GetFutureNotificationsByShipmentId(shipmentId, environmentName);
+        var notifications = JsonSerializer.Deserialize<List<FutureNotificationDto>>(result, _jsonOptions) ?? throw new Exception("Error deserializing future notifications response");
+        RedactNationalIdentityNumbers(notifications);
+        return notifications;
     }
 
     public async Task<List<FutureNotificationDto>> GetFutureNotificationsByNin(string nin, DateTime? from, DateTime? to, string environmentName)
@@ -119,52 +125,6 @@ public class NotificationsService : INotificationsService
         }
 
         return new List<FutureNotificationDto>();
-    }
-
-    public async Task<NotificationOrderResponseDto> GetEmailNotificationsByOrderId(string orderId, string environmentName)
-    {
-        var result = await _client.GetEmailNotificationsByOrderId(orderId, environmentName);
-        return JsonSerializer.Deserialize<NotificationOrderResponseDto>(result, _jsonOptions) ?? throw new Exception("Error deserializing email notifications response");
-    }
-
-    public async Task<NotificationOrderResponseDto> GetSmsNotificationsByOrderId(string orderId, string environmentName)
-    {
-        var result = await _client.GetSmsNotificationsByOrderId(orderId, environmentName);
-        return JsonSerializer.Deserialize<NotificationOrderResponseDto>(result, _jsonOptions) ?? throw new Exception("Error deserializing SMS notifications response");
-    }
-
-
-    public async Task<List<NotificationOrderResponseDto>> GetAllNotificationsByOrderId(string orderId, string environmentName)
-    {
-        var smsTask = GetSmsNotificationsByOrderId(orderId, environmentName);
-        var emailTask = GetEmailNotificationsByOrderId(orderId, environmentName);
-
-        // runs the tasks in parrallel
-        await Task.WhenAll(
-            smsTask.ContinueWith(_ => { }),
-            emailTask.ContinueWith(_ => { })
-        );
-
-        List<NotificationOrderResponseDto> results = [];
-
-        if (smsTask.IsCompletedSuccessfully)
-            results.Add(smsTask.Result);
-        else
-            _logger.LogError(smsTask.Exception, "Failed to get SMS notifications for order {OrderId}", ValidationService.SanitizeForLog(orderId));
-
-        if (emailTask.IsCompletedSuccessfully)
-            results.Add(emailTask.Result);
-        else
-            _logger.LogError(emailTask.Exception, "Failed to get email notifications for order: {OrderId}", ValidationService.SanitizeForLog(orderId));
-
-        if (results.Count == 0)
-        {
-            throw new HttpRequestException(
-                $"No notifications found for order {orderId}.",
-                inner: null,
-                statusCode: HttpStatusCode.NotFound);
-        }
-        return results;
     }
 
     public async Task<List<NotificationLog>> GetNotificationLogsAsync(string? dialogId, string? transmissionId, string environmentName)
