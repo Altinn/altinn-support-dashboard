@@ -6,18 +6,18 @@ namespace altinn_support_dashboard.Server.Utils
     {
         public static (string? CountryCode, string LocalNumber) SplitPhoneNumber(string phoneNumber)
         {
-            var trimmedPhoneNumber = phoneNumber.Trim();
+            var trimmedPhoneNumber = NormalizeInternationalPrefix(phoneNumber).Replace(" ", "");
+
             var plusMatch = Regex.Match(trimmedPhoneNumber, @"^\+\d{1,2}");
             if (plusMatch.Success)
             {
                 return (plusMatch.Value, trimmedPhoneNumber[plusMatch.Length..]);
             }
 
-            var zeroZeroMatch = Regex.Match(trimmedPhoneNumber, @"^00\d\d{1,2}");
-            if (zeroZeroMatch.Success)
+            // "47" + 8 digits  without "+" or "00" -> Norwegian number with country code
+            if (Regex.IsMatch(trimmedPhoneNumber, @"^47\d{8}$"))
             {
-                var countryCode = "+" + zeroZeroMatch.Value[2..];
-                return (countryCode, trimmedPhoneNumber[zeroZeroMatch.Length..]);
+                return ("+47", trimmedPhoneNumber[2..]);
             }
 
             return (null, trimmedPhoneNumber);
