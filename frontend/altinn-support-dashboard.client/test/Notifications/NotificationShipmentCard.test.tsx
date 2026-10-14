@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import { MemoryRouter } from "react-router-dom";
 import NotificationShipmentCard from "../../src/components/Notification/NIN-search/NotificationShipmentCard";
@@ -167,5 +168,27 @@ describe("NotificationShipmentCard", () => {
   it("should render only the header row when there are no delivery attempts", () => {
     renderCard(makeShipment({ deliveryAttempts: [] }));
     expect(screen.getAllByRole("row")).toHaveLength(1);
+  });
+
+  it("should render shipment id as plain text when no click handler is given", () => {
+    renderCard(makeShipment());
+    expect(
+      screen.queryByRole("button", { name: "ship-001" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("should call onShipmentIdClick with the shipment id when clicked", async () => {
+    const user = userEvent.setup();
+    const onShipmentIdClick = vi.fn();
+    render(
+      <MemoryRouter>
+        <NotificationShipmentCard
+          shipment={makeShipment()}
+          onShipmentIdClick={onShipmentIdClick}
+        />
+      </MemoryRouter>
+    );
+    await user.click(screen.getByRole("button", { name: "ship-001" }));
+    expect(onShipmentIdClick).toHaveBeenCalledWith("ship-001");
   });
 });

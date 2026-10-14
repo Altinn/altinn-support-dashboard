@@ -3,18 +3,21 @@ import { NotificationShipmentResponse } from "../../../models/notificationModels
 import styles from "./NotificationShipmentCard.module.css";
 import { colorMap } from "../notificationColorMap";
 import { EntityLink } from "../../EntityLink";
+import { LinkButton } from "../../LinkButton";
 import { getOrgName } from "../../../utils/orgCode";
 
 type NotificationShipemntCardProps = {
   shipment: NotificationShipmentResponse;
   selectedResults?: string[];
   selectedChannels?: string[];
+  onShipmentIdClick?: (shipmentId: string) => void;
 };
 
 const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
   shipment,
   selectedResults = [],
   selectedChannels = [],
+  onShipmentIdClick,
 }) => {
   const deliveryAttempts = (shipment.deliveryAttempts ?? []).filter(
     (attempt) =>
@@ -26,7 +29,14 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
   return (
     <Card data-color="neutral" className={styles.card}>
       <Paragraph className={styles.paragraph}>
-        <strong>Shipment Id:</strong> {shipment.shipmentId}
+        <strong>Shipment Id:</strong>{" "}
+        {onShipmentIdClick ? (
+          <LinkButton onClick={() => onShipmentIdClick(shipment.shipmentId)}>
+            {shipment.shipmentId}
+          </LinkButton>
+        ) : (
+          shipment.shipmentId
+        )}
       </Paragraph>
       <Paragraph className={styles.paragraph}>
         <strong>Creator name:</strong> {getOrgName(shipment.creatorName)}
