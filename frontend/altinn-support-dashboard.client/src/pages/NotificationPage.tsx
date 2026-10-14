@@ -286,6 +286,10 @@ export const NotificationPage = () => {
             shipment={shipment}
             selectedResults={selectedResults}
             selectedChannels={selectedChannels}
+            onShipmentIdClick={(id) => {
+              setShipmentIdValue(id);
+              setSearchType("shipmentId");
+            }}
           />
         ))}
     </div>
