@@ -169,7 +169,9 @@ export const fetchNotificationsAdvancedSearch = async (
   dateFrom?: string,
   dateTo?: string
 ): Promise<NotificationShipmentResponse[] | null> => {
-  if (hasInvalidHeaderValue(query)) {
+  const strippedQuery = query.replace(/\s/g, "");
+
+  if (hasInvalidHeaderValue(strippedQuery)) {
     throw new Error("Ugyldig søketerm");
   }
 
@@ -184,7 +186,7 @@ export const fetchNotificationsAdvancedSearch = async (
 
   const res = await authorizedFetch(
     `${getBaseUrl(environment)}/notifications/future${paramsString}`,
-    { headers: { query } }
+    { headers: { query: strippedQuery } }
   );
 
   if (res.status === 404) return null;
