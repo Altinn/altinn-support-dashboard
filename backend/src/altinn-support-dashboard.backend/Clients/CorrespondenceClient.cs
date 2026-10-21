@@ -44,6 +44,7 @@ public class CorrespondenceClient : ICorrespondenceClient
             case "confidentiality":
 
                 form.Add(new StringContent(resourceTypes.ConfidentialityResourceId.ToString()), "correspondence.resourceid");
+                form.Add(new StringContent("true"), "correspondence.isconfidential");
                 break;
             case "selfIdentified":
                 form.Add(new StringContent(resourceTypes.SelfIdentifiedResourceId.ToString()), "correspondence.resourceid");
