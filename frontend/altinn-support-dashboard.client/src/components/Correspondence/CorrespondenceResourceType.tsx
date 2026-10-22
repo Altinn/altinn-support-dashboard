@@ -4,7 +4,7 @@ import { setLocalStorageValue } from "../ManualRoleSearch/utils/storageUtils";
 interface CorrespondenceResourceTypeProps {
   resourceType: string;
   setResourceType: (resourceType: string) => void;
-  allowForwarding: boolean;
+  allowForwarding?: boolean;
 }
 
 const CorrespondenceResourceType: React.FC<CorrespondenceResourceTypeProps> = ({
