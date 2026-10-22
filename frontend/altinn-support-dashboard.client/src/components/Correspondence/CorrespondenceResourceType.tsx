@@ -4,11 +4,13 @@ import { setLocalStorageValue } from "../ManualRoleSearch/utils/storageUtils";
 interface CorrespondenceResourceTypeProps {
   resourceType: string;
   setResourceType: (resourceType: string) => void;
+  allowForwarding: boolean;
 }
 
 const CorrespondenceResourceType: React.FC<CorrespondenceResourceTypeProps> = ({
   resourceType,
   setResourceType,
+  allowForwarding = false,
 }) => {
   const handleResourceTypeChange = (resourceType: string) => {
     setResourceType(resourceType);
@@ -22,9 +24,11 @@ const CorrespondenceResourceType: React.FC<CorrespondenceResourceTypeProps> = ({
         onChange={(e) => handleResourceTypeChange(e.target.value)}
       >
         <Select.Option value="selfIdentified">Selvidentifisert</Select.Option>
-        <Select.Option value="confidentiality">
-          Taushetsbelagt post
-        </Select.Option>
+        {!allowForwarding && (
+          <Select.Option value="confidentiality">
+            Taushetsbelagt post
+          </Select.Option>
+        )}
         <Select.Option value="default">Ordinær post</Select.Option>
         <Select.Option value="securitylvl4">Sikkerhetsnivå 4</Select.Option>
       </Select>

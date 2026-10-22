@@ -59,9 +59,10 @@ export const CorrespondencePage = () => {
   const [selectedDateTime, setSelectedDateTime] = useState<string>(
     getLocalStorageValue("dueDate")
   );
-  const [resourceType, setResourceType] = useState<string>(
-    getLocalStorageValue("resourceType") || "default"
-  );
+  const [resourceType, setResourceType] = useState<string>(() => {
+    const stored = getLocalStorageValue("resourceType") || "default";
+    return allowForwarding && stored === "confidentiality" ? "default" : stored;
+});
 
   const handleConfirmationChange = (bool: boolean) => {
     setConfirmationNeeded(bool);
@@ -70,6 +71,10 @@ export const CorrespondencePage = () => {
   const handleAllowForwardingChange = (bool: boolean) => {
     setAllowForwarding(bool);
     setLocalStorageValue("allowForwarding", JSON.stringify(bool));
+    if (bool && resourceType === "confidentiality") {
+      setResourceType("default");
+      setLocalStorageValue("resourceType", "default");
+    }
   }
 
   return (
@@ -140,6 +145,7 @@ export const CorrespondencePage = () => {
           <CorrespondenceResourceType
             resourceType={resourceType}
             setResourceType={setResourceType}
+            allowForwarding={allowForwarding}
           />
           <CorrespondenceDueDate
             SelectedDateTime={selectedDateTime}
