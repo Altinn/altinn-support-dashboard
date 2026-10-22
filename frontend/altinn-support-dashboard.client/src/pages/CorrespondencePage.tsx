@@ -40,6 +40,10 @@ export const CorrespondencePage = () => {
     const item = getLocalStorageValue("confirmationNeeded");
     return item ? JSON.parse(item) : false;
   });
+  const [allowForwarding, setAllowForwarding] = useState<boolean>(() => {
+    const item = getLocalStorageValue("allowForwarding");
+    return item ? JSON.parse(item) : false;
+  })
   const [notificationChannel, setNotificationChannel] =
     useState<NotificationChannel>(() => {
       const item = getLocalStorageValue("notificationChannel");
@@ -63,6 +67,10 @@ export const CorrespondencePage = () => {
     setConfirmationNeeded(bool);
     setLocalStorageValue("confirmationNeeded", JSON.stringify(bool));
   };
+  const handleAllowForwardingChange = (bool: boolean) => {
+    setAllowForwarding(bool);
+    setLocalStorageValue("allowForwarding", JSON.stringify(bool));
+  }
 
   return (
     <div>
@@ -116,6 +124,15 @@ export const CorrespondencePage = () => {
             onChange={(e) => handleConfirmationChange(e.target.checked)}
             label="Ja"
           />
+          <Label className={classes.checkboxLabel}>
+            Tillat videresending?
+          </Label>
+          <Checkbox 
+            className={classes.checkbox}
+            checked={allowForwarding}
+            onChange={(e) => handleAllowForwardingChange(e.target.checked)}
+            label="Ja"
+          />
           <CorrespondenceNotificationChannel
             setChannel={setNotificationChannel}
             channel={notificationChannel}
@@ -141,6 +158,7 @@ export const CorrespondencePage = () => {
             summary={summary}
             body={body}
             confirmationNeeded={confirmationNeeded}
+            allowForwarding={allowForwarding}
             notificationChannel={notificationChannel}
             attachments={attachments}
             setResponseMessage={setResponseMessage}

@@ -13,6 +13,7 @@ export interface Correspondence {
   content?: CorrespondenceContent;
   notification?: CorrespondenceNotification;
   isConfirmationNeeded?: boolean;
+  allowForwarding?: boolean;
   dueDateTime?: string;
 }
 
