@@ -64,6 +64,7 @@ public class CorrespondenceClient : ICorrespondenceClient
 
         // Correspondence optional fields
         AddIfNotNull(form, correspondenceData.Correspondence.IsConfirmationNeeded.ToString(), "correspondence.isconfirmationneeded");
+        AddIfNotNull(form, correspondenceData.Correspondence.AllowForwarding.ToString(), "correspondence.allowforwarding");
 
         // Make it possible to send a Correspondence without a due date
         AddIfNotNull(form, correspondenceData.Correspondence.DueDateTime?.ToString("o", CultureInfo.InvariantCulture), "correspondence.duedatetime");

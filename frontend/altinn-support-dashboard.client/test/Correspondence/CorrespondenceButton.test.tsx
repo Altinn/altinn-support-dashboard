@@ -29,6 +29,7 @@ const defaultProps = {
   summary: "test",
   body: "test",
   confirmationNeeded: false,
+  allowForwarding: false,
   notificationChannel: NotificationChannel.None,
   resourceType: "",
   dueDate: "",
@@ -76,6 +77,7 @@ describe("CorrespondenceButton", () => {
       correspondence: {
         dueDateTime: undefined,
         isConfirmationNeeded: true,
+        allowForwarding: false,
         resourceType: "",
         notification: {
           notificationTemplate: "GenericAltinnMessage",
@@ -205,6 +207,52 @@ describe("CorrespondenceButton", () => {
         request: expect.objectContaining({
           correspondence: expect.objectContaining({
             dueDateTime: "2026-01-26",
+          }),
+        }),
+      })
+    );
+  });
+
+  it("should include allowForwarding true in the request", async () => {
+    const mockMutateAsync = vi.fn().mockResolvedValue({});
+    vi.mocked(useCorrespondencePost).mockReturnValue({
+      mutateAsync: mockMutateAsync,
+    } as unknown as ReturnType<typeof useCorrespondencePost>);
+
+    render(<CorrespondenceButton {...defaultProps} allowForwarding={true} />);
+
+    await userEvent.click(
+      screen.getByRole("button", { name: /Send melding/i })
+    );
+
+    expect(mockMutateAsync).toHaveBeenCalledWith(
+      expect.objectContaining({
+        request: expect.objectContaining({
+          correspondence: expect.objectContaining({
+            allowForwarding: true,
+          }),
+        }),
+      })
+    );
+  });
+
+  it("should include allowForwarding false in the request", async () => {
+    const mockMutateAsync = vi.fn().mockResolvedValue({});
+    vi.mocked(useCorrespondencePost).mockReturnValue({
+      mutateAsync: mockMutateAsync,
+    } as unknown as ReturnType<typeof useCorrespondencePost>);
+
+    render(<CorrespondenceButton {...defaultProps} allowForwarding={false} />);
+
+    await userEvent.click(
+      screen.getByRole("button", { name: /Send melding/i })
+    );
+
+    expect(mockMutateAsync).toHaveBeenCalledWith(
+      expect.objectContaining({
+        request: expect.objectContaining({
+          correspondence: expect.objectContaining({
+            allowForwarding: false,
           }),
         }),
       })
