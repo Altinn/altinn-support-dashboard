@@ -23,5 +23,6 @@ public class Correspondence
     public DateTime? Published { get; set; }
     public bool? IsConfirmationNeeded { get; set; }
     public bool? IsConfidential { get; set; }
+    public bool? AllowForwarding { get; set; }
 }
 

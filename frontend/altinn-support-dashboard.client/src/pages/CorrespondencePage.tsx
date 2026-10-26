@@ -40,6 +40,10 @@ export const CorrespondencePage = () => {
     const item = getLocalStorageValue("confirmationNeeded");
     return item ? JSON.parse(item) : false;
   });
+  const [allowForwarding, setAllowForwarding] = useState<boolean>(() => {
+    const item = getLocalStorageValue("allowForwarding");
+    return item ? JSON.parse(item) : false;
+  })
   const [notificationChannel, setNotificationChannel] =
     useState<NotificationChannel>(() => {
       const item = getLocalStorageValue("notificationChannel");
@@ -55,14 +59,23 @@ export const CorrespondencePage = () => {
   const [selectedDateTime, setSelectedDateTime] = useState<string>(
     getLocalStorageValue("dueDate")
   );
-  const [resourceType, setResourceType] = useState<string>(
-    getLocalStorageValue("resourceType") || "default"
-  );
+  const [resourceType, setResourceType] = useState<string>(() => {
+    const stored = getLocalStorageValue("resourceType") || "default";
+    return allowForwarding && stored === "confidentiality" ? "default" : stored;
+});
 
   const handleConfirmationChange = (bool: boolean) => {
     setConfirmationNeeded(bool);
     setLocalStorageValue("confirmationNeeded", JSON.stringify(bool));
   };
+  const handleAllowForwardingChange = (bool: boolean) => {
+    setAllowForwarding(bool);
+    setLocalStorageValue("allowForwarding", JSON.stringify(bool));
+    if (bool && resourceType === "confidentiality") {
+      setResourceType("default");
+      setLocalStorageValue("resourceType", "default");
+    }
+  }
 
   return (
     <div>
@@ -116,6 +129,15 @@ export const CorrespondencePage = () => {
             onChange={(e) => handleConfirmationChange(e.target.checked)}
             label="Ja"
           />
+          <Label className={classes.checkboxLabel}>
+            Tillat videresending?
+          </Label>
+          <Checkbox 
+            className={classes.checkbox}
+            checked={allowForwarding}
+            onChange={(e) => handleAllowForwardingChange(e.target.checked)}
+            label="Ja"
+          />
           <CorrespondenceNotificationChannel
             setChannel={setNotificationChannel}
             channel={notificationChannel}
@@ -123,6 +145,7 @@ export const CorrespondencePage = () => {
           <CorrespondenceResourceType
             resourceType={resourceType}
             setResourceType={setResourceType}
+            allowForwarding={allowForwarding}
           />
           <CorrespondenceDueDate
             SelectedDateTime={selectedDateTime}
@@ -141,6 +164,7 @@ export const CorrespondencePage = () => {
             summary={summary}
             body={body}
             confirmationNeeded={confirmationNeeded}
+            allowForwarding={allowForwarding}
             notificationChannel={notificationChannel}
             attachments={attachments}
             setResponseMessage={setResponseMessage}
