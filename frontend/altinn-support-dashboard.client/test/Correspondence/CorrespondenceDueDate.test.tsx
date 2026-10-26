@@ -3,11 +3,11 @@ import { describe, expect, vi } from "vitest";
 import CorrespondenceDueDate from "../../src/components/Correspondence/CorrespondenceDueDate";
 import { setLocalStorageValue } from "../../src/components/ManualRoleSearch/utils/storageUtils";
 
-describe('CorrespondenceDueDate', () => {
+vi.mock("../../src/components/ManualRoleSearch/utils/storageUtils", () => ({
+    setLocalStorageValue: vi.fn(),
+}));
 
-    vi.mock("../../src/components/ManualRoleSearch/utils/storageUtils", () => ({
-        setLocalStorageValue: vi.fn(),
-    }));
+describe('CorrespondenceDueDate', () => {
 
     const mockSetSelectedDateTime = vi.fn();
 
