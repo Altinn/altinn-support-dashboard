@@ -77,4 +77,29 @@ describe('CorrespondenceResourceType', () => {
         expect(select.value).toBe('confidentiality');
     });
 
+    it('should hide confidential option when forwarding is allowed', () => {
+        render(
+            <CorrespondenceResourceType
+                resourceType="default"
+                setResourceType={mockSetResourceType}
+                allowForwarding={true}
+            />
+        );
+
+        expect(screen.queryByRole('option', { name: 'Taushetsbelagt post' })).not.toBeInTheDocument();
+        expect(screen.getByRole('option', { name: 'Ordinær post' })).toBeInTheDocument();
+    });
+
+    it('should show confidential option when forwarding is not allowed', () => {
+        render(
+            <CorrespondenceResourceType
+                resourceType="default"
+                setResourceType={mockSetResourceType}
+                allowForwarding={false}
+            />
+        );
+
+        expect(screen.getByRole('option', { name: 'Taushetsbelagt post' })).toBeInTheDocument();
+    });
+
 });

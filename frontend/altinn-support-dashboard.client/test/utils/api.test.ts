@@ -357,6 +357,22 @@ describe("api", () => {
       expect(calledUrl).not.toContain("12345678901");
     });
 
+    it("strips whitespace from the query", async () => {
+      vi.mocked(utils.authorizedFetch).mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: vi.fn().mockResolvedValue([]),
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      await fetchNotificationsAdvancedSearch(" 123 456\t789 ", "TEST");
+
+      expect(utils.authorizedFetch).toHaveBeenCalledWith(
+        expect.stringContaining("/notifications/future"),
+        { headers: { query: "123456789" } }
+      );
+    });
+
     it("returns null on 404", async () => {
       vi.mocked(utils.authorizedFetch).mockResolvedValue({
         ok: false,

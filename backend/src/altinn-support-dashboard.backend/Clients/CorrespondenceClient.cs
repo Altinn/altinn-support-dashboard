@@ -44,6 +44,7 @@ public class CorrespondenceClient : ICorrespondenceClient
             case "confidentiality":
 
                 form.Add(new StringContent(resourceTypes.ConfidentialityResourceId.ToString()), "correspondence.resourceid");
+                form.Add(new StringContent("true"), "correspondence.isconfidential");
                 break;
             case "selfIdentified":
                 form.Add(new StringContent(resourceTypes.SelfIdentifiedResourceId.ToString()), "correspondence.resourceid");
@@ -63,6 +64,7 @@ public class CorrespondenceClient : ICorrespondenceClient
 
         // Correspondence optional fields
         AddIfNotNull(form, correspondenceData.Correspondence.IsConfirmationNeeded.ToString(), "correspondence.isconfirmationneeded");
+        AddIfNotNull(form, correspondenceData.Correspondence.AllowForwarding.ToString(), "correspondence.allowforwarding");
 
         // Make it possible to send a Correspondence without a due date
         AddIfNotNull(form, correspondenceData.Correspondence.DueDateTime?.ToString("o", CultureInfo.InvariantCulture), "correspondence.duedatetime");

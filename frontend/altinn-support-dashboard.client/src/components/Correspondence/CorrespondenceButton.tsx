@@ -21,6 +21,7 @@ type CorrespondenceButtonProps = {
   summary: string;
   body: string;
   confirmationNeeded: boolean;
+  allowForwarding: boolean;
   attachments: File[];
   notificationChannel: NotificationChannel;
 
@@ -37,6 +38,7 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
   summary,
   body,
   confirmationNeeded,
+  allowForwarding,
   attachments,
   setResponseMessage,
   dueDate,
@@ -77,6 +79,7 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
 
         resourceType: resourceType,
         isConfirmationNeeded: confirmationNeeded,
+        allowForwarding: allowForwarding,
         dueDateTime: dueDate || undefined,
       },
     };
