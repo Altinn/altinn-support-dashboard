@@ -88,6 +88,10 @@ public static class AzureAuthorizationExtensions
             {
                 //Always required
                 p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.Production));
+            }).AddPolicy(AzureRoles.LegalRequest, p =>
+            {
+                //Always required
+                p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.LegalRequest));
             });
 
         return services;
