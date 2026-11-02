@@ -1,4 +1,4 @@
-import { Button } from "@digdir/designsystemet-react";
+import { Alert, Button } from "@digdir/designsystemet-react";
 import { useMemo } from "react";
 import { useCorrespondencePost } from "../../hooks/hooks";
 import {
@@ -12,6 +12,7 @@ import {
   validateAttachments,
   validateRecipientIdentifier,
 } from "./utils/correspondenceValidation";
+import { useAppStore } from "../../stores/Appstore";
 
 type CorrespondenceButtonProps = {
   resourceType: string;
@@ -44,6 +45,8 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
   dueDate,
 }) => {
   const post = useCorrespondencePost();
+  const environment = useAppStore((state) => state.environment);
+  const isProd = environment === "PROD";
 
   const recipientError = useMemo(
     () => validateRecipientIdentifier(recipientType, recipientIdentifier),
@@ -61,7 +64,7 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
     return buildRecipientUrn(recipientType, recipientIdentifier);
   }, [recipientType, recipientIdentifier, recipientError]);
 
-  const isDisabled = !recipientUrn || !!attachmentError;
+  const isDisabled = isProd || !recipientUrn || !!attachmentError;
 
   const handleSendMessage = async () => {
     if (isDisabled) {
@@ -99,6 +102,11 @@ const CorrespondenceButton: React.FC<CorrespondenceButtonProps> = ({
 
   return (
     <div>
+      {isProd && (
+        <Alert data-color="warning">
+          Sending av meldinger er ikke tilgjengelig i produksjon. Bytt til TT02.
+        </Alert>
+      )}
       <Button onClick={handleSendMessage} disabled={isDisabled}>
         Send melding
       </Button>
