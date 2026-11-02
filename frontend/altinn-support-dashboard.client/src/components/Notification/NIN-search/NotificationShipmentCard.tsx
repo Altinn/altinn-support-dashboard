@@ -67,6 +67,15 @@ const NotificationShipmentCard: React.FC<NotificationShipemntCardProps> = ({
       <Paragraph className={styles.paragraph}>
         <strong>Notification type: </strong> {shipment.notificationType}
       </Paragraph>
+      <Paragraph className={styles.paragraph}>
+        <strong>Dialog-ID:</strong> {shipment.dialogId}
+      </Paragraph>
+      <Paragraph className={styles.paragraph}>
+        <strong>Transmission-ID:</strong> {shipment.transmissionId}
+      </Paragraph>
+      <Paragraph className={styles.paragraph}>
+        <strong>Sender address:</strong> {shipment.senderAddress}
+      </Paragraph>
 
       <Table data-size="sm" data-color="neutral" border>
         <Table.Head>
