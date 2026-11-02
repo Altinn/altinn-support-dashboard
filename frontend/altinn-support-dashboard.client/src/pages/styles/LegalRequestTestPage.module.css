@@ -1,0 +1,16 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 480px;
+    margin-top: 1rem;
+}
+
+.dateRow {
+    display: flex;
+    gap: 1rem;
+}
+
+.downloadButton {
+    align-self: flex-start;
+}

@@ -1,0 +1,101 @@
+[
+  {
+    "provider": "dialogporten",
+    "completeness": "partial",
+    "limitations": [
+      { "code": "purged-data", "description": "Dialoger som er slettet permanent, og alle logger på dem, er ikke med." },
+      { "code": "no-ip-data", "description": "Dialogporten lagrer ikke IP-adresser. Se autentiseringsdataene fra altinn-authentication." },
+      { "code": "actor-not-recorded", "description": "Aktiviteter og forsendelser fra tjenesteeieren har bare aktør når tjenesteeieren har oppgitt den." }
+    ],
+    "datasets": [
+      {
+        "name": "dialog-seen",
+        "title": "Dialoger åpnet",
+        "category": "interaction",
+        "description": "Hver gang personen åpnet en dialog.",
+        "columns": [
+          { "key": "timestamp", "title": "Tidspunkt (UTC)", "type": "datetime", "description": "Når dialogen ble åpnet" },
+          { "key": "id", "title": "Hendelses-id", "type": "string", "description": "Id for logglinjen i Dialogporten" },
+          { "key": "dialogId", "title": "Dialog-id", "type": "string", "description": "Dialogen som ble åpnet" },
+          { "key": "party", "title": "Part", "type": "string", "description": "Parten dialogen tilhører (person eller virksomhet personen handlet på vegne av)" },
+          { "key": "serviceResource", "title": "Tjeneste", "type": "string", "description": "Tjenesten i ressursregisteret" },
+          { "key": "serviceOwner", "title": "Tjenesteeier", "type": "string", "description": "Tjenesteeieren (org-kode)" },
+          { "key": "dialogTitle", "title": "Dialogtittel", "type": "string", "description": "Dialogens tittel på norsk bokmål, eller første tilgjengelige språk" },
+          { "key": "dialogDeleted", "title": "Dialog slettet", "type": "boolean", "description": "Om dialogen senere er slettet (myk sletting)" },
+          { "key": "isViaServiceOwner", "title": "Via tjenesteeier", "type": "boolean", "description": "Åpnet via tjenesteeierens system, ikke i Altinns flater" },
+          { "key": "endUserType", "title": "Brukertype", "type": "string", "description": "Person eller systembruker" }
+        ],
+        "rows": [
+          { "timestamp": "2026-02-03T09:14:22Z", "id": "0194c7e1-3a2b-7c10-9d41-5f8e2a1b0001", "dialogId": "0194c7d0-1f2e-7a3b-8c4d-9e0f1a2b0001", "party": "urn:altinn:person:identifier-no:01017012345", "serviceResource": "urn:altinn:resource:skatteetaten-skattemelding", "serviceOwner": "skd", "dialogTitle": "Skattemelding 2025", "dialogDeleted": false, "isViaServiceOwner": false, "endUserType": "Person" },
+          { "timestamp": "2026-03-11T18:02:05Z", "id": "0194c7e1-3a2b-7c10-9d41-5f8e2a1b0002", "dialogId": "0194c7d0-1f2e-7a3b-8c4d-9e0f1a2b0002", "party": "urn:altinn:organization:identifier-no:991825827", "serviceResource": "urn:altinn:resource:nav-sykmelding", "serviceOwner": "nav", "dialogTitle": "Sykmelding for ansatt", "dialogDeleted": true, "isViaServiceOwner": false, "endUserType": "Person" },
+          { "timestamp": "2026-04-20T07:45:59Z", "id": "0194c7e1-3a2b-7c10-9d41-5f8e2a1b0003", "dialogId": "0194c7d0-1f2e-7a3b-8c4d-9e0f1a2b0003", "party": "urn:altinn:person:identifier-no:01017012345", "serviceResource": "urn:altinn:resource:lanekassen-soknad", "serviceOwner": "lk", "dialogTitle": "Søknad om studiestøtte", "dialogDeleted": false, "isViaServiceOwner": true, "endUserType": "Person" }
+        ]
+      },
+      {
+        "name": "dialog-activities",
+        "title": "Aktiviteter",
+        "category": "interaction",
+        "description": "Aktiviteter personen utførte i en dialog.",
+        "columns": [
+          { "key": "timestamp", "title": "Tidspunkt (UTC)", "type": "datetime", "description": "Når aktiviteten skjedde" },
+          { "key": "id", "title": "Aktivitets-id", "type": "string", "description": "Id for aktiviteten" },
+          { "key": "dialogId", "title": "Dialog-id", "type": "string", "description": "Dialogen aktiviteten gjelder" },
+          { "key": "party", "title": "Part", "type": "string", "description": "Parten dialogen tilhører" },
+          { "key": "serviceResource", "title": "Tjeneste", "type": "string", "description": "Tjenesten i ressursregisteret" },
+          { "key": "serviceOwner", "title": "Tjenesteeier", "type": "string", "description": "Tjenesteeieren (org-kode)" },
+          { "key": "dialogTitle", "title": "Dialogtittel", "type": "string", "description": "Dialogens tittel på norsk bokmål, eller første tilgjengelige språk" },
+          { "key": "dialogDeleted", "title": "Dialog slettet", "type": "boolean", "description": "Om dialogen senere er slettet (myk sletting)" },
+          { "key": "activityType", "title": "Aktivitetstype", "type": "string", "description": "Aktivitetstypen, f.eks. FormSaved, FormSubmitted, SignatureProvided" },
+          { "key": "activityDescription", "title": "Beskrivelse", "type": "string", "description": "Beskrivelsen tjenesteeieren la ved aktiviteten" },
+          { "key": "transmissionId", "title": "Forsendelses-id", "type": "string", "description": "Forsendelsen aktiviteten gjelder, hvis noen" }
+        ],
+        "rows": [
+          { "timestamp": "2026-02-03T09:20:10Z", "id": "0194c7e2-0000-7000-8000-000000000001", "dialogId": "0194c7d0-1f2e-7a3b-8c4d-9e0f1a2b0001", "party": "urn:altinn:person:identifier-no:01017012345", "serviceResource": "urn:altinn:resource:skatteetaten-skattemelding", "serviceOwner": "skd", "dialogTitle": "Skattemelding 2025", "dialogDeleted": false, "activityType": "FormSaved", "activityDescription": null, "transmissionId": null },
+          { "timestamp": "2026-02-03T09:31:44Z", "id": "0194c7e2-0000-7000-8000-000000000002", "dialogId": "0194c7d0-1f2e-7a3b-8c4d-9e0f1a2b0001", "party": "urn:altinn:person:identifier-no:01017012345", "serviceResource": "urn:altinn:resource:skatteetaten-skattemelding", "serviceOwner": "skd", "dialogTitle": "Skattemelding 2025", "dialogDeleted": false, "activityType": "FormSubmitted", "activityDescription": "Skattemelding levert", "transmissionId": "0194c7e3-0000-7000-8000-000000000001" }
+        ]
+      },
+      {
+        "name": "dialog-transmissions",
+        "title": "Forsendelser",
+        "category": "interaction",
+        "description": "Forsendelser personen sendte.",
+        "columns": [
+          { "key": "timestamp", "title": "Tidspunkt (UTC)", "type": "datetime", "description": "Når forsendelsen ble sendt" },
+          { "key": "id", "title": "Forsendelses-id", "type": "string", "description": "Id for forsendelsen" },
+          { "key": "dialogId", "title": "Dialog-id", "type": "string", "description": "Dialogen forsendelsen tilhører" },
+          { "key": "party", "title": "Part", "type": "string", "description": "Parten dialogen tilhører" },
+          { "key": "serviceResource", "title": "Tjeneste", "type": "string", "description": "Tjenesten i ressursregisteret" },
+          { "key": "serviceOwner", "title": "Tjenesteeier", "type": "string", "description": "Tjenesteeieren (org-kode)" },
+          { "key": "dialogTitle", "title": "Dialogtittel", "type": "string", "description": "Dialogens tittel på norsk bokmål, eller første tilgjengelige språk" },
+          { "key": "dialogDeleted", "title": "Dialog slettet", "type": "boolean", "description": "Om dialogen senere er slettet (myk sletting)" },
+          { "key": "transmissionType", "title": "Forsendelsestype", "type": "string", "description": "F.eks. Submission, Correction" },
+          { "key": "transmissionTitle", "title": "Forsendelsestittel", "type": "string", "description": "Forsendelsens tittel" }
+        ],
+        "rows": [
+          { "timestamp": "2026-02-03T09:31:44Z", "id": "0194c7e3-0000-7000-8000-000000000001", "dialogId": "0194c7d0-1f2e-7a3b-8c4d-9e0f1a2b0001", "party": "urn:altinn:person:identifier-no:01017012345", "serviceResource": "urn:altinn:resource:skatteetaten-skattemelding", "serviceOwner": "skd", "dialogTitle": "Skattemelding 2025", "dialogDeleted": false, "transmissionType": "Submission", "transmissionTitle": "Innsendt skattemelding" }
+        ]
+      },
+      {
+        "name": "dialog-labels",
+        "title": "Etiketter",
+        "category": "interaction",
+        "description": "Etiketter personen satte eller fjernet på en dialog.",
+        "columns": [
+          { "key": "timestamp", "title": "Tidspunkt (UTC)", "type": "datetime", "description": "Når etiketten ble satt eller fjernet" },
+          { "key": "id", "title": "Hendelses-id", "type": "string", "description": "Id for logglinjen" },
+          { "key": "dialogId", "title": "Dialog-id", "type": "string", "description": "Dialogen etiketten gjelder" },
+          { "key": "party", "title": "Part", "type": "string", "description": "Parten dialogen tilhører" },
+          { "key": "serviceResource", "title": "Tjeneste", "type": "string", "description": "Tjenesten i ressursregisteret" },
+          { "key": "serviceOwner", "title": "Tjenesteeier", "type": "string", "description": "Tjenesteeieren (org-kode)" },
+          { "key": "dialogTitle", "title": "Dialogtittel", "type": "string", "description": "Dialogens tittel på norsk bokmål, eller første tilgjengelige språk" },
+          { "key": "dialogDeleted", "title": "Dialog slettet", "type": "boolean", "description": "Om dialogen senere er slettet (myk sletting)" },
+          { "key": "label", "title": "Etikett", "type": "string", "description": "Etiketten" },
+          { "key": "action", "title": "Handling", "type": "string", "description": "set eller remove" }
+        ],
+        "rows": [
+          { "timestamp": "2026-03-12T10:00:00Z", "id": "0194c7e4-0000-7000-8000-000000000001", "dialogId": "0194c7d0-1f2e-7a3b-8c4d-9e0f1a2b0002", "party": "urn:altinn:organization:identifier-no:991825827", "serviceResource": "urn:altinn:resource:nav-sykmelding", "serviceOwner": "nav", "dialogTitle": "Sykmelding for ansatt", "dialogDeleted": true, "label": "Archive", "action": "set" }
+        ]
+      }
+    ]
+  }
+]

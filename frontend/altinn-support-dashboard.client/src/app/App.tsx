@@ -22,6 +22,7 @@ import { ToastContainer } from "react-toastify";
 import { ResourceSearchPage } from "../pages/ResourceSearchPage";
 import { NotificationLogPage } from "../pages/NotificationLogPage";
 import { DialogDetailsLookupPage } from "../pages/DialogDetailsLookupPage";
+import { LegalRequestTestPage } from "../pages/LegalRequestTestPage";
 
 const App: React.FC = () => {
   //forces zustand to store states in localstorage first time
@@ -86,6 +87,10 @@ const App: React.FC = () => {
                 <Route
                   path="/dialog-details"
                   element={<DialogDetailsLookupPage/>}
+                />
+                <Route
+                  path="/legal-request-test"
+                  element={<LegalRequestTestPage />}
                 />
               </Route>
             </Routes>

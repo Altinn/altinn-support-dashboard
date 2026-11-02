@@ -55,6 +55,18 @@ export async function authorizedPost<T>(
   return response;
 }
 
+export async function downloadFile(res: Response, fallbackFileName: string) {
+  const disposition = res.headers.get("Content-Disposition") ?? "";
+  const fileName =
+    /filename="?([^";]+)"?/.exec(disposition)?.[1] ?? fallbackFileName;
+  const url = URL.createObjectURL(await res.blob());
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 export const getFormattedDateTime = (date: Date) => {
   const optionsTime: Intl.DateTimeFormatOptions = {
     hour: "2-digit",

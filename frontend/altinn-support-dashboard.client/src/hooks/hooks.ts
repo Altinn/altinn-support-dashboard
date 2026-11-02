@@ -59,6 +59,8 @@ import {
 } from "../models/rolesModels";
 import { Altinn2Role, PolicyRule, Resource } from "../models/resourceModels";
 import { MaskinportenDelegation } from "../models/delegationModels";
+import { LegalRequestExportRequest } from "../models/legalRequestModels";
+import { downloadLegalRequestExport } from "../utils/legalRequestApi";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -390,6 +392,20 @@ export function useDeleteDialog() {
     },
     onError: (err) => {
       toast.error(`Feil ved sletting av dialog: ${err.message}`);
+    },
+  });
+}
+
+export function useLegalRequestExport() {
+  return useMutation<
+    void,
+    Error,
+    { environment: string; request: LegalRequestExportRequest }
+  >({
+    mutationFn: ({ environment, request }) =>
+      downloadLegalRequestExport(environment, request),
+    onError: (err) => {
+      toast.error(`Feil ved eksport: ${err.message}`);
     },
   });
 }
