@@ -10,6 +10,7 @@ import {
   NotificationChannel,
 } from "../../src/models/correspondenceModels";
 import { useCorrespondencePost } from "../../src/hooks/hooks";
+import { useAppStore } from "../../src/stores/Appstore";
 
 vi.mock("../../src/hooks/hooks", () => ({
   useCorrespondencePost: vi.fn(),
@@ -18,6 +19,7 @@ vi.mock("../../src/hooks/hooks", () => ({
 beforeEach(() => {
   vi.clearAllMocks();
   sessionStorage.clear();
+  useAppStore.setState({ environment: "TT02" });
 });
 
 const validAttachment = new File(["content"], "test.txt", { type: "text/plain" });
@@ -280,5 +282,37 @@ describe("CorrespondenceButton", () => {
     );
 
     setItemSpy.mockRestore();
+  });
+
+  it("should disable button and show warning in PROD", () => {
+    vi.mocked(useCorrespondencePost).mockReturnValue({
+      mutateAsync: vi.fn(),
+    } as unknown as ReturnType<typeof useCorrespondencePost>);
+    useAppStore.setState({ environment: "PROD" });
+
+    render(<CorrespondenceButton {...defaultProps} />);
+
+    expect(
+      screen.getByRole("button", { name: /Send melding/i })
+    ).toBeDisabled();
+    expect(
+      screen.getByText(/ikke tilgjengelig i produksjon/i)
+    ).toBeInTheDocument();
+  });
+
+  it("should not send correspondence in PROD", async () => {
+    const mockMutateAsync = vi.fn();
+    vi.mocked(useCorrespondencePost).mockReturnValue({
+      mutateAsync: mockMutateAsync,
+    } as unknown as ReturnType<typeof useCorrespondencePost>);
+    useAppStore.setState({ environment: "PROD" });
+
+    render(<CorrespondenceButton {...defaultProps} />);
+
+    await userEvent.click(
+      screen.getByRole("button", { name: /Send melding/i })
+    );
+
+    expect(mockMutateAsync).not.toHaveBeenCalled();
   });
 });
