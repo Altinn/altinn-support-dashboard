@@ -7,6 +7,7 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Clients;
 using Microsoft.AspNetCore.Authorization;
 using Security;
+using altinn_support_dashboard.Server.Utils.AccessTokenAuth;
 
 namespace AltinnSupportDashboard
 {
@@ -122,6 +123,8 @@ namespace AltinnSupportDashboard
                         services.AddScoped<IDataBrregClient, DataBrregClient>();
                         services.AddScoped<IResourceRegistryClient, ResourceRegistryClient>();
                     }
+                    services.AddScoped<IAccessTokenAuthClient, AccessTokenAuthClient>();
+                    services.AddScoped<IAccessTokenAuthService, AccessTokenAuthService>();
                     services.AddScoped<INotificationsService, NotificationsService>();
                     services.AddScoped<IDialogportenService, DialogportenService>();
                     services.AddScoped<IDialogportenClient, DialogportenClient>();

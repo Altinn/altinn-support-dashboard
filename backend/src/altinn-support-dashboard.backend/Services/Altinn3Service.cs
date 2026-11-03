@@ -236,7 +236,7 @@ public class Altinn3Service : IAltinn3Service
         var contacts = new List<PersonalContactDto>();
 
         var result = await _client.GetPersonalContactsByPhone(localNumber, null, environment);
-        
+
         if (!string.IsNullOrEmpty(result))
         {
             contacts = JsonSerializer.Deserialize<List<PersonalContactDto>>(result, jsonOptions)
@@ -246,7 +246,7 @@ public class Altinn3Service : IAltinn3Service
         if (PhoneNumberUtils.IsLocalNorwegianNumber(phoneNumber))
         {
             contacts = contacts.Where(c => PhoneNumberUtils.MatchesLocalNumber(localNumber, c.Phone)).ToList();
-        }    
+        }
         return contacts;
     }
 
@@ -288,7 +288,7 @@ public class Altinn3Service : IAltinn3Service
             throw new ArgumentException("The phonenumber is not valid.");
         }
 
-        
+
 
 
         var result = await _client.GetUserContactInformationByPhoneNumber(localNumber, environment);
