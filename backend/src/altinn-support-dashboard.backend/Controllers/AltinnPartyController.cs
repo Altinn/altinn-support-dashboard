@@ -27,7 +27,7 @@ namespace altinn_support_dashboard.Server.Controllers
             : base(service, "Production", telemetryService) { }
     }
 
-    [Authorize(AzureRoles.Authenticated)]
+    [Authorize(AzurePolicies.Authenticated)]
     [ApiController]
     public abstract class AltinnPartyBaseController : ControllerBase
     {

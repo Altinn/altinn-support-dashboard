@@ -10,7 +10,7 @@ using altinn_support_dashboard.Server.Services;
 namespace AltinnSupportDashboard.Controllers
 {
 
-    [Authorize(AzureRoles.Authenticated)]
+    [Authorize(AzurePolicies.Authenticated)]
     [ApiController]
     [Route("api/{environmentName}")]
     public class HealthController : ControllerBase
@@ -24,7 +24,7 @@ namespace AltinnSupportDashboard.Controllers
 
 
     [ApiController]
-    [Authorize(AzureRoles.Authenticated)]
+    [Authorize(AzurePolicies.Authenticated)]
     [Route("api/mock/serviceowner")]
     public class AltinnMockController : AltinnBaseController
     {
@@ -57,7 +57,7 @@ namespace AltinnSupportDashboard.Controllers
 
 
     //Made controller abstract to be able to authorize on different environments
-    [Authorize(AzureRoles.Authenticated)]
+    [Authorize(AzurePolicies.Authenticated)]
     [ApiController]
     public abstract class AltinnBaseController : ControllerBase
     {
