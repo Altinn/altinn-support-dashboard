@@ -14,7 +14,7 @@ namespace AltinnSupportDashboard.Controllers
     /// API-kontroller for integrasjon mot Gitea (Altinn Studio)
     /// </summary>
     [ApiController]
-    [Authorize(AzureRoles.Authenticated)]
+    [Authorize(AzurePolicies.Authenticated)]
     [Route("api/gitea")]
     public class GiteaController : ControllerBase
     {

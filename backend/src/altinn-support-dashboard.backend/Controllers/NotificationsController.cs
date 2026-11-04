@@ -11,7 +11,7 @@ namespace AltinnSupportDashboard.Controllers;
 
 [ApiController]
 [Route("api/{environmentName}/notifications")]
-[Authorize(AzureRoles.Authenticated)]
+[Authorize(AzurePolicies.Authenticated)]
 [Authorize(AzureRoles.CoreExternal)]
 public class NotificationsController : ControllerBase
 {

@@ -8,18 +8,18 @@ using Microsoft.AspNetCore.Http;
 
 namespace altinn_support_dashboard.backend.Tests.Controllers;
 
-public class AltinnPartyTT02ControllerTests
+public class AltinnPartyControllerTT02Tests
 {
     private readonly Mock<IPartyApiService> _mockPartyApiService;
-    private readonly AltinnPartyTT02Controller _controller;
+    private readonly AltinnPartyController _controller;
     private readonly Mock<ITelemetryService> _mockTelemetryService;
     private const string Env = "TT02";
 
-    public AltinnPartyTT02ControllerTests()
+    public AltinnPartyControllerTT02Tests()
     {
         _mockPartyApiService = new Mock<IPartyApiService>();
         _mockTelemetryService = new Mock<ITelemetryService>();
-        _controller = new AltinnPartyTT02Controller(_mockPartyApiService.Object, _mockTelemetryService.Object)
+        _controller = new AltinnPartyController(_mockPartyApiService.Object, _mockTelemetryService.Object)
         {
             ControllerContext = new ControllerContext
             {
@@ -39,7 +39,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyFromOrgAsync(orgNumber, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-org", PartyId = 1, OrgNumber = orgNumber, Name = "Test Organization" });
 
-        var result = await _controller.GetPartyOrg(orgNumber);
+        var result = await _controller.GetPartyOrg(Env, orgNumber);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -52,7 +52,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyFromOrgAsync(orgNumber, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-org", PartyId = 1, OrgNumber = orgNumber });
 
-        await _controller.GetPartyOrg(orgNumber);
+        await _controller.GetPartyOrg(Env, orgNumber);
 
         _mockPartyApiService.Verify(x => x.GetPartyFromOrgAsync(orgNumber, Env), Times.Once);
     }
@@ -65,7 +65,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyFromSsnAsync(ssn, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-ssn", PartyId = 2, Ssn = ssn, Name = "Test Person" });
 
-        var result = await _controller.GetPartySsn(ssn);
+        var result = await _controller.GetPartySsn(Env, ssn);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -78,7 +78,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyFromSsnAsync(ssn, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-ssn", PartyId = 2, Ssn = ssn });
 
-        await _controller.GetPartySsn(ssn);
+        await _controller.GetPartySsn(Env, ssn);
 
         _mockPartyApiService.Verify(x => x.GetPartyFromSsnAsync(ssn, Env), Times.Once);
     }
@@ -91,7 +91,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetRolesFromPartyAsync(uuid, Env))
             .ReturnsAsync("{\"roles\": [\"role1\", \"role2\"]}");
 
-        var result = await _controller.GetPartyRoles(uuid);
+        var result = await _controller.GetPartyRoles(Env, uuid);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -104,7 +104,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetRolesFromPartyAsync(uuid, Env))
             .ReturnsAsync("{}");
 
-        await _controller.GetPartyRoles(uuid);
+        await _controller.GetPartyRoles(Env, uuid);
 
         _mockPartyApiService.Verify(x => x.GetRolesFromPartyAsync(uuid, Env), Times.Once);
     }
@@ -117,7 +117,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetRolesFromOrgAsync(orgNumber, Env))
             .ReturnsAsync(new ErRollerModel { Rollegrupper = new List<Rollegrupper>(), ApiRoller = new List<ApiRoller>() });
 
-        var result = await _controller.GetRolesFromOrg(orgNumber);
+        var result = await _controller.GetRolesFromOrg(Env, orgNumber);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -130,7 +130,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetRolesFromOrgAsync(orgNumber, Env))
             .ReturnsAsync(new ErRollerModel { Rollegrupper = new List<Rollegrupper>(), ApiRoller = new List<ApiRoller>() });
 
-        var result = await _controller.GetRolesFromOrg(orgNumber);
+        var result = await _controller.GetRolesFromOrg(Env, orgNumber);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var roles = Assert.IsType<ErRollerModel>(okResult.Value);
@@ -149,7 +149,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetRolesFromOrgAsync(orgNumber, Env))
             .ReturnsAsync(new ErRollerModel());
 
-        await _controller.GetRolesFromOrg(orgNumber);
+        await _controller.GetRolesFromOrg(Env, orgNumber);
 
         _mockPartyApiService.Verify(x => x.GetRolesFromOrgAsync(orgNumber, Env), Times.Once);
     }
@@ -162,7 +162,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyByUuidAsync(uuid, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = uuid, PartyId = 3, Name = "Test Party" });
 
-        var result = await _controller.GetPartyByUuid(uuid);
+        var result = await _controller.GetPartyByUuid(Env, uuid);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -175,7 +175,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyByUuidAsync(uuid, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = uuid, PartyId = 3 });
 
-        await _controller.GetPartyByUuid(uuid);
+        await _controller.GetPartyByUuid(Env, uuid);
 
         _mockPartyApiService.Verify(x => x.GetPartyByUuidAsync(uuid, Env), Times.Once);
     }
@@ -188,7 +188,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyFromOrgAsync(orgNumber, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-org", PartyId = 1, OrgNumber = orgNumber });
         
-        await _controller.GetPartyOrg(orgNumber);
+        await _controller.GetPartyOrg(Env, orgNumber);
 
         _mockTelemetryService.Verify(t => t.TrackSearch(
             "internalIdLookup",
@@ -207,7 +207,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyFromOrgAsync(orgNumber, Env))
             .ReturnsAsync((PartyModel)null);
 
-        var result = await _controller.GetPartyOrg(orgNumber);
+        var result = await _controller.GetPartyOrg(Env, orgNumber);
 
         Assert.IsType<NotFoundResult>(result);
 
@@ -229,7 +229,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyFromSsnAsync(ssn, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-ssn", PartyId = 2, Ssn = ssn });
         
-        await _controller.GetPartySsn(ssn);
+        await _controller.GetPartySsn(Env, ssn);
 
         _mockTelemetryService.Verify(t => t.TrackSearch(
             "internalIdLookup",
@@ -248,7 +248,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyByIdAsync(partyId, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-id", PartyId = 4 });
 
-        var result = await _controller.GetPartyByPartyId(partyId);
+        var result = await _controller.GetPartyByPartyId(Env, partyId);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -261,7 +261,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyByIdAsync(partyId, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-id", PartyId = 4 });
 
-        await _controller.GetPartyByPartyId(partyId);
+        await _controller.GetPartyByPartyId(Env, partyId);
 
         _mockPartyApiService.Verify(x => x.GetPartyByIdAsync(partyId, Env), Times.Once);
     }
@@ -274,7 +274,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyByIdAsync(partyId, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-id", PartyId = 4 });
 
-        await _controller.GetPartyByPartyId(partyId);
+        await _controller.GetPartyByPartyId(Env, partyId);
 
         _mockTelemetryService.Verify(t => t.TrackSearch(
             "internalIdLookup",
@@ -293,7 +293,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyByIdAsync(partyId, Env))
             .ReturnsAsync((PartyModel?)null);
 
-        var result = await _controller.GetPartyByPartyId(partyId);
+        var result = await _controller.GetPartyByPartyId(Env, partyId);
 
         Assert.IsType<NotFoundResult>(result);
     }
@@ -306,7 +306,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyByUuidAsync(uuid, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = uuid, PartyId = 3 });
 
-        var result = await _controller.GetPartyByValue(uuid);
+        var result = await _controller.GetPartyByValue(Env, uuid);
 
         Assert.IsType<OkObjectResult>(result);
         _mockPartyApiService.Verify(x => x.GetPartyByUuidAsync(uuid, Env), Times.Once);
@@ -323,7 +323,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyFromSsnAsync(ssn, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-ssn", PartyId = 2, Ssn = ssn });
 
-        var result = await _controller.GetPartyByValue(ssn);
+        var result = await _controller.GetPartyByValue(Env, ssn);
 
         Assert.IsType<OkObjectResult>(result);
         _mockPartyApiService.Verify(x => x.GetPartyFromSsnAsync(ssn, Env), Times.Once);
@@ -344,7 +344,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyFromOrgAsync(orgNumber, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-org", PartyId = 1, OrgNumber = orgNumber });
 
-        var result = await _controller.GetPartyByValue(orgNumber);
+        var result = await _controller.GetPartyByValue(Env, orgNumber);
 
         Assert.IsType<OkObjectResult>(result);
         _mockPartyApiService.Verify(x => x.GetPartyFromOrgAsync(orgNumber, Env), Times.Once);
@@ -361,7 +361,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyByIdAsync(partyId, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-id", PartyId = 4 });
 
-        var result = await _controller.GetPartyByValue(partyId);
+        var result = await _controller.GetPartyByValue(Env, partyId);
 
         Assert.IsType<OkObjectResult>(result);
         _mockPartyApiService.Verify(x => x.GetPartyByIdAsync(partyId, Env), Times.Once);
@@ -373,7 +373,7 @@ public class AltinnPartyTT02ControllerTests
     [Fact]
     public async Task GetPartyByValue_ReturnsBadRequest_AndDoesNotTrackSearch_WhenValueMatchesNoShape()
     {
-        var result = await _controller.GetPartyByValue("not-a-valid-anything");
+        var result = await _controller.GetPartyByValue(Env, "not-a-valid-anything");
 
         Assert.IsType<BadRequestObjectResult>(result);
         _mockTelemetryService.Verify(t => t.TrackSearch(
@@ -389,7 +389,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyByUuidAsync(uuid, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = uuid, PartyId = 3 });
         
-        await _controller.GetPartyByUuid(uuid);
+        await _controller.GetPartyByUuid(Env, uuid);
 
         _mockTelemetryService.Verify(t => t.TrackSearch(
             "internalIdLookup",
@@ -408,7 +408,7 @@ public class AltinnPartyTT02ControllerTests
             .Setup(x => x.GetPartyFromSsnAsync(ssn, Env))
             .ReturnsAsync((PartyModel)null);
 
-        var result = await _controller.GetPartySsn(ssn);
+        var result = await _controller.GetPartySsn(Env, ssn);
 
         Assert.IsType<NotFoundResult>(result);
 
@@ -422,18 +422,18 @@ public class AltinnPartyTT02ControllerTests
     }
 }
 
-public class AltinnPartyProductionControllerTests
+public class AltinnPartyControllerProductionTests
 {
     private readonly Mock<IPartyApiService> _mockPartyApiService;
-    private readonly AltinnPartyProductionController _controller;
+    private readonly AltinnPartyController _controller;
     private readonly Mock<ITelemetryService> _mockTelemetryService;
     private const string Env = "Production";
 
-    public AltinnPartyProductionControllerTests()
+    public AltinnPartyControllerProductionTests()
     {
         _mockPartyApiService = new Mock<IPartyApiService>();
         _mockTelemetryService = new Mock<ITelemetryService>();
-        _controller = new AltinnPartyProductionController(_mockPartyApiService.Object, _mockTelemetryService.Object)
+        _controller = new AltinnPartyController(_mockPartyApiService.Object, _mockTelemetryService.Object)
         {
             ControllerContext = new ControllerContext
             {
@@ -453,7 +453,7 @@ public class AltinnPartyProductionControllerTests
             .Setup(x => x.GetPartyFromOrgAsync(orgNumber, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-org", PartyId = 1, OrgNumber = orgNumber, Name = "Test Organization" });
 
-        var result = await _controller.GetPartyOrg(orgNumber);
+        var result = await _controller.GetPartyOrg(Env, orgNumber);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -466,7 +466,7 @@ public class AltinnPartyProductionControllerTests
             .Setup(x => x.GetPartyFromOrgAsync(orgNumber, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-org", PartyId = 1, OrgNumber = orgNumber });
 
-        await _controller.GetPartyOrg(orgNumber);
+        await _controller.GetPartyOrg(Env, orgNumber);
 
         _mockPartyApiService.Verify(x => x.GetPartyFromOrgAsync(orgNumber, Env), Times.Once);
     }
@@ -479,7 +479,7 @@ public class AltinnPartyProductionControllerTests
             .Setup(x => x.GetPartyFromSsnAsync(ssn, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-ssn", PartyId = 2, Ssn = ssn, Name = "Test Person" });
 
-        var result = await _controller.GetPartySsn(ssn);
+        var result = await _controller.GetPartySsn(Env, ssn);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -492,7 +492,7 @@ public class AltinnPartyProductionControllerTests
             .Setup(x => x.GetPartyFromSsnAsync(ssn, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = "uuid-ssn", PartyId = 2, Ssn = ssn });
 
-        await _controller.GetPartySsn(ssn);
+        await _controller.GetPartySsn(Env, ssn);
 
         _mockPartyApiService.Verify(x => x.GetPartyFromSsnAsync(ssn, Env), Times.Once);
     }
@@ -505,7 +505,7 @@ public class AltinnPartyProductionControllerTests
             .Setup(x => x.GetRolesFromPartyAsync(uuid, Env))
             .ReturnsAsync("{\"roles\": [\"role1\", \"role2\"]}");
 
-        var result = await _controller.GetPartyRoles(uuid);
+        var result = await _controller.GetPartyRoles(Env, uuid);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -518,7 +518,7 @@ public class AltinnPartyProductionControllerTests
             .Setup(x => x.GetRolesFromPartyAsync(uuid, Env))
             .ReturnsAsync("{}");
 
-        await _controller.GetPartyRoles(uuid);
+        await _controller.GetPartyRoles(Env, uuid);
 
         _mockPartyApiService.Verify(x => x.GetRolesFromPartyAsync(uuid, Env), Times.Once);
     }
@@ -531,7 +531,7 @@ public class AltinnPartyProductionControllerTests
             .Setup(x => x.GetRolesFromOrgAsync(orgNumber, Env))
             .ReturnsAsync(new ErRollerModel { Rollegrupper = new List<Rollegrupper>(), ApiRoller = new List<ApiRoller>() });
 
-        var result = await _controller.GetRolesFromOrg(orgNumber);
+        var result = await _controller.GetRolesFromOrg(Env, orgNumber);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -544,7 +544,7 @@ public class AltinnPartyProductionControllerTests
             .Setup(x => x.GetRolesFromOrgAsync(orgNumber, Env))
             .ReturnsAsync(new ErRollerModel { Rollegrupper = new List<Rollegrupper>(), ApiRoller = new List<ApiRoller>() });
 
-        var result = await _controller.GetRolesFromOrg(orgNumber);
+        var result = await _controller.GetRolesFromOrg(Env, orgNumber);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var roles = Assert.IsType<ErRollerModel>(okResult.Value);
@@ -563,7 +563,7 @@ public class AltinnPartyProductionControllerTests
             .Setup(x => x.GetRolesFromOrgAsync(orgNumber, Env))
             .ReturnsAsync(new ErRollerModel());
 
-        await _controller.GetRolesFromOrg(orgNumber);
+        await _controller.GetRolesFromOrg(Env, orgNumber);
 
         _mockPartyApiService.Verify(x => x.GetRolesFromOrgAsync(orgNumber, Env), Times.Once);
     }
@@ -576,7 +576,7 @@ public class AltinnPartyProductionControllerTests
             .Setup(x => x.GetPartyByUuidAsync(uuid, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = uuid, PartyId = 3, Name = "Test Party" });
 
-        var result = await _controller.GetPartyByUuid(uuid);
+        var result = await _controller.GetPartyByUuid(Env, uuid);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -589,7 +589,7 @@ public class AltinnPartyProductionControllerTests
             .Setup(x => x.GetPartyByUuidAsync(uuid, Env))
             .ReturnsAsync(new PartyModel { PartyUuid = uuid, PartyId = 3 });
 
-        await _controller.GetPartyByUuid(uuid);
+        await _controller.GetPartyByUuid(Env, uuid);
 
         _mockPartyApiService.Verify(x => x.GetPartyByUuidAsync(uuid, Env), Times.Once);
     }

@@ -10,7 +10,7 @@ using altinn_support_dashboard.Server.Services;
 namespace AltinnSupportDashboard.Controllers
 {
 
-    [Authorize(AzureRoles.Authenticated)]
+    [Authorize(AzurePolicies.Authenticated)]
     [ApiController]
     [Route("api/{environmentName}")]
     public class HealthController : ControllerBase
@@ -24,54 +24,20 @@ namespace AltinnSupportDashboard.Controllers
 
 
     [ApiController]
-    [Authorize(AzureRoles.Authenticated)]
-    [Route("api/mock/serviceowner")]
-    public class AltinnMockController : AltinnBaseController
+    [Route("api/{environmentName}/serviceowner")]
+    [Authorize(AzurePolicies.Authenticated)]
+    [Authorize(AzurePolicies.EnvironmentAccess)]
+    public class AltinnController : ControllerBase
     {
-        public AltinnMockController(IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration, ILogger<AltinnBaseController> logger) : base(altinn3Service, "mock", ssnTokenService, telemetryService, configuration, logger)
-        {
-        }
-    }
-
-    [ApiController]
-    [Authorize(AzureRoles.TT02)]
-    [Route("api/TT02/serviceowner")]
-    public class AltinnTT02Controller : AltinnBaseController
-    {
-        public AltinnTT02Controller(IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration, ILogger<AltinnBaseController> logger) : base(altinn3Service, "TT02", ssnTokenService, telemetryService, configuration, logger)
-        {
-        }
-
-    }
-
-    [ApiController]
-    [Authorize(AzureRoles.Production)]
-    [Route("api/Production/serviceowner")]
-    public class AltinnProductionController : AltinnBaseController
-    {
-        public AltinnProductionController(IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration, ILogger<AltinnBaseController> logger) : base(altinn3Service, "Production", ssnTokenService, telemetryService, configuration, logger)
-        {
-        }
-    }
-
-
-
-    //Made controller abstract to be able to authorize on different environments
-    [Authorize(AzureRoles.Authenticated)]
-    [ApiController]
-    public abstract class AltinnBaseController : ControllerBase
-    {
-        protected readonly IAltinn3Service _altinn3Service;
-        protected string environmentName;
-        protected readonly ISsnTokenService _ssnTokenService;
-        protected readonly ITelemetryService _telemetryService;
+        private readonly IAltinn3Service _altinn3Service;
+        private readonly ISsnTokenService _ssnTokenService;
+        private readonly ITelemetryService _telemetryService;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<AltinnBaseController> _logger;
+        private readonly ILogger<AltinnController> _logger;
 
-        public AltinnBaseController(IAltinn3Service altinn3Service, string environmentName, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration, ILogger<AltinnBaseController> logger)
+        public AltinnController(IAltinn3Service altinn3Service, ISsnTokenService ssnTokenService, ITelemetryService telemetryService, IConfiguration configuration, ILogger<AltinnController> logger)
         {
             _altinn3Service = altinn3Service;
-            this.environmentName = environmentName;
             _ssnTokenService = ssnTokenService;
             _telemetryService = telemetryService;
             _configuration = configuration;
@@ -79,7 +45,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/altinn3/search")]
-        public async Task<IActionResult> SearchAltinn3([FromHeader] string query)
+        public async Task<IActionResult> SearchAltinn3([FromRoute] string environmentName, [FromHeader] string query)
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -88,16 +54,16 @@ namespace AltinnSupportDashboard.Controllers
 
             if (ValidationService.IsValidEmail(query))
             {
-                return await GetOrganizationsFromEmailAltinn3(query);
+                return await GetOrganizationsFromEmailAltinn3(environmentName, query);
             }
             if (ValidationService.IsValidOrgNumber(query))
             {
-                return await GetOrganizationAltinn3(query);
+                return await GetOrganizationAltinn3(environmentName, query);
             }
 
             if (ValidationService.IsValidPhoneNumber(query))
             {
-                return await GetOrganizationsFromPhoneAltinn3(query);
+                return await GetOrganizationsFromPhoneAltinn3(environmentName, query);
             }
 
             _logger.LogWarning("SearchAltinn3 received a query that is not a valid email, phonenumber or organization number in environment {EnvironmentName}", environmentName);
@@ -106,7 +72,7 @@ namespace AltinnSupportDashboard.Controllers
 
 
         [HttpGet("organizations/altinn3/organizations/{orgnumber}")]
-        public async Task<IActionResult> GetOrganizationAltinn3([FromRoute] string orgnumber)
+        public async Task<IActionResult> GetOrganizationAltinn3([FromRoute] string environmentName, [FromRoute] string orgnumber)
         {
             _telemetryService.TrackOrgNumberSearch(orgnumber, User.Identity?.Name ?? "unknown", environmentName);
 
@@ -116,7 +82,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpPost("organizations/altinn3/organizations")]
-        public async Task<IActionResult> GetOrganizationsAltinn3([FromBody] OrgNumbersRequestDto orgnumbers)
+        public async Task<IActionResult> GetOrganizationsAltinn3([FromRoute] string environmentName, [FromBody] OrgNumbersRequestDto orgnumbers)
         {
             var data = orgnumbers.OrgNumbers;
 
@@ -126,7 +92,7 @@ namespace AltinnSupportDashboard.Controllers
 
 
         [HttpGet("organizations/altinn3/organizations/phonenumber/{phonenumber}")]
-        public async Task<IActionResult> GetOrganizationsFromPhoneAltinn3([FromRoute] string phonenumber)
+        public async Task<IActionResult> GetOrganizationsFromPhoneAltinn3([FromRoute] string environmentName, [FromRoute] string phonenumber)
         {
             if (!ValidationService.IsValidPhoneNumber(phonenumber))
             {
@@ -142,7 +108,7 @@ namespace AltinnSupportDashboard.Controllers
 
 
         [HttpGet("organizations/altinn3/organizations/email/{email}")]
-        public async Task<IActionResult> GetOrganizationsFromEmailAltinn3([FromRoute] string email)
+        public async Task<IActionResult> GetOrganizationsFromEmailAltinn3([FromRoute] string environmentName, [FromRoute] string email)
         {
             if (!ValidationService.IsValidEmail(email))
             {
@@ -158,7 +124,7 @@ namespace AltinnSupportDashboard.Controllers
 
 
         [HttpGet("organizations/altinn3/personalcontacts/org/{orgnumber}")]
-        public async Task<IActionResult> GetPersonalContactsAltinn3([FromRoute] string orgnumber)
+        public async Task<IActionResult> GetPersonalContactsAltinn3([FromRoute] string environmentName, [FromRoute] string orgnumber)
         {
             if (!ValidationService.IsValidOrgNumber(orgnumber))
             {
@@ -171,7 +137,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/altinn3/personalcontacts/email/{email}")]
-        public async Task<IActionResult> GetPersonalContactsByEmailAltinn3([FromRoute] string email)
+        public async Task<IActionResult> GetPersonalContactsByEmailAltinn3([FromRoute] string environmentName, [FromRoute] string email)
         {
             if (!ValidationService.IsValidEmail(email))
             {
@@ -185,7 +151,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/altinn3/personalcontacts/phonenumber/{phonenumber}")]
-        public async Task<IActionResult> GetPersonalContactsByPhoneAltinn3([FromRoute] string phonenumber)
+        public async Task<IActionResult> GetPersonalContactsByPhoneAltinn3([FromRoute] string environmentName, [FromRoute] string phonenumber)
         {
             if (!ValidationService.IsValidPhoneNumber(phonenumber))
             {
@@ -198,7 +164,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("users/altinn3/search")]
-        public async Task<IActionResult> SearchUsersAltinn3([FromHeader] string query)
+        public async Task<IActionResult> SearchUsersAltinn3([FromRoute] string environmentName, [FromHeader] string query)
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -207,23 +173,23 @@ namespace AltinnSupportDashboard.Controllers
 
             if (ValidationService.IsValidEmail(query))
             {
-                return await GetUserContactInformationByEmailAltinn3(query);
+                return await GetUserContactInformationByEmailAltinn3(environmentName, query);
             }
             if (ValidationService.isValidSsn(query))
             {
-                return await GetUserContactInformationByNinAltinn3(query);
+                return await GetUserContactInformationByNinAltinn3(environmentName, query);
             }
 
             if (ValidationService.IsValidPhoneNumber(query))
             {
-                return await GetUserContactInformationByPhoneNumberAltinn3(query);
+                return await GetUserContactInformationByPhoneNumberAltinn3(environmentName, query);
             }
 
             return BadRequest("Ugyldig søketerm. Angi et gyldig fødselsnummer, telefonnummer eller e-postadresse.");
         }
 
         [HttpGet("users/altinn3/contactinformation")]
-        public async Task<IActionResult> GetUserContactInformationByNinAltinn3([FromHeader] string nationalIdentityNumber)
+        public async Task<IActionResult> GetUserContactInformationByNinAltinn3([FromRoute] string environmentName, [FromHeader] string nationalIdentityNumber)
         {
             if (!ValidationService.isValidSsn(nationalIdentityNumber))
             {
@@ -239,7 +205,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("users/altinn3/contactinformation/phonenumber")]
-        public async Task<IActionResult> GetUserContactInformationByPhoneNumberAltinn3([FromHeader] string phonenumber)
+        public async Task<IActionResult> GetUserContactInformationByPhoneNumberAltinn3([FromRoute] string environmentName, [FromHeader] string phonenumber)
         {
             if (!ValidationService.IsValidPhoneNumber(phonenumber))
             {
@@ -254,7 +220,7 @@ namespace AltinnSupportDashboard.Controllers
             return Ok(result);
         }
         [HttpGet("users/altinn3/contactinformation/email")]
-        public async Task<IActionResult> GetUserContactInformationByEmailAltinn3([FromHeader] string email)
+        public async Task<IActionResult> GetUserContactInformationByEmailAltinn3([FromRoute] string environmentName, [FromHeader] string email)
         {
             if (!ValidationService.IsValidEmail(email))
             {
@@ -269,7 +235,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/{orgNumber}/altinn3/notificationaddresses")]
-        public async Task<IActionResult> GetNotificationAddressesByOrg([FromRoute] string orgnumber)
+        public async Task<IActionResult> GetNotificationAddressesByOrg([FromRoute] string environmentName, [FromRoute] string orgnumber)
         {
             if (!ValidationService.IsValidOrgNumber(orgnumber))
             {
@@ -281,7 +247,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/altinn3/notificationaddresses/phonenumber/{phonenumber}")]
-        public async Task<IActionResult> GetNotificationAddressesByPhone([FromRoute] string phonenumber)
+        public async Task<IActionResult> GetNotificationAddressesByPhone([FromRoute] string environmentName, [FromRoute] string phonenumber)
         {
             if (!ValidationService.IsValidPhoneNumber(phonenumber))
             {
@@ -293,7 +259,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("organizations/altinn3/notificationaddresses/email/{email}")]
-        public async Task<IActionResult> GetNotificationAddressesByEmail([FromRoute] string email)
+        public async Task<IActionResult> GetNotificationAddressesByEmail([FromRoute] string environmentName, [FromRoute] string email)
         {
             if (!ValidationService.IsValidEmail(email))
             {
@@ -305,7 +271,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("personalcontacts/{ssnToken}/ssn")]
-        public IActionResult GetSsnFromToken(string ssnToken)
+        public IActionResult GetSsnFromToken([FromRoute] string environmentName, string ssnToken)
         {
             var ssn = _ssnTokenService.GetSsnFromToken(ssnToken);
             if (string.IsNullOrEmpty(ssn))
@@ -328,7 +294,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpPost("organizations/altinn3/roles")]
-        public async Task<IActionResult> PostRolesAndRightsAltinn3([FromBody] RolesAndRightsRequest request)
+        public async Task<IActionResult> PostRolesAndRightsAltinn3([FromRoute] string environmentName, [FromBody] RolesAndRightsRequest request)
         {
             var result = await _altinn3Service.GetRolesAndRightsAltinn3(request, null, environmentName);
 
@@ -336,7 +302,7 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpGet("altinn3/authorizedparties")]
-        public async Task<IActionResult> GetAuthorizedPartyIdentifiersAltinn3([FromHeader] string nationalIdentityNumber)
+        public async Task<IActionResult> GetAuthorizedPartyIdentifiersAltinn3([FromRoute] string environmentName, [FromHeader] string nationalIdentityNumber)
         {
             if (ValidationService.isValidSsn(nationalIdentityNumber) || ValidationService.IsValidSsnToken(nationalIdentityNumber))
             {
@@ -349,28 +315,28 @@ namespace AltinnSupportDashboard.Controllers
         }
 
         [HttpPost("organizations/altinn3/identifiers")]
-        public async Task<IActionResult> PostOrganizationsIdentifiers([FromBody] OrgNumbersRequestDto request)
+        public async Task<IActionResult> PostOrganizationsIdentifiers([FromRoute] string environmentName, [FromBody] OrgNumbersRequestDto request)
         {
             var result = await _altinn3Service.GetOrganizationsIdentifiers(request.OrgNumbers, environmentName);
             return Ok(result);
         }
 
         [HttpPost("organizations/altinn3/partyinfo")]
-        public async Task<IActionResult> PostOrganizationsPartyInfo([FromBody] OrgPartyInfoRequest partyIds)
+        public async Task<IActionResult> PostOrganizationsPartyInfo([FromRoute] string environmentName, [FromBody] OrgPartyInfoRequest partyIds)
         {
             var result = await _altinn3Service.GetOrganizationspartyInfo(partyIds.PartyIds, environmentName);
             return Ok(result);
         }
 
         [HttpGet("rolesList")]
-        public async Task<IActionResult> GetAltinn2RolesList()
+        public async Task<IActionResult> GetAltinn2RolesList([FromRoute] string environmentName)
         {
             var result = await _altinn3Service.GetAltinn2RolesList(environmentName);
             return Ok(result);
         }
 
         [HttpGet("maskinporten/delegations")]
-        public async Task<IActionResult> GetMaskinportenDelegations([FromQuery] string? supplierOrg, [FromQuery] string? consumerOrg, [FromQuery] string? scope)
+        public async Task<IActionResult> GetMaskinportenDelegations([FromRoute] string environmentName, [FromQuery] string? supplierOrg, [FromQuery] string? consumerOrg, [FromQuery] string? scope)
         {
             var result = await _altinn3Service.GetMaskinportenDelegations(supplierOrg, consumerOrg, scope, environmentName);
             return Ok(result);
