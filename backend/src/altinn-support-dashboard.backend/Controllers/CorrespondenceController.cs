@@ -12,7 +12,7 @@ namespace AltinnSupportDashboard.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/correspondence")]
-[Authorize(AzureRoles.Authenticated)]
+[Authorize(AzurePolicies.Authenticated)]
 [Authorize(AzureRoles.TT02)]
 public class CorrespondenceController : ControllerBase
 {

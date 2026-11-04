@@ -15,7 +15,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
 {
     public class AltinnApiControllerTests
     {
-        private readonly AltinnTT02Controller _controller;
+        private readonly AltinnController _controller;
         private readonly Mock<IAltinn3Service> _mockServiceAltinn3;
         private readonly Mock<ISsnTokenService> _mockSsnTokenService;
         private readonly Mock<ITelemetryService> _mockTelemetryService;
@@ -30,7 +30,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var mockSection = new Mock<IConfigurationSection>();
             mockSection.Setup(s => s.GetChildren()).Returns(new List<IConfigurationSection>());
             _mockConfiguration.Setup(c => c.GetSection("LoggingConfiguration:TrackedEnvironments")).Returns(mockSection.Object);
-            _controller = new AltinnTT02Controller(_mockServiceAltinn3.Object, _mockSsnTokenService.Object, _mockTelemetryService.Object, _mockConfiguration.Object, NullLogger<AltinnBaseController>.Instance)
+            _controller = new AltinnController(_mockServiceAltinn3.Object, _mockSsnTokenService.Object, _mockTelemetryService.Object, _mockConfiguration.Object, NullLogger<AltinnController>.Instance)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -59,7 +59,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             .Setup(x => x.GetPersonalContactsByOrgAltinn3(validOrgNumber, "TT02"))
             .ReturnsAsync(expectedContacts);
 
-            var result = await _controller.GetPersonalContactsAltinn3(validOrgNumber);
+            var result = await _controller.GetPersonalContactsAltinn3("TT02", validOrgNumber);
 
             Assert.NotNull(result);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -77,7 +77,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [InlineData("   ")]
         public async Task GetPersonalContactsAltinn3_ReturnsBadRequest_WhenOrgNumberIsInvalid(string invalidOrgNumber)
         {
-            var result = await _controller.GetPersonalContactsAltinn3(invalidOrgNumber);
+            var result = await _controller.GetPersonalContactsAltinn3("TT02", invalidOrgNumber);
 
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
@@ -103,7 +103,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             .Setup(x => x.GetNotificationAddressesByOrgAltinn3(validOrgNumber, "TT02"))
             .ReturnsAsync(expectedAddresses);
 
-            var result = await _controller.GetNotificationAddressesByOrg(validOrgNumber);
+            var result = await _controller.GetNotificationAddressesByOrg("TT02", validOrgNumber);
 
             Assert.NotNull(result);
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -122,7 +122,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [InlineData("   ")]
         public async Task GetNotificationAddresses_ReturnsBadRequest_WhenOrgNumberIsInvalid(string invalidOrgNumber)
         {
-            var result = await _controller.GetNotificationAddressesByOrg(invalidOrgNumber);
+            var result = await _controller.GetNotificationAddressesByOrg("TT02", invalidOrgNumber);
 
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.", badRequestResult.Value);
@@ -138,7 +138,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             .Setup(x => x.GetSsnFromToken(validToken))
             .Returns(expectedSsn);
 
-            var result = _controller.GetSsnFromToken(validToken);
+            var result = _controller.GetSsnFromToken("TT02", validToken);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
             var response = okResult.Value;
@@ -156,7 +156,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             .Setup(x => x.GetSsnFromToken(invalidToken))
             .Returns(string.Empty);
 
-            var exception = Assert.Throws<Exception>(() => _controller.GetSsnFromToken(invalidToken));
+            var exception = Assert.Throws<Exception>(() => _controller.GetSsnFromToken("TT02", invalidToken));
 
             Assert.Equal("Invalid or expired SSN token.", exception.Message);
         }
@@ -169,7 +169,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 .Setup(x => x.GetOrganizationByOrgNoAltinn3(orgNumber, "TT02"))
                 .ReturnsAsync(new Organization { OrganizationNumber = orgNumber});
 
-            await _controller.GetOrganizationAltinn3(orgNumber);
+            await _controller.GetOrganizationAltinn3("TT02", orgNumber);
 
             _mockTelemetryService.Verify(t => t.TrackSearch(
                 "oppslag",
@@ -188,7 +188,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 .Setup(x => x.GetOrganizationsByEmailAltinn3(email, "TT02"))
                 .ReturnsAsync(new List<Organization>());
 
-            await _controller.GetOrganizationsFromEmailAltinn3(email);
+            await _controller.GetOrganizationsFromEmailAltinn3("TT02", email);
 
             _mockTelemetryService.Verify(t => t.TrackSearch(
                 "oppslag",
@@ -202,7 +202,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [Fact]
         public async Task GetOrganizationFromEmailAltinn3_DoesNotTrackSearch_WhenEmailIsInvalid()
         {
-            var result = await _controller.GetOrganizationsFromEmailAltinn3("invalid-email");
+            var result = await _controller.GetOrganizationsFromEmailAltinn3("TT02", "invalid-email");
 
             Assert.IsType<BadRequestObjectResult>(result);
             _mockTelemetryService.Verify(t => t.TrackSearch(
@@ -222,7 +222,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 .Setup(x => x.GetOrganizationsByPhoneAltinn3(phoneNumber, "TT02"))
                 .ReturnsAsync(new List<Organization>());
             
-            await _controller.GetOrganizationsFromPhoneAltinn3(phoneNumber);
+            await _controller.GetOrganizationsFromPhoneAltinn3("TT02", phoneNumber);
 
             _mockTelemetryService.Verify(t => t.TrackSearch(
                 "oppslag",
@@ -236,7 +236,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [Fact]
         public async Task GetOrganizationsFromPhoneAltinn3_DoesNotTrackSearch_WhenPhoneNumberIsInvalid()
         {
-            var result = await _controller.GetOrganizationsFromPhoneAltinn3("invalid-phone");
+            var result = await _controller.GetOrganizationsFromPhoneAltinn3("TT02", "invalid-phone");
 
             Assert.IsType<BadRequestObjectResult>(result);
             _mockTelemetryService.Verify(t => t.TrackSearch(
@@ -256,7 +256,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 .Setup(x => x.GetUserContactInformationByNinAltinn3(nin, "TT02"))
                 .ReturnsAsync([new UserContactInformationAltinn3()]);
 
-            await _controller.GetUserContactInformationByNinAltinn3(nin);
+            await _controller.GetUserContactInformationByNinAltinn3("TT02", nin);
 
             _mockTelemetryService.Verify(t => t.TrackSearch(
                 "oppslag",
@@ -273,7 +273,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [InlineData("123")]
         public async Task GetUserContactInformationByNinAltinn3_DoesNotTrackSearch_WhenNinIsInvalid(string invalidNin)
         {
-            var result = await _controller.GetUserContactInformationByNinAltinn3(invalidNin);
+            var result = await _controller.GetUserContactInformationByNinAltinn3("TT02", invalidNin);
 
             Assert.IsType<BadRequestObjectResult>(result);
             _mockTelemetryService.Verify(t => t.TrackSearch(

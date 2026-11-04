@@ -6,6 +6,9 @@ export interface NotificationShipmentResponse {
   requestedSendTime: string;
   notificationChannel?: string ;
   notificationType?: string;
+  dialogId?: string;
+  transmissionId?: string;
+  senderAddress?: string;
   deliveryAttempts: DeliveryAttempt[];
 }
 

@@ -10,7 +10,7 @@ namespace AltinnSupportDashboard.Controllers;
 
 [ApiController]
 [Route("api/{environmentName}/dialogporten")]
-[Authorize(AzureRoles.Authenticated)]
+[Authorize(AzurePolicies.Authenticated)]
 [Authorize(AzureRoles.Developer)]
 public class DialogportenController : ControllerBase
 {
