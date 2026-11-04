@@ -5,6 +5,7 @@ using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Clients;
+using altinn_support_dashboard.Server.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Security;
 using altinn_support_dashboard.Server.Utils.AccessTokenAuth;
@@ -87,6 +88,16 @@ namespace AltinnSupportDashboard
                         {
                             configureClientDefinition.ClientSettings.ExhangeToAltinnToken = true;
                         });
+
+                    foreach (var (environmentName, baseAddress) in config?.AccessToken.Environments ?? new())
+                    {
+                        services.AddHttpClient(environmentName, client =>
+                        {
+                            client.BaseAddress = new Uri(baseAddress);
+                            client.Timeout = TimeSpan.FromSeconds(30);
+                        })
+                        .AddHttpMessageHandler(sp => new AccessTokenHandler(sp.GetRequiredService<IAccessTokenAuthService>(), environmentName.ToLower()));
+                    }
 
                     services.AddMemoryCache();
 

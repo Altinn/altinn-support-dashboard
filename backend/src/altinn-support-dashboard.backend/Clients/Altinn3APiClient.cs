@@ -23,6 +23,11 @@ public class Altinn3ApiClient : IAltinn3ApiClient
 
         InitClient(nameof(configuration.Value.Production), configuration.Value.Production);
         InitClient(nameof(configuration.Value.TT02), configuration.Value.TT02);
+
+        foreach (var environmentName in configuration.Value.AccessToken.Environments.Keys)
+        {
+            _clients.Add(environmentName, _clientFactory.CreateClient(environmentName));
+        }
     }
 
     public void InitClient(string environmentName, EnvironmentConfiguration configuration)
@@ -77,12 +82,13 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             }
 
             return JsonSerializer.Serialize(allResults);
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve identifiers for  organization in environment {EnvironmentName}",  environmentName);
+            _logger.LogError(ex, "Failed to retrieve identifiers for  organization in environment {EnvironmentName}", environmentName);
             throw;
         }
-        
+
     }
 
     //used to get the partyInformation of a org
@@ -109,7 +115,8 @@ public class Altinn3ApiClient : IAltinn3ApiClient
                 throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
             }
             return responseBody;
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve party info for organizations in environment {EnvironmentName}", environmentName);
             throw;
@@ -169,7 +176,8 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             }
 
             return responseBody;
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve user contact information by national identity number in environment {EnvironmentName}", environmentName);
             throw;
@@ -248,8 +256,9 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             }
 
             return responseBody;
-            
-        } catch (Exception ex)
+
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve personal contacts by email in environment {EnvironmentName}", environmentName);
             throw;
@@ -286,7 +295,8 @@ public class Altinn3ApiClient : IAltinn3ApiClient
             }
 
             return responseBody;
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve personal contacts by phonenumber in environment {EnvironmentName}", environmentName);
             throw;
@@ -350,7 +360,7 @@ public class Altinn3ApiClient : IAltinn3ApiClient
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve notification addresses by phone number in environment {EnvironmentName}",  environmentName);
+            _logger.LogError(ex, "Failed to retrieve notification addresses by phone number in environment {EnvironmentName}", environmentName);
             throw;
         }
     }
@@ -419,12 +429,13 @@ public class Altinn3ApiClient : IAltinn3ApiClient
                 throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
             }
             return responseBody;
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve roles and rights in environment {EnvironmentName}", environmentName);
             throw;
         }
- 
+
     }
     public async Task<string> GetAuthorizedParties(string value, string type, string environmentName)
     {
@@ -456,12 +467,13 @@ public class Altinn3ApiClient : IAltinn3ApiClient
                 throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
             }
             return responseBody;
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve authorized parties for lookup in environment {EnvironmentName}",environmentName);
+            _logger.LogError(ex, "Failed to retrieve authorized parties for lookup in environment {EnvironmentName}", environmentName);
             throw;
         }
-       
+
     }
 
     public async Task<string> GetAltinn2RolesList(string environmentName)
@@ -485,12 +497,13 @@ public class Altinn3ApiClient : IAltinn3ApiClient
                 throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
             }
             return responseBody;
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve the Altinn 2 roles list in environment {EnvironmentName}", environmentName);
             throw;
         }
-        
+
     }
 
     public async Task<string> GetAccessPackagesList(string environmentName)
@@ -508,12 +521,13 @@ public class Altinn3ApiClient : IAltinn3ApiClient
                 throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
             }
             return responseBody;
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve the access package list in environment {EnvironmentName}", environmentName);
             throw;
         }
-        
+
     }
 
     public async Task<string> GetMaskinportenDelegations(string? supplierOrg, string? consumerOrg, string? scope, string environmentName)
@@ -550,12 +564,13 @@ public class Altinn3ApiClient : IAltinn3ApiClient
                 throw new Exception($"Api request failed with status code {response.StatusCode}: {responseBody}");
             }
             return responseBody;
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retrieve Maskinporten delegations for supplier and consumer in environment {EnvironmentName}", environmentName);
             throw;
         }
-        
+
     }
 
 }

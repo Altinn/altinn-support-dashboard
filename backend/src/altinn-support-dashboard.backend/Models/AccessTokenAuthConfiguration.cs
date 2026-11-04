@@ -6,6 +6,7 @@ public class AccessTokenConfiguration
 	public required string TokenGeneratorUrl { get; set; }
 	public required string Scopes { get; set; }
 	public required AccessTokenAuth Auth { get; set; }
+	public Dictionary<string, string> Environments { get; set; } = new();
 }
 
 public class AccessTokenAuth
