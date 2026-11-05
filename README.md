@@ -50,6 +50,8 @@ git clone https://github.com/Altinn/altinn-support-dashboard.git
 - Kjør kommandoen `npm install` (trengs bare første gang eller for oppdatering av avhengigheter)
 - Kjør kommandoen `npm run dev --prefix frontend/altinn-support-dashboard.client` (starter frontend)
 
+Alternativt kan backend og frontend startes sammen med Aspire: `cd tools/aspire && aspire run`. Se [tools/aspire/README.md](tools/aspire/README.md).
+
 ## Kjøre backend-tester:
 - Kjør kommandoen `dotnet test --project backend/test/altinn-support-dashboard.backend.Tests`
 

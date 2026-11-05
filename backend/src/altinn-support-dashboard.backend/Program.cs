@@ -6,6 +6,9 @@ using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Clients;
 using Microsoft.AspNetCore.Authorization;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 using Security;
 
 namespace AltinnSupportDashboard
@@ -59,6 +62,16 @@ namespace AltinnSupportDashboard
                     if (hostContext.HostingEnvironment.IsDevelopment())
                     {
                         services.AddSingleton<ITelemetryService>(_ => new TelemetryService(null));
+
+                        // Set by the Aspire app host in tools/aspire.
+                        if (!string.IsNullOrEmpty(hostContext.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]))
+                        {
+                            services.AddOpenTelemetry()
+                                .WithTracing(tracing => tracing.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation())
+                                .WithMetrics(metrics => metrics.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation())
+                                .WithLogging()
+                                .UseOtlpExporter();
+                        }
                     }
                     else
                     {
