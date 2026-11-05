@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Welcome to the Altinn Support Dashboard. The solution was built to give Altinn User Service (Altinn Brukerservice, ABS) a modern and efficient web-based tool to help end users.
+Altinn support dashboard was built to give ABS and servicedesk a modern and efficient web-based tool to help end users. We have also begun to introduce functionality and tooling which can help different development teams and digdir emplooyes navigate altinn data in a easy and effective way.
 
 ## Features
 
@@ -17,7 +17,6 @@ Welcome to the Altinn Support Dashboard. The solution was built to give Altinn U
 - **Notification search**: Search for notifications, and look up the notification log for a dialog ID or transmission ID.
 - **Notification availability**: Check whether a person or organization can be reached by notifications.
 - **Test correspondence**: Create and send a correspondence for testing (beta).
-- **New organization**: Create an organization in Altinn Studio (Gitea).
 - **User-friendly interface**: Built with React for a responsive and intuitive user experience.
 
 ## Technologies
