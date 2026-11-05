@@ -94,8 +94,7 @@ namespace AltinnSupportDashboard
                         services.AddHttpClient(environmentName, client =>
                         {
                             client.BaseAddress = new Uri(baseAddress);
-                            client.Timeout = TimeSpan.FromSeconds(30);
-                        })
+                            client.Timeout = TimeSpan.FromSeconds(30);                        })
                         .AddHttpMessageHandler(sp => new AccessTokenHandler(sp.GetRequiredService<IAccessTokenAuthService>(), environmentName.ToLower()));
                     }
 

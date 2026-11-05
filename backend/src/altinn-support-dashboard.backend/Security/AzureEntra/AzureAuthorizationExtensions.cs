@@ -56,6 +56,11 @@ public static class AzureAuthorizationExtensions
                 });
         }
 
+        var accessTokenEnvironments = configuration.GetSection("Configuration:AccessToken:Environments")
+            .GetChildren()
+            .Select(section => section.Key)
+            .ToHashSet(StringComparer.Ordinal);
+
         services.AddAuthorizationBuilder()
             .AddPolicy(AzurePolicies.Authenticated, p =>
             {
@@ -95,13 +100,13 @@ public static class AzureAuthorizationExtensions
                 p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.LegalRequest));
             }).AddPolicy(AzurePolicies.EnvironmentAccess, p =>
             {
-                p.RequireAssertion(ctx => HasEnvironmentAccess(ctx, enabled));
+                p.RequireAssertion(ctx => HasEnvironmentAccess(ctx, enabled, accessTokenEnvironments));
             });
 
         return services;
     }
 
-    private static bool HasEnvironmentAccess(AuthorizationHandlerContext ctx, bool enabled)
+    private static bool HasEnvironmentAccess(AuthorizationHandlerContext ctx, bool enabled, HashSet<string> accessTokenEnvironments)
     {
         var environmentName = (ctx.Resource as HttpContext)?.GetRouteValue("environmentName") as string;
 
@@ -110,6 +115,7 @@ public static class AzureAuthorizationExtensions
             "Production" => HasRole(ctx.User, AzureRoles.Production),
             "TT02" => !enabled || HasRole(ctx.User, AzureRoles.TT02),
             "mock" => true,
+            not null when accessTokenEnvironments.Contains(environmentName) => !enabled || HasRole(ctx.User, AzureRoles.Developer),
             _ => false
         };
     }

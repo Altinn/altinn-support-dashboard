@@ -15,17 +15,17 @@ public class AccessTokenAuthClient : IAccessTokenAuthClient
 	{
 		_config = configuration.Value.AccessToken;
 		_client = clientFactory.CreateClient();
-		_client.BaseAddress = new Uri(_config.TokenGeneratorUrl);
-
-		var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_config.Auth.TokenAuthUser}:{_config.Auth.TokenAuthPW}"));
-		_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
-
 		_logger = logger;
 	}
 	public async Task<string> GetJwt(string environment)
 	{
-		var url = $"/api/GetEnterpriseToken?env={environment}&scopes={_config.Scopes}&org=ttd";
-		var response = await _client.GetAsync(url);
+		var url = new Uri(new Uri(_config.TokenGeneratorUrl), $"/api/GetEnterpriseToken?env={environment}&scopes={_config.Scopes}&org=ttd");
+		using var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+		var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_config.Auth.TokenAuthUser}:{_config.Auth.TokenAuthPW}"));
+		request.Headers.Authorization = new AuthenticationHeaderValue("Basic", credentials);
+
+		var response = await _client.SendAsync(request);
 
 		if (!response.IsSuccessStatusCode)
 		{

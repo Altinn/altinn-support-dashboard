@@ -11,6 +11,11 @@ public class NotificationsClient : INotificationsClient
         _logger = logger;
         InitClient(nameof(configuration.Value.TT02), configuration.Value.TT02, clientFactory);
         InitClient(nameof(configuration.Value.Production), configuration.Value.Production, clientFactory);
+
+        foreach (var environmentName in configuration.Value.AccessToken.Environments.Keys)
+        {
+            _clients.Add(environmentName, clientFactory.CreateClient(environmentName));
+        }
     }
 
     private void InitClient(string environmentName, EnvironmentConfiguration config, IHttpClientFactory clientFactory)

@@ -1,6 +1,5 @@
 
 using System.IdentityModel.Tokens.Jwt;
-using System.Text.Json;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Utils.AccessTokenAuth;
 using Microsoft.Extensions.Caching.Memory;
@@ -21,8 +20,7 @@ public class AccessTokenAuthService : IAccessTokenAuthService
     {
         return await _cache.GetOrCreateAsync<string>($"AccessTokenJwt_{environment}", async entry =>
         {
-            var result = await _client.GetJwt(environment);
-            var jwt = JsonSerializer.Deserialize<string>(result) ?? throw new Exception("Failed to deserialize AccessToken Jwt");
+            var jwt = await _client.GetJwt(environment);
 
             //will refresh 30 seconds before jwt expires
             entry.AbsoluteExpiration = new JwtSecurityTokenHandler().ReadJwtToken(jwt).ValidTo.AddMinutes(-0.5);
