@@ -44,7 +44,7 @@ public static class ServiceCollectionExtensions
 
     private static void AddMaskinportenClient(IServiceCollection services, string name, MaskinportenSettings settings) => 
         services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(name, settings, 
-            client => client.ClientSettings.ExchangeToAltinnToken = true);
+            client => client.ClientSettings.ExhangeToAltinnToken = true);
     
     public static IServiceCollection AddAltinnClients(this IServiceCollection services, IConfiguration configuration)
     {
@@ -54,5 +54,25 @@ public static class ServiceCollectionExtensions
         services.AddClient<INotificationsClient, NotificationsClient>(useMocks, real => new MockNotificationsClient(real));
         services.AddClient<IDataBrregClient, DataBrregClient>(useMocks, real => new MockDataBrregClient(real));
         services.AddClient<IResourceRegistryClient, ResourceRegistryClient>(useMocks, real => new MockResourceRegistryClient(real));
+
+        services.AddSingleton<GiteaApiClient>();
+        services.AddScoped<IPartyApiClient, PartyApiClient>();
+        services.AddScoped<IDialogportenClient, DialogportenClient>();
+        services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
+        return services;
+    }
+
+    private static void AddClient<TInterface, TImpl>(this IServiceCollection services, bool useMock, Func<TImpl, TInterface> createMock)
+        where TInterface : class
+        where TImpl : class, TInterface
+    {
+        if (!useMock)
+        {
+            services.AddScoped<TInterface, TImpl>();
+            return;
+        }
+
+        services.AddScoped<TImpl>();
+        services.AddScoped(sp => createMock(sp.GetRequiredService<TImpl>()));
     }
 }
