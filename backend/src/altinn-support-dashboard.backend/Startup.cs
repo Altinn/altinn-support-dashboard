@@ -1,148 +1,71 @@
-using altinn_support_dashboard.Server.Clients;
-using altinn_support_dashboard.Server.Models;
+using altinn_support_dashboard.Server.Extensions;
 using altinn_support_dashboard.Server.Utils;
-using altinn_support_dashboard.Server.Services;
-using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Compliance.Redaction;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
+using Security;
 
 
 namespace AltinnSupportDashboard
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Configure HttpClient
+            services
+                .AddTelemetry(Environment)
+                .AddAppConfiguration(Configuration)
+                .AddMaskinportenClients(Configuration)
+                .AddAltinnClients(Configuration)
+                .AddApplicationServices()
+                .AddApiDocumentation()
+                .AddFrontendCors(Configuration)
+                .AddAzureEntraAuthenticationAndAuthorization(Configuration);
+            
             services.AddHttpClient();
-
-            // Configure Gitea settings
-            services.Configure<GiteaConfiguration>(Configuration.GetSection("Gitea"));
-            services.Configure<BrregConfiguration>(Configuration.GetSection("BrregConfiguration"));
-
-            // Add controllers for the API
+            services.AddMemoryCache();
             services.AddControllers();
-
-            // Register Swagger for API documentation
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "Altinn Support Dashboard API",
-                    Version = "v1",
-                    Description = "API for å administrere Altinn Support Dashboard og opprette organisasjoner i Altinn Studio"
-                });
-            });
-
-
-            services.AddRedaction(redaction =>
-            {
-                redaction.SetRedactor<SsnRedactor>(CustomDataClassifications.SSN);
-            });
-
-            string[] baseUrl = Configuration.GetSection("RedirectConfiguration:AllowedUrls").Get<string[]>() ?? throw new Exception("Redirecrt url not set");
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowFrontend", builder =>
-                {
-                    builder.WithOrigins(baseUrl)
-                           .WithMethods("GET", "POST")
-                           .AllowAnyHeader()
-                           .AllowCredentials();
-                });
-            });
+            services.AddRedaction(r => r.SetRedactor<SsnRedactor>(CustomDataClassifications.SSN));
         }
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
+        
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
-
-            // Set up error handling
-            app.UseExceptionHandler(errorApp =>
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                errorApp.Run(async context =>
-                {
-                    var exception = context.Features
-                        .Get<IExceptionHandlerFeature>()?.Error;
-
-                    logger.LogError(exception, "Unhandled exception while processing {Method} {Path}", context.Request.Method, context.Request.Path);
-
-                    context.Response.ContentType = "application/json";
-
-                    context.Response.StatusCode = exception switch
-                    {
-                        BadRequestException => StatusCodes.Status400BadRequest,
-                        _ => StatusCodes.Status500InternalServerError
-                    };
-
-                    await context.Response.WriteAsJsonAsync(new
-                    {
-                        message = exception?.Message
-                    });
-                });
+                // Behind the proxy the app sees http; this keeps the Entra ID redirect_uri on https
+                ForwardedHeaders = ForwardedHeaders.XForwardedProto
             });
+            app.UseGlobalExceptionHandler();
 
             if (!env.IsDevelopment())
             {
-
-
                 app.UseHsts();
             }
 
-            // Enable CORS immediately
-            app.UseCors("AllowFrontend");  // Globally apply the "AllowAll" CORS policy
-
-            // Use HTTPS redirection
             app.UseHttpsRedirection();
-
-            // Enable serving static files (Vite build output will go into wwwroot)
             app.UseStaticFiles();
-
-            // Enable Swagger
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Altinn Support Dashboard API V1");
-                c.RoutePrefix = "swagger";
-            });
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Altinn Support Dashboard API v1"));
 
-            // Enable routing
             app.UseRouting();
+            app.UseCors(CorsExtensions.FrontendPolicy);
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-            //to fix 403 forbidden by ansattporten
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedProto
-            });
-
-            // Enable Authentication and Authorization middleware
-            app.UseAuthentication();  // Ensure authentication is used
-            app.UseAuthorization();   // Ensure authorization is used
-
-
-            // Configure endpoints for API controllers
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });
-
-            // Serve the frontend for any non-API routes (Vite build)
-            app.UseEndpoints(endpoints =>
-            {
                 endpoints.MapFallbackToFile("index.html");
             });
 
-            logger.LogInformation("Backend is now running!");
         }
     }
 }
