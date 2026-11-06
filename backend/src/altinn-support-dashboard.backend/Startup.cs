@@ -25,9 +25,8 @@ namespace AltinnSupportDashboard
         {
             // Configure HttpClient
             services.AddHttpClient();
+                
 
-            // Configure Gitea settings
-            services.Configure<GiteaConfiguration>(Configuration.GetSection("Gitea"));
             services.Configure<BrregConfiguration>(Configuration.GetSection("BrregConfiguration"));
 
             // Add controllers for the API
@@ -40,7 +39,7 @@ namespace AltinnSupportDashboard
                 {
                     Title = "Altinn Support Dashboard API",
                     Version = "v1",
-                    Description = "API for å administrere Altinn Support Dashboard og opprette organisasjoner i Altinn Studio"
+                    Description = "API for å administrere Altinn Support Dashboard"
                 });
             });
 
@@ -119,7 +118,7 @@ namespace AltinnSupportDashboard
             // Enable routing
             app.UseRouting();
 
-            //to fix 403 forbidden by ansattporten
+            // Keeps the https scheme behind the proxy so the OIDC redirect URI is correct
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedProto

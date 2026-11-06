@@ -1,6 +1,5 @@
 using Altinn.ApiClients.Maskinporten.Extensions;
 using Altinn.ApiClients.Maskinporten.Services;
-using Altinn.Studio.Designer.Infrastructure.AnsattPorten;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
@@ -106,8 +105,6 @@ namespace AltinnSupportDashboard
                     services.AddAzureEntraAuthenticationAndAuthorization(hostContext.Configuration);
 
                     // Register application services
-                    services.AddSingleton<GiteaApiClient>();
-                    services.AddScoped<IGiteaService, GiteaService>();
                     services.AddScoped<IDataBrregService, DataBrregService>();
                     services.AddScoped<IAltinn3Service, Altinn3Service>();
                     services.AddScoped<IPartyApiClient, PartyApiClient>();
