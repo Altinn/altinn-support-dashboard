@@ -111,7 +111,6 @@ jobs:
           Configuration__Production__MaskinportenSettings__Environment: test
           Configuration__Production__ApiKey: ${{ secrets.CONFIGURATION__TT02__APIKEY }}
           Configuration__Production__Ocp_Apim_Subscription_Key: ${{ secrets.CONFIGURATION__TT02__OCP_APIM_SUBSCRIPTION_KEY}}
-          FeatureManagement__Ansattporten: "false"
 
       - name: Wait for backend to be ready
         if: steps.e2e-changes.outputs.e2e == 'true'
