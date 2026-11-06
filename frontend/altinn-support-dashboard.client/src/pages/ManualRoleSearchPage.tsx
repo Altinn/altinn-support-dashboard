@@ -20,7 +20,7 @@ export const ManualRoleSearchPage: React.FC = () => {
   return (
     <div>
       <Heading level={1} data-size="sm">
-        Manuelt Rollesøk
+        Manuelt rollesøk
       </Heading>
       <Button
         onClick={() => dialogRef.current?.showModal()}

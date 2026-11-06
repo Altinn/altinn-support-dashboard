@@ -114,7 +114,7 @@ describe("DetailedOrgView", () => {
   it("should render organization details when selectedOrg is provided", () => {
     render(<DetailedOrgView selectedOrg={mockSelectedOrg} />);
     expect(
-      screen.getByText(`Org Nr: ${mockSelectedOrg.organizationNumber}`),
+      screen.getByText(`Org nr: ${mockSelectedOrg.organizationNumber}`),
     ).toBeInTheDocument();
     expect(screen.getByText(mockSelectedOrg.name)).toBeInTheDocument();
   });
@@ -229,7 +229,7 @@ describe("DetailedOrgView", () => {
     const searchInput = screen.getByPlaceholderText("Search");
     expect(searchInput).toHaveValue("");
     expect(
-      screen.getByText(`Org Nr: ${newOrg.organizationNumber}`),
+      screen.getByText(`Org nr: ${newOrg.organizationNumber}`),
     ).toBeInTheDocument();
     expect(screen.getByText(newOrg.name)).toBeInTheDocument();
   });

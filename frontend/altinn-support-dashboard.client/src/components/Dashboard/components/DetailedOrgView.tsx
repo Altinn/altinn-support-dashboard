@@ -43,7 +43,7 @@ const DetailedOrgView: React.FC<DetailedOrgViewProps> = ({ selectedOrg }) => {
           className={`${styles.orgDetails} ${selectedContact ? "full-width" : ""}`}
         >
           <Heading className={styles.orgInformation}>
-            <span>Org Nr: {selectedOrg.organizationNumber}</span>
+            <span>Org nr: {selectedOrg.organizationNumber}</span>
             <span>Type: {selectedOrg.unitType}</span>
             <span>IsDeleted: {selectedOrg.isDeleted ? "true" : "false"}</span>
           </Heading>

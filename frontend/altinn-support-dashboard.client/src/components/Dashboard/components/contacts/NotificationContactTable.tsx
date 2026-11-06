@@ -29,7 +29,7 @@ const NotificationContactTable: React.FC<ContactFieldTableProps> = ({
               {title}
             </Table.HeaderCell>
             <Table.HeaderCell className={styles.tableCell}>
-              {"Endret " + title}
+              {"Endret " + title.toLowerCase()}
             </Table.HeaderCell>
           </Table.Row>
         </Table.Head>
