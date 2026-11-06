@@ -52,6 +52,8 @@ git clone https://github.com/Altinn/altinn-support-dashboard.git
 - Install frontend dependencies (first time, or when dependencies change): `npm install --prefix frontend/altinn-support-dashboard.client`
 - Start the frontend: `npm run dev --prefix frontend/altinn-support-dashboard.client`
 
+Alternatively, start the backend and frontend together with Aspire: `cd tools/aspire && aspire run`. See [tools/aspire/README.md](tools/aspire/README.md).
+
 ## Running tests
 
 - Backend: `dotnet test --project backend/test/altinn-support-dashboard.backend.Tests`
@@ -82,7 +84,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-For questions or requests, please contact [Siri Esteri Berg-Johnsen](mailto:siri.esteri.berg-johnsen@digdir.no) or [Fabian Ugedal](mailto:fabian.ugedal@digdir.no) by email.
+For questions or requests, please contact [Siri Esteri Berg-Johnsen](mailto:siri.esteri.berg-johnsen@digdir.no) by email.
 
 ## Documentation
 
