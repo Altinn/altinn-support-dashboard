@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
 
 namespace Security;
@@ -56,7 +57,7 @@ public static class AzureAuthorizationExtensions
         }
 
         services.AddAuthorizationBuilder()
-            .AddPolicy(AzureRoles.Authenticated, p =>
+            .AddPolicy(AzurePolicies.Authenticated, p =>
             {
                 if (enabled) p.RequireAuthenticatedUser();
                 else p.RequireAssertion(_ => true);
@@ -92,9 +93,25 @@ public static class AzureAuthorizationExtensions
             {
                 //Always required
                 p.RequireAssertion(ctx => HasRole(ctx.User, AzureRoles.LegalRequest));
+            }).AddPolicy(AzurePolicies.EnvironmentAccess, p =>
+            {
+                p.RequireAssertion(ctx => HasEnvironmentAccess(ctx, enabled));
             });
 
         return services;
+    }
+
+    private static bool HasEnvironmentAccess(AuthorizationHandlerContext ctx, bool enabled)
+    {
+        var environmentName = (ctx.Resource as HttpContext)?.GetRouteValue("environmentName") as string;
+
+        return environmentName switch
+        {
+            "Production" => HasRole(ctx.User, AzureRoles.Production),
+            "TT02" => !enabled || HasRole(ctx.User, AzureRoles.TT02),
+            "mock" => true,
+            _ => false
+        };
     }
 
     private static bool HasRole(ClaimsPrincipal user, string role) =>

@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Security;
 
 
-[Authorize(AzureRoles.Authenticated)]
+[Authorize(AzurePolicies.Authenticated)]
 [ApiController]
 [Route("api/{environmentName}/brreg/{orgNumber}")]
 public class ER_Roller_APIController : ControllerBase

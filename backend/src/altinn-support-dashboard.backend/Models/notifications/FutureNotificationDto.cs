@@ -16,6 +16,12 @@ public class FutureNotificationDto
 
 	public string? NotificationType { get; set; }
 
+	public string? DialogId { get; init; }
+
+	public string? TransmissionId { get; init; }
+
+	public string? SenderAddress { get; init; }
+
 	public List<FutureNotificationDeliveryAttemptDto?> DeliveryAttempts { get; set; } = [];
 
 }
