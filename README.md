@@ -1,93 +1,91 @@
 # Altinn Support Dashboard
 
-## Introduksjon
+## Introduction
 
-Velkommen til Altinn Support Dashboard. Løsningen ble utviklet for å få en moderne og effektiv webbasert løsning for Altinn Brukerservice (ABS). Løsningen gir kundeservicemedarbeidere tilgang til Altinn-roller, kontaktinformasjon og selskaper.
+Altinn support dashboard was built to give ABS and servicedesk a modern and efficient web-based tool to help end users. We have also begun to introduce functionality and tooling which can help different development teams and digdir emplooyes navigate altinn data in a easy and effective way.
 
-## Funksjonalitet
+## Features
 
-- **Oppslag**: Gjør oppslag basert på telefonnummer, organisasjonsnummer eller e-postadresse for å hente relevant informasjon om tilknyttede selskaper og personer.
-- **Bedriftsinformasjon**: Få tilgang til detaljer om bedrifter innringeren er koblet til eller har rettigheter i.
-- **Roller og Rettigheter**: Slå opp og vis roller, inkludert enhetsregisterroller (ER-roller).
-- **Kontaktinformasjon**: Få opp kontaktinformasjon om personer i bedriften når du klikker på en bedrift.
-- **Ressurs søk**: Søk opp ressurser (her hardkodet til å bare finne applikasjoner) ved hjelpe av tittel.
-- **ID-konvertering**: Konvertert fra organisasjonsnummer eller fødselssnummer til UUID og PartyId.
-- **PAT-token håndtering**: Sikker lagring og validering av Personal Access Tokens for Altinn Studio i Settings-modulen, med miljøvelger for development eller production.
-- **Brukervennlig grensesnitt**: Utviklet med React for å sikre en responsiv og intuitiv brukeropplevelse.
-- **Sikkerhet**: Implementert i henhold til Microsoft Security Development Lifecycle for sikker håndtering av personopplysninger.
+- **Lookup**: Search by phone number, organization number or email address to find related organizations and people.
+- **Organization information**: View details about the organizations the caller is connected to or has rights in.
+- **Roles and rights**: Look up and display roles, including Central Coordinating Register roles (ER roles).
+- **Contact information**: View contact information for people in an organization by clicking on it.
+- **Manual role search**: Look up roles and delegations between two parties.
+- **Resource search**: Search for resources (currently limited to apps) by title.
+- **ID conversion**: Convert an organization number or national identity number to UUID and PartyId.
+- **Dialog lookup**: Find a dialog in Dialogporten by dialog ID, correspondence ID or app instance ID, and view dialog details.
+- **Notification search**: Search for notifications, and look up the notification log for a dialog ID or transmission ID.
+- **Notification availability**: Check whether a person or organization can be reached by notifications.
+- **Test correspondence**: Create and send a correspondence for testing (beta).
+- **User-friendly interface**: Built with React for a responsive and intuitive user experience.
 
-
-## Teknologier
+## Technologies
 
 - **Backend**: .NET 10, C#, ASP.NET Core Web API
-- **Frontend**: React, TypeScript, Vite
-- **Testing**: xUnit for backend
+- **Frontend**: React 19, TypeScript, Vite
+- **Testing**: xUnit (backend), Vitest and Playwright (frontend)
 - **CI/CD**: GitHub Actions
 - **Hosting**: Azure App Service
-- **Autentisering**: Azure AD B2C
-- **API Integrasjoner**: REST-API til Brønnøysundregistrene og Altinn 
-- **Styling og komponenter**: [Designsystemet](https://designsystemet.no/no)
+- **Authentication**: Azure Entra ID (MSAL)
+- **API integrations**: REST APIs for the Brønnøysund Register Centre and Altinn
+- **Styling and components**: [Designsystemet](https://designsystemet.no/en)
 
-## Komme i gang
+## Getting started
 
-### Forutsetninger
-Før du begynner bør du ha følgende installert:
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [Node.js (LTS versjon)](https://nodejs.org/)
-- [npm (kommer med Node.js)](https://www.npmjs.com/)
+### Prerequisites
+Before you start, make sure you have the following installed:
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [Node.js (LTS version)](https://nodejs.org/)
+- [npm (comes with Node.js)](https://www.npmjs.com/)
 - [Git](https://git-scm.com/)
 
+### Cloning the repo
+To clone the repo, run:
 
-### Kloning av repo
-For å klone repoet, kjør følgende kommando i terminalen:
-
+```
 git clone https://github.com/Altinn/altinn-support-dashboard.git
+```
 
+## Running the dashboard locally
 
-## Kjøre dashboardet på lokal maskin
+- Start the backend: `dotnet run --project backend/src/altinn-support-dashboard.backend/backend.csproj`
+- Install frontend dependencies (first time, or when dependencies change): `npm install --prefix frontend/altinn-support-dashboard.client`
+- Start the frontend: `npm run dev --prefix frontend/altinn-support-dashboard.client`
 
-- Kjør kommandoen `dotnet run --project backend/src/altinn-support-dashboard.backend/backend.csproj` (starter backend)
-- Kjør kommandoen `npm install` (trengs bare første gang eller for oppdatering av avhengigheter)
-- Kjør kommandoen `npm run dev --prefix frontend/altinn-support-dashboard.client` (starter frontend)
+Alternatively, start the backend and frontend together with Aspire: `cd tools/aspire && aspire run`. See [tools/aspire/README.md](tools/aspire/README.md).
 
-Alternativt kan backend og frontend startes sammen med Aspire: `cd tools/aspire && aspire run`. Se [tools/aspire/README.md](tools/aspire/README.md).
+## Running tests
 
-## Kjøre backend-tester:
-- Kjør kommandoen `dotnet test --project backend/test/altinn-support-dashboard.backend.Tests`
+- Backend: `dotnet test --project backend/test/altinn-support-dashboard.backend.Tests`
+- Frontend unit tests (Vitest): `npm test --prefix frontend/altinn-support-dashboard.client`
+- Frontend end-to-end tests (Playwright): run `npx playwright test` from `frontend/altinn-support-dashboard.client`
 
-## Mappestrukturen med hovedkomponentene
+## Folder structure
 
 ### Frontend
-Frontend følger en komponentbasert arkitektur med:
-- **Komponenter**: UI-komponenter, hver med sin egen mappe
-- **Hooks**: Egendefinerte React-hooks for komponentlogikk
-- **Modeller**: TypeScript-typer og -grensesnitt
-- **Verktøy (utils)**: Hjelpefunksjoner og verktøy
+The frontend follows a component-based architecture with:
+- **Components**: UI components, each in its own folder
+- **Pages**: One component per page/route
+- **Hooks**: Custom React hooks for component logic
+- **Stores**: Global state (Zustand)
+- **Models**: TypeScript types and interfaces
+- **Utils**: Helper functions
 
 ### Backend
-Backend følger en .NET-struktur med:
-- **Klienter**: Eksterne API-klienter (Altinn, Brreg)
-- **Kontrollere**: HTTP-endepunkter/API-kontrollere
-- **Modeller**: Datamodeller og DTO-er
-- **Servicer**: Forretningslogikk-tjenester
-## Bidra
+The backend follows a standard .NET structure with:
+- **Clients**: External API clients (Altinn, Brreg)
+- **Controllers**: HTTP endpoints/API controllers
+- **Models**: Data models and DTOs
+- **Services**: Business logic
+- **Security**: Authentication and authorization setup
+## License
 
-Vi setter pris på bidrag fra alle utviklere. For å bidra:
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-1. Fork repoet
-2. Lag en feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit dine endringer (`git commit -m 'Add some AmazingFeature'`)
-4. Push til branchen (`git push origin feature/AmazingFeature`)
-5. Åpne en Pull Request
+## Contact
 
-## Lisens
+For questions or requests, please contact [Siri Esteri Berg-Johnsen](mailto:siri.esteri.berg-johnsen@digdir.no) by email.
 
-Dette prosjektet er lisensiert under MIT-lisensen - se [LICENSE](LICENSE) filen for detaljer.
+## Documentation
 
-## Kontakt
-
-For spørsmål eller forespørsler, vennligst kontakt [Siri Esteri Berg-Johnsen](mailto:siri.esteri.berg-johnsen@digdir.no) eller [Fabian Ugedal](mailto:fabian.ugedal@digdir.no) på epost
-
-## Dokumentasjon
-
-Systemet er også dokumentert på [Confluence](https://digdir.atlassian.net/wiki/spaces/BASD/overview) (krever Digdir innlogging)
+The system is also documented on [Confluence](https://digdir.atlassian.net/wiki/spaces/BASD/overview) (requires Digdir login).
