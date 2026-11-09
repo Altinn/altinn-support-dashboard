@@ -35,7 +35,7 @@ namespace AltinnSupportDashboard
             services.AddRedaction(r => r.SetRedactor<SsnRedactor>(CustomDataClassifications.SSN));
         }
         
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
@@ -44,10 +44,13 @@ namespace AltinnSupportDashboard
             });
             app.UseGlobalExceptionHandler();
 
-            if (!env.IsDevelopment())
+            if (!Environment.IsDevelopment())
             {
                 app.UseHsts();
             }
+
+            // Before HTTPS redirection so preflight (OPTIONS) requests are answered, not redirected
+            app.UseCors(CorsExtensions.FrontendPolicy);
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -55,7 +58,6 @@ namespace AltinnSupportDashboard
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Altinn Support Dashboard API v1"));
 
             app.UseRouting();
-            app.UseCors(CorsExtensions.FrontendPolicy);
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -64,7 +66,6 @@ namespace AltinnSupportDashboard
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
             });
-
         }
     }
 }

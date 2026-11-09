@@ -277,7 +277,7 @@ namespace AltinnSupportDashboard.Controllers
             if (string.IsNullOrEmpty(ssn))
             {
                 _logger.LogWarning("SSN token lookup failed: token was invalid or expired in environment {EnvironmentName}", environmentName);
-                throw new Exception("Invalid or expired SSN token.");
+                throw new BadRequestException("Invalid or expired SSN token.");
             }
 
             var trackedEnvironments = _configuration.GetSection("LoggingConfiguration:TrackedEnvironments").Get<string[]>() ?? ["Production"];

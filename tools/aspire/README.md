@@ -53,4 +53,5 @@ When a `.cs`, `.csproj` or `.json` file changes under `backend/src/altinn-suppor
 ## Troubleshooting
 
 * **`address already in use` on 5237 or 5173**: a backend or Vite started outside Aspire is still running. Stop it and restart the resource.
-* **The frontend cannot reach `/api`**: check that `backend` is running and its log has `Backend is now running!`.
+* **The frontend cannot reach `/api`**: check that `backend` is running and its log has `Application started` and `Now listening on: https://localhost:5237`.
+

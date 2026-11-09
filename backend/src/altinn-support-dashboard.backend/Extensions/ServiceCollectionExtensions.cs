@@ -48,16 +48,16 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddMaskinportenClients(this IServiceCollection services, IConfiguration configuration)
     {
-        var config = configuration.GetSection("Configuration").Get<Configuration>()
-            ?? throw new InvalidOperationException("Configuration section is missing");
-        
-        AddMaskinportenClient(services, nameof(config.Production), config.Production.MaskinportenSettings);
-        AddMaskinportenClient(services, nameof(config.TT02), config.TT02.MaskinportenSettings);
+        // Missing settings are allowed so mock/test setups can start; the clients fail on first use instead.
+        var config = configuration.GetSection("Configuration").Get<Configuration>();
+
+        AddMaskinportenClient(services, nameof(Configuration.Production), config?.Production?.MaskinportenSettings);
+        AddMaskinportenClient(services, nameof(Configuration.TT02), config?.TT02?.MaskinportenSettings);
         return services;
     }
 
-    private static void AddMaskinportenClient(IServiceCollection services, string name, MaskinportenSettings settings) => 
-        services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(name, settings, 
+    private static void AddMaskinportenClient(IServiceCollection services, string name, MaskinportenSettings? settings) => 
+        services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(name, settings!, 
             client => client.ClientSettings.ExhangeToAltinnToken = true);
     
     public static IServiceCollection AddAltinnClients(this IServiceCollection services, IConfiguration configuration)

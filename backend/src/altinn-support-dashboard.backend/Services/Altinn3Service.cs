@@ -693,7 +693,7 @@ public class Altinn3Service : IAltinn3Service
         {
             return "urn:altinn:person:uuid";
         }
-        throw new Exception("Not a valid format, needs to be either a orgnumber, ssn or uuid");
+        throw new BadRequestException("Not a valid format, needs to be either a orgnumber, ssn or uuid");
     }
 
     private async Task<List<string>> GetAltinn2RoleNamesFromCodes(List<string> roleCodes, string environmentName)
