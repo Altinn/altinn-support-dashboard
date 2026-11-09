@@ -156,7 +156,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             .Setup(x => x.GetSsnFromToken(invalidToken))
             .Returns(string.Empty);
 
-            var exception = Assert.Throws<Exception>(() => _controller.GetSsnFromToken("TT02", invalidToken));
+            var exception = Assert.Throws<BadRequestException>(() => _controller.GetSsnFromToken("TT02", invalidToken));
 
             Assert.Equal("Invalid or expired SSN token.", exception.Message);
         }
