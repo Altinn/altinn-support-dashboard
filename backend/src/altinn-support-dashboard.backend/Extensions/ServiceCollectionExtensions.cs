@@ -75,4 +75,18 @@ public static class ServiceCollectionExtensions
         services.AddScoped<TImpl>();
         services.AddScoped(sp => createMock(sp.GetRequiredService<TImpl>()));
     }
+
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    {
+        services.AddScoped<IGiteaService, GiteaService>();
+        services.AddScoped<IDataBrregService, DataBrregService>();
+        services.AddScoped<IAltinn3Service, Altinn3Service>();
+        services.AddScoped<IPartyApiService, PartyApiService>();
+        services.AddScoped<INotificationsService, NotificationsService>();
+        services.AddScoped<IDialogportenService, DialogportenService>();
+        services.AddScoped<ICorrespondenceService, CorrespondenceService>();
+        services.AddScoped<ISsnTokenService, SsnTokenService>();
+        services.AddScoped<IResourceRegistryService, ResourceRegistryService>();
+        return services;
+    }
 }
