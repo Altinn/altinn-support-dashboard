@@ -5,22 +5,37 @@ using altinn_support_dashboard.Server.Clients;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 
 
 namespace altinn_support_dashboard.Server.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddTelemetry(this IServiceCollection services, IHostEnvironment env)
+    public static IServiceCollection AddTelemetry(this IServiceCollection services, IHostEnvironment env, IConfiguration configuration)
     {
-        // In development, inject null so TelemetryService skips all tracking calls
-        if (env.IsDevelopment())
+        if (!env.IsDevelopment())
         {
-            return services.AddSingleton<ITelemetryService>(_ => new TelemetryService(null));
+            services.AddApplicationInsightsTelemetry();
+            return services.AddSingleton<ITelemetryService, TelemetryService>();
         }
 
-        services.AddApplicationInsightsTelemetry();
-        return services.AddSingleton<ITelemetryService, TelemetryService>();
+        // In development, inject null so TelemetryService skips all tracking calls
+        services.AddSingleton<ITelemetryService>(_ => new TelemetryService(null));
+
+        // Set by the Aspire app host in tools/aspire.
+        if (!string.IsNullOrEmpty(configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]))
+        {
+            services.AddOpenTelemetry()
+                .WithTracing(tracing => tracing.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation())
+                .WithMetrics(metrics => metrics.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation())
+                .WithLogging()
+                .UseOtlpExporter();
+        }
+
+        return services;
     }
 
     public static IServiceCollection AddAppConfiguration(this IServiceCollection services, IConfiguration configuration)
@@ -28,7 +43,6 @@ public static class ServiceCollectionExtensions
         services.Configure<Configuration>(configuration.GetSection("Configuration"));
         services.Configure<BrregApiConfiguration>(configuration.GetSection("Brreg"));
         services.Configure<BrregConfiguration>(configuration.GetSection("BrregConfiguration"));
-        services.Configure<GiteaConfiguration>(configuration.GetSection("Gitea"));
         return services;
     }
 
@@ -55,7 +69,6 @@ public static class ServiceCollectionExtensions
         services.AddClient<IDataBrregClient, DataBrregClient>(useMocks, real => new MockDataBrregClient(real));
         services.AddClient<IResourceRegistryClient, ResourceRegistryClient>(useMocks, real => new MockResourceRegistryClient(real));
 
-        services.AddSingleton<GiteaApiClient>();
         services.AddScoped<IPartyApiClient, PartyApiClient>();
         services.AddScoped<IDialogportenClient, DialogportenClient>();
         services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
@@ -78,7 +91,6 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<IGiteaService, GiteaService>();
         services.AddScoped<IDataBrregService, DataBrregService>();
         services.AddScoped<IAltinn3Service, Altinn3Service>();
         services.AddScoped<IPartyApiService, PartyApiService>();

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Compliance.Redaction;
 using Security;
 
-
 namespace AltinnSupportDashboard
 {
     public class Startup
@@ -21,7 +20,7 @@ namespace AltinnSupportDashboard
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddTelemetry(Environment)
+                .AddTelemetry(Environment, Configuration)
                 .AddAppConfiguration(Configuration)
                 .AddMaskinportenClients(Configuration)
                 .AddAltinnClients(Configuration)
