@@ -34,12 +34,12 @@ namespace AltinnSupportDashboard
             services.AddControllers();
             services.AddRedaction(r => r.SetRedactor<SsnRedactor>(CustomDataClassifications.SSN));
         }
-        
+
         public void Configure(IApplicationBuilder app)
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                // Behind the proxy the app sees http; this keeps the Entra ID redirect_uri on https
+                // Trusts X-Forwarded-Proto from loopback proxies only (the defaults); App Service handles this in front of the app
                 ForwardedHeaders = ForwardedHeaders.XForwardedProto
             });
             app.UseGlobalExceptionHandler();
@@ -49,15 +49,17 @@ namespace AltinnSupportDashboard
                 app.UseHsts();
             }
 
-            // Before HTTPS redirection so preflight (OPTIONS) requests are answered, not redirected
-            app.UseCors(CorsExtensions.FrontendPolicy);
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Altinn Support Dashboard API v1"));
+
+            if (Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Altinn Support Dashboard API v1"));
+            }
 
             app.UseRouting();
+            app.UseCors(CorsExtensions.FrontendPolicy);
             app.UseAuthentication();
             app.UseAuthorization();
 
