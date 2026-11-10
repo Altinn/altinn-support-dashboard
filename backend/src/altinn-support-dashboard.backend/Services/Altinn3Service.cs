@@ -172,7 +172,7 @@ public class Altinn3Service : IAltinn3Service
     {
         if (!ValidationService.IsValidOrgNumber(orgNumber))
         {
-            throw new BadRequestException("Organizationnumber invalid. It must be 9 digits long.");
+            throw new ArgumentException("Organizationnumber invalid. It must be 9 digits long.");
         }
         var result = await _client.GetPersonalContactsByOrg(orgNumber, environment);
         if (string.IsNullOrEmpty(result)) return [];
@@ -213,7 +213,7 @@ public class Altinn3Service : IAltinn3Service
     {
         if (!ValidationService.IsValidEmail(email))
         {
-            throw new BadRequestException("email is invalid");
+            throw new ArgumentException("email is invalid");
         }
         var result = await _client.GetPersonalContactsByEmail(email, environment);
         if (string.IsNullOrEmpty(result)) return [];
@@ -230,7 +230,7 @@ public class Altinn3Service : IAltinn3Service
 
         if (!ValidationService.IsValidPhoneNumber(localNumber))
         {
-            throw new BadRequestException("Phone number is invalid");
+            throw new ArgumentException("Phone number is invalid");
         }
 
         var contacts = new List<PersonalContactDto>();
@@ -254,7 +254,7 @@ public class Altinn3Service : IAltinn3Service
     {
         if (!ValidationService.isValidSsn(nin))
         {
-            throw new BadRequestException("The National Identity Number is not valid. It must contain exactly 11 digits");
+            throw new ArgumentException("The National Identity Number is not valid. It must contain exactly 11 digits");
         }
 
         var result = await _client.GetUserContactInformationByNin(nin, environment);
@@ -268,7 +268,7 @@ public class Altinn3Service : IAltinn3Service
     {
         if (!ValidationService.IsValidEmail(email))
         {
-            throw new BadRequestException("The email is not valid.");
+            throw new ArgumentException("The email is not valid.");
         }
 
         var result = await _client.GetUserContactInformationByEmail(email, environment);
@@ -285,7 +285,7 @@ public class Altinn3Service : IAltinn3Service
 
         if (!ValidationService.IsValidPhoneNumber(localNumber))
         {
-            throw new BadRequestException("The phonenumber is not valid.");
+            throw new ArgumentException("The phonenumber is not valid.");
         }
 
         
@@ -369,7 +369,7 @@ public class Altinn3Service : IAltinn3Service
     {
         if (!ValidationService.IsValidOrgNumber(orgNumber))
         {
-            throw new BadRequestException("Organization number invalid. It must be 9 digits long.");
+            throw new ArgumentException("Organization number invalid. It must be 9 digits long.");
         }
         var result = await _client.GetNotificationAddressesByOrg(orgNumber, environment);
         if (string.IsNullOrEmpty(result)) return [];
@@ -382,7 +382,7 @@ public class Altinn3Service : IAltinn3Service
         var (countryCode, localNumber) = PhoneNumberUtils.SplitPhoneNumber(phoneNumber);
         if (!ValidationService.IsValidPhoneNumber(localNumber))
         {
-            throw new BadRequestException("Phone number is invalid");
+            throw new ArgumentException("Phone number is invalid");
         }
 
         var addresses = new List<NotificationAddressDto>();
@@ -405,7 +405,7 @@ public class Altinn3Service : IAltinn3Service
     {
         if (!ValidationService.IsValidEmail(email))
         {
-            throw new BadRequestException("Organization number invalid. It must be 9 digits long.");
+            throw new ArgumentException("Organization number invalid. It must be 9 digits long.");
         }
         var result = await _client.GetNotificationAddressesByEmail(email, environment);
         if (string.IsNullOrEmpty(result)) return [];

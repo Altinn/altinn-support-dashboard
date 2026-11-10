@@ -50,7 +50,7 @@ namespace altinn_support_dashboard.Server.Controllers
                 }
                 return Ok(result);
             }
-            catch (BadRequestException ex)
+            catch (ArgumentException ex)
             {
                 _logger.LogWarning(ex, "Invalid request for organization details. Environment: {EnvironmentName}", environmentName);
                 return BadRequest(ex.Message);

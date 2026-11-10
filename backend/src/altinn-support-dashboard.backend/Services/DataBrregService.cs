@@ -36,12 +36,12 @@ namespace altinn_support_dashboard.Server.Services
         {
             if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
             {
-                throw new BadRequestException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+                throw new ArgumentException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
 
             if (!_validEnvironmentNames.Contains(environmentName))
             {
-                throw new BadRequestException("Ugyldig miljønavn.");
+                throw new ArgumentException("Ugyldig miljønavn.");
             }
 
             var result = await _client.GetRolesAsync(orgNumber, environmentName);
@@ -77,12 +77,12 @@ namespace altinn_support_dashboard.Server.Services
         {
             if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
             {
-                throw new BadRequestException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+                throw new ArgumentException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
 
             if (!_validEnvironmentNames.Contains(environmentName))
             {
-                throw new BadRequestException("Ugyldig miljønavn.");
+                throw new ArgumentException("Ugyldig miljønavn.");
             }
 
             var result = await _client.GetUnderenheter(orgNumber, environmentName);
@@ -99,12 +99,12 @@ namespace altinn_support_dashboard.Server.Services
         {
             if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
             {
-                throw new BadRequestException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+                throw new ArgumentException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
 
             if (!_validEnvironmentNames.Contains(environmentName))
             {
-                throw new BadRequestException("Ugyldig miljønavn.");
+                throw new ArgumentException("Ugyldig miljønavn.");
             }
 
             var result = await _client.GetUnderenhet(orgNumber, environmentName);
@@ -134,12 +134,12 @@ namespace altinn_support_dashboard.Server.Services
         {
             if (string.IsNullOrWhiteSpace(orgNumber) || !ValidationService.IsValidOrgNumber(orgNumber))
             {
-                throw new BadRequestException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
+                throw new ArgumentException("Organisasjonsnummeret er ugyldig. Det må være 9 sifre langt.");
             }
 
             if (!_validEnvironmentNames.Contains(environmentName))
             {
-                throw new BadRequestException("Ugyldig miljønavn.");
+                throw new ArgumentException("Ugyldig miljønavn.");
             }
 
             try

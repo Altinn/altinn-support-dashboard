@@ -110,9 +110,9 @@ public class Altinn3ServiceTests
     [InlineData("abcdefghi")]
     [InlineData("abcdefghij")]
     [InlineData("1d2d3d4d5")]
-    public async Task GetPersonalContactsAltinn3_ThrowsBadRequestException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+    public async Task GetPersonalContactsAltinn3_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
     {
-        await Assert.ThrowsAsync<BadRequestException>(async () => await _altinnApiService.GetPersonalContactsByOrgAltinn3(invalidOrgNumber, "TT02"));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetPersonalContactsByOrgAltinn3(invalidOrgNumber, "TT02"));
     }
 
     [Fact]
@@ -172,9 +172,9 @@ public class Altinn3ServiceTests
     [InlineData("abcdefghi")]
     [InlineData("abcdefghij")]
     [InlineData("1d2d3d4d5")]
-    public async Task GetNotificationAddressesAltinn3_ThrowsBadRequestException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+    public async Task GetNotificationAddressesAltinn3_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
     {
-        await Assert.ThrowsAsync<BadRequestException>(async () => await _altinnApiService.GetNotificationAddressesByOrgAltinn3(invalidOrgNumber, "TT02"));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _altinnApiService.GetNotificationAddressesByOrgAltinn3(invalidOrgNumber, "TT02"));
     }
 
     [Fact]
@@ -722,9 +722,9 @@ public class Altinn3ServiceTests
     [Theory]
     [InlineData("")]
     [InlineData("not-an-email")]
-    public async Task GetPersonalContactsByEmailAltinn3_ThrowsBadRequestException_WhenEmailIsInvalid(string invalidEmail)
+    public async Task GetPersonalContactsByEmailAltinn3_ThrowsArgumentException_WhenEmailIsInvalid(string invalidEmail)
     {
-        await Assert.ThrowsAsync<BadRequestException>(
+        await Assert.ThrowsAsync<ArgumentException>(
             async () => await _altinnApiService.GetPersonalContactsByEmailAltinn3(invalidEmail, "TT02"));
     }
 

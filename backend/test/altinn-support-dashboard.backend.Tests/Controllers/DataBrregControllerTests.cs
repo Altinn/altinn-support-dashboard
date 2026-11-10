@@ -84,13 +84,13 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetRoles_ReturnsBadRequest_WhenBadRequestExceptionIsThrown()
+        public async Task GetRoles_ReturnsBadRequest_WhenArgumentExceptionIsThrown()
         {
             string validOrgNumber = "123456789";
 
             _mockService
             .Setup(service => service.GetRolesAsync(validOrgNumber, _environmentName))
-            .ThrowsAsync(new BadRequestException("Invalid argument"));
+            .ThrowsAsync(new ArgumentException("Invalid argument"));
 
             var result = await _controller.GetRoles(_environmentName, validOrgNumber);
 
@@ -224,13 +224,13 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetUnderenheter_ReturnsBadRequest_WhenBadRequestExceptionIsThrown()
+        public async Task GetUnderenheter_ReturnsBadRequest_WhenArgumentExceptionIsThrown()
         {
             string validOrgNumber = "123456789";
 
             _mockService
             .Setup(service => service.GetUnderenheter(validOrgNumber, _environmentName))
-            .ThrowsAsync(new BadRequestException("Invalid argument"));
+            .ThrowsAsync(new ArgumentException("Invalid argument"));
 
             var result = await _controller.GetUnderenheter(_environmentName, validOrgNumber);
 

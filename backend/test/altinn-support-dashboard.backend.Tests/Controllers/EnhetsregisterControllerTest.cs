@@ -97,13 +97,13 @@ public class EnhetsregisterControllerTest
     }
 
     [Fact]
-    public async Task GetEnhetsDetaljer_ReturnsBadRequest_WhenBadRequestExceptionIsThrown()
+    public async Task GetEnhetsDetaljer_ReturnsBadRequest_WhenArgumentExceptionIsThrown()
     {
         var orgnumber = "123456789";
 
         _dataBrregServiceMock
             .Setup(s => s.GetEnhetsdetaljer(orgnumber, "Production"))
-            .ThrowsAsync(new BadRequestException("Test exception"));
+            .ThrowsAsync(new ArgumentException("Test exception"));
         
         var result = await _controller.GetEnhetsdetaljer("Production", orgnumber);
 

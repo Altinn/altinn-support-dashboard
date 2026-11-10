@@ -26,7 +26,7 @@ public class CorrespondenceService : ICorrespondenceService
         var recipient = uploadRequest.Recipients[0];
         if (!ValidationService.IsValidCorrespondenceRecipientUrn(recipient))
         {
-            throw new BadRequestException($"Recipient is not a valid recipient URN");
+            throw new BadRequestException($"Recipient:{recipient} is not a valid recipient URN");
         }
 
         ValidateAttachments(uploadRequest.AttachmentData);

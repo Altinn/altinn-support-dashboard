@@ -48,26 +48,18 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddMaskinportenClients(this IServiceCollection services, IConfiguration configuration)
     {
+        // Missing settings are allowed so mock/test setups can start; the clients fail on first use instead.
         var config = configuration.GetSection("Configuration").Get<Configuration>();
-        // Mock/test setups may leave the settings out; the clients then fail on first use instead.
-        var allowMissing = configuration.GetValue<bool>("FeatureFlags:UseClientMocks");
 
-        AddMaskinportenClient(services, nameof(Configuration.Production), config?.Production?.MaskinportenSettings, allowMissing);
-        AddMaskinportenClient(services, nameof(Configuration.TT02), config?.TT02?.MaskinportenSettings, allowMissing);
+        AddMaskinportenClient(services, nameof(Configuration.Production), config?.Production?.MaskinportenSettings);
+        AddMaskinportenClient(services, nameof(Configuration.TT02), config?.TT02?.MaskinportenSettings);
         return services;
     }
 
-    private static void AddMaskinportenClient(IServiceCollection services, string name, MaskinportenSettings? settings, bool allowMissing)
-{
-    if (settings is null && !allowMissing)
-    {
-        throw new InvalidOperationException($"Configuration:{name}:MaskinportenSettings is missing");
-    }
-
-    services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(name, settings!,
-        client => client.ClientSettings.ExhangeToAltinnToken = true);
-}
-
+    private static void AddMaskinportenClient(IServiceCollection services, string name, MaskinportenSettings? settings) => 
+        services.AddMaskinportenHttpClient<SettingsJwkClientDefinition>(name, settings!, 
+            client => client.ClientSettings.ExhangeToAltinnToken = true);
+    
     public static IServiceCollection AddAltinnClients(this IServiceCollection services, IConfiguration configuration)
     {
         var useMocks = configuration.GetValue<bool>("FeatureFlags:UseClientMocks");
