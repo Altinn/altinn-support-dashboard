@@ -30,9 +30,9 @@ public class SsnTokenServiceTest
     [InlineData("123")]
     [InlineData("1234567890")]
     [InlineData("abcdefghijk")]
-    public void GenerateSsnToken_ShouldThrowArgumentException_WhenSsnIsInvalid(string invalidSsn)
+    public void GenerateSsnToken_ShouldThrowBadRequestException_WhenSsnIsInvalid(string invalidSsn)
     {
-        Assert.Throws<ArgumentException>(() => _ssnTokenService.GenerateSsnToken(invalidSsn));
+        Assert.Throws<BadRequestException>(() => _ssnTokenService.GenerateSsnToken(invalidSsn));
     }
 
     [Fact]

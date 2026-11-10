@@ -27,7 +27,7 @@ public class SsnTokenService : ISsnTokenService
     {
         if (!ValidationService.IsValidSubjectOrReportee(ssn))
         {
-            throw new ArgumentException("Invalid SSN");
+            throw new BadRequestException("Invalid SSN");
         }
         var token = Guid.NewGuid().ToString();
         _tokens[token] = (ssn, DateTime.UtcNow.AddMinutes(_tokenExpiryMinutes));

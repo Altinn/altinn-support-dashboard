@@ -53,7 +53,8 @@ public class PartyApiClient : IPartyApiClient
 
         if (response.StatusCode == HttpStatusCode.BadRequest)
         {
-            throw new BadRequestException($"Invalid lookup request: {responseBody}");
+            _logger.LogWarning("Party lookup rejected with status code {StatusCode} in environment {EnvironmentName}", response.StatusCode, environmentName);
+            throw new BadRequestException("Altinn rejected the lookup request. Check the organization number or national identity number.");
         }
             
         _logger.LogError("Party lookup by failed with status code {StatusCode} in environment {EnvironmentName}", response.StatusCode, environmentName);

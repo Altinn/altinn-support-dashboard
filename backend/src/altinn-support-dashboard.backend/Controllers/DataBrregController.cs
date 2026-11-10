@@ -42,7 +42,7 @@ public class ER_Roller_APIController : ControllerBase
             }
             return Ok(result);
         }
-        catch (ArgumentException ex)
+        catch (BadRequestException ex)
         {
             _logger.LogWarning(ex, "Invalid request for roles. Environment: {EnvironmentName}",  environmentName);
             return BadRequest(ex.Message);
@@ -112,7 +112,7 @@ public class ER_Roller_APIController : ControllerBase
             }
             return Ok(result);
         }
-        catch (ArgumentException ex)
+        catch (BadRequestException ex)
         {
             _logger.LogWarning(ex, "Invalid request for roles. Environment: {EnvironmentName}", environmentName);
             return BadRequest(ex.Message);

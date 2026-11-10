@@ -47,9 +47,9 @@ public class DataBrregServiceTest
     [InlineData("1d2d3d4d5")]
     [InlineData("123 456 789")]
     [InlineData("      ")]
-    public async Task GetRolesAsync_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+    public async Task GetRolesAsync_ThrowsBadRequestException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _dataBrregService.GetRolesAsync(invalidOrgNumber, "TT02"));
+        await Assert.ThrowsAsync<BadRequestException>(async () => await _dataBrregService.GetRolesAsync(invalidOrgNumber, "TT02"));
     }
 
     [Theory]
@@ -61,11 +61,11 @@ public class DataBrregServiceTest
     [InlineData("")]
     [InlineData("Tt02")]
     [InlineData("TT02 ")]
-    public async Task GetRolesAsync_ThrowsArgumentException_WhenEnvironmentIsInvalid(string invalidEnvironment)
+    public async Task GetRolesAsync_ThrowsBadRequestException_WhenEnvironmentIsInvalid(string invalidEnvironment)
     {
         var validOrgNumber = "123456789";
 
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _dataBrregService.GetRolesAsync(validOrgNumber, invalidEnvironment));
+        await Assert.ThrowsAsync<BadRequestException>(async () => await _dataBrregService.GetRolesAsync(validOrgNumber, invalidEnvironment));
     }
 
     [Fact]
@@ -171,9 +171,9 @@ public class DataBrregServiceTest
     [InlineData("1d2d3d4d5")]
     [InlineData("123 456 789")]
     [InlineData("      ")]
-    public async Task GetUnderenheter_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+    public async Task GetUnderenheter_ThrowsBadRequestException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _dataBrregService.GetUnderenheter(invalidOrgNumber, "TT02"));
+        await Assert.ThrowsAsync<BadRequestException>(async () => await _dataBrregService.GetUnderenheter(invalidOrgNumber, "TT02"));
     }
 
     [Theory]
@@ -185,11 +185,11 @@ public class DataBrregServiceTest
     [InlineData("")]
     [InlineData("Tt02")]
     [InlineData("TT02 ")]
-    public async Task GetUnderenheter_ThrowsArgumentException_WhenEnvironmentIsInvalid(string invalidEnvironment)
+    public async Task GetUnderenheter_ThrowsBadRequestException_WhenEnvironmentIsInvalid(string invalidEnvironment)
     {
         var validOrgNumber = "123456789";
 
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _dataBrregService.GetUnderenheter(validOrgNumber, invalidEnvironment));
+        await Assert.ThrowsAsync<BadRequestException>(async () => await _dataBrregService.GetUnderenheter(validOrgNumber, invalidEnvironment));
     }
 
     [Fact]
@@ -239,9 +239,9 @@ public class DataBrregServiceTest
     [InlineData("1d2d3d4d5")]
     [InlineData("123 456 789")]
     [InlineData("      ")]
-    public async Task GetEnhetsdetaljer_ThrowsArgumentException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
+    public async Task GetEnhetsdetaljer_ThrowsBadRequestException_WhenOrgNumberIsInvalid(string invalidOrgNumber)
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _dataBrregService.GetEnhetsdetaljer(invalidOrgNumber, "TT02"));
+        await Assert.ThrowsAsync<BadRequestException>(async () => await _dataBrregService.GetEnhetsdetaljer(invalidOrgNumber, "TT02"));
     }
 
     [Theory]
@@ -253,10 +253,10 @@ public class DataBrregServiceTest
     [InlineData("")]
     [InlineData("Tt02")]
     [InlineData("TT02 ")]
-    public async Task GetEnhetsdetaljer_ThrowsArgumentException_WhenEnvironmentIsInvalid(string invalidEnvironment)
+    public async Task GetEnhetsdetaljer_ThrowsBadRequestException_WhenEnvironmentIsInvalid(string invalidEnvironment)
     {
         var validOrgNumber = "123456789";
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _dataBrregService.GetEnhetsdetaljer(validOrgNumber, invalidEnvironment));
+        await Assert.ThrowsAsync<BadRequestException>(async () => await _dataBrregService.GetEnhetsdetaljer(validOrgNumber, invalidEnvironment));
     }
     
     [Fact]
