@@ -14,7 +14,7 @@ public static class ExceptionHandlerExtensions
                 context.Request.Method, context.Request.Path);
 
             // Only input errors are safe to show; other messages may contain upstream URLs or personal data
-            var isClientError = exception is BadRequestException or ArgumentException;
+            var isClientError = exception is BadRequestException;
 
             context.Response.StatusCode = isClientError
                 ? StatusCodes.Status400BadRequest
