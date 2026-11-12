@@ -59,6 +59,11 @@ import {
 } from "../models/rolesModels";
 import { Altinn2Role, PolicyRule, Resource } from "../models/resourceModels";
 import { MaskinportenDelegation } from "../models/delegationModels";
+import {
+  NotificationSendRequest,
+  NotificationSendResponse,
+} from "../models/notificationSendModels";
+import { sendTestEmail } from "../utils/notificationSendApi";
 
 export function useUserDetails() {
   const [userName, setUserName] = useState("Du er ikke innlogget");
@@ -393,3 +398,19 @@ export function useDeleteDialog() {
     },
   });
 }
+
+export const useSendTestEmail = () => {
+  return useMutation<NotificationSendResponse, Error, NotificationSendRequest>({
+    mutationFn: sendTestEmail,
+    onSuccess: (data) => {
+      if (data.result) {
+        toast.info("E-post sendt")
+      } else {
+        toast.error(`Bestillingen feilet: ${data.problem?.title ?? data.statusCode}`);
+      }
+    },
+    onError: (err) => {
+      toast.error(`Feil under sending av e-post ${err.message}`);
+    },
+  });
+};

@@ -137,6 +137,8 @@ namespace AltinnSupportDashboard
                     services.AddScoped<IDialogportenClient, DialogportenClient>();
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
                     services.AddScoped<ICorrespondenceService, CorrespondenceService>();
+                    services.AddScoped<INotificationSendClient, NotificationSendClient>();
+                    services.AddScoped<INotificationSendService, NotificationSendService>();
                     services.AddScoped<ISsnTokenService, SsnTokenService>();
                     services.AddScoped<IResourceRegistryService, ResourceRegistryService>();
                 });

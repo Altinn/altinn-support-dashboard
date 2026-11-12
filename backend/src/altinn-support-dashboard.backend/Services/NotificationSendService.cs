@@ -1,14 +1,14 @@
 using altinn_support_dashboard.Server.Utils;
 using Models.notifications;
 
-public class NotificationsSendService : INotificationSendService
+public class NotificationSendService : INotificationSendService
 {
     private const string DefaultSubject = "Varsel test Altinn";
     private const string DefaultBody = "Test varsel fra Altinn";
 
     private readonly INotificationSendClient _client;
 
-    public NotificationsSendService(INotificationSendClient client)
+    public NotificationSendService(INotificationSendClient client)
     {
         _client = client;
     }
