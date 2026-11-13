@@ -6,4 +6,5 @@ public interface ITelemetryService
     void TrackSsnUnmasked(string userId, string environment, string ssn);
     void TrackSearch(string featureArea, string searchType, string userId, string environment, IDictionary<string, string>? extra = null);
     void TrackDelete(string featureArea, string deleteType, string userId, string environment, IDictionary<string, string>? extra = null);
+    void TrackSend(string featureArea, string sendType, string userId, string environment, IDictionary<string, string>? extra = null);
 }
