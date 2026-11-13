@@ -7,11 +7,12 @@ public static class NotificationSendTelemetryExtensions
 {
     private const string FeatureArea = "notifications";
 
-    public static void TrackTestEmailSent(this ITelemetryService telemetry, string email, NotificationSendResponse response, string userId, string environment)
+    // The recipient's email is intentionally not logged.
+    // Successful sends can be traced to the recipient via shipmentId.
+    public static void TrackTestEmailSent(this ITelemetryService telemetry, NotificationSendResponse response, string userId, string environment)
     {
         var extra = new Dictionary<string, string>
         {
-            { "email", email },
             { "statusCode", ((int)response.StatusCode).ToString() },
             { "success", (response.Result != null).ToString() }
         };

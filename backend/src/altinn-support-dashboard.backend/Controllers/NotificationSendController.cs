@@ -33,7 +33,7 @@ public class NotificationSendController : ControllerBase
     {
         var response = await _service.SendTestEmail(request, environmentName);
 
-        _telemetryService.TrackTestEmailSent(request.EmailAddress.Trim(), response, CurrentUserId, environmentName);
+        _telemetryService.TrackTestEmailSent(response, CurrentUserId, environmentName);
 
         return Ok(response);
     }

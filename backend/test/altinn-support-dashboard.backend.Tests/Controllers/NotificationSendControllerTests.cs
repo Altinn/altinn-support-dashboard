@@ -82,7 +82,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Fact]
-        public async Task SendTestEmail_OnSuccess_TracksSendWithUserEnvironmentEmailAndIds()
+        public async Task SendTestEmail_OnSuccess_TracksSendWithUserEnvironmentAndIds_WithoutEmail()
         {
             var orderId = Guid.NewGuid();
             var shipmentId = Guid.NewGuid();
@@ -108,7 +108,8 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 EnvironmentName,
                 It.Is<IDictionary<string, string>?>(d =>
                     d != null &&
-                    d["email"] == "test@example.com" &&
+                    !d.ContainsKey("email") &&
+                    !d.Values.Any(v => v.Contains("test@example.com")) &&
                     d["statusCode"] == "201" &&
                     d["success"] == "True" &&
                     d["notificationOrderId"] == orderId.ToString() &&
