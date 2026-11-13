@@ -22,6 +22,7 @@ import {
   BulletListIcon,
   ChatElipsisIcon,
   Chat2Icon,
+  PaperplaneIcon,
 } from "@navikt/aksel-icons";
 
 // design system imports
@@ -160,7 +161,7 @@ const Sidebar: React.FC = () => {
                 title="Varsling"
                 icon={<TerminalIcon className={classes.icons} />}
                 isCollapsed={isCollapsed}
-                paths={["/notification", "/notification-availability"]}
+                paths={["/notification", "/notification-availability", "/notification-log", "/notification-send"]}
               >
                 <NavItem
                   to="/notification"
@@ -181,6 +182,13 @@ const Sidebar: React.FC = () => {
                       to="/notification-log"
                       title="Varslingslogg"
                       icon={<BulletListIcon className={classes.icons} />}
+                      isCollapsed={isCollapsed}
+                    />
+
+                    <NavItem
+                      to="/notification-send"
+                      title="Varsling send"
+                      icon={<PaperplaneIcon className={classes.icons} /> }
                       isCollapsed={isCollapsed}
                     />
                   </>

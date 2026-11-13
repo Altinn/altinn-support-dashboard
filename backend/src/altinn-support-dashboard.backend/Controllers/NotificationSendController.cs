@@ -6,12 +6,12 @@ using Security;
 namespace AltinnSupportDashboard.Controllers;
 
 /// <summary>
-/// Send test notifications (instant email) in TT02.
+/// Send test notifications (instant email) 
 /// </summary>
 [ApiController]
-[Route("api/notification-send")]
+[Route("api/{environmentName}/notification-send")]
 [Authorize(AzurePolicies.Authenticated)]
-[Authorize(AzureRoles.TT02)]
+[Authorize(AzurePolicies.EnvironmentAccess)]
 public class NotificationSendController : ControllerBase
 {
     private readonly INotificationSendService _service;
@@ -22,9 +22,9 @@ public class NotificationSendController : ControllerBase
     }
 
     [HttpPost("email")]
-    public async Task<IActionResult> SendTestEmail([FromBody] NotificationsSendRequest request)
+    public async Task<IActionResult> SendTestEmail([FromRoute] string environmentName, [FromBody] NotificationSendRequest request)
     {
-        var response = await _service.SendTestEmail(request);
+        var response = await _service.SendTestEmail(request, environmentName);
         return Ok(response);
     }
 }

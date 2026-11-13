@@ -5,7 +5,7 @@ using System.Net;
 
 
 // From frontend
-public class NotificationsSendRequest
+public class NotificationSendRequest
 {
     public string EmailAddress { get; set; } = "";
     public string? Subject { get; set; }
@@ -71,5 +71,6 @@ public class NotificationProblem
     public Dictionary<string, string[]>? Errors { get; set; }
 
     // Catches  additionalProp1..n
+    [JsonExtensionData]
     public Dictionary<string, JsonElement>? Extensions { get; set; }
 }

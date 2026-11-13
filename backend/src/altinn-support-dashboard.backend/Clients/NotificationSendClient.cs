@@ -7,9 +7,10 @@ using Models.notifications;
 
 public class NotificationSendClient : INotificationSendClient
 {
-    private const string InstantEmailUrl ="notifications/api/v1/future/orders/instant/email";
+    private const string InstantEmailUrl = "notifications/api/v1/future/orders/instant/email";
 
-    private readonly HttpClient _client;
+    private readonly IHttpClientFactory _clientFactory;
+    private readonly Configuration _configuration;
     private readonly ILogger<INotificationSendClient> _logger;
 
     private static readonly JsonSerializerOptions _json = new()
@@ -21,26 +22,28 @@ public class NotificationSendClient : INotificationSendClient
 
     private static readonly string[] ExcludedHeaders = ["ApiKey", "authorization", "Ocp-Apim-Subscription-Key"];
 
-    public NotificationSendClient(IHttpClientFactory factory, IOptions<Configuration> configuration, ILogger<INotificationSendClient> logger)
+    public NotificationSendClient(IHttpClientFactory clientFactory, IOptions<Configuration> configuration, ILogger<INotificationSendClient> logger)
     {
-        var config = configuration.Value.TT02;
-        _client = factory.CreateClient("TT02");
-        _client.BaseAddress = new Uri(config.BaseAddressAltinn3);
-        _client.Timeout = TimeSpan.FromSeconds(config.Timeout);
-        _client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", config.Ocp_Apim_Subscription_Key);
-        _client.DefaultRequestHeaders.Add("ApiKey", config.ApiKey);
+        _clientFactory = clientFactory;
+        _configuration = configuration.Value;
         _logger = logger;
     }
 
-    public async Task<NotificationSendResponse> SendInstantEmail(InstantEmailOrderRequest order)
+    public async Task<NotificationSendResponse> SendInstantEmail(InstantEmailOrderRequest order, string environmentName)
     {
+        var config = GetEnvironmentConfiguration(environmentName);
+        var client = _clientFactory.CreateClient(environmentName);
+        client.Timeout = TimeSpan.FromSeconds(config.Timeout);
+
         var requestBody = JsonSerializer.Serialize(order, _json);
-        using var request = new HttpRequestMessage(HttpMethod.Post, InstantEmailUrl)
+        using var request = new HttpRequestMessage(HttpMethod.Post, new Uri(new Uri(config.BaseAddressAltinn3), InstantEmailUrl))
         {
             Content = new StringContent(requestBody, Encoding.UTF8, "application/json")
         };
+        request.Headers.Add("ApiKey", config.ApiKey);
+        request.Headers.Add("Ocp-Apim-Subscription-Key", config.Ocp_Apim_Subscription_Key);
 
-        var response = await _client.SendAsync(request);
+        var response = await client.SendAsync(request);
         var responseBody = await response.Content.ReadAsStringAsync();
 
         var responseHeaders = response.Headers
@@ -62,12 +65,20 @@ public class NotificationSendClient : INotificationSendClient
         }
         else
         {
-            _logger.LogWarning("Instant email order failed with status Code {StatusCode}", response.StatusCode);
+            _logger.LogWarning("Instant email order failed in environment {EnvironmentName} with status code {StatusCode}", environmentName, response.StatusCode);
             result.Problem = TryDeserialize<NotificationProblem>(responseBody);
         }
 
         return result;
     }
+
+    private EnvironmentConfiguration GetEnvironmentConfiguration(string environmentName) =>
+        environmentName switch
+        {
+            nameof(Configuration.TT02) => _configuration.TT02,
+            nameof(Configuration.Production) => _configuration.Production,
+            _ => throw new BadRequestException($"Environment {environmentName} is not supported for sending notifications")
+        };
 
     private static T? TryDeserialize<T>(string body) where T : class
     {
@@ -80,7 +91,7 @@ public class NotificationSendClient : INotificationSendClient
         {
             return JsonSerializer.Deserialize<T>(body, _json);
         }
-        catch
+        catch (JsonException)
         {
             return null;
         }

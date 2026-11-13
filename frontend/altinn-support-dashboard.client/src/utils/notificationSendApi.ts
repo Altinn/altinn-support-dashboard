@@ -1,27 +1,26 @@
+import { authorizedPost, getBaseUrl } from "./utils";
 import {
     NotificationSendRequest,
     NotificationSendResponse
 } from "../models/notificationSendModels";
 
-export const sendTestEmail = async (
-    request: NotificationSendRequest
-): Promise<NotificationSendResponse> => {
-    const token =
-        localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
-    
-    const res = await fetch("api/notification-send/email", {
-        method: "POST",
-        body: JSON.stringify(request),
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Basic ${token}`,
-        },
-        credentials: "include",
-    });
+export type SendTestEmailArgs = {
+    environment: string;
+    request: NotificationSendRequest;
+};
+
+export const sendTestEmail = async ({
+    environment,
+    request
+}: SendTestEmailArgs): Promise<NotificationSendResponse> => {    
+    const res = await authorizedPost(
+        `${getBaseUrl(environment)}/notification-send/email`,
+        request
+    )
 
     if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.message ?? `Requestv failed (${res.status})`);
+        throw new Error(body.message ?? `Request failed (${res.status})`);
     }
 
     return res.json();

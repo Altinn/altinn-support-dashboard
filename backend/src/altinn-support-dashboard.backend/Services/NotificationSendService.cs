@@ -13,7 +13,7 @@ public class NotificationSendService : INotificationSendService
         _client = client;
     }
 
-    public async Task<NotificationSendResponse> SendTestEmail(NotificationsSendRequest request)
+    public async Task<NotificationSendResponse> SendTestEmail(NotificationSendRequest request, string environmentName)
     {
         var email = request.EmailAddress?.Trim() ?? "";
         if (!ValidationService.IsValidEmail(email))
@@ -34,6 +34,6 @@ public class NotificationSendService : INotificationSendService
             }
         };
 
-        return await _client.SendInstantEmail(order);
+        return await _client.SendInstantEmail(order, environmentName);
     }
 }
