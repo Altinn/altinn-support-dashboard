@@ -11,6 +11,7 @@ namespace AltinnSupportDashboard.Controllers;
 [ApiController]
 [Route("api/{environmentName}/notification-send")]
 [Authorize(AzurePolicies.Authenticated)]
+[Authorize(AzureRoles.CoreExternal)]
 [Authorize(AzurePolicies.EnvironmentAccess)]
 public class NotificationSendController : ControllerBase
 {

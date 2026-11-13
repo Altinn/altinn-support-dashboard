@@ -124,6 +124,9 @@ namespace AltinnSupportDashboard
                         services.AddScoped<ResourceRegistryClient>();
                         services.AddScoped<IResourceRegistryClient>(sp =>
                             new MockResourceRegistryClient(sp.GetRequiredService<ResourceRegistryClient>()));
+                        services.AddScoped<NotificationSendClient>();
+                        services.AddScoped<INotificationSendClient>(sp =>
+                            new MockNotificationSendClient(sp.GetRequiredService<NotificationSendClient>()));
                     }
                     else
                     {
@@ -131,13 +134,13 @@ namespace AltinnSupportDashboard
                         services.AddScoped<INotificationsClient, NotificationsClient>();
                         services.AddScoped<IDataBrregClient, DataBrregClient>();
                         services.AddScoped<IResourceRegistryClient, ResourceRegistryClient>();
+                        services.AddScoped<INotificationSendClient, NotificationSendClient>();
                     }
                     services.AddScoped<INotificationsService, NotificationsService>();
                     services.AddScoped<IDialogportenService, DialogportenService>();
                     services.AddScoped<IDialogportenClient, DialogportenClient>();
                     services.AddScoped<ICorrespondenceClient, CorrespondenceClient>();
                     services.AddScoped<ICorrespondenceService, CorrespondenceService>();
-                    services.AddScoped<INotificationSendClient, NotificationSendClient>();
                     services.AddScoped<INotificationSendService, NotificationSendService>();
                     services.AddScoped<ISsnTokenService, SsnTokenService>();
                     services.AddScoped<IResourceRegistryService, ResourceRegistryService>();

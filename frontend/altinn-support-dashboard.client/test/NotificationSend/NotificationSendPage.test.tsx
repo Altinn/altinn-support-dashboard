@@ -67,10 +67,11 @@ describe("NotificationSendPage", () => {
     expect(sendButton()).toBeEnabled();
   });
 
-  it("should disable button while request is pending", () => {
+  it("should disable button while request is pending", async () => {
     mockHook(vi.fn(), true);
-    localStorage.setItem("notifSendEmail", "test@example.com");
     render(<NotificationSendPage />);
+
+    await userEvent.type(getFields().email, "test@example.com");
 
     expect(sendButton()).toBeDisabled();
   });
@@ -98,7 +99,7 @@ describe("NotificationSendPage", () => {
     });
   });
 
-  it("should persist input values to localStorage", async () => {
+  it("should not store the email address, only subject and body in sessionStorage", async () => {
     mockHook();
     render(<NotificationSendPage />);
 
@@ -107,20 +108,22 @@ describe("NotificationSendPage", () => {
     await userEvent.type(subject, "S");
     await userEvent.type(body, "B");
 
-    expect(localStorage.getItem("notifSendEmail")).toBe("a@b.no");
-    expect(localStorage.getItem("notifSendSubject")).toBe("S");
-    expect(localStorage.getItem("notifSendBody")).toBe("B");
+    expect(localStorage.getItem("notifSendEmail")).toBeNull();
+    expect(sessionStorage.getItem("notifSendEmail")).toBeNull();
+    expect(localStorage.getItem("notifSendSubject")).toBeNull();
+    expect(localStorage.getItem("notifSendBody")).toBeNull();
+    expect(sessionStorage.getItem("notifSendSubject")).toBe("S");
+    expect(sessionStorage.getItem("notifSendBody")).toBe("B");
   });
 
-  it("should prefill fields from localStorage", () => {
+  it("should prefill subject and body from sessionStorage, but not email", () => {
     mockHook();
-    localStorage.setItem("notifSendEmail", "saved@example.com");
-    localStorage.setItem("notifSendSubject", "Saved subject");
-    localStorage.setItem("notifSendBody", "Saved body");
+    sessionStorage.setItem("notifSendSubject", "Saved subject");
+    sessionStorage.setItem("notifSendBody", "Saved body");
     render(<NotificationSendPage />);
 
     const { email, subject, body } = getFields();
-    expect(email).toHaveValue("saved@example.com");
+    expect(email).toHaveValue("");
     expect(subject).toHaveValue("Saved subject");
     expect(body).toHaveValue("Saved body");
   });
@@ -135,9 +138,9 @@ describe("NotificationSendPage", () => {
       result: { notificationOrderId: "order-123" },
     };
     mockHook(vi.fn().mockResolvedValue(response));
-    localStorage.setItem("notifSendEmail", "test@example.com");
     render(<NotificationSendPage />);
 
+    await userEvent.type(getFields().email, "test@example.com");
     await userEvent.click(sendButton());
 
     expect(await screen.findByText("E-post bestilt")).toBeInTheDocument();
@@ -145,6 +148,20 @@ describe("NotificationSendPage", () => {
     expect(
       JSON.parse(sessionStorage.getItem("notifSendResponse")!)
     ).toEqual(response);
+  });
+
+  it("should not throw or store a response when the request fails", async () => {
+    const mutateAsync = mockHook(
+      vi.fn().mockRejectedValue(new Error("Request failed (500)"))
+    );
+    render(<NotificationSendPage />);
+
+    await userEvent.type(getFields().email, "test@example.com");
+    await userEvent.click(sendButton());
+
+    expect(mutateAsync).toHaveBeenCalled();
+    expect(sessionStorage.getItem("notifSendResponse")).toBeNull();
+    expect(screen.queryByText("E-post bestilt")).not.toBeInTheDocument();
   });
 
   it("should restore previous response from sessionStorage", () => {
