@@ -1,11 +1,13 @@
 using Altinn.ApiClients.Maskinporten.Extensions;
 using Altinn.ApiClients.Maskinporten.Services;
-using Altinn.Studio.Designer.Infrastructure.AnsattPorten;
 using altinn_support_dashboard.Server.Models;
 using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using altinn_support_dashboard.Server.Clients;
 using Microsoft.AspNetCore.Authorization;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 using Security;
 
 namespace AltinnSupportDashboard
@@ -59,6 +61,16 @@ namespace AltinnSupportDashboard
                     if (hostContext.HostingEnvironment.IsDevelopment())
                     {
                         services.AddSingleton<ITelemetryService>(_ => new TelemetryService(null));
+
+                        // Set by the Aspire app host in tools/aspire.
+                        if (!string.IsNullOrEmpty(hostContext.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]))
+                        {
+                            services.AddOpenTelemetry()
+                                .WithTracing(tracing => tracing.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation())
+                                .WithMetrics(metrics => metrics.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation())
+                                .WithLogging()
+                                .UseOtlpExporter();
+                        }
                     }
                     else
                     {
@@ -93,8 +105,6 @@ namespace AltinnSupportDashboard
                     services.AddAzureEntraAuthenticationAndAuthorization(hostContext.Configuration);
 
                     // Register application services
-                    services.AddSingleton<GiteaApiClient>();
-                    services.AddScoped<IGiteaService, GiteaService>();
                     services.AddScoped<IDataBrregService, DataBrregService>();
                     services.AddScoped<IAltinn3Service, Altinn3Service>();
                     services.AddScoped<IPartyApiClient, PartyApiClient>();
