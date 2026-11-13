@@ -76,4 +76,25 @@ public class TelemetryService : ITelemetryService
 
         _telemetryClient?.TrackEvent("delete", properties);
     }
+
+    public void TrackSend(string featureArea, string sendType, string userId, string environment, IDictionary<string, string>? extra = null)
+    {
+        var properties = new Dictionary<string, string>
+        {
+            { "featureArea", featureArea },
+            { "sendType", sendType },
+            { "userId", userId },
+            { "environment", environment }
+        };
+
+        if (extra != null)
+        {
+            foreach (var kvp in extra)
+            {
+                properties[kvp.Key] = kvp.Value;
+            }
+        }
+
+        _telemetryClient?.TrackEvent("send", properties);
+    }
 }
