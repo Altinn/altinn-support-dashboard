@@ -169,6 +169,12 @@ const Sidebar: React.FC = () => {
                   icon={<DatabaseIcon className={classes.icons} />}
                   isCollapsed={isCollapsed}
                 />
+                <NavItem
+                  to="/notification-send"
+                  title="Varsling send"
+                  icon={<PaperplaneIcon className={classes.icons} />}
+                  isCollapsed={isCollapsed}
+                />
                 {hasInternalCoreRoles && (
                   <>
                     <NavItem
@@ -182,13 +188,6 @@ const Sidebar: React.FC = () => {
                       to="/notification-log"
                       title="Varslingslogg"
                       icon={<BulletListIcon className={classes.icons} />}
-                      isCollapsed={isCollapsed}
-                    />
-
-                    <NavItem
-                      to="/notification-send"
-                      title="Varsling send"
-                      icon={<PaperplaneIcon className={classes.icons} /> }
                       isCollapsed={isCollapsed}
                     />
                   </>
