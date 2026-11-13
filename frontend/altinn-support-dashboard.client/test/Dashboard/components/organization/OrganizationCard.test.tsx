@@ -88,7 +88,7 @@ describe("OrganizationCard", () => {
 
     expect(screen.getByText(mockOrg.name)).toBeInTheDocument();
     expect(
-      screen.getByText(`Org Nr: ${mockOrg.organizationNumber}`),
+      screen.getByText(`Org nr: ${mockOrg.organizationNumber}`),
     ).toBeInTheDocument();
   });
 
@@ -270,7 +270,7 @@ describe("OrganizationCard", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        `Org Nr: ${orgWithHeadUnit.headUnit!.organizationNumber}`,
+        `Org nr: ${orgWithHeadUnit.headUnit!.organizationNumber}`,
       ),
     ).toBeInTheDocument();
   });

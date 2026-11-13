@@ -15,7 +15,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
   setSelectedCard,
 }) => (
   <div>
-    <Heading level={1}>Søk etter Organisasjoner</Heading>
+    <Heading level={1}>Søk etter organisasjoner</Heading>
     <TopSearchBarTextField
       query={query}
       setQuery={setQuery}
