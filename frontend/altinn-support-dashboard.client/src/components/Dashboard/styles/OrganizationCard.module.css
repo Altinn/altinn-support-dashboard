@@ -85,3 +85,9 @@
     max-height: 6rem;
   }
 }
+
+.searchedUnit {
+  outline: 2px solid var(--ds-color-accent-border-strong);
+  outline-offset: -2px;
+}
+

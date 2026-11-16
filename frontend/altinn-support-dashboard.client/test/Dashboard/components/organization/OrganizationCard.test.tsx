@@ -439,4 +439,76 @@ describe("OrganizationCard", () => {
     expect(screen.getByText(mockSubUnits[1].name)).toBeInTheDocument();
     expect(screen.getByText(orgWithBoth.headUnit!.name)).toBeInTheDocument();
   });
+
+  describe("when searching for a subunit", () => {
+    const headUnit: Organization = {
+      ...mockOrg,
+      subUnits: mockSubUnits,
+    };
+    const searchedSubunit: Organization = {
+      ...mockSubUnits[0],
+      headUnit,
+    };
+
+    it("should show the head unit as main card with all subunits expanded", () => {
+      render(
+        <OrganizationCard
+          org={searchedSubunit}
+          setSelectedCard={mockSetSelectedCard}
+        />,
+      );
+
+      expect(
+        screen.getByRole("heading", { name: mockOrg.name }),
+      ).toBeInTheDocument();
+      expect(screen.getByText(mockSubUnits[0].name)).toBeInTheDocument();
+      expect(screen.getByText(mockSubUnits[1].name)).toBeInTheDocument();
+    });
+
+    it("should mark the searched subunit", () => {
+      render(
+        <OrganizationCard
+          org={searchedSubunit}
+          setSelectedCard={mockSetSelectedCard}
+        />,
+      );
+
+      const searchedCard = screen
+        .getByText(mockSubUnits[0].name)
+        .closest("div");
+      const siblingCard = screen.getByText(mockSubUnits[1].name).closest("div");
+      expect(searchedCard?.className).toContain("searchedUnit");
+      expect(siblingCard?.className).not.toContain("searchedUnit");
+    });
+
+    it("should select the head unit when the main card is clicked", () => {
+      render(
+        <OrganizationCard
+          org={searchedSubunit}
+          setSelectedCard={mockSetSelectedCard}
+        />,
+      );
+
+      fireEvent.click(screen.getByRole("heading", { name: mockOrg.name }));
+
+      expect(mockSetSelectedCard).toHaveBeenCalledWith(headUnit);
+    });
+
+    it("should fall back to old layout if head unit's subunits do not include the searched org", () => {
+      const orphan: Organization = {
+        ...mockSubUnits[0],
+        organizationNumber: "99999999999",
+        name: "Orphan",
+        headUnit,
+      };
+
+      render(
+        <OrganizationCard org={orphan} setSelectedCard={mockSetSelectedCard} />,
+      );
+
+      expect(
+        screen.getByRole("heading", { name: "Orphan" }),
+      ).toBeInTheDocument();
+    });
+  });
 });
