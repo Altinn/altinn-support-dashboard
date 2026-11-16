@@ -38,6 +38,10 @@ vi.mock("@digdir/designsystemet-react", () => ({
       {children}
     </p>
   ),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Textfield: ({ label, ...props }: any) => (
+    <input aria-label={label} {...props} />
+  ),
 }));
 
 vi.mock("@navikt/aksel-icons", () => ({
@@ -509,6 +513,82 @@ describe("OrganizationCard", () => {
       expect(
         screen.getByRole("heading", { name: "Orphan" }),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe("subunit filter", () => {
+    const createSubUnits = (count: number): Organization[] =>
+      Array.from({ length: count }, (_, i) => ({
+        name: i === 3 ? "Avdeling Bergen" : `Avdeling ${i}`,
+        organizationNumber: `90000000${i}`,
+        unitType: "BEDR",
+        isDeleted: false,
+        headUnit: mockOrg,
+      }));
+
+    const renderExpanded = (subUnitCount: number) => {
+      render(
+        <OrganizationCard
+          org={{ ...mockOrg, subUnits: createSubUnits(subUnitCount) }}
+          setSelectedCard={mockSetSelectedCard}
+        />,
+      );
+      fireEvent.click(screen.getAllByRole("button")[0]);
+    };
+
+    it("should not show the filter when there are fewer than 5 subunits", () => {
+      renderExpanded(4);
+
+      expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+    });
+
+    it("should show the filter when there are 5 subunits", () => {
+      renderExpanded(5);
+
+      expect(screen.getByRole("textbox")).toBeInTheDocument();
+    });
+
+    it("should filter subunits by name, case-insensitive", () => {
+      renderExpanded(8);
+
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "bergen" },
+      });
+
+      expect(screen.getByText("Avdeling Bergen")).toBeInTheDocument();
+      expect(screen.queryByText("Avdeling 0")).not.toBeInTheDocument();
+    });
+
+    it("should filter subunits by org number", () => {
+      renderExpanded(8);
+
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "900000005" },
+      });
+
+      expect(screen.getByText("Avdeling 5")).toBeInTheDocument();
+      expect(screen.queryByText("Avdeling Bergen")).not.toBeInTheDocument();
+    });
+
+    it("should show all subunits again when the filter is cleared", () => {
+      renderExpanded(8);
+      const input = screen.getByRole("textbox");
+
+      fireEvent.change(input, { target: { value: "bergen" } });
+      fireEvent.change(input, { target: { value: "" } });
+
+      expect(screen.getByText("Avdeling 0")).toBeInTheDocument();
+      expect(screen.getByText("Avdeling 7")).toBeInTheDocument();
+    });
+
+    it("should show a message when no subunits match", () => {
+      renderExpanded(8);
+
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "finnes ikke" },
+      });
+
+      expect(screen.getByText("Ingen underenheter funnet")).toBeInTheDocument();
     });
   });
 });

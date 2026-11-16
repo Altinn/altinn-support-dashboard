@@ -2,13 +2,15 @@ import classes from "../../styles/OrganizationCard.module.css";
 import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
 import { Organization, SelectedCard, isOrganization } from "../../../../models/models";
 import { useState } from "react";
-import { Card, Button, Heading, Paragraph } from "@digdir/designsystemet-react";
+import { Card, Button, Heading, Paragraph, Textfield } from "@digdir/designsystemet-react";
 
 interface OrganizationCardProps {
   org: Organization;
   selectedCard?: SelectedCard | null;
   setSelectedCard: (selectedCard: SelectedCard) => void;
 }
+
+const SUBUNIT_FILTER_THRESHOLD = 5;
 
 export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   org,
@@ -45,6 +47,22 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
     const card = selectedCard ?? null;
     return isOrganization(card) && orgNumber === card.organizationNumber;
   };
+
+  const [subUnitFilter, setSubUnitFilter] = useState("");
+
+  const ownSubUnits = (displayOrg.subUnits ?? []).filter(
+    (sub: Organization) =>
+      sub.headUnit?.organizationNumber === displayOrg.organizationNumber
+  );
+
+  const filterTerm = subUnitFilter.trim().toLowerCase();
+  const visibleSubUnits = filterTerm
+    ? ownSubUnits.filter(
+        (sub) =>
+            sub.name.toLowerCase().includes(filterTerm) ||
+            sub.organizationNumber.includes(filterTerm.replace(/\s/g, ""))
+    )
+  : ownSubUnits  
 
   return (
     <div className={classes.container}>
@@ -114,29 +132,38 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
       {/* Subunits list */}
       {displayOrg.subUnits && isExpandedSub && (
         <div>
-          {displayOrg.subUnits
-            .filter(
-              (sub: Organization) =>
-                sub.headUnit?.organizationNumber === displayOrg.organizationNumber
-            )
-            .map((sub: Organization) => (
-              <Card
-                className={`${classes.subunit} ${classes.card} ${sub.isDeleted && classes.cardIsDeleted} ${sub.organizationNumber === searchedOrgNumber && classes.searchedUnit}`}
-                variant={
-                  checkIsSelected(sub.organizationNumber) ? "tinted" : "default"
-                }
-                data-color="neutral"
-                key={sub.organizationNumber}
-                onClick={() => setSelectedCard(sub)}
-              >
-                <Paragraph variant="short" className={classes.cardHeader}>
-                  {sub.name}
-                </Paragraph>
-                <Paragraph variant="short" className={classes.cardParagraph}>
-                  Org nr: {sub.organizationNumber}
-                </Paragraph>
-              </Card>
-            ))}
+          {ownSubUnits.length >= SUBUNIT_FILTER_THRESHOLD && (
+            <Textfield
+              label={`Søk i underenheter (${ownSubUnits.length})`}
+              value={subUnitFilter}
+              onChange={(e) => setSubUnitFilter(e.target.value)}
+              placeholder="Navn eller org nr"
+              className={classes.subunitFilter}
+            />
+          )}
+          {visibleSubUnits.length === 0 && (
+            <Paragraph variant="short" className={classes.subunit}>
+              Ingen underenheter funnet
+            </Paragraph>
+          )}
+          {visibleSubUnits.map((sub: Organization) => (
+            <Card
+              className={`${classes.subunit} ${classes.card} ${sub.isDeleted && classes.cardIsDeleted} ${sub.organizationNumber === searchedOrgNumber && classes.searchedUnit}`}
+              variant={
+                checkIsSelected(sub.organizationNumber) ? "tinted" : "default"
+              }
+              data-color="neutral"
+              key={sub.organizationNumber}
+              onClick={() => setSelectedCard(sub)}
+            >
+              <Paragraph variant="short" className={classes.cardHeader}>
+                {sub.name}
+              </Paragraph>
+              <Paragraph variant="short" className={classes.cardParagraph}>
+                Org nr: {sub.organizationNumber}
+              </Paragraph>
+            </Card>
+          ))}
         </div>
       )}
     </div>
