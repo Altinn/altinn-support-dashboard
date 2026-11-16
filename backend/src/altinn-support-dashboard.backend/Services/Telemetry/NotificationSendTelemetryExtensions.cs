@@ -28,4 +28,22 @@ public static class NotificationSendTelemetryExtensions
 
         telemetry.TrackSend(FeatureArea, "testEmail", userId, environment, extra);
     }
+
+    // Failed sent log
+    public static void TrackTestEmailFailed(this ITelemetryService telemetry, Exception exception, string userId, string environment)
+    {
+        var extra = new Dictionary<string, string>
+        {
+            { "success", false.ToString() },
+            { "errorType", exception.GetType().Name }
+        };
+
+        // Our own validation messages contain no personal data, so they are safe to log
+        if (exception is BadRequestException)
+        {
+            extra["reason"] = exception.Message;
+        }
+
+        telemetry.TrackSend(FeatureArea, "testEmail", userId, environment, extra);
+    }
 }
