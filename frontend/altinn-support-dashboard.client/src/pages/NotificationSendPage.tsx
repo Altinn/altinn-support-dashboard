@@ -49,7 +49,11 @@ export const NotificationSendPage = () => {
                 request: { emailAddress: emailAddress.trim() },
             });
             setResponse(result);
-            sessionStorage.setItem("notifSendResponse", JSON.stringify(result));
+            // requestBody contains the recipient's email – keep it in memory only
+            sessionStorage.setItem(
+                "notifSendResponse",
+                JSON.stringify({ ...result, requestBody: "" })
+            );
         } catch {
             // The hook's onError already shows a toast
         }

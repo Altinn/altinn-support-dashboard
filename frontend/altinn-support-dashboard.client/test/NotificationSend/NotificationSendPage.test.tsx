@@ -134,7 +134,30 @@ describe("NotificationSendPage", () => {
     expect(screen.getByText("order-123")).toBeInTheDocument();
     expect(
       JSON.parse(sessionStorage.getItem("notifSendResponse")!)
-    ).toEqual(response);
+    ).toEqual({ ...response, requestBody: "" });
+  });
+
+  it("should not store the recipient's email from requestBody in sessionStorage", async () => {
+    const response = {
+      responseBody: "{}",
+      responseHeader: "",
+      requestHeader: "",
+      requestBody: JSON.stringify({
+        recipientEmail: { emailAddress: "test@example.com" },
+      }),
+      statusCode: "201",
+      result: { notificationOrderId: "order-123" },
+    };
+    mockHook(vi.fn().mockResolvedValue(response));
+    render(<NotificationSendPage />);
+
+    await userEvent.type(getEmailField(), "test@example.com");
+    await userEvent.click(sendButton());
+
+    await screen.findByText("E-post bestilt");
+    const stored = sessionStorage.getItem("notifSendResponse");
+    expect(stored).not.toBeNull();
+    expect(stored).not.toContain("test@example.com");
   });
 
   it("should not throw or store a response when the request fails", async () => {
