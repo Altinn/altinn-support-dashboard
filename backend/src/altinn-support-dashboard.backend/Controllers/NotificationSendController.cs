@@ -31,10 +31,22 @@ public class NotificationSendController : ControllerBase
     [HttpPost("email")]
     public async Task<IActionResult> SendTestEmail([FromRoute] string environmentName, [FromBody] NotificationSendRequest request)
     {
-        var response = await _service.SendTestEmail(request, environmentName);
+        // Generated here so both sucess and failure events can be traced to the order in Altinn, 
+        // even when we never get a response (e.g timeout)
+        var sendersReference = $"asd-test-{Guid.NewGuid()}";
 
-        _telemetryService.TrackTestEmailSent(response, CurrentUserId, environmentName);
+        NotificationSendResponse response;
+        try
+        {
+            response = await _service.SendTestEmail(request, environmentName, sendersReference);
 
+        } catch (Exception ex)
+        {
+            _telemetryService.TrackTestEmailFailed(ex, sendersReference, CurrentUserId, environmentName);
+            throw;
+        }
+        
+        _telemetryService.TrackTestEmailSent(response, sendersReference, CurrentUserId, environmentName);
         return Ok(response);
     }
 }

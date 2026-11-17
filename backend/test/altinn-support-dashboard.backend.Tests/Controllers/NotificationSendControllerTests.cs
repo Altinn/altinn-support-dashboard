@@ -43,7 +43,9 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             var request = new NotificationSendRequest { EmailAddress = "test@example.com" };
             var response = new NotificationSendResponse { ResponseBody = "ok" };
-            _serviceMock.Setup(s => s.SendTestEmail(request, EnvironmentName)).ReturnsAsync(response);
+            _serviceMock
+                .Setup(s => s.SendTestEmail(request, EnvironmentName, It.IsAny<string>()))
+                .ReturnsAsync(response);
 
             var result = await _controller.SendTestEmail(EnvironmentName, request);
 
@@ -58,27 +60,48 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             var request = new NotificationSendRequest { EmailAddress = "test@example.com" };
             _serviceMock
-                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>()))
+                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new NotificationSendResponse());
 
             await _controller.SendTestEmail(environmentName, request);
 
-            _serviceMock.Verify(s => s.SendTestEmail(request, environmentName), Times.Once);
+            _serviceMock.Verify(s => s.SendTestEmail(request, environmentName, It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
-        public async Task SendTestEmail_WhenServiceThrowsBadRequest_Propagates_AndDoesNotTrack()
+        public async Task SendTestEmail_PassesSameSendersReferenceToServiceAndTelemetry()
         {
-            var request = new NotificationSendRequest { EmailAddress = "invalid" };
+            string? passedReference = null;
             _serviceMock
-                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>()))
-                .ThrowsAsync(new BadRequestException("Not a valid email"));
+                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Callback<NotificationSendRequest, string, string>((_, _, r) => passedReference = r)
+                .ReturnsAsync(new NotificationSendResponse());
 
-            await Assert.ThrowsAsync<BadRequestException>(() => _controller.SendTestEmail(EnvironmentName, request));
+            await _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest { EmailAddress = "test@example.com" });
 
+            Assert.NotNull(passedReference);
+            Assert.StartsWith("asd-test-", passedReference);
             _telemetryServiceMock.Verify(t => t.TrackSend(
-                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<IDictionary<string, string>?>()), Times.Never);
+                "notifications", "testEmail", UserId, EnvironmentName,
+                It.Is<IDictionary<string, string>?>(d => d != null && d["sendersReference"] == passedReference)),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task SendTestEmail_GeneratesNewSendersReferencePerRequest()
+        {
+            var references = new List<string>();
+            _serviceMock
+                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Callback<NotificationSendRequest, string, string>((_, _, r) => references.Add(r))
+                .ReturnsAsync(new NotificationSendResponse());
+
+            var request = new NotificationSendRequest { EmailAddress = "test@example.com" };
+            await _controller.SendTestEmail(EnvironmentName, request);
+            await _controller.SendTestEmail(EnvironmentName, request);
+
+            Assert.Equal(2, references.Count);
+            Assert.NotEqual(references[0], references[1]);
         }
 
         [Fact]
@@ -88,7 +111,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var shipmentId = Guid.NewGuid();
             var request = new NotificationSendRequest { EmailAddress = "  test@example.com  " };
             _serviceMock
-                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>()))
+                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new NotificationSendResponse
                 {
                     StatusCode = HttpStatusCode.Created,
@@ -108,6 +131,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 EnvironmentName,
                 It.Is<IDictionary<string, string>?>(d =>
                     d != null &&
+                    d.ContainsKey("sendersReference") &&
                     !d.ContainsKey("email") &&
                     !d.Values.Any(v => v.Contains("test@example.com")) &&
                     d["statusCode"] == "201" &&
@@ -115,7 +139,8 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                     d["notificationOrderId"] == orderId.ToString() &&
                     d["shipmentId"] == shipmentId.ToString() &&
                     !d.ContainsKey("subject") &&
-                    !d.ContainsKey("body"))),
+                    !d.ContainsKey("body") &&
+                    !d.ContainsKey("outcomeUnknown"))),
                 Times.Once);
         }
 
@@ -124,7 +149,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             var request = new NotificationSendRequest { EmailAddress = "test@example.com" };
             _serviceMock
-                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>()))
+                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new NotificationSendResponse
                 {
                     StatusCode = HttpStatusCode.BadRequest,
@@ -140,9 +165,85 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 EnvironmentName,
                 It.Is<IDictionary<string, string>?>(d =>
                     d != null &&
+                    d.ContainsKey("sendersReference") &&
                     d["statusCode"] == "400" &&
                     d["success"] == "False" &&
                     !d.ContainsKey("notificationOrderId"))),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task SendTestEmail_WhenServiceThrowsBadRequest_Propagates_AndTracksFailureWithReason()
+        {
+            _serviceMock
+                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ThrowsAsync(new BadRequestException("Not a valid email"));
+
+            await Assert.ThrowsAsync<BadRequestException>(() =>
+                _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest { EmailAddress = "bad@" }));
+
+            _telemetryServiceMock.Verify(t => t.TrackSend(
+                "notifications",
+                "testEmail",
+                UserId,
+                EnvironmentName,
+                It.Is<IDictionary<string, string>?>(d =>
+                    d != null &&
+                    d.ContainsKey("sendersReference") &&
+                    d["success"] == "False" &&
+                    d["errorType"] == nameof(BadRequestException) &&
+                    d["reason"] == "Not a valid email" &&
+                    !d.ContainsKey("outcomeUnknown") &&
+                    !d.Values.Any(v => v.Contains("bad@")))),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task SendTestEmail_OnTimeout_Propagates_AndTracksOutcomeUnknown()
+        {
+            _serviceMock
+                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ThrowsAsync(new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout"));
+
+            await Assert.ThrowsAsync<TaskCanceledException>(() =>
+                _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest { EmailAddress = "test@example.com" }));
+
+            _telemetryServiceMock.Verify(t => t.TrackSend(
+                "notifications",
+                "testEmail",
+                UserId,
+                EnvironmentName,
+                It.Is<IDictionary<string, string>?>(d =>
+                    d != null &&
+                    d.ContainsKey("sendersReference") &&
+                    d["success"] == "False" &&
+                    d["errorType"] == nameof(TaskCanceledException) &&
+                    d["outcomeUnknown"] == "True" &&
+                    !d.ContainsKey("reason"))),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task SendTestEmail_OnOtherException_TracksFailureWithoutReasonOrOutcomeUnknown()
+        {
+            _serviceMock
+                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ThrowsAsync(new HttpRequestException("Connection refused to https://platform.tt02.altinn.no"));
+
+            await Assert.ThrowsAsync<HttpRequestException>(() =>
+                _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest { EmailAddress = "test@example.com" }));
+
+            _telemetryServiceMock.Verify(t => t.TrackSend(
+                "notifications",
+                "testEmail",
+                UserId,
+                EnvironmentName,
+                It.Is<IDictionary<string, string>?>(d =>
+                    d != null &&
+                    d["success"] == "False" &&
+                    d["errorType"] == nameof(HttpRequestException) &&
+                    !d.ContainsKey("reason") &&
+                    !d.ContainsKey("outcomeUnknown"))),
                 Times.Once);
         }
     }

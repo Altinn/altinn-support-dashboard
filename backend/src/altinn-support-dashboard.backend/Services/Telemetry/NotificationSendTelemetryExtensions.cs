@@ -9,10 +9,11 @@ public static class NotificationSendTelemetryExtensions
 
     // The recipient's email is intentionally not logged.
     // Successful sends can be traced to the recipient via shipmentId.
-    public static void TrackTestEmailSent(this ITelemetryService telemetry, NotificationSendResponse response, string userId, string environment)
+    public static void TrackTestEmailSent(this ITelemetryService telemetry, NotificationSendResponse response, string sendersReference, string userId, string environment)
     {
         var extra = new Dictionary<string, string>
         {
+            { "sendersReference", sendersReference },
             { "statusCode", ((int)response.StatusCode).ToString() },
             { "success", (response.Result != null).ToString() }
         };
@@ -30,10 +31,11 @@ public static class NotificationSendTelemetryExtensions
     }
 
     // Failed sent log
-    public static void TrackTestEmailFailed(this ITelemetryService telemetry, Exception exception, string userId, string environment)
+    public static void TrackTestEmailFailed(this ITelemetryService telemetry, Exception exception, string sendersReference, string userId, string environment)
     {
         var extra = new Dictionary<string, string>
         {
+            { "sendersReference", sendersReference },
             { "success", false.ToString() },
             { "errorType", exception.GetType().Name }
         };
@@ -42,6 +44,11 @@ public static class NotificationSendTelemetryExtensions
         if (exception is BadRequestException)
         {
             extra["reason"] = exception.Message;
+        }
+
+        if (exception is TaskCanceledException)
+        {
+            extra["outcomeUnknown"] = true.ToString();
         }
 
         telemetry.TrackSend(FeatureArea, "testEmail", userId, environment, extra);
