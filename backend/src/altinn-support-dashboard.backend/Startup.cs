@@ -8,6 +8,9 @@ using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Security;
+using Microsoft.Extensions.Options;
+using System.Threading.RateLimiting;
 
 
 namespace AltinnSupportDashboard
@@ -59,6 +62,38 @@ namespace AltinnSupportDashboard
                            .AllowAnyHeader()
                            .AllowCredentials();
                 });
+            });
+
+            services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                // One limit per user. Falls back to the IP address if there is no user name
+                options.AddPolicy(RateLimitPolicies.NotificationSend, context => 
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: context.User.Identity?.Name
+                            ?? context.Connection.RemoteIpAddress?.ToString()
+                            ?? "unknown",
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,
+                            Window = TimeSpan.FromMinutes(1),
+                            QueueLimit = 0 // Reject right away, don't queue
+                    }));
+
+                // Same { message } shape as the exception handler, so the frontend shows it in the toast
+                options.OnRejected = async (context, cancellationToken) =>
+                {
+                    var message = "Too many test emails sent. Try again later.";
+                    if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+                    {
+                        var seconds = (int)Math.Ceiling(retryAfter.TotalSeconds);
+                        context.HttpContext.Response.Headers.RetryAfter = seconds.ToString();
+                        message = $"Too many test emails sent. Try again in {seconds} seconds.";
+                    }
+
+                    await context.HttpContext.Response.WriteAsJsonAsync(new { message }, cancellationToken);
+                };
             });
         }
 
@@ -127,6 +162,8 @@ namespace AltinnSupportDashboard
             // Enable Authentication and Authorization middleware
             app.UseAuthentication();  // Ensure authentication is used
             app.UseAuthorization();   // Ensure authorization is used
+
+            app.UseRateLimiter();
 
 
             // Configure endpoints for API controllers

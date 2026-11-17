@@ -4,8 +4,10 @@ using altinn_support_dashboard.Server.Services.Interfaces;
 using AltinnSupportDashboard.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Models.notifications;
 using Moq;
+using Security;
 using Xunit;
 
 namespace altinn_support_dashboard.backend.Tests.Controllers
@@ -245,6 +247,18 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                     !d.ContainsKey("reason") &&
                     !d.ContainsKey("outcomeUnknown"))),
                 Times.Once);
+        }
+
+        [Fact]
+        public void SendTestEmail_HasNotificationSendRateLimitPolicy()
+        {
+            var attribute = typeof(NotificationSendController)
+                .GetMethod(nameof(NotificationSendController.SendTestEmail))!
+                .GetCustomAttributes(typeof(EnableRateLimitingAttribute), false)
+                .Cast<EnableRateLimitingAttribute>()
+                .Single();
+
+            Assert.Equal(RateLimitPolicies.NotificationSend, attribute.PolicyName);
         }
     }
 }

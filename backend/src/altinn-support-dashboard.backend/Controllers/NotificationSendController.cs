@@ -2,6 +2,7 @@ using altinn_support_dashboard.Server.Services;
 using altinn_support_dashboard.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Models.notifications;
 using Security;
 
@@ -29,9 +30,10 @@ public class NotificationSendController : ControllerBase
     private string CurrentUserId => User.Identity?.Name ?? "unknown";
 
     [HttpPost("email")]
+    [EnableRateLimiting(RateLimitPolicies.NotificationSend)]
     public async Task<IActionResult> SendTestEmail([FromRoute] string environmentName, [FromBody] NotificationSendRequest request)
     {
-        // Generated here so both sucess and failure events can be traced to the order in Altinn, 
+        // Generated here so both success and failure events can be traced to the order in Altinn, 
         // even when we never get a response (e.g timeout)
         var sendersReference = $"asd-test-{Guid.NewGuid()}";
 
