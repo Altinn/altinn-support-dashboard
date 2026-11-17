@@ -1,7 +1,5 @@
 export interface NotificationSendRequest {
     emailAddress: string;
-    subject?: string;
-    body?: string;
 }
 
 export interface InstantEmailOrderResult {

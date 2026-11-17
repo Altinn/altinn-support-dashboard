@@ -8,8 +8,6 @@ using System.Net;
 public class NotificationSendRequest
 {
     public string EmailAddress { get; set; } = "";
-    public string? Subject { get; set; }
-    public string? Body { get; set; }
 }
 
 // From our backend to Altinn

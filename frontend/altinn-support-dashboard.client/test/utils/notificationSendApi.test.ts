@@ -10,8 +10,6 @@ describe("notificationSendApi", () => {
 
   const request = {
     emailAddress: "test@example.com",
-    subject: "Subject",
-    body: "Body",
   };
 
   describe("sendTestEmail", () => {

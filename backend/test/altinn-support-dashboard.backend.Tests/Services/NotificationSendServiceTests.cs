@@ -25,21 +25,28 @@ public class NotificationSendServiceTests
     [Fact]
     public async Task SendTestEmail_WithValidEmail_PassesOrderAndEnvironmentToClient()
     {
-        var request = new NotificationSendRequest
-        {
-            EmailAddress = "test@example.com",
-            Subject = "My subject",
-            Body = "My body"
-        };
+        var request = new NotificationSendRequest { EmailAddress = "test@example.com" };
 
         await _service.SendTestEmail(request, EnvironmentName, SendersReference);
 
         _clientMock.Verify(c => c.SendInstantEmail(
             It.Is<InstantEmailOrderRequest>(o =>
                 o.RecipientEmail.EmailAddress == "test@example.com" &&
-                o.RecipientEmail.EmailSettings.Subject == "My subject" &&
-                o.RecipientEmail.EmailSettings.Body == "My body" &&
                 o.RecipientEmail.EmailSettings.ContentType == "Plain"),
+            EnvironmentName),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task SendTestEmail_AlwaysUsesFixedSubjectAndBody()
+    {
+        await _service.SendTestEmail(new NotificationSendRequest { EmailAddress = "test@example.com" }, EnvironmentName, SendersReference);
+
+        _clientMock.Verify(c => c.SendInstantEmail(
+            It.Is<InstantEmailOrderRequest>(o =>
+                o.RecipientEmail.EmailSettings.Subject == "Varsel test Altinn" &&
+                o.RecipientEmail.EmailSettings.Body.StartsWith("Test varsel fra Altinn") &&
+                o.RecipientEmail.EmailSettings.Body.Contains("Denne mailen kan ikke besvares")),
             EnvironmentName),
             Times.Once);
     }
@@ -64,29 +71,6 @@ public class NotificationSendServiceTests
 
         _clientMock.Verify(c => c.SendInstantEmail(
             It.Is<InstantEmailOrderRequest>(o => o.RecipientEmail.EmailAddress == "test@example.com"),
-            EnvironmentName),
-            Times.Once);
-    }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    public async Task SendTestEmail_WithEmptySubjectAndBody_UsesDefaults(string? value)
-    {
-        var request = new NotificationSendRequest
-        {
-            EmailAddress = "test@example.com",
-            Subject = value,
-            Body = value
-        };
-
-        await _service.SendTestEmail(request, EnvironmentName, SendersReference);
-
-        _clientMock.Verify(c => c.SendInstantEmail(
-            It.Is<InstantEmailOrderRequest>(o =>
-                o.RecipientEmail.EmailSettings.Subject == "Varsel test Altinn" &&
-                o.RecipientEmail.EmailSettings.Body == "Test varsel fra Altinn"),
             EnvironmentName),
             Times.Once);
     }

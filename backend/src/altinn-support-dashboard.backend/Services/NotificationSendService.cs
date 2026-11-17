@@ -4,7 +4,7 @@ using Models.notifications;
 public class NotificationSendService : INotificationSendService
 {
     private const string DefaultSubject = "Varsel test Altinn";
-    private const string DefaultBody = "Test varsel fra Altinn";
+    private const string DefaultBody = "Test varsel fra Altinn.\nDenne mailen kan ikke besvares.";
 
     private readonly INotificationSendClient _client;
 
@@ -29,8 +29,8 @@ public class NotificationSendService : INotificationSendService
                 EmailAddress = email,
                 EmailSettings = new InstantEmailSettings
                 {
-                    Subject = string.IsNullOrWhiteSpace(request.Subject) ? DefaultSubject : request.Subject,
-                    Body = string.IsNullOrWhiteSpace(request.Body) ? DefaultBody : request.Body
+                    Subject = DefaultSubject,
+                    Body = DefaultBody
                 }
             }
         };

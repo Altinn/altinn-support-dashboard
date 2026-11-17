@@ -20,11 +20,8 @@ const mockHook = (mutateAsync = vi.fn(), isPending = false) => {
   return mutateAsync;
 };
 
-// MessageInputField labels are not linked to inputs, so fields are picked by order
-const getFields = () => {
-  const [email, subject, body] = screen.getAllByRole("textbox");
-  return { email, subject, body };
-};
+// The email address is the only input on the page
+const getEmailField = () => screen.getByRole("textbox");
 
 const sendButton = () => screen.getByRole("button", { name: /Send e-mail/i });
 
@@ -36,20 +33,29 @@ beforeEach(() => {
 });
 
 describe("NotificationSendPage", () => {
-  it("should render fields, warning and a disabled button initially", () => {
+  it("should render email field, warning and a disabled button initially", () => {
     mockHook();
     render(<NotificationSendPage />);
 
-    expect(screen.getAllByRole("textbox")).toHaveLength(3);
+    expect(screen.getAllByRole("textbox")).toHaveLength(1);
     expect(screen.getByText(/ekte mottaker/)).toBeInTheDocument();
     expect(sendButton()).toBeDisabled();
+  });
+
+  it("should show the fixed subject and body that will be sent", () => {
+    mockHook();
+    render(<NotificationSendPage />);
+
+    expect(screen.getByText("Varsel test Altinn")).toBeInTheDocument();
+    expect(screen.getByText(/Test varsel fra Altinn/)).toBeInTheDocument();
+    expect(screen.getByText(/Denne mailen kan ikke besvares/)).toBeInTheDocument();
   });
 
   it("should show error and keep button disabled for invalid email", async () => {
     mockHook();
     render(<NotificationSendPage />);
 
-    await userEvent.type(getFields().email, "not-an-email");
+    await userEvent.type(getEmailField(), "not-an-email");
 
     expect(screen.getByText("Ugyldig e-postadresse")).toBeInTheDocument();
     expect(sendButton()).toBeDisabled();
@@ -59,7 +65,7 @@ describe("NotificationSendPage", () => {
     mockHook();
     render(<NotificationSendPage />);
 
-    await userEvent.type(getFields().email, "test@example.com");
+    await userEvent.type(getEmailField(), "test@example.com");
 
     expect(
       screen.queryByText("Ugyldig e-postadresse")
@@ -71,61 +77,42 @@ describe("NotificationSendPage", () => {
     mockHook(vi.fn(), true);
     render(<NotificationSendPage />);
 
-    await userEvent.type(getFields().email, "test@example.com");
+    await userEvent.type(getEmailField(), "test@example.com");
 
     expect(sendButton()).toBeDisabled();
   });
 
-  it("should call mutation with environment and trimmed request", async () => {
+  it("should call mutation with environment and trimmed email only", async () => {
     const mutateAsync = mockHook(
       vi.fn().mockResolvedValue({ statusCode: "201" })
     );
     useAppStore.setState({ environment: "PROD" });
     render(<NotificationSendPage />);
 
-    const { email, subject, body } = getFields();
-    await userEvent.type(email, "  test@example.com  ");
-    await userEvent.type(subject, "Hello");
-    await userEvent.type(body, "World");
+    await userEvent.type(getEmailField(), "  test@example.com  ");
     await userEvent.click(sendButton());
 
     expect(mutateAsync).toHaveBeenCalledWith({
       environment: "PROD",
-      request: {
-        emailAddress: "test@example.com",
-        subject: "Hello",
-        body: "World",
-      },
+      request: { emailAddress: "test@example.com" },
     });
   });
 
-  it("should not store the email address, only subject and body in sessionStorage", async () => {
+  it("should not store the email address", async () => {
     mockHook();
     render(<NotificationSendPage />);
 
-    const { email, subject, body } = getFields();
-    await userEvent.type(email, "a@b.no");
-    await userEvent.type(subject, "S");
-    await userEvent.type(body, "B");
+    await userEvent.type(getEmailField(), "a@b.no");
 
     expect(localStorage.getItem("notifSendEmail")).toBeNull();
     expect(sessionStorage.getItem("notifSendEmail")).toBeNull();
-    expect(localStorage.getItem("notifSendSubject")).toBeNull();
-    expect(localStorage.getItem("notifSendBody")).toBeNull();
-    expect(sessionStorage.getItem("notifSendSubject")).toBe("S");
-    expect(sessionStorage.getItem("notifSendBody")).toBe("B");
   });
 
-  it("should prefill subject and body from sessionStorage, but not email", () => {
+  it("should start with an empty email field", () => {
     mockHook();
-    sessionStorage.setItem("notifSendSubject", "Saved subject");
-    sessionStorage.setItem("notifSendBody", "Saved body");
     render(<NotificationSendPage />);
 
-    const { email, subject, body } = getFields();
-    expect(email).toHaveValue("");
-    expect(subject).toHaveValue("Saved subject");
-    expect(body).toHaveValue("Saved body");
+    expect(getEmailField()).toHaveValue("");
   });
 
   it("should show summary and store response after successful send", async () => {
@@ -140,7 +127,7 @@ describe("NotificationSendPage", () => {
     mockHook(vi.fn().mockResolvedValue(response));
     render(<NotificationSendPage />);
 
-    await userEvent.type(getFields().email, "test@example.com");
+    await userEvent.type(getEmailField(), "test@example.com");
     await userEvent.click(sendButton());
 
     expect(await screen.findByText("E-post bestilt")).toBeInTheDocument();
@@ -156,7 +143,7 @@ describe("NotificationSendPage", () => {
     );
     render(<NotificationSendPage />);
 
-    await userEvent.type(getFields().email, "test@example.com");
+    await userEvent.type(getEmailField(), "test@example.com");
     await userEvent.click(sendButton());
 
     expect(mutateAsync).toHaveBeenCalled();

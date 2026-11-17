@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useSendTestEmail } from "../hooks/hooks";
 import { useAppStore } from "../stores/Appstore";
 import { NotificationSendResponse } from "../models/notificationSendModels";
-import { Alert, Button, Heading } from "@digdir/designsystemet-react";
+import { Alert, Button, Heading, Paragraph } from "@digdir/designsystemet-react";
 import { TestFlaskIcon } from "@navikt/aksel-icons";
 import MessageInputField from "../components/Correspondence/MessageInputField";
 import ResponseStatusCode from "../components/Correspondence/ResponseStatusCode";
@@ -10,26 +10,19 @@ import NotificationSendSummary from "../components/NotificationSend/Notification
 import CorrespondenceResponseField from "../components/Correspondence/CorrespondenceResponseField";
 import classes from "./styles/CorrespondencePage.module.css";
 
- 
-
-
 
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_SUBJECT = "Varsel test Altinn";
+const EMAIL_BODY = "Test varsel fra Altinn.\nDenne mailen kan ikke besvares."
 
 export const NotificationSendPage = () => {
     const  post = useSendTestEmail();
     const environment = useAppStore((state) => state.environment);
 
     // The recipient's email is personal data, so it is never stored.
-    // Subject and body only live for the browser session.
     const [emailAddress, setEmailAddress] = useState<string>("");
-    const [subject, setSubject] = useState<string>(
-        () => sessionStorage.getItem("notifSendSubject") ?? ""
-    );
-    const [body, setBody] = useState<string>(
-        () => sessionStorage.getItem("notifSendBody") ?? ""
-    );
+
     const [response, setResponse] = useState<NotificationSendResponse | undefined>(
         () => {
             const item = sessionStorage.getItem("notifSendResponse");
@@ -53,11 +46,7 @@ export const NotificationSendPage = () => {
         try {
             const result = await post.mutateAsync({
                 environment,
-                request: {
-                    emailAddress: emailAddress.trim(),
-                    subject,
-                    body,
-                },
+                request: { emailAddress: emailAddress.trim() },
             });
             setResponse(result);
             sessionStorage.setItem("notifSendResponse", JSON.stringify(result));
@@ -85,26 +74,13 @@ export const NotificationSendPage = () => {
                         }}
                     />
                     {emailError && <Alert data-color="danger">{emailError}</Alert>}
+                    <div>
+                        <Paragraph><strong>Subject:</strong></Paragraph>
+                        <Paragraph>{EMAIL_SUBJECT}</Paragraph>
 
-                    <MessageInputField
-                        className={classes.messageField}
-                        labelText="Subject"
-                        multiline={false}
-                        value={subject}
-                        onChange={(value) => {
-                            setSubject(value);
-                            sessionStorage.setItem("notifSendSubject", value);
-                        }}
-                    />
-                    <MessageInputField 
-                        className={classes.messageField}
-                        labelText="Body"
-                        value={body}
-                        onChange={(value) => {
-                            setBody(value);
-                            sessionStorage.setItem("notifSendBody", value);
-                        }}
-                    />
+                        <Paragraph><strong>Body:</strong></Paragraph>
+                        <Paragraph style={{ whiteSpace: "pre-line" }}>{EMAIL_BODY}</Paragraph>
+                    </div>
 
                     <Alert data-color="warning">
                         Du kommer til å sende denne mailen til en ekte mottaker hvis mailen eksisterer
