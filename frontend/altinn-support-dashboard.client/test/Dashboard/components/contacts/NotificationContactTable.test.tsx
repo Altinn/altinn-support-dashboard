@@ -84,7 +84,7 @@ describe('NotificationContactTable', () => {
         );
 
         expect(screen.getByText('E-post')).toBeInTheDocument();
-        expect(screen.getByText('Endret E-post')).toBeInTheDocument();
+        expect(screen.getByText('Endret e-post')).toBeInTheDocument();
     });
 
     it('should render contacts that have the specified field', () => {
@@ -208,7 +208,7 @@ describe('NotificationContactTable', () => {
 
         expect(screen.getAllByTestId('cell-phone')).toHaveLength(2);
         expect(screen.getByText('Mobilnummer')).toBeInTheDocument();
-        expect(screen.getByText('Endret Mobilnummer')).toBeInTheDocument();
+        expect(screen.getByText('Endret mobilnummer')).toBeInTheDocument();
     });
 
     it('should pass correct field to NotificationContactCell', () => {

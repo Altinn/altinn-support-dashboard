@@ -17,7 +17,7 @@ const SearchContactsBar: React.FC<SearchContactsBarProps> = ({
       label="Søk i kontakter"
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
-      placeholder="Navn / Fødselsnummer / Telefon / E-post"
+      placeholder="Navn/fødselsnummer/telefon/e-post"
       className={styles["input"]}
     />
   );

@@ -52,7 +52,7 @@ const NotificationAvailabilityForm: React.FC<
           className={style.field}
         />
         <Textfield
-          label="Ressurs-Id"
+          label="Ressurs-id"
           value={resourceId}
           onChange={(e) => setResourceId(e.target.value)}
           className={style.field}

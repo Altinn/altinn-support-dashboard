@@ -54,7 +54,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
             {org.headUnit.name}
           </Paragraph>
           <Paragraph variant="short" className={classes.cardParagraph}>
-            Org Nr: {org.headUnit.organizationNumber}
+            Org nr: {org.headUnit.organizationNumber}
           </Paragraph>
         </Card>
       )}
@@ -69,7 +69,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
             {org.name}
           </Heading>
           <Paragraph variant="short" className={classes.cardParagraph}>
-            Org Nr: {org.organizationNumber}
+            Org nr: {org.organizationNumber}
           </Paragraph>
         </div>
         {org.headUnit && (
@@ -119,7 +119,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                   {sub.name}
                 </Paragraph>
                 <Paragraph variant="short" className={classes.cardParagraph}>
-                  Org Nr: {sub.organizationNumber}
+                  Org nr: {sub.organizationNumber}
                 </Paragraph>
               </Card>
             ))}

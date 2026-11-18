@@ -48,7 +48,7 @@ const DelegationsTable: React.FC<DelegationsTableProps> = ({
           <Table.Row>
             <Table.HeaderCell>Ressurs</Table.HeaderCell>
             <Table.HeaderCell>Scopes</Table.HeaderCell>
-            <Table.HeaderCell>Skjema Id</Table.HeaderCell>
+            <Table.HeaderCell>Skjema id</Table.HeaderCell>
             <Table.HeaderCell>Opprettet</Table.HeaderCell>
           </Table.Row>
         </Table.Head>

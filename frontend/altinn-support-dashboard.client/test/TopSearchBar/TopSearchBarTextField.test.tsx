@@ -17,7 +17,7 @@ describe('TopSearchBarTextField', () => {
             />
         );
 
-        expect(screen.getByPlaceholderText('Mobilnummer / E-post / Organisasjonsnummer')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Mobilnummer/e-post/organisasjonsnummer')).toBeInTheDocument();
     });
 
     it('should render with correct value', () => {
@@ -44,7 +44,7 @@ describe('TopSearchBarTextField', () => {
             />
         );
 
-        const input = screen.getByPlaceholderText('Mobilnummer / E-post / Organisasjonsnummer');
+        const input = screen.getByPlaceholderText('Mobilnummer/e-post/organisasjonsnummer');
 
         await user.type(input, 'New Query');
         await user.keyboard('{Enter}');
@@ -83,7 +83,7 @@ describe('TopSearchBarTextField', () => {
             />
         );
 
-        const input = screen.getByPlaceholderText('Mobilnummer / E-post / Organisasjonsnummer');
+        const input = screen.getByPlaceholderText('Mobilnummer/e-post/organisasjonsnummer');
         const searchButton = screen.getByRole('button', { name: '' }); // Search button has no accessible name
 
         await user.type(input, 'Search Query');
@@ -104,7 +104,7 @@ describe('TopSearchBarTextField', () => {
             />
         );
 
-        const input = screen.getByPlaceholderText('Mobilnummer / E-post / Organisasjonsnummer');
+        const input = screen.getByPlaceholderText('Mobilnummer/e-post/organisasjonsnummer');
         const searchButton = screen.getByRole('button', { name: '' }); // Search button has no accessible name
 
         await user.clear(input);
@@ -126,7 +126,7 @@ describe('TopSearchBarTextField', () => {
             />
         );
 
-        const input = screen.getByPlaceholderText('Mobilnummer / E-post / Organisasjonsnummer');
+        const input = screen.getByPlaceholderText('Mobilnummer/e-post/organisasjonsnummer');
 
         await user.type(input, 'Test');
         await user.keyboard('{Tab}');
@@ -147,7 +147,7 @@ describe('TopSearchBarTextField', () => {
             />
         );
 
-        const input = screen.getByPlaceholderText('Mobilnummer / E-post / Organisasjonsnummer');
+        const input = screen.getByPlaceholderText('Mobilnummer/e-post/organisasjonsnummer');
         const searchButton = screen.getByRole('button', { name: '' }); // Search button has no accessible name
 
         await user.clear(input);

@@ -23,7 +23,7 @@ describe('TopSearchBarComponent', async () => {
             />
         );
 
-        expect(screen.getByRole('heading', { name: 'Søk etter Organisasjoner' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Søk etter organisasjoner' })).toBeInTheDocument();
     });
 
     it('should render TopSearchBarTextField Component', () => {

@@ -49,7 +49,7 @@ describe('SearchContactsBar', () => {
             />
         );
 
-        const input = screen.getByPlaceholderText("Navn / Fødselsnummer / Telefon / E-post");
+        const input = screen.getByPlaceholderText("Navn/fødselsnummer/telefon/e-post");
         expect(input).toBeInTheDocument();
     });
 
@@ -75,7 +75,7 @@ describe('SearchContactsBar', () => {
             />
         );
 
-        const input = screen.getByPlaceholderText("Navn / Fødselsnummer / Telefon / E-post");
+        const input = screen.getByPlaceholderText("Navn/fødselsnummer/telefon/e-post");
         fireEvent.change(input, { target: { value: "New search" } });
 
         expect(mockSetSearchQuery).toHaveBeenCalledWith("New search");
@@ -112,7 +112,7 @@ describe('SearchContactsBar', () => {
             />
         );
 
-        const input = screen.getByPlaceholderText("Navn / Fødselsnummer / Telefon / E-post");
+        const input = screen.getByPlaceholderText("Navn/fødselsnummer/telefon/e-post");
         expect(input).toHaveValue("");
     });
 
@@ -124,7 +124,7 @@ describe('SearchContactsBar', () => {
                 handleClearSearch={mockHandleClearSearch}
             />
         );
-        const input = screen.getByPlaceholderText("Navn / Fødselsnummer / Telefon / E-post");
+        const input = screen.getByPlaceholderText("Navn/fødselsnummer/telefon/e-post");
         fireEvent.change(input, { target: { value: "!@#$%^&*()_+" } });
 
         expect(mockSetSearchQuery).toHaveBeenCalledWith("!@#$%^&*()_+");

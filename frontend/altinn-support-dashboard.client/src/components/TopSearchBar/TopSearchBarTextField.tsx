@@ -30,7 +30,7 @@ export const TopSearchBarTextField: React.FC<Props> = ({
     <div className={styles["Container"]}>
       <Textfield
         label=""
-        placeholder="Mobilnummer / E-post / Organisasjonsnummer"
+        placeholder="Mobilnummer/e-post/organisasjonsnummer"
         value={textFieldValue}
         onChange={(e) => setTextFieldValue(e.target.value)}
         onKeyDown={(e) => {
