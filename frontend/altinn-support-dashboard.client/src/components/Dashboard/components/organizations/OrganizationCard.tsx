@@ -53,7 +53,8 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   const ownSubUnits = (displayOrg.subUnits ?? []).filter(
     (sub: Organization) =>
       sub.headUnit?.organizationNumber === displayOrg.organizationNumber
-  );
+    )
+    .sort((a, b) => a.name.localeCompare(b.name, "nb"))
 
   const filterTerm = subUnitFilter.trim().toLowerCase();
   const visibleSubUnits = filterTerm
@@ -116,7 +117,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
         )}
 
         
-        {displayOrg.subUnits && (
+        {ownSubUnits.length > 0 && (
           <Button
             className={classes.expandButtonSub}
             variant="secondary"

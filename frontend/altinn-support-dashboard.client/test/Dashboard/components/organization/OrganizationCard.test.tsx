@@ -591,4 +591,33 @@ describe("OrganizationCard", () => {
       expect(screen.getByText("Ingen underenheter funnet")).toBeInTheDocument();
     });
   });
+
+  it("should show subunits in alphabetical order", () => {
+    const unsorted: Organization[] = [
+      "Øst",
+      "Bergen",
+      "Ålesund",
+      "Arendal",
+      "Zeta",
+    ].map((name, i) => ({
+      name,
+      organizationNumber: `80000000${i}`,
+      unitType: "BEDR",
+      isDeleted: false,
+      headUnit: mockOrg,
+    }));
+
+    render(
+      <OrganizationCard
+        org={{ ...mockOrg, subUnits: unsorted }}
+        setSelectedCard={mockSetSelectedCard}
+      />,
+    );
+    fireEvent.click(screen.getAllByRole("button")[0]);
+
+    const names = screen
+      .getAllByText(/^(Øst|Bergen|Ålesund|Arendal|Zeta)$/)
+      .map((el) => el.textContent);
+    expect(names).toEqual(["Arendal", "Bergen", "Zeta", "Øst", "Ålesund"]);
+  });
 });
