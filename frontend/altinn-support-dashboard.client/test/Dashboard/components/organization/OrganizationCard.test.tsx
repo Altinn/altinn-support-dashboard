@@ -155,6 +155,17 @@ describe("OrganizationCard", () => {
     expect(screen.queryByTestId("chevron-down-icon")).not.toBeInTheDocument();
   });
 
+  it("should not show subunit expand button when subUnits is an empty array", () => {
+    render(
+      <OrganizationCard
+        org={{ ...mockOrg, subUnits: [] }}
+        setSelectedCard={mockSetSelectedCard}
+      />,
+    );
+
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+
   it("should expand and show subunits when expand button is clicked", () => {
     render(
       <OrganizationCard
