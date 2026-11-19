@@ -22,6 +22,7 @@ import { ToastContainer } from "react-toastify";
 import { ResourceSearchPage } from "../pages/ResourceSearchPage";
 import { NotificationLogPage } from "../pages/NotificationLogPage";
 import { DialogDetailsLookupPage } from "../pages/DialogDetailsLookupPage";
+import { NotificationSendPage } from "../pages/NotificationSendPage";
 
 const App: React.FC = () => {
   //forces zustand to store states in localstorage first time
@@ -87,6 +88,7 @@ const App: React.FC = () => {
                   path="/dialog-details"
                   element={<DialogDetailsLookupPage/>}
                 />
+                <Route path="/notification-send" element={<NotificationSendPage />} />
               </Route>
             </Routes>
           </main>

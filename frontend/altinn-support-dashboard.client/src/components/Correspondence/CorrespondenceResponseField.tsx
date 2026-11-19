@@ -4,7 +4,7 @@ import classes from "./styles/CorrespondenceResponse.module.css";
 import ResponseTabContent from "./ResponseTabContent";
 
 interface CorrespondenceResponseFieldProps {
-  responseData?: CorrespondenceResponse;
+  responseData?: Omit<CorrespondenceResponse, "statusCode">;
 }
 
 const CorrespondenceResponseField: React.FC<
