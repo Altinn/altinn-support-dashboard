@@ -94,7 +94,7 @@ export const NotificationSendPage = () => {
                 <div className={classes.formContainer}>
                     <MessageInputField 
                         className={classes.messageField}
-                        labelText="E-post adresse"
+                        labelText="E-postadresse"
                         multiline={false}
                         value={emailAddress}
                         onChange={(value) => {
