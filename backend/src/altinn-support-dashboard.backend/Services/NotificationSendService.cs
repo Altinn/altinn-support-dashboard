@@ -13,7 +13,7 @@ public class NotificationSendService : INotificationSendService
         _client = client;
     }
 
-    public async Task<NotificationSendResponse> SendTestEmail(NotificationSendRequest request, string environmentName, string sendersReference)
+    public async Task<NotificationSendResponse> SendTestEmail(NotificationSendRequest request, string environmentName, string idempotencyId, string sendersReference)
     {
         var email = request.EmailAddress?.Trim() ?? "";
         if (!ValidationService.IsValidEmail(email))
@@ -23,6 +23,7 @@ public class NotificationSendService : INotificationSendService
 
         var order = new InstantEmailOrderRequest
         {
+            IdempotencyId = idempotencyId,
             SendersReference = sendersReference,
             RecipientEmail = new InstantRecipientEmail
             {

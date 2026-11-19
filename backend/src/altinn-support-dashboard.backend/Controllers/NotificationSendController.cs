@@ -33,22 +33,49 @@ public class NotificationSendController : ControllerBase
     [EnableRateLimiting(RateLimitPolicies.NotificationSend)]
     public async Task<IActionResult> SendTestEmail([FromRoute] string environmentName, [FromBody] NotificationSendRequest request)
     {
+        var idempotencyId = ResolveIdempotencyId(request.IdempotencyId);
         // Generated here so both success and failure events can be traced to the order in Altinn, 
         // even when we never get a response (e.g timeout)
-        var sendersReference = $"asd-test-{Guid.NewGuid()}";
+        var sendersReference = $"asd-test-{idempotencyId}";
 
         NotificationSendResponse response;
         try
         {
-            response = await _service.SendTestEmail(request, environmentName, sendersReference);
+            response = await _service.SendTestEmail(request, environmentName, idempotencyId, sendersReference);
 
         } catch (Exception ex)
         {
             _telemetryService.TrackTestEmailFailed(ex, sendersReference, CurrentUserId, environmentName);
+
+            // Timeout or dropped connection: Altinn may have already accepted the order
+            // Retrying is safe because the frontend sends the same key again
+            if (ex is TaskCanceledException or HttpRequestException)
+            {
+                return StatusCode(StatusCodes.Status504GatewayTimeout, new
+                {
+                    message = "Vi fikk ikke bekreftet at e-posten ble sendt. Det er trygt å prøve igjen."
+                });
+            }
             throw;
         }
         
         _telemetryService.TrackTestEmailSent(response, sendersReference, CurrentUserId, environmentName);
         return Ok(response);
+    }
+
+    // Falls bck to a new key if the frontend didn't send one
+    private static string ResolveIdempotencyId(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+        if (!Guid.TryParse(value, out var id))
+        {
+            throw new BadRequestException("IdempotencyId must be a GUID");
+        }
+
+        return id.ToString();
     }
 }

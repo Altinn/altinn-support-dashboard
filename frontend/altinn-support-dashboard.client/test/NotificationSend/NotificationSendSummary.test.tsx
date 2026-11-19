@@ -11,7 +11,7 @@ const baseResponse: NotificationSendResponse = {
   responseHeader: "",
   requestHeader: "",
   requestBody: "",
-  statusCode: "201",
+  statusCode: 201,
 };
 
 describe("NotificationSendSummary", () => {
@@ -56,7 +56,7 @@ describe("NotificationSendSummary", () => {
       <NotificationSendSummary
         response={{
           ...baseResponse,
-          statusCode: "400",
+          statusCode: 400,
           problem: {
             title: "Validation failed",
             status: 400,
@@ -81,7 +81,7 @@ describe("NotificationSendSummary", () => {
   it("should fall back to default title when problem has no title", () => {
     render(
       <NotificationSendSummary
-        response={{ ...baseResponse, statusCode: "500", problem: {} }}
+        response={{ ...baseResponse, statusCode: 500, problem: {} }}
       />
     );
 

@@ -84,7 +84,7 @@ describe("NotificationSendPage", () => {
 
   it("should call mutation with environment and trimmed email only", async () => {
     const mutateAsync = mockHook(
-      vi.fn().mockResolvedValue({ statusCode: "201" })
+      vi.fn().mockResolvedValue({ statusCode: 201 })
     );
     useAppStore.setState({ environment: "PROD" });
     render(<NotificationSendPage />);
@@ -94,7 +94,10 @@ describe("NotificationSendPage", () => {
 
     expect(mutateAsync).toHaveBeenCalledWith({
       environment: "PROD",
-      request: { emailAddress: "test@example.com" },
+      request: {
+        emailAddress: "test@example.com",
+        idempotencyId: expect.any(String),
+      },
     });
   });
 
@@ -121,7 +124,7 @@ describe("NotificationSendPage", () => {
       responseHeader: "",
       requestHeader: "",
       requestBody: "{}",
-      statusCode: "201",
+      statusCode: 201,
       result: { notificationOrderId: "order-123" },
     };
     mockHook(vi.fn().mockResolvedValue(response));
@@ -145,7 +148,7 @@ describe("NotificationSendPage", () => {
       requestBody: JSON.stringify({
         recipientEmail: { emailAddress: "test@example.com" },
       }),
-      statusCode: "201",
+      statusCode: 201,
       result: { notificationOrderId: "order-123" },
     };
     mockHook(vi.fn().mockResolvedValue(response));
@@ -183,12 +186,36 @@ describe("NotificationSendPage", () => {
         responseHeader: "",
         requestHeader: "",
         requestBody: "",
-        statusCode: "400",
+        statusCode: 400,
         problem: { title: "Validation failed" },
       })
     );
     render(<NotificationSendPage />);
 
     expect(screen.getByText("Validation failed")).toBeInTheDocument();
+  });
+
+  it("should render and clear the stored response when it is not valid JSON", () => {
+    mockHook();
+    sessionStorage.setItem("notifSendResponse", "{not json");
+
+    render(<NotificationSendPage />);
+
+    expect(sendButton()).toBeInTheDocument();
+    expect(sessionStorage.getItem("notifSendResponse")).toBeNull();
+  });
+
+  it("should ignore and clear a stored response with an unexpected shape", () => {
+    mockHook();
+    sessionStorage.setItem(
+      "notifSendResponse",
+      JSON.stringify({ foo: "bar", problem: { title: "Validation failed" } })
+    );
+
+    render(<NotificationSendPage />);
+
+    expect(sendButton()).toBeInTheDocument();
+    expect(screen.queryByText("Validation failed")).not.toBeInTheDocument();
+    expect(sessionStorage.getItem("notifSendResponse")).toBeNull();
   });
 });

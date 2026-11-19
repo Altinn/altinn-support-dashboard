@@ -26,7 +26,7 @@ const NotificationSendSummary: React.FC<NotificationSendSummaryProps> = ({
                         </Paragraph>
                         {result.notification.sendersReference && (
                             <Paragraph>
-                                Senders refernce: {result.notification.sendersReference}
+                                Senders reference: {result.notification.sendersReference}
                             </Paragraph>
                         )}
                     </>

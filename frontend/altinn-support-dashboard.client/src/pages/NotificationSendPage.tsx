@@ -14,7 +14,27 @@ import classes from "./styles/CorrespondencePage.module.css";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const EMAIL_SUBJECT = "Varsel test Altinn";
-const EMAIL_BODY = "Test varsel fra Altinn.\nDenne mailen kan ikke besvares."
+const EMAIL_BODY = "Test varsel fra Altinn.\nDenne mailen kan ikke besvares.";
+const RESPONSE_STORAGE_KEY = "notifSendResponse";
+
+// A bad stored value must never stop the page from loading
+const loadStoredResponse = (): NotificationSendResponse | undefined => {
+    const item = sessionStorage.getItem(RESPONSE_STORAGE_KEY);
+    if (!item) return undefined;
+
+    try {
+        const parsed = JSON.parse(item);
+        // Valid JSON can still be an old or unexpected shape
+        if (typeof parsed?.statusCode === "number"){
+            return parsed;
+        }
+    } catch {
+        // Malfromed JSON, handled below
+    }
+
+    sessionStorage.removeItem(RESPONSE_STORAGE_KEY);
+    return undefined;
+};
 
 export const NotificationSendPage = () => {
     const  post = useSendTestEmail();
@@ -23,12 +43,7 @@ export const NotificationSendPage = () => {
     // The recipient's email is personal data, so it is never stored.
     const [emailAddress, setEmailAddress] = useState<string>("");
 
-    const [response, setResponse] = useState<NotificationSendResponse | undefined>(
-        () => {
-            const item = sessionStorage.getItem("notifSendResponse");
-            return item ? JSON.parse(item) :undefined;
-        }
-    );
+    const [response, setResponse] = useState<NotificationSendResponse | undefined>(loadStoredResponse);
 
     const emailError = useMemo(
         () =>
@@ -40,22 +55,31 @@ export const NotificationSendPage = () => {
 
     const isDisabled = !emailAddress || !!emailError || post.isPending;
 
+    // One key per intended send. Reused when trying after an error,
+    // so Notifications doesn't send the same email twice
+    const [idempotencyId, setIdempotencyId] = useState<string>(() => crypto.randomUUID());
+
     const handleSend = async () => {
         if(isDisabled) return;
 
         try {
             const result = await post.mutateAsync({
                 environment,
-                request: { emailAddress: emailAddress.trim() },
+                request: { emailAddress: emailAddress.trim(), idempotencyId},
             });
             setResponse(result);
             // requestBody contains the recipient's email – keep it in memory only
             sessionStorage.setItem(
-                "notifSendResponse",
+                RESPONSE_STORAGE_KEY,
                 JSON.stringify({ ...result, requestBody: "" })
             );
+
+            // Sent: the next click is a new deliberate send
+            if (result.result) {
+                setIdempotencyId(crypto.randomUUID());
+            }
         } catch {
-            // The hook's onError already shows a toast
+            // Keep the key, so retrying returns the original order if it was accepted
         }
     };
 
@@ -70,19 +94,20 @@ export const NotificationSendPage = () => {
                 <div className={classes.formContainer}>
                     <MessageInputField 
                         className={classes.messageField}
-                        labelText="E-mail address"
+                        labelText="E-post adresse"
                         multiline={false}
                         value={emailAddress}
                         onChange={(value) => {
                             setEmailAddress(value);
+                            setIdempotencyId(crypto.randomUUID());
                         }}
                     />
                     {emailError && <Alert data-color="danger">{emailError}</Alert>}
                     <div>
-                        <Paragraph><strong>Subject:</strong></Paragraph>
+                        <Paragraph><strong>Meldings tittel:</strong></Paragraph>
                         <Paragraph>{EMAIL_SUBJECT}</Paragraph>
 
-                        <Paragraph><strong>Body:</strong></Paragraph>
+                        <Paragraph><strong>Meldingstekst:</strong></Paragraph>
                         <Paragraph style={{ whiteSpace: "pre-line" }}>{EMAIL_BODY}</Paragraph>
                     </div>
 
@@ -91,7 +116,7 @@ export const NotificationSendPage = () => {
                     </Alert>
 
                     <Button onClick={handleSend} disabled={isDisabled}>
-                        Send e-mail
+                        Send e-post
                     </Button>
                 </div>
 
@@ -99,7 +124,7 @@ export const NotificationSendPage = () => {
                     {response && (
                         <div>
                             <ResponseStatusCode
-                                statuscode={Number.parseInt(response.statusCode)}
+                                statuscode={response.statusCode}
                             />
                             <NotificationSendSummary response={response} />
                             <CorrespondenceResponseField responseData={response} />

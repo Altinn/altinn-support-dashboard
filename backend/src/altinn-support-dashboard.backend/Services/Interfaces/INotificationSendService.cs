@@ -2,5 +2,5 @@ using Models.notifications;
 
 public interface INotificationSendService
 {
-    Task<NotificationSendResponse> SendTestEmail(NotificationSendRequest request, string environmentName, string sendersReference);
+    Task<NotificationSendResponse> SendTestEmail(NotificationSendRequest request, string environmentName, string idempotencyId, string sendersReference);
 }

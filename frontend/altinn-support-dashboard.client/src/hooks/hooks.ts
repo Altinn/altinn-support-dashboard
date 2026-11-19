@@ -409,7 +409,7 @@ export const useSendTestEmail = () => {
       }
     },
     onError: (err) => {
-      toast.error(`Feil under sending av e-post ${err.message}`);
+      toast.error(`Feil under sending av e-post: ${err.message}`);
     },
   });
 };

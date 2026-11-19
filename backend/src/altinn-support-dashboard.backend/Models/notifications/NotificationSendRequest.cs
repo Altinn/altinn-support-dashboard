@@ -8,13 +8,17 @@ using System.Net;
 public class NotificationSendRequest
 {
     public string EmailAddress { get; set; } = "";
+
+    // Set by the frontend once per intended send and reused on retry
+    // Notifications returns the original order for a repeated key instead of sending again
+    public string? IdempotencyId { get; set; }
 }
 
 // From our backend to Altinn
 public class InstantEmailOrderRequest
 {
     public string IdempotencyId { get; set; } = Guid.NewGuid().ToString();
-    public string SendersReference {get; set; } = $"asd-test-{Guid.NewGuid()}";
+    public string SendersReference { get; set; } = $"asd-test-{Guid.NewGuid()}";
     public InstantRecipientEmail RecipientEmail {get; set; } = new();
 }
 
@@ -58,7 +62,7 @@ public class InstantNotificationShipment
     public string? SendersReference { get; set; }
 }
 
-// Error (ProblemDetails / ValidtaionProblemDetails)
+// Error (ProblemDetails / ValidationProblemDetails)
 public class NotificationProblem
 {
     public string? Type { get; set; }

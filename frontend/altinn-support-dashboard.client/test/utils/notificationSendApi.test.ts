@@ -15,7 +15,7 @@ describe("notificationSendApi", () => {
   describe("sendTestEmail", () => {
     it("should POST to the environment-specific URL and return JSON", async () => {
       const mockResponse = {
-        statusCode: "201",
+        statusCode: 201,
         result: { notificationOrderId: "abc" },
       };
       vi.mocked(fetch).mockResolvedValue({

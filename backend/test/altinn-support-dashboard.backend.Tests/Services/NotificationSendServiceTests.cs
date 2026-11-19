@@ -7,6 +7,7 @@ using Xunit;
 public class NotificationSendServiceTests
 {
     private const string EnvironmentName = "TT02";
+    private const string IdempotencyId = "5f98c36c-653f-4de0-b75f-24711eaee568";
     private const string SendersReference = "asd-test-ref";
 
     private readonly Mock<INotificationSendClient> _clientMock;
@@ -27,7 +28,7 @@ public class NotificationSendServiceTests
     {
         var request = new NotificationSendRequest { EmailAddress = "test@example.com" };
 
-        await _service.SendTestEmail(request, EnvironmentName, SendersReference);
+        await _service.SendTestEmail(request, EnvironmentName, IdempotencyId, SendersReference);
 
         _clientMock.Verify(c => c.SendInstantEmail(
             It.Is<InstantEmailOrderRequest>(o =>
@@ -40,7 +41,7 @@ public class NotificationSendServiceTests
     [Fact]
     public async Task SendTestEmail_AlwaysUsesFixedSubjectAndBody()
     {
-        await _service.SendTestEmail(new NotificationSendRequest { EmailAddress = "test@example.com" }, EnvironmentName, SendersReference);
+        await _service.SendTestEmail(new NotificationSendRequest { EmailAddress = "test@example.com" }, EnvironmentName, IdempotencyId, SendersReference);
 
         _clientMock.Verify(c => c.SendInstantEmail(
             It.Is<InstantEmailOrderRequest>(o =>
@@ -54,7 +55,7 @@ public class NotificationSendServiceTests
     [Fact]
     public async Task SendTestEmail_UsesSendersReferenceFromCaller()
     {
-        await _service.SendTestEmail(new NotificationSendRequest { EmailAddress = "test@example.com" }, EnvironmentName, "asd-test-123");
+        await _service.SendTestEmail(new NotificationSendRequest { EmailAddress = "test@example.com" }, EnvironmentName, IdempotencyId, "asd-test-123");
 
         _clientMock.Verify(c => c.SendInstantEmail(
             It.Is<InstantEmailOrderRequest>(o => o.SendersReference == "asd-test-123"),
@@ -63,20 +64,18 @@ public class NotificationSendServiceTests
     }
 
     [Fact]
-    public async Task SendTestEmail_TrimsEmailAddress()
+    public async Task SendTestEmail_UsesIdempotencyIdFromCaller()
     {
-        var request = new NotificationSendRequest { EmailAddress = "  test@example.com  " };
-
-        await _service.SendTestEmail(request, EnvironmentName, SendersReference);
+        await _service.SendTestEmail(new NotificationSendRequest { EmailAddress = "test@example.com" }, EnvironmentName, IdempotencyId, SendersReference);
 
         _clientMock.Verify(c => c.SendInstantEmail(
-            It.Is<InstantEmailOrderRequest>(o => o.RecipientEmail.EmailAddress == "test@example.com"),
+            It.Is<InstantEmailOrderRequest>(o => o.IdempotencyId == IdempotencyId),
             EnvironmentName),
             Times.Once);
     }
 
     [Fact]
-    public async Task SendTestEmail_GeneratesUniqueIdempotencyIdPerOrder()
+    public async Task SendTestEmail_SameIdempotencyId_IsSentUnchangedOnRetry()
     {
         var orders = new List<InstantEmailOrderRequest>();
         _clientMock
@@ -85,11 +84,24 @@ public class NotificationSendServiceTests
             .ReturnsAsync(new NotificationSendResponse());
 
         var request = new NotificationSendRequest { EmailAddress = "test@example.com" };
-        await _service.SendTestEmail(request, EnvironmentName, SendersReference);
-        await _service.SendTestEmail(request, EnvironmentName, SendersReference);
+        await _service.SendTestEmail(request, EnvironmentName, IdempotencyId, SendersReference);
+        await _service.SendTestEmail(request, EnvironmentName, IdempotencyId, SendersReference);
 
         Assert.Equal(2, orders.Count);
-        Assert.NotEqual(orders[0].IdempotencyId, orders[1].IdempotencyId);
+        Assert.All(orders, o => Assert.Equal(IdempotencyId, o.IdempotencyId));
+    }
+
+    [Fact]
+    public async Task SendTestEmail_TrimsEmailAddress()
+    {
+        var request = new NotificationSendRequest { EmailAddress = "  test@example.com  " };
+
+        await _service.SendTestEmail(request, EnvironmentName, IdempotencyId, SendersReference);
+
+        _clientMock.Verify(c => c.SendInstantEmail(
+            It.Is<InstantEmailOrderRequest>(o => o.RecipientEmail.EmailAddress == "test@example.com"),
+            EnvironmentName),
+            Times.Once);
     }
 
     [Theory]
@@ -100,7 +112,7 @@ public class NotificationSendServiceTests
     {
         var request = new NotificationSendRequest { EmailAddress = email };
 
-        await Assert.ThrowsAsync<BadRequestException>(() => _service.SendTestEmail(request, EnvironmentName, SendersReference));
+        await Assert.ThrowsAsync<BadRequestException>(() => _service.SendTestEmail(request, EnvironmentName, IdempotencyId, SendersReference));
 
         _clientMock.Verify(c => c.SendInstantEmail(It.IsAny<InstantEmailOrderRequest>(), It.IsAny<string>()), Times.Never);
     }
@@ -113,7 +125,7 @@ public class NotificationSendServiceTests
             .Setup(c => c.SendInstantEmail(It.IsAny<InstantEmailOrderRequest>(), EnvironmentName))
             .ReturnsAsync(expected);
 
-        var result = await _service.SendTestEmail(new NotificationSendRequest { EmailAddress = "test@example.com" }, EnvironmentName, SendersReference);
+        var result = await _service.SendTestEmail(new NotificationSendRequest { EmailAddress = "test@example.com" }, EnvironmentName, IdempotencyId, SendersReference);
 
         Assert.Same(expected, result);
     }

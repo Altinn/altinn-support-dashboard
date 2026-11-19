@@ -16,6 +16,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
     {
         private const string EnvironmentName = "TT02";
         private const string UserId = "test-user";
+        private const string IdempotencyId = "ff28bf0d-6ef9-4d50-b1fe-b84b207f5542";
 
         private readonly Mock<INotificationSendService> _serviceMock;
         private readonly Mock<ITelemetryService> _telemetryServiceMock;
@@ -40,13 +41,34 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             };
         }
 
+        // Records the idempotencyId and sendersReference the controller passes to the service
+        private List<(string IdempotencyId, string SendersReference)> CaptureServiceCalls()
+        {
+            var calls = new List<(string, string)>();
+            _serviceMock
+                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Callback<NotificationSendRequest, string, string, string>((_, _, id, reference) => calls.Add((id, reference)))
+                .ReturnsAsync(new NotificationSendResponse());
+            return calls;
+        }
+
+        private void SetupServiceThrows(Exception exception)
+        {
+            _serviceMock
+                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ThrowsAsync(exception);
+        }
+
+        private static string? GetMessage(ObjectResult result) =>
+            result.Value?.GetType().GetProperty("message")?.GetValue(result.Value) as string;
+
         [Fact]
         public async Task SendTestEmail_ReturnsOk_WithServiceResult()
         {
             var request = new NotificationSendRequest { EmailAddress = "test@example.com" };
             var response = new NotificationSendResponse { ResponseBody = "ok" };
             _serviceMock
-                .Setup(s => s.SendTestEmail(request, EnvironmentName, It.IsAny<string>()))
+                .Setup(s => s.SendTestEmail(request, EnvironmentName, It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(response);
 
             var result = await _controller.SendTestEmail(EnvironmentName, request);
@@ -61,49 +83,103 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         public async Task SendTestEmail_PassesEnvironmentToService(string environmentName)
         {
             var request = new NotificationSendRequest { EmailAddress = "test@example.com" };
-            _serviceMock
-                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(new NotificationSendResponse());
+            CaptureServiceCalls();
 
             await _controller.SendTestEmail(environmentName, request);
 
-            _serviceMock.Verify(s => s.SendTestEmail(request, environmentName, It.IsAny<string>()), Times.Once);
+            _serviceMock.Verify(s => s.SendTestEmail(request, environmentName, It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task SendTestEmail_WithIdempotencyId_PassesItToService_AndUsesItInSendersReference()
+        {
+            var calls = CaptureServiceCalls();
+
+            await _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest
+            {
+                EmailAddress = "test@example.com",
+                IdempotencyId = IdempotencyId
+            });
+
+            var call = Assert.Single(calls);
+            Assert.Equal(IdempotencyId, call.IdempotencyId);
+            Assert.Equal($"asd-test-{IdempotencyId}", call.SendersReference);
+        }
+
+        [Fact]
+        public async Task SendTestEmail_RetryWithSameIdempotencyId_ReusesKeyAndSendersReference()
+        {
+            var calls = CaptureServiceCalls();
+            var request = new NotificationSendRequest { EmailAddress = "test@example.com", IdempotencyId = IdempotencyId };
+
+            await _controller.SendTestEmail(EnvironmentName, request);
+            await _controller.SendTestEmail(EnvironmentName, request);
+
+            Assert.Equal(2, calls.Count);
+            Assert.Equal(calls[0], calls[1]);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task SendTestEmail_WithoutIdempotencyId_GeneratesGuid_AndUsesItInSendersReference(string? idempotencyId)
+        {
+            var calls = CaptureServiceCalls();
+
+            await _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest
+            {
+                EmailAddress = "test@example.com",
+                IdempotencyId = idempotencyId
+            });
+
+            var call = Assert.Single(calls);
+            Assert.True(Guid.TryParse(call.IdempotencyId, out _));
+            Assert.Equal($"asd-test-{call.IdempotencyId}", call.SendersReference);
+        }
+
+        [Fact]
+        public async Task SendTestEmail_WithoutIdempotencyId_GeneratesNewKeyPerRequest()
+        {
+            var calls = CaptureServiceCalls();
+            var request = new NotificationSendRequest { EmailAddress = "test@example.com" };
+
+            await _controller.SendTestEmail(EnvironmentName, request);
+            await _controller.SendTestEmail(EnvironmentName, request);
+
+            Assert.Equal(2, calls.Count);
+            Assert.NotEqual(calls[0].IdempotencyId, calls[1].IdempotencyId);
+            Assert.NotEqual(calls[0].SendersReference, calls[1].SendersReference);
+        }
+
+        [Fact]
+        public async Task SendTestEmail_WithInvalidIdempotencyId_ThrowsBadRequest_AndDoesNotSend()
+        {
+            CaptureServiceCalls();
+
+            await Assert.ThrowsAsync<BadRequestException>(() =>
+                _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest
+                {
+                    EmailAddress = "test@example.com",
+                    IdempotencyId = "not-a-guid"
+                }));
+
+            _serviceMock.Verify(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
         public async Task SendTestEmail_PassesSameSendersReferenceToServiceAndTelemetry()
         {
-            string? passedReference = null;
-            _serviceMock
-                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback<NotificationSendRequest, string, string>((_, _, r) => passedReference = r)
-                .ReturnsAsync(new NotificationSendResponse());
+            var calls = CaptureServiceCalls();
 
             await _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest { EmailAddress = "test@example.com" });
 
-            Assert.NotNull(passedReference);
-            Assert.StartsWith("asd-test-", passedReference);
+            var reference = Assert.Single(calls).SendersReference;
+            Assert.StartsWith("asd-test-", reference);
             _telemetryServiceMock.Verify(t => t.TrackSend(
                 "notifications", "testEmail", UserId, EnvironmentName,
-                It.Is<IDictionary<string, string>?>(d => d != null && d["sendersReference"] == passedReference)),
+                It.Is<IDictionary<string, string>?>(d => d != null && d["sendersReference"] == reference)),
                 Times.Once);
-        }
-
-        [Fact]
-        public async Task SendTestEmail_GeneratesNewSendersReferencePerRequest()
-        {
-            var references = new List<string>();
-            _serviceMock
-                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback<NotificationSendRequest, string, string>((_, _, r) => references.Add(r))
-                .ReturnsAsync(new NotificationSendResponse());
-
-            var request = new NotificationSendRequest { EmailAddress = "test@example.com" };
-            await _controller.SendTestEmail(EnvironmentName, request);
-            await _controller.SendTestEmail(EnvironmentName, request);
-
-            Assert.Equal(2, references.Count);
-            Assert.NotEqual(references[0], references[1]);
         }
 
         [Fact]
@@ -113,7 +189,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
             var shipmentId = Guid.NewGuid();
             var request = new NotificationSendRequest { EmailAddress = "  test@example.com  " };
             _serviceMock
-                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new NotificationSendResponse
                 {
                     StatusCode = HttpStatusCode.Created,
@@ -151,7 +227,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         {
             var request = new NotificationSendRequest { EmailAddress = "test@example.com" };
             _serviceMock
-                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new NotificationSendResponse
                 {
                     StatusCode = HttpStatusCode.BadRequest,
@@ -177,9 +253,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         [Fact]
         public async Task SendTestEmail_WhenServiceThrowsBadRequest_Propagates_AndTracksFailureWithReason()
         {
-            _serviceMock
-                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ThrowsAsync(new BadRequestException("Not a valid email"));
+            SetupServiceThrows(new BadRequestException("Not a valid email"));
 
             await Assert.ThrowsAsync<BadRequestException>(() =>
                 _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest { EmailAddress = "bad@" }));
@@ -201,14 +275,19 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Fact]
-        public async Task SendTestEmail_OnTimeout_Propagates_AndTracksOutcomeUnknown()
+        public async Task SendTestEmail_OnTimeout_Returns504WithRetryMessage_AndTracksOutcomeUnknown()
         {
-            _serviceMock
-                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ThrowsAsync(new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout"));
+            SetupServiceThrows(new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout"));
 
-            await Assert.ThrowsAsync<TaskCanceledException>(() =>
-                _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest { EmailAddress = "test@example.com" }));
+            var result = await _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest
+            {
+                EmailAddress = "test@example.com",
+                IdempotencyId = IdempotencyId
+            });
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status504GatewayTimeout, objectResult.StatusCode);
+            Assert.Contains("trygt å prøve igjen", GetMessage(objectResult));
 
             _telemetryServiceMock.Verify(t => t.TrackSend(
                 "notifications",
@@ -217,7 +296,7 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                 EnvironmentName,
                 It.Is<IDictionary<string, string>?>(d =>
                     d != null &&
-                    d.ContainsKey("sendersReference") &&
+                    d["sendersReference"] == $"asd-test-{IdempotencyId}" &&
                     d["success"] == "False" &&
                     d["errorType"] == nameof(TaskCanceledException) &&
                     d["outcomeUnknown"] == "True" &&
@@ -226,14 +305,17 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
         }
 
         [Fact]
-        public async Task SendTestEmail_OnOtherException_TracksFailureWithoutReasonOrOutcomeUnknown()
+        public async Task SendTestEmail_OnConnectionError_Returns504WithRetryMessage_AndTracksFailure()
         {
-            _serviceMock
-                .Setup(s => s.SendTestEmail(It.IsAny<NotificationSendRequest>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ThrowsAsync(new HttpRequestException("Connection refused to https://platform.tt02.altinn.no"));
+            SetupServiceThrows(new HttpRequestException("Connection refused to https://platform.tt02.altinn.no"));
 
-            await Assert.ThrowsAsync<HttpRequestException>(() =>
-                _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest { EmailAddress = "test@example.com" }));
+            var result = await _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest { EmailAddress = "test@example.com" });
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status504GatewayTimeout, objectResult.StatusCode);
+            Assert.Contains("trygt å prøve igjen", GetMessage(objectResult));
+            // The raw exception message (with the Altinn URL) is not returned to the user
+            Assert.DoesNotContain("platform.tt02.altinn.no", GetMessage(objectResult));
 
             _telemetryServiceMock.Verify(t => t.TrackSend(
                 "notifications",
@@ -244,6 +326,27 @@ namespace altinn_support_dashboard.backend.Tests.Controllers
                     d != null &&
                     d["success"] == "False" &&
                     d["errorType"] == nameof(HttpRequestException) &&
+                    !d.ContainsKey("reason"))),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task SendTestEmail_OnOtherException_Propagates_AndTracksFailure()
+        {
+            SetupServiceThrows(new InvalidOperationException("Something else"));
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _controller.SendTestEmail(EnvironmentName, new NotificationSendRequest { EmailAddress = "test@example.com" }));
+
+            _telemetryServiceMock.Verify(t => t.TrackSend(
+                "notifications",
+                "testEmail",
+                UserId,
+                EnvironmentName,
+                It.Is<IDictionary<string, string>?>(d =>
+                    d != null &&
+                    d["success"] == "False" &&
+                    d["errorType"] == nameof(InvalidOperationException) &&
                     !d.ContainsKey("reason") &&
                     !d.ContainsKey("outcomeUnknown"))),
                 Times.Once);

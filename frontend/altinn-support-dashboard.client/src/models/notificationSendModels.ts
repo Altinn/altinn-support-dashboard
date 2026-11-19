@@ -1,5 +1,6 @@
 export interface NotificationSendRequest {
     emailAddress: string;
+    idempotencyId?: string;
 }
 
 export interface InstantEmailOrderResult {
@@ -25,7 +26,8 @@ export interface NotificationSendResponse {
     responseHeader: string;
     requestHeader: string;
     requestBody: string;
-    statusCode: string;
+    // HttpStatusCodes enum on the backend, serialized as a number
+    statusCode: number;
     result?: InstantEmailOrderResult;
     problem?: NotificationProblem;
 }
