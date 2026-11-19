@@ -23,7 +23,7 @@ const mockHook = (mutateAsync = vi.fn(), isPending = false) => {
 // The email address is the only input on the page
 const getEmailField = () => screen.getByRole("textbox");
 
-const sendButton = () => screen.getByRole("button", { name: /Send e-mail/i });
+const sendButton = () => screen.getByRole("button", { name: /Send e-post/i });
 
 beforeEach(() => {
   vi.clearAllMocks();
