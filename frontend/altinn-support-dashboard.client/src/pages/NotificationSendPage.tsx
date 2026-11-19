@@ -29,7 +29,7 @@ const loadStoredResponse = (): NotificationSendResponse | undefined => {
             return parsed;
         }
     } catch {
-        // Malfromed JSON, handled below
+        // Malformed JSON, handled below
     }
 
     sessionStorage.removeItem(RESPONSE_STORAGE_KEY);
