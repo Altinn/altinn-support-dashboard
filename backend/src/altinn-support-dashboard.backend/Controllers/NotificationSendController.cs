@@ -35,7 +35,7 @@ public class NotificationSendController : ControllerBase
     {
         var idempotencyId = ResolveIdempotencyId(request.IdempotencyId);
         // Generated here so both success and failure events can be traced to the order in Altinn, 
-        // even when we never get a response (e.g timeout)
+        // even when we never get a response (e.g. timeout)
         var sendersReference = $"asd-test-{idempotencyId}";
 
         NotificationSendResponse response;
