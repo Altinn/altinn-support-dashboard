@@ -104,7 +104,7 @@ export const NotificationSendPage = () => {
                     />
                     {emailError && <Alert data-color="danger">{emailError}</Alert>}
                     <div>
-                        <Paragraph><strong>Meldings tittel:</strong></Paragraph>
+                        <Paragraph><strong>Meldingstittel:</strong></Paragraph>
                         <Paragraph>{EMAIL_SUBJECT}</Paragraph>
 
                         <Paragraph><strong>Meldingstekst:</strong></Paragraph>
