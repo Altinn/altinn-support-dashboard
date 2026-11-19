@@ -30,7 +30,7 @@ public static class NotificationSendTelemetryExtensions
         telemetry.TrackSend(FeatureArea, "testEmail", userId, environment, extra);
     }
 
-    // Failed sent log
+    // Failed send log
     public static void TrackTestEmailFailed(this ITelemetryService telemetry, Exception exception, string sendersReference, string userId, string environment)
     {
         var extra = new Dictionary<string, string>
