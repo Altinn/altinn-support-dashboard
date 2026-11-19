@@ -26,7 +26,7 @@ export interface NotificationSendResponse {
     responseHeader: string;
     requestHeader: string;
     requestBody: string;
-    // HttpStatusCodes enum on the backend, serialized as a number
+    // HttpStatusCode enum on the backend, serialized as a number
     statusCode: number;
     result?: InstantEmailOrderResult;
     problem?: NotificationProblem;
