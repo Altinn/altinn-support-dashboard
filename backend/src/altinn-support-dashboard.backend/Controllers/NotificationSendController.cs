@@ -63,7 +63,7 @@ public class NotificationSendController : ControllerBase
         return Ok(response);
     }
 
-    // Falls bck to a new key if the frontend didn't send one
+    // Falls back to a new key if the frontend didn't send one
     private static string ResolveIdempotencyId(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
