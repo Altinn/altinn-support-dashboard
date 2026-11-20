@@ -2,7 +2,7 @@ import classes from "../../styles/OrganizationCard.module.css";
 import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
 import { Organization, SelectedCard, isOrganization } from "../../../../models/models";
 import { useState } from "react";
-import { Card, Button, Heading, Paragraph } from "@digdir/designsystemet-react";
+import { Card, Button, Heading, Paragraph, Textfield } from "@digdir/designsystemet-react";
 
 interface OrganizationCardProps {
   org: Organization;
@@ -10,12 +10,27 @@ interface OrganizationCardProps {
   setSelectedCard: (selectedCard: SelectedCard) => void;
 }
 
+const SUBUNIT_FILTER_THRESHOLD = 5;
+
 export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   org,
   selectedCard,
   setSelectedCard,
 }) => {
-  const [isExpandedSub, setIsExpandedSub] = useState(false);
+  // When a subunit is searched for, the backend also returns its head unit with all subunits.
+  // In that case, show the head unit as the main card with the full subunit list
+  const headUnitWithSiblings = org.headUnit?.subUnits?.some(
+    (sub) => sub.organizationNumber === org.organizationNumber
+  )
+    ? org.headUnit
+    : undefined;
+  
+  const displayOrg = headUnitWithSiblings ?? org;
+  const searchedOrgNumber = headUnitWithSiblings
+    ? org.organizationNumber
+    : undefined;
+  
+  const [isExpandedSub, setIsExpandedSub] = useState(!!headUnitWithSiblings);
   const [isExpandedHead, setIsExpandedHead] = useState(false);
 
   const handleExpandedSub = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -33,46 +48,63 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
     return isOrganization(card) && orgNumber === card.organizationNumber;
   };
 
+  const [subUnitFilter, setSubUnitFilter] = useState("");
+
+  const ownSubUnits = (displayOrg.subUnits ?? []).filter(
+    (sub: Organization) =>
+      sub.headUnit?.organizationNumber === displayOrg.organizationNumber
+    )
+    .sort((a, b) => a.name.localeCompare(b.name, "nb"))
+
+  const filterTerm = subUnitFilter.trim().toLowerCase();
+  const visibleSubUnits = filterTerm
+    ? ownSubUnits.filter(
+        (sub) =>
+            sub.name.toLowerCase().includes(filterTerm) ||
+            sub.organizationNumber.includes(filterTerm.replace(/\s/g, ""))
+    )
+  : ownSubUnits  
+
   return (
     <div className={classes.container}>
-      {isExpandedHead && org.headUnit && (
+      {isExpandedHead && displayOrg.headUnit && (
         <Card
-          className={`${classes.headUnit} ${classes.card} ${org.headUnit.isDeleted && classes.cardIsDeleted}`}
+          className={`${classes.headUnit} ${classes.card} ${displayOrg.headUnit.isDeleted && classes.cardIsDeleted}`}
           variant={
-            checkIsSelected(org.headUnit.organizationNumber)
+            checkIsSelected(displayOrg.headUnit.organizationNumber)
               ? "tinted"
               : "default"
           }
           data-color="neutral"
-          key={org.headUnit.organizationNumber}
+          key={displayOrg.headUnit.organizationNumber}
           onClick={() => {
-            if (!org.headUnit) return;
-            setSelectedCard(org.headUnit);
+            if (!displayOrg.headUnit) return;
+            setSelectedCard(displayOrg.headUnit);
           }}
         >
           <Paragraph variant="short" className={classes.cardHeader}>
-            {org.headUnit.name}
+            {displayOrg.headUnit.name}
           </Paragraph>
           <Paragraph variant="short" className={classes.cardParagraph}>
-            Org nr: {org.headUnit.organizationNumber}
+            Org nr: {displayOrg.headUnit.organizationNumber}
           </Paragraph>
         </Card>
       )}
       <Card
         data-color="neutral"
-        variant={checkIsSelected(org.organizationNumber) ? "tinted" : "default"}
-        className={`${classes.card} ${classes.mainCard} ${org.isDeleted && classes.cardIsDeleted}`}
-        onClick={() => setSelectedCard(org)}
+        variant={checkIsSelected(displayOrg.organizationNumber) ? "tinted" : "default"}
+        className={`${classes.card} ${classes.mainCard} ${displayOrg.isDeleted && classes.cardIsDeleted}`}
+        onClick={() => setSelectedCard(displayOrg)}
       >
         <div className={`${classes.cardInfoContainer}`}>
           <Heading level={6} className={classes.cardHeader}>
-            {org.name}
+            {displayOrg.name}
           </Heading>
           <Paragraph variant="short" className={classes.cardParagraph}>
-            Org nr: {org.organizationNumber}
+            Org nr: {displayOrg.organizationNumber}
           </Paragraph>
         </div>
-        {org.headUnit && (
+        {displayOrg.headUnit && (
           <Button
             className={classes.expandButtonHead}
             variant="secondary"
@@ -84,7 +116,8 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           </Button>
         )}
 
-        {org.subUnits && (
+        
+        {ownSubUnits.length > 0 && (
           <Button
             className={classes.expandButtonSub}
             variant="secondary"
@@ -98,31 +131,40 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
       </Card>
 
       {/* Subunits list */}
-      {org.subUnits && isExpandedSub && (
+      {displayOrg.subUnits && isExpandedSub && (
         <div>
-          {org.subUnits
-            .filter(
-              (sub: Organization) =>
-                sub.headUnit?.organizationNumber === org.organizationNumber
-            )
-            .map((sub: Organization) => (
-              <Card
-                className={`${classes.subunit} ${classes.card} ${sub.isDeleted && classes.cardIsDeleted}`}
-                variant={
-                  checkIsSelected(sub.organizationNumber) ? "tinted" : "default"
-                }
-                data-color="neutral"
-                key={sub.organizationNumber}
-                onClick={() => setSelectedCard(sub)}
-              >
-                <Paragraph variant="short" className={classes.cardHeader}>
-                  {sub.name}
-                </Paragraph>
-                <Paragraph variant="short" className={classes.cardParagraph}>
-                  Org nr: {sub.organizationNumber}
-                </Paragraph>
-              </Card>
-            ))}
+          {ownSubUnits.length >= SUBUNIT_FILTER_THRESHOLD && (
+            <Textfield
+              label={`Søk i underenheter (${ownSubUnits.length})`}
+              value={subUnitFilter}
+              onChange={(e) => setSubUnitFilter(e.target.value)}
+              placeholder="Navn eller org nr"
+              className={classes.subunitFilter}
+            />
+          )}
+          {visibleSubUnits.length === 0 && (
+            <Paragraph variant="short" className={classes.subunit}>
+              Ingen underenheter funnet
+            </Paragraph>
+          )}
+          {visibleSubUnits.map((sub: Organization) => (
+            <Card
+              className={`${classes.subunit} ${classes.card} ${sub.isDeleted && classes.cardIsDeleted} ${sub.organizationNumber === searchedOrgNumber && classes.searchedUnit}`}
+              variant={
+                checkIsSelected(sub.organizationNumber) ? "tinted" : "default"
+              }
+              data-color="neutral"
+              key={sub.organizationNumber}
+              onClick={() => setSelectedCard(sub)}
+            >
+              <Paragraph variant="short" className={classes.cardHeader}>
+                {sub.name}
+              </Paragraph>
+              <Paragraph variant="short" className={classes.cardParagraph}>
+                Org nr: {sub.organizationNumber}
+              </Paragraph>
+            </Card>
+          ))}
         </div>
       )}
     </div>

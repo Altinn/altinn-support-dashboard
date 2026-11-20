@@ -38,6 +38,10 @@ vi.mock("@digdir/designsystemet-react", () => ({
       {children}
     </p>
   ),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Textfield: ({ label, ...props }: any) => (
+    <input aria-label={label} {...props} />
+  ),
 }));
 
 vi.mock("@navikt/aksel-icons", () => ({
@@ -149,6 +153,17 @@ describe("OrganizationCard", () => {
 
     expect(screen.queryByTestId("chevron-up-icon")).not.toBeInTheDocument();
     expect(screen.queryByTestId("chevron-down-icon")).not.toBeInTheDocument();
+  });
+
+  it("should not show subunit expand button when subUnits is an empty array", () => {
+    render(
+      <OrganizationCard
+        org={{ ...mockOrg, subUnits: [] }}
+        setSelectedCard={mockSetSelectedCard}
+      />,
+    );
+
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
   it("should expand and show subunits when expand button is clicked", () => {
@@ -438,5 +453,182 @@ describe("OrganizationCard", () => {
     expect(screen.getByText(mockSubUnits[0].name)).toBeInTheDocument();
     expect(screen.getByText(mockSubUnits[1].name)).toBeInTheDocument();
     expect(screen.getByText(orgWithBoth.headUnit!.name)).toBeInTheDocument();
+  });
+
+  describe("when searching for a subunit", () => {
+    const headUnit: Organization = {
+      ...mockOrg,
+      subUnits: mockSubUnits,
+    };
+    const searchedSubunit: Organization = {
+      ...mockSubUnits[0],
+      headUnit,
+    };
+
+    it("should show the head unit as main card with all subunits expanded", () => {
+      render(
+        <OrganizationCard
+          org={searchedSubunit}
+          setSelectedCard={mockSetSelectedCard}
+        />,
+      );
+
+      expect(
+        screen.getByRole("heading", { name: mockOrg.name }),
+      ).toBeInTheDocument();
+      expect(screen.getByText(mockSubUnits[0].name)).toBeInTheDocument();
+      expect(screen.getByText(mockSubUnits[1].name)).toBeInTheDocument();
+    });
+
+    it("should mark the searched subunit", () => {
+      render(
+        <OrganizationCard
+          org={searchedSubunit}
+          setSelectedCard={mockSetSelectedCard}
+        />,
+      );
+
+      const searchedCard = screen
+        .getByText(mockSubUnits[0].name)
+        .closest("div");
+      const siblingCard = screen.getByText(mockSubUnits[1].name).closest("div");
+      expect(searchedCard?.className).toContain("searchedUnit");
+      expect(siblingCard?.className).not.toContain("searchedUnit");
+    });
+
+    it("should select the head unit when the main card is clicked", () => {
+      render(
+        <OrganizationCard
+          org={searchedSubunit}
+          setSelectedCard={mockSetSelectedCard}
+        />,
+      );
+
+      fireEvent.click(screen.getByRole("heading", { name: mockOrg.name }));
+
+      expect(mockSetSelectedCard).toHaveBeenCalledWith(headUnit);
+    });
+
+    it("should fall back to old layout if head unit's subunits do not include the searched org", () => {
+      const orphan: Organization = {
+        ...mockSubUnits[0],
+        organizationNumber: "99999999999",
+        name: "Orphan",
+        headUnit,
+      };
+
+      render(
+        <OrganizationCard org={orphan} setSelectedCard={mockSetSelectedCard} />,
+      );
+
+      expect(
+        screen.getByRole("heading", { name: "Orphan" }),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe("subunit filter", () => {
+    const createSubUnits = (count: number): Organization[] =>
+      Array.from({ length: count }, (_, i) => ({
+        name: i === 3 ? "Avdeling Bergen" : `Avdeling ${i}`,
+        organizationNumber: `90000000${i}`,
+        unitType: "BEDR",
+        isDeleted: false,
+        headUnit: mockOrg,
+      }));
+
+    const renderExpanded = (subUnitCount: number) => {
+      render(
+        <OrganizationCard
+          org={{ ...mockOrg, subUnits: createSubUnits(subUnitCount) }}
+          setSelectedCard={mockSetSelectedCard}
+        />,
+      );
+      fireEvent.click(screen.getAllByRole("button")[0]);
+    };
+
+    it("should not show the filter when there are fewer than 5 subunits", () => {
+      renderExpanded(4);
+
+      expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+    });
+
+    it("should show the filter when there are 5 subunits", () => {
+      renderExpanded(5);
+
+      expect(screen.getByRole("textbox")).toBeInTheDocument();
+    });
+
+    it("should filter subunits by name, case-insensitive", () => {
+      renderExpanded(8);
+
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "bergen" },
+      });
+
+      expect(screen.getByText("Avdeling Bergen")).toBeInTheDocument();
+      expect(screen.queryByText("Avdeling 0")).not.toBeInTheDocument();
+    });
+
+    it("should filter subunits by org number", () => {
+      renderExpanded(8);
+
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "900000005" },
+      });
+
+      expect(screen.getByText("Avdeling 5")).toBeInTheDocument();
+      expect(screen.queryByText("Avdeling Bergen")).not.toBeInTheDocument();
+    });
+
+    it("should show all subunits again when the filter is cleared", () => {
+      renderExpanded(8);
+      const input = screen.getByRole("textbox");
+
+      fireEvent.change(input, { target: { value: "bergen" } });
+      fireEvent.change(input, { target: { value: "" } });
+
+      expect(screen.getByText("Avdeling 0")).toBeInTheDocument();
+      expect(screen.getByText("Avdeling 7")).toBeInTheDocument();
+    });
+
+    it("should show a message when no subunits match", () => {
+      renderExpanded(8);
+
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "finnes ikke" },
+      });
+
+      expect(screen.getByText("Ingen underenheter funnet")).toBeInTheDocument();
+    });
+  });
+
+  it("should show subunits in alphabetical order", () => {
+    const unsorted: Organization[] = [
+      "Øst",
+      "Bergen",
+      "Ålesund",
+      "Arendal",
+      "Zeta",
+    ].map((name, i) => ({
+      name,
+      organizationNumber: `80000000${i}`,
+      unitType: "BEDR",
+      isDeleted: false,
+      headUnit: mockOrg,
+    }));
+
+    render(
+      <OrganizationCard
+        org={{ ...mockOrg, subUnits: unsorted }}
+        setSelectedCard={mockSetSelectedCard}
+      />,
+    );
+    fireEvent.click(screen.getAllByRole("button")[0]);
+
+    const names = screen
+      .getAllByText(/^(Øst|Bergen|Ålesund|Arendal|Zeta)$/)
+      .map((el) => el.textContent);
+    expect(names).toEqual(["Arendal", "Bergen", "Zeta", "Øst", "Ålesund"]);
   });
 });
