@@ -44,13 +44,13 @@ public class NotificationSendResponse
     public string RequestHeader { get; set; } = "";
     public string RequestBody { get; set; } = "";
 
-    public InstantEmailOrderResult? Result { get; set; }
+    public InstantOrderResult? Result { get; set; }
     public NotificationProblem? Problem { get; set; }
 
 }
 
 // Success 200/201
-public class InstantEmailOrderResult
+public class InstantOrderResult
 {
     public Guid NotificationOrderId { get; set; }
     public InstantNotificationShipment? Notification { get; set; }
@@ -75,4 +75,33 @@ public class NotificationProblem
     // Catches  additionalProp1..n
     [JsonExtensionData]
     public Dictionary<string, JsonElement>? Extensions { get; set; }
+}
+
+// From frontend
+public class NotificationSendSmsRequst
+{
+    public string PhoneNumber { get; set; } = "";
+    public string? IdempotencyId { get; set; }
+}
+
+// From our backend to Altinn
+public class InstantSmsOrderRequest
+{
+    public string IdempotencyId { get; set; } = Guid.NewGuid().ToString();
+    public string SendersReference { get; set; } = $"asd-test-{Guid.NewGuid()}";
+    public InstantRecipientSms RecipientSms { get; set; }= new();
+}
+
+public class InstantRecipientSms
+{
+    // Must be in international format, e.g. +4799999999
+    public string PhoneNumber { get; set; } = "";
+    public int TimeToLiveInSeconds {get; set; } = 3600;
+    public InstantSmsSettings SmsSettings { get; set; } = new(); 
+}
+
+public class InstantSmsSettings
+{
+    public string? Sender { get; set; }
+    public string Body { get; set; } = "";
 }

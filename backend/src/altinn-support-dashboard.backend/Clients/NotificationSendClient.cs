@@ -8,6 +8,7 @@ using Models.notifications;
 public class NotificationSendClient : INotificationSendClient
 {
     private const string InstantEmailUrl = "notifications/api/v1/future/orders/instant/email";
+    private const string InstantSmsUrl = "notifications/api/v1/future/orders/instant/sms";
 
     private readonly IHttpClientFactory _clientFactory;
     private readonly Configuration _configuration;
@@ -29,47 +30,17 @@ public class NotificationSendClient : INotificationSendClient
         _logger = logger;
     }
 
-    public async Task<NotificationSendResponse> SendInstantEmail(InstantEmailOrderRequest order, string environmentName)
+    public Task<NotificationSendResponse> SendInstantEmail(InstantEmailOrderRequest order, string environmentName) =>
+        SendInstantOrder(order, InstantEmailUrl, "email", environmentName);
+    
+    public Task<NotificationSendResponse> SendInstantSms(InstantSmsOrderRequest order, string environmentName) =>
+        SendInstantOrder(order, InstantSmsUrl, "SMS", environmentName);
+
+    private async Task<NotificationSendResponse> SendInstantOrder<TOrder>(TOrder order, string url, string channel, string environmentName)
     {
         var config = GetEnvironmentConfiguration(environmentName);
         var client = _clientFactory.CreateClient(environmentName);
         client.Timeout = TimeSpan.FromSeconds(config.Timeout);
-
-        var requestBody = JsonSerializer.Serialize(order, _json);
-        using var request = new HttpRequestMessage(HttpMethod.Post, new Uri(new Uri(config.BaseAddressAltinn3), InstantEmailUrl))
-        {
-            Content = new StringContent(requestBody, Encoding.UTF8, "application/json")
-        };
-        request.Headers.Add("ApiKey", config.ApiKey);
-        request.Headers.Add("Ocp-Apim-Subscription-Key", config.Ocp_Apim_Subscription_Key);
-
-        var response = await client.SendAsync(request);
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        var responseHeaders = response.Headers
-            .Where(h => !ExcludedHeaders.Contains(h.Key, StringComparer.OrdinalIgnoreCase))
-            .Select(h => $"{h.Key}: {string.Join(", ", h.Value)}");
-
-        var result = new NotificationSendResponse
-        {
-            StatusCode = response.StatusCode,
-            ResponseBody = responseBody,
-            ResponseHeader = string.Join("\r\n", responseHeaders),
-            RequestHeader = "Content-Type: application/json",
-            RequestBody = requestBody
-        };
-
-        if (response.IsSuccessStatusCode)
-        {
-            result.Result = TryDeserialize<InstantEmailOrderResult>(responseBody);
-        }
-        else
-        {
-            _logger.LogWarning("Instant email order failed in environment {EnvironmentName} with status code {StatusCode}", environmentName, response.StatusCode);
-            result.Problem = TryDeserialize<NotificationProblem>(responseBody);
-        }
-
-        return result;
     }
 
     private EnvironmentConfiguration GetEnvironmentConfiguration(string environmentName) =>
