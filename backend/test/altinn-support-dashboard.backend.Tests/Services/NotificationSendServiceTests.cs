@@ -45,9 +45,9 @@ public class NotificationSendServiceTests
 
         _clientMock.Verify(c => c.SendInstantEmail(
             It.Is<InstantEmailOrderRequest>(o =>
-                o.RecipientEmail.EmailSettings.Subject == "Varsel test Altinn" &&
-                o.RecipientEmail.EmailSettings.Body.StartsWith("Test varsel fra Altinn") &&
-                o.RecipientEmail.EmailSettings.Body.Contains("Denne mailen kan ikke besvares")),
+                o.RecipientEmail.EmailSettings.Subject == "Varslingstest Altinn" &&
+                o.RecipientEmail.EmailSettings.Body.StartsWith("Dette er en varslingstest fra Altinn") &&
+                o.RecipientEmail.EmailSettings.Body.Contains("Denne meldingen kan ikke besvares")),
             EnvironmentName),
             Times.Once);
     }
