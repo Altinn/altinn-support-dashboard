@@ -3,8 +3,8 @@ using Models.notifications;
 
 public class NotificationSendService : INotificationSendService
 {
-    private const string DefaultSubject = "Varsel test Altinn";
-    private const string DefaultBody = "Test varsel fra Altinn.\nDenne mailen kan ikke besvares.";
+    private const string DefaultSubject = "Varslingstest Altinn";
+    private const string DefaultBody = "Dette er en varslingstest fra Altinn.\nDenne meldingen kan ikke besvares.";
 
     private readonly INotificationSendClient _client;
 
