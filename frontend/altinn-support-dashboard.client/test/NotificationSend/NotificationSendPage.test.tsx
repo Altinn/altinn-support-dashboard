@@ -46,9 +46,9 @@ describe("NotificationSendPage", () => {
     mockHook();
     render(<NotificationSendPage />);
 
-    expect(screen.getByText("Varsel test Altinn")).toBeInTheDocument();
-    expect(screen.getByText(/Test varsel fra Altinn/)).toBeInTheDocument();
-    expect(screen.getByText(/Denne mailen kan ikke besvares/)).toBeInTheDocument();
+    expect(screen.getByText("Varslingstest Altinn")).toBeInTheDocument();
+    expect(screen.getByText(/Dette er en varslingstest fra Altinn/)).toBeInTheDocument();
+    expect(screen.getByText(/Denne meldingen kan ikke besvares/)).toBeInTheDocument();
   });
 
   it("should show error and keep button disabled for invalid email", async () => {

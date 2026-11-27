@@ -13,8 +13,8 @@ import classes from "./styles/CorrespondencePage.module.css";
 
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const EMAIL_SUBJECT = "Varsel test Altinn";
-const EMAIL_BODY = "Test varsel fra Altinn.\nDenne mailen kan ikke besvares.";
+const EMAIL_SUBJECT = "Varslingstest Altinn";
+const EMAIL_BODY = "Dette er en varslingstest fra Altinn.\nDenne meldingen kan ikke besvares.";
 const RESPONSE_STORAGE_KEY = "notifSendResponse";
 
 // A bad stored value must never stop the page from loading
